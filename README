@@ -1,0 +1,18 @@
+This covers the overview of how to setup the helidon lab in kubernetes. You are assumed to have already pushed up your docker containers to the registry
+Note that this is for a *public* registry, if you are going to do this for a private registry you will need to setup the docker login secret and will 
+need to update the service deployment files with that.
+
+First thing to do is to install helm - this is much easier than configuring the services yourself (think of helm as a 
+package manager for kuberneties.) See the instructions in the helm folder
+
+Next is probabaly setting up the kubernetes web dashboard, this is easier than learning all of the manual kubectl commands to examine things 
+follow the instructions in the kubernetes dashboard directory to install it, create the admin user and set up the port forwarding
+
+You can install the setup using a basic kubernetes setup and an externaly facing loadbalancer. The runLoadBalancer.sh script
+in the basic-kuberneties directory will do this for you. 
+
+If you want to then use ingress as a web front end follow the instructions to install and configure ingress. Note that once you've got the basic
+ingress install setup it's probably best to stop the existing configuration using the stop.sh script then start it up using ingress with
+the runIngress.sh script in the Ingress folder
+
+To setup prometheus to monitor the system and grafana to display visuals then look at the instructions in the prometheus folder
