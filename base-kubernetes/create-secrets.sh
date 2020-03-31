@@ -1,7 +1,7 @@
 #!/bin/bash
-DEVDIR=../..
-MGRDIR=$DEVDIR/helidon-labs-stockmanager
-FRONTDIR=$DEVDIR/helidon-labs-storefront
+CONFDIR=$HOME/helidon-kubernetes/configurations
+MGRDIR=$CONFDIR/stockmanagerconf
+FRONTDIR=$CONFDIR/storefrontconf
 echo Deleting existing generic secrets
 echo my-docker-reg
 kubectl delete secret my-docker-reg --ignore-not-found=true

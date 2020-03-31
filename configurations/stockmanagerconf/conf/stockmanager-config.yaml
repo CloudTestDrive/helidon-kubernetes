@@ -1,0 +1,8 @@
+app:
+  persistenceUnit: "HelidonATPJTA"
+#  department: "My Shop"
+  
+tracing:
+  service: "stockmanager"
+  host: "zipkin"
+ 
