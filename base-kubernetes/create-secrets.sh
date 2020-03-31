@@ -18,7 +18,7 @@ echo Secrets remaining in namespace are
 kubectl get secrets
 echo Creating general secrets
 echo my-docker-reg
-kubectl create secret docker-registry my-docker-reg --docker-server=fra.ocir.io --docker-username="tenancy-name/user" --docker-password="abcdefrghijklmnopqrstuvwxyz" --docker-email="you@email.com"
+kubectl create secret docker-registry my-docker-reg --docker-server=fra.ocir.io --docker-username='tenancy-name/oracleidentity/username' --docker-password='abcdefrghijklmnopqrstuvwxyz' --docker-email='you@email.com'
 echo Creating stock manager secrets
 echo sm-wallet-atp
 kubectl create secret generic sm-wallet-atp --from-file=$MGRDIR/Wallet_ATP
