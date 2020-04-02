@@ -4,7 +4,7 @@ javax:
             stockLevelDataSourceOraATPJTA:
                 dataSourceClassName: oracle.jdbc.pool.OracleDataSource 
                 dataSource:
-                    url: jdbc:oracle:thin:@jleoow_high?TNS_ADMIN=./Wallet_ATP
+                    url: jdbc:oracle:thin:@<connection name>?TNS_ADMIN=./Wallet_ATP
                     user: HelidonLabs
                     password: H3lid0n_Labs
             stockLevelDataSourceMySQLJTA:
