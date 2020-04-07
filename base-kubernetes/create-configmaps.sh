@@ -1,7 +1,7 @@
 #!/bin/bash
-DEVDIR=../..
-FRONTDIR=$DEVDIR/helidon-labs-storefront
-MGRDIR=$DEVDIR/helidon-labs-stockmanager
+CONFDIR=$HOME/helidon-kubernetes/configurations
+MGRDIR=$CONFDIR/stockmanagerconf
+FRONTDIR=$CONFDIR/storefrontconf
 echo Deleting existing config maps
 echo sf-config-map
 kubectl delete configmap sf-config-map --ignore-not-found=true
