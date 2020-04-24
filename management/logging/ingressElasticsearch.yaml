@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch
+  namespace: logging
+  annotations:
+    # use a re-writer
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  tls:
+  - secretName: tls-secret
+  rules:
+  - http:
+      paths:
+        #any path starting with elastic will have the /elastic removed before being passed to the service on the specified url
+      - path: /elastic(/|$)(.*)
+        backend:
+          serviceName: elasticsearch-logging-client
+          servicePort: 9200
