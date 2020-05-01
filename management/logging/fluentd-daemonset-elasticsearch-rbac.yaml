@@ -2,15 +2,14 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-to-es
+  namespace: logging
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-to-es
 rules:
 - apiGroups:
   - ""
@@ -26,46 +25,46 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: fluentd
+  name: fluentd-to-es
 roleRef:
   kind: ClusterRole
-  name: fluentd
+  name: fluentd-to-es
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-to-es
+  namespace: logging
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fluentd
-  namespace: kube-system
+  name: fluentd-to-es
+  namespace: logging
   labels:
-    k8s-app: fluentd-logging
+    k8s-app: fluentd-to-es
     version: v1
 spec:
   selector:
     matchLabels:
-      k8s-app: fluentd-logging
+      k8s-app: fluentd-to-es
       version: v1
   template:
     metadata:
       labels:
-        k8s-app: fluentd-logging
+        k8s-app: fluentd-to-es
         version: v1
     spec:
-      serviceAccount: fluentd
-      serviceAccountName: fluentd
+      serviceAccount: fluentd-to-es
+      serviceAccountName: fluentd-to-es
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
-      - name: fluentd
+      - name: fluentd-to-es
         image: fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: "elasticsearch-client.kube-system.svc"
+            value: "elasticsearch-client.logging.svc"
           - name:  FLUENT_ELASTICSEARCH_PORT
             value: "9200"
           - name: FLUENT_ELASTICSEARCH_SCHEME
