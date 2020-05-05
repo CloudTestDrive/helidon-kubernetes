@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd-to-ooss
+  namespace: logging
+  
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: fluentd-to-ooss
+  namespace: logging
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: fluentd-to-ooss
+roleRef:
+  kind: ClusterRole
+  name: fluentd-to-ooss
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: fluentd-to-ooss
+  namespace: logging
+
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: fluentd-to-ooss
+  namespace: logging
+  labels:
+    k8s-app: fluentd-to-ooss
+    version: v1
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-to-ooss
+        version: v1
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccount: fluentd-to-ooss
+      serviceAccountName: fluentd-to-ooss
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd-to-ooss
+        image: fluent/fluentd-kubernetes-daemonset:v1-debian-s3
+        env:
+          # Bring the values you're likely to need to customise in from the config map, thus limiting the number of places we are likely to need to make changes.   
+          - name: SWITCH_LOG_FILE_INTERVAL
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: SWITCH_LOG_FILE_INTERVAL
+          - name:  AWS_ACCESS_KEY_ID
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: ACCESS_KEY
+          - name:  AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: ACCESS_SECRET
+          - name: S3_BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: BUCKET_NAME
+          - name: S3_BUCKET_REGION
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: REGION
+          - name: S3_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: fluentd-s3-config
+                key: STORAGE_END_POINT
+          - name: FLUENT_UID
+            value: "0"
+          - name: FLUENTD_CONF
+            value: "override/fluent.conf"
+          - name: FLUENTD_SYSTEMD_CONF
+            value: "disable"
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log/
+        - name: u01data
+          mountPath: /u01/data/docker/containers/
+          readOnly: true
+        - name: fluentconfig
+          mountPath: /fluentd/etc/override/
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log/
+      - name: u01data
+        hostPath:
+          path: /u01/data/docker/containers/
+      - name: fluentconfig
+        configMap:
+          name: fluentd-config-to-ooss

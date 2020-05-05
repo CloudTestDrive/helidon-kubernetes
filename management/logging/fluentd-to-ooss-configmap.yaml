@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config-to-ooss
+  namespace: logging
+data:
+  fluent.conf: |
+    @include "#{ENV['FLUENTD_SYSTEMD_CONF'] || '../systemd'}.conf"
+    @include "#{ENV['FLUENTD_PROMETHEUS_CONF'] || '../prometheus'}.conf"
+    @include ../kubernetes.conf
+    @include conf.d/*.conf
+
+    <match **>
+      @type s3
+      @id out_s3
+      @log_level info
+      s3_bucket "#{ENV['S3_BUCKET_NAME']}"
+      s3_endpoint "#{ENV['S3_ENDPOINT']}"
+      s3_region "#{ENV['S3_BUCKET_REGION']}"
+      s3_object_key_format %{path}%Y/%m/%d/cluster-log-%{index}.%{file_extension}
+      <inject>
+        time_key time
+        tag_key tag
+        localtime false
+      </inject>
+      <buffer>
+        @type file
+        path /var/log/fluentd-buffers/s3.buffer
+        timekey "#{ENV['SWITCH_LOG_FILE_INTERVAL']}"
+        timekey_use_utc true
+        chunk_limit_size 256m
+      </buffer>
+    </match>
