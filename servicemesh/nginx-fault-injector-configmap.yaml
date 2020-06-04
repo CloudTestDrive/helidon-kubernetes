@@ -7,7 +7,7 @@ data:
     events {}
     http {
         server {
-          listen 9411;
+          listen 80;
             location / {
                 return 504;
             }

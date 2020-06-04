@@ -13,5 +13,5 @@ spec:
       paths:
       - path: /fault
         backend:
-          serviceName: fault-injector
+          serviceName: fault-injector-zipkin
           servicePort: 9411

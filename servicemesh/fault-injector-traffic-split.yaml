@@ -7,5 +7,5 @@ spec:
   backends:
   - service: zipkin
     weight: 500m
-  - service: fault-injector
+  - service: fault-injector-zipkin
     weight: 500m
