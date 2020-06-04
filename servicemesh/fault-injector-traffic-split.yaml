@@ -1,0 +1,11 @@
+apiVersion: split.smi-spec.io/v1alpha1
+kind: TrafficSplit
+metadata:
+  name: fault-injector
+spec:
+  service: zipkin
+  backends:
+  - service: zipkin
+    weight: 500m
+  - service: fault-injector
+    weight: 500m

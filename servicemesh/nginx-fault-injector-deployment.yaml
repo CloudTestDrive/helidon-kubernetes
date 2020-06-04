@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fault-injector
+  labels:
+    app: fault-injector
+spec:
+  selector:
+    matchLabels:
+      app: fault-injector
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fault-injector
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: fault-injector-configmap
