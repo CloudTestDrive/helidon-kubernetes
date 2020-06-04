@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: stockmanagerv0-0-2
+  name: stockmanager
 spec:
   replicas: 1
   strategy:
@@ -12,12 +12,10 @@ spec:
   selector:
     matchLabels:
       app: stockmanager
-      version: 0.0.2
   template:
     metadata:
       labels:
         app: stockmanager
-        version: 0.0.2
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/port: "9081"

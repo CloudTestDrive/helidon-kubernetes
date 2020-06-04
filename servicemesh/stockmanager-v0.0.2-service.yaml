@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stockmanagerv0-0-2
+spec:
+  type: ClusterIP
+  selector:
+    app: stockmanager
+    version: 0.0.2
+  ports:
+    - name: stockmanager
+      protocol: TCP
+      port: 8081
+    - name: stockmanager-mgt
+      protocol: TCP
+      port: 9081
