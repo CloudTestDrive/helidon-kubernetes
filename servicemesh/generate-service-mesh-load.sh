@@ -5,5 +5,5 @@ i=$[$i+1]
 echo test $i
 curl -s -k -X GET -u jack:password https://$1/store/stocklevel > /dev/null
 # Do a little sleep so we don't totally overload the server
-sleep 1
+sleep $2
 done
