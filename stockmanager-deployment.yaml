@@ -37,7 +37,7 @@ spec:
 #             path: /health/live
 #             port: health-port
 #          # Give it a few seconds to make sure it's had a chance to start up
-#          initialDelaySeconds: 60
+#          initialDelaySeconds: 120
 #          # Let it have a 5 second timeout to wait for a response
 #          timeoutSeconds: 5
 #          # Check every 5 seconds (default is 1)
