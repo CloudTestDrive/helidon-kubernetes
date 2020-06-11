@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: zipkin
@@ -17,7 +17,7 @@ spec:
           servicePort: 9411
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: storefront
@@ -36,7 +36,7 @@ spec:
           serviceName: storefront
           servicePort: 8080
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: stockmanager
@@ -55,7 +55,7 @@ spec:
           serviceName: stockmanager
           servicePort: 8081
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: storefront-status
@@ -76,7 +76,7 @@ spec:
           serviceName: storefront
           servicePort: 8080
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: stockmanager-status
@@ -96,7 +96,7 @@ spec:
           serviceName: stockmanager
           servicePort: 8081
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: stockmanager-management
@@ -115,7 +115,7 @@ spec:
           serviceName: stockmanager
           servicePort: 9081
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: storefront-management
@@ -134,7 +134,7 @@ spec:
           serviceName: storefront
           servicePort: 9080
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: storefront-openapi
