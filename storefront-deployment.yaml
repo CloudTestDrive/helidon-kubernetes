@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: storefront
-        image: fra.ocir.io/oractdemeabdmnative/tg_repo/storefront:0.0.1
+        image: fra.ocir.io/oractdemeabdmnative/h-k8s_repo/storefront:0.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - name: service-port
