@@ -25,6 +25,37 @@ spec:
           containerPort: 8081
         - name: health-port
           containerPort: 9081
+        env:
+        - name: javax.sql.DataSource.stockmanagerDataSource.dataSourceClassName
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: dataSourceClassName
+        - name: javax.sql.DataSource.stockmanagerDataSource.dataSource.url
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: url
+        - name: javax.sql.DataSource.stockmanagerDataSource.dataSource.user
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: username
+        - name: javax.sql.DataSource.stockmanagerDataSource.dataSource.password
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: password
+        - name: hibernate.dialect
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: hibernatedialect
+        - name: hibernate.hbm2ddl.auto
+          valueFrom:
+            secretKeyRef:
+              name: stockmanagerdb
+              key: hibernateauto
         resources:
           limits:
             # Set this to be quarter of a CPU for now
@@ -60,7 +91,7 @@ spec:
 #          # Need at least only one fail for this to be a problem
 #          failureThreshold: 1
         # Use this to check if the pod is started this has to pass before the liveness kicks in
-        # note that this requieres k8s V 1.16 or later
+        # note that this was released as beta in k8s V 1.18
 #         startupProbe:
 #          #Simple check to see if the status call works
 #          # If must return a 200 - 399 http status code
