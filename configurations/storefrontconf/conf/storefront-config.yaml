@@ -1,6 +1,6 @@
 app:
   storename: "My Shop"
-  minimumchange: 4
+  minimumchange: 2
 
 tracing:
   service: "storefront"
