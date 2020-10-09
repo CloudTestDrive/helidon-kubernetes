@@ -15,5 +15,5 @@ spec:
         #any path starting with elastic will have the /elastic removed before being passed to the service on the specified url
       - path: /elastic(/|$)(.*)
         backend:
-          serviceName: elasticsearch-logging-client
+          serviceName: elasticsearch-elasticsearch-master
           servicePort: 9200

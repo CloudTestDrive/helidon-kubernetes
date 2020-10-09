@@ -60,8 +60,8 @@ spec:
 #          # Need at least only one fail for this to be a problem
 #          failureThreshold: 1
         # Use this to check if the pod is started this has to pass before the liveness kicks in
-        # note that this requieres k8s V 1.16 or later
-#         startupProbe:
+        # note that this was released as beta in k8s V 1.18
+#        startupProbe:
 #          #Simple check to see if the status call works
 #          # If must return a 200 - 399 http status code
 #           httpGet:
@@ -70,11 +70,11 @@ spec:
 #          # No initial delay - it starts checking immediately
 #          # Let it have a 5 second timeout
 #           timeoutSeconds: 5
-#          # allow for up to 12 failures
-#           failureThreshold: 12
-#          # Check every 10 seconds
-#           periodSeconds: 10
-#          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (2 mins in this case)
+#          # allow for up to 48 failures
+#           failureThreshold: 48
+#          # Check every 5 seconds
+#           periodSeconds: 5
+#          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
         volumeMounts:
         - name: sf-conf-secure-vol
           mountPath: /confsecure

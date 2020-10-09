@@ -6,6 +6,6 @@ spec:
   service: zipkin
   backends:
   - service: zipkin
-    weight: 50
+    weight: 500m
   - service: fault-injector-zipkin
-    weight: 50
+    weight: 500m

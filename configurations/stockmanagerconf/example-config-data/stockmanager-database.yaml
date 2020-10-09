@@ -1,0 +1,30 @@
+javax:
+    sql:
+        DataSource:
+            testOracle:
+                dataSourceClassName: oracle.jdbc.pool.OracleDataSource 
+                dataSource:
+                    url: jdbc:oracle:thin:@jleoow_high?TNS_ADMIN=./Wallet_ATP
+                    user: HelidonLabs
+                    password: H3lid0n_Labs
+            testMySQL:
+                dataSourceClassName: com.mysql.cj.jdbc.MysqlDataSource
+                dataSource:
+                    url: jdbc:mysql://localhost:3306/helidonshop?serverTimezone=UTC 
+                    user: helidonshop
+                    password: Helidon
+            testH2:
+                dataSourceClassName: org.h2.jdbcx.JdbcDataSources
+                dataSource:
+                    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1 
+                    user: sa
+                    password: 
+
+
+# Datasource properties
+# For H2 use this URL for the in memory version 
+# jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
+# And this one for the remote version e.g. in docker
+# jdbc:h2:tcp://localhost:1521/test
+# This command will start a docker H2 image when using a the remote H2 URL above.
+# docker run -d -p 1521:1521 -p 81:81 -e H2_OPTIONS='-ifNotExists' --name=h2 oscarfonts/h2

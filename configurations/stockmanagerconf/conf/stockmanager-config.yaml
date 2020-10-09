@@ -1,5 +1,5 @@
 app:
-  persistenceUnit: "HelidonATPJTA"
+  persistenceUnit: "stockmanagerJTA"
 #  department: "My Shop"
   
 tracing:
