@@ -89,5 +89,5 @@ spec:
       - name: sf-config-map-vol
         configMap:
           name: sf-config-map
-      imagePullSecrets:
-      - name: my-docker-reg
+#      imagePullSecrets:
+#      - name: my-docker-reg
