@@ -14,7 +14,8 @@ echo stockmanagerdb
 kubectl delete secret stockmanagerdb --ignore-not-found=true
 echo Deleted secrets
 echo Secrets remaining in namespace are 
-kubectl get secretsecho Creating stock manager secrets
+kubectl get secret
+secho Creating stock manager secrets
 echo stockmanagerdb
 kubectl apply -f $MGRDIR/databaseConnectionSecret.yaml
 echo sm-wallet-atp
