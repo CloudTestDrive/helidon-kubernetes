@@ -1,0 +1,181 @@
+#!/bin/bash -f
+
+export SCRIPT_DIR=HOME/helidon-kubernetes/scripts
+
+export SETTINGS=$SCRIPT_DIR/settings
+
+source $SETTINGS
+
+echo "Hello, I just need to gather some data"
+
+echo "We are going to use a compartment called $COMPARTMENT_NAME , all of the instructions use this, but if you want (and can remember to update the instructions in your mind as you go) you can change the name - this is not recommended. Do you want to change the name ?" 
+
+read CONFIRM
+if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+then
+    echo "OK, this isn't the best of ideas, please enter the new name for your compartment, it must be a single word"
+    read COMPARTMENT_NAME
+    if [ -z "$COMPARTMENT_NAME" ]
+    then
+        echo "You do actually need to enter the new name for the compartment, exiting"
+            exit 1
+        fi
+    else 
+        echo COMPARTMENT_NAME=$COMPARTMENT_NAME >> $SETTINGS
+        echo "Will use $COMPARTMENT_NAME"
+    fi
+else     
+    echo "OK, going to use $COMPARTMENT_NAME as the compartment name"
+fi
+
+echo "We are going to use a Virtual Cloud Network called $VCN_NAME , all of the instructions use this, but if you want (and can remember to update the instructions in your mind as you go) you can change the name - this is not recommended. Do you want to change the name ?" 
+
+read CONFIRM
+if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+then
+    echo "OK, this isn't the best of ideas, please enter the new name for your VCN, it must be a single word"
+    read VCN_NAME
+    if [ -z "$VCN_NAME" ]
+    then
+        echo "You do actually need to enter the new name for the VCN, exiting"
+            exit 1
+        fi
+    else 
+        echo VCN_NAME=$VCN_NAME >> $SETTINGS
+        echo "Will use $VCN_NAME"
+    fi
+else     
+    echo "OK, going to use $VCN_NAME as the VCN name"
+fi
+
+echo "Please can you enter your initials, for example if your name is John Smith your initials would be JS. These will be used to do things like name the database"
+
+read INITIALS
+
+if [ -z "$INITIALS" ]
+then
+    echo "You actually need to enter your initials, exiting so you can re-run the script"
+    exit 2
+else
+    echo "OK, using $INITIALS as your initials"
+fi
+
+echo export INITIALS=$INITIALS >> $SCRIPT_DIR/settings
+
+# get the tenancy name
+TENANCY_NAME=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data.name'`
+
+echo Tenancy name is $TENANCY_NAME
+
+
+# OK, actual do the work.
+
+// does the compartment already exist ?
+
+COMPARTMENT_OCID=`oci iam compartment list --name $COMPARTMENT_NAME --compartment-id $OCI_TENANCY | jq -j '.data[0].id'`
+
+if [ -z "$COMPARTMENT_OCID" ]
+then
+      echo "Compartment $COMPARTMENT_NAME, doesn't already exist, creating it"
+      COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $OCI_TENANCY --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
+      if [ -z "$COMPARTMENT_OCID" ]
+      then
+          echo "The compartment has not been created, cannot continue"
+          exit 3
+      fi
+      echo "Created compartment $COMPARTMENT_NAME It's OCID is $COMPARTMENT_OCID"
+else
+      echo "Compartment $COMPARTMENT_NAME already exists, do you want to re-use it (y/n) ?"
+      read CONFIRM
+      if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+      then
+          echo "OK, This script is about to exit, re-run it entering a compartment name different from $COMPARTMENT_NAME"
+          exit 1
+      else
+          echo "OK, going to reuse compartment $COMPARTMENT_NAME"
+      fi
+fi
+
+echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
+
+
+echo Creating Virtual Cloud Network called $VCN_NAME in compartment $COMPARTMENT_NAME
+
+VCN_OCID=`oci network vcn list --display-name $VCN_NAME --compartment-id $COMPARTMENT_OCID  | jq -j '.data[0].id'`
+
+if [ -z "$VCN_OCID" ]
+then
+   echo "VCN $VCN_NAME doesn't exist, creating it, there may be a short delay"
+   VCN_OCID=`oci network vcn create --display-name $VCN_NAME  --cidr-block 10.0.0.0/16 --compartment-id $COMPARTMENT_OCID --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
+   if [ -z "$VCN_OCID" ]
+   then
+       echo "The VCN has not been created, cannot continue"
+       exit 3
+   fi
+   echo "Created VCN $VCN_NAME in compartment $COMPARTMENT_NAME It's OCID is $VCN_OCID"
+else
+   echo "A VCN named $VCN_NAME already exists in compartment $COMPARTMENT_NAME"
+   echo "Do you want to re-use it ?"
+   read CONFIRM
+   if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+   then
+       echo "OK, This script is about to exit, re-run it entering either a VCN name different from $VCN_NAME or a compartment name different from $COMPARTMENT_NAME"
+       exit 1
+   else
+       echo "OK, going to reuse $VCN_NAME"
+   fi
+fi
+
+echo VCN_OCID=$COMPARTMENT_OCID >> $SETTINGS
+
+echo Creating database
+
+DBNAME="$INITIALS"db
+
+echo Creating database called $DBNAME
+
+ATPDB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME | jq -j '.data[0].id'`
+
+if [ -z "$ATPDB_OCID" ]
+then
+   echo "Database named $DBNAME doesn't exist, creating it, there may be a short delay"
+   DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
+   ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1 | jq -j '.data.id'`
+   echo DB_ADMIN_PW=$DB_ADMIN_PW >> $SETTINGS
+   echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
+else
+   echo "Database named $DBNAME already exists"
+   if [ -z "$DB_ADMIN_PW"  -a -z "$DB_USER_CREATED" ]
+   then
+       echo "The DB User has not been created and"
+       echo "There is no DB_ADMIN_PW set, edit the $SETTINGS file and add a line :"
+       echo 'DB_ADMIN_PW=<DB_ADMIN_PW>'
+       echo 'Where <DB_ADMIN_PW> is the database password'
+       echo "OR"
+       echo "If you have already manually created the database user then add a line to the $SETTINGS file"
+       echo 'DB_USER_CREATED=true'
+       echo "Once you've made the change then you can re-run this script"
+       exit 4
+   fi
+fi
+
+echo Downloading DB Wallet file
+
+if [ -f $HOME/Wallet.zip ]
+then
+    echo "There is already a downloaded Wallet file in $HOME/Wallet.zip"
+    echo "Do you want to remove it and download the one for $DBNAME ?"
+    if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+   then
+       echo removed old Wallet.zip file
+       rm $HOME/Wallet.zip
+       oci db autonomous-database generate-wallet --file Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+       echo Downloaded Wallet.zip file
+   else
+       echo "OK, going to reuse existing Wallet"
+   fi
+else
+    echo "About to download Database wallet to $HOME/Wallet.zip"
+    oci db autonomous-database generate-wallet --file Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+    echo Downloaded Wallet.zip file
+fi
