@@ -1,64 +1,59 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: zipkin
+  name: direct-ingress
   annotations:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
 spec:
+  tls:
+  - hosts: 
+    # <External IP> must be replaced with the IP address of the ingress controller
+    - store.<External IP>.nip.io
+    secretName: tls-secret
   rules:
-  - http:
+    # <External IP> must be replaced with the IP address of the ingress controller
+  - host: store.<External IP>.nip.io
+    http:
       paths:
       - path: /zipkin
         backend:
           serviceName: zipkin
           servicePort: zipkin
-
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: storefront
-  annotations:
-    # use the shared ingress-nginx
-    kubernetes.io/ingress.class: "nginx"
-spec:
-  rules:
-  - http:
-      paths:
-        #This is a convenience for as this will be commonly used
       - path: /store
         backend:
           serviceName: storefront
           servicePort: storefront
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: stockmanager
-  annotations:
-    # use the shared ingress-nginx
-    kubernetes.io/ingress.class: "nginx"
-spec:
-  rules:
-  - http:
-      paths:
-        #This is a convenience for as this will be commonly used
       - path: /stocklevel
         backend:
           serviceName: stockmanager
           servicePort: stockmanager
+      - path: /openapi
+        backend:
+          serviceName: storefront
+          servicePort: storefront
+          
 ---
+
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: storefront-status
+  name: rewrite-ingress
   annotations:
-    # use a re-writer
+    kubernetes.io/ingress.class: "nginx"
+    # nginx.ingress.kubernetes.io/use-regex: "true"
+    # rewrite the requests
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  tls:
+  - hosts: 
+    # <External IP> must be replaced with the IP address of the ingress controller
+    - store.<External IP>.nip.io
+    secretName: tls-secret
   rules:
-  - http:
+    # <External IP> must be replaced with the IP address of the ingress controller
+  - host: store.<external IP>.nip.io
+    http:
       paths:
         #any path starting with sf will have the /sf removed before being passed to the service on the specified url
         #for example this handles /sf/status -> /status and /sf/minimumChange -> /minimumChange on arrival at the 
@@ -67,71 +62,19 @@ spec:
         backend:
           serviceName: storefront
           servicePort: storefront
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: stockmanager-status
-  annotations:
-    # use a re-writer
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-spec:
-  rules:
-  - http:
-      paths:
         #any path starting with sm will have the /sm removed before being passed to the service on the specified url
         #for example this handles /sm/status -> /status on arrival at the storefront server
       - path: /sm(/|$)(.*)
         backend:
           serviceName: stockmanager
           servicePort: stockmanager
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: stockmanager-management
-  annotations:
-    # use a re-writer
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-spec:
-  rules:
-  - http:
-      paths:
-        #any path starting with smmtg will have the /smmgt removed before being passed to the service on the specified url
-      - path: /smmgt(/|$)(.*)
-        backend:
-          serviceName: stockmanager
-          servicePort: stockmngr-mgt
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: storefront-management
-  annotations:
-    # use a re-writer
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-spec:
-  rules:
-  - http:
-      paths:
         #any path starting with sfmtg will have the /sfmgt removed before being passed to the service on the specified url
       - path: /sfmgt(/|$)(.*)
         backend:
           serviceName: storefront
           servicePort: storefront-mgt
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: storefront-openapi
-  annotations:
-    # use the shared ingress-nginx
-    kubernetes.io/ingress.class: "nginx"
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /openapi
+        #any path starting with smmtg will have the /smmgt removed before being passed to the service on the specified url
+      - path: /smmgt(/|$)(.*)
         backend:
-          serviceName: storefront
-          servicePort: storefront
+          serviceName: stockmanager
+          servicePort: stockmngr-mgt
