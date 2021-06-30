@@ -20,7 +20,7 @@ then
     echo 'OK, edit ingressConfig.yaml replacing <External IP> with the IP address of the ingress service (there are multple entries excluding the comments)'
     exit 1
 fi
-read -p "Have you created the tls certificate files (tls.crt and tls.key) using the external IP address in the common name? " -n 1 -r
+read -p "Have you created the tls certificate files (tls-store.crt and tls-store.key) using the external IP address in the common name? " -n 1 -r
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -45,7 +45,7 @@ then
 fi
 ./create-namespace.sh $1
 echo Creating tls secret from tls.key and tls.crt
-kubectl create secret tls tls-secret --key tls.key --cert tls.crt
+kubectl create secret tls tls-store --key tls-store.key --cert tls-store.crt
 ./setupClusterIPServices.sh
 ./setupIngress.sh
 ./create-secrets.sh
