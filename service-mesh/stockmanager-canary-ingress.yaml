@@ -1,36 +1,25 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: stockmanager-v0-0-1
+  name: stockmanager-canary-ingress
   annotations:
     # use a re-writer
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   tls:
-  - secretName: tls-secret
+  - hosts: 
+    # <External IP> must be replaced with the IP address of the ingress controller
+    - store.<External IP>.nip.io
+    secretName: tls-store
   rules:
-  - http:
+    # <External IP> must be replaced with the IP address of the ingress controller
+  - host: store.<External IP>.nip.io
+    http:
       paths:
       - path: /stockmanagerv0-0-1(/|$)(.*)
         backend:
           serviceName: stockmanagerv0-0-1
           servicePort: 8081
-          
----
-
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: stockmanager-v0-0-2
-  annotations:
-    # use a re-writer
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-spec:
-  tls:
-  - secretName: tls-secret
-  rules:
-  - http:
-      paths:
       - path: /stockmanagerv0-0-2(/|$)(.*)
         backend:
           serviceName: stockmanagerv0-0-2

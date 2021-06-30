@@ -14,10 +14,13 @@ metadata:
     nginx.ingress.kubernetes.io/auth-secret: web-ingress-auth
     nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 spec:
-  # tls:
-  # - secretName: tls-linkerd-secret
+  tls:
+  - hosts: 
+    # <External IP> must be replaced with the IP address of the ingress controller
+    - linkerd.<External IP>.nip.io
+    secretName: tls-linkerd
   rules:
-  # Replace <External IP> wiht the IP address of your ingress service
+    # <External IP> must be replaced with the IP address of the ingress controller
   - host: linkerd.<External IP>.nip.io
     http:
       paths:
