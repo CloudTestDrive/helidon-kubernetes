@@ -98,6 +98,17 @@ spec:
               configMapKeyRef:
                 name: fluentd-s3-config
                 key: STORAGE_END_POINT
+          # a parser type of cri is required for systems not using docker (Kuernetes 1.20 and later)
+          # If you are using docker then you should use a type of json
+          - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
+            value: "cri"
+          # The default format puts the time zone as a string (e.g. CET) however the output format includes it as an offset (+01:00)
+          # So we need to override that and teplace the usual formatting of ∞Ω with %:z
+          - name: FLUENT_CONTAINER_TAIL_PARSER_TIME_FORMAT
+            value: "%Y-%m-%dT%H:%M:%S.%N%:z"
+          # Ignore the fluentd logs - otherwise you can get some serious log type recursion going on
+          - name: FLUENT_CONTAINER_TAIL_EXCLUDE_PATH
+            value: "[\"/var/log/containers/fluentd*.log\"]"
           - name: FLUENT_UID
             value: "0"
           - name: FLUENTD_CONF
