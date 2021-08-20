@@ -23,4 +23,4 @@ bash $HOME/helidon-kubernetes/setup/kubernetes-labs/installBaseElements.sh
 
 source $HOME/clusterSettings
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $1
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $1 $ip
