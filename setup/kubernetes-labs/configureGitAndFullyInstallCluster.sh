@@ -20,4 +20,4 @@ fi
 
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/configure-downloaded-git-repo.sh $1 skip
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/fullyInstallCLuster.sh $1 skip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/fullyInstallCluster.sh $1 skip
