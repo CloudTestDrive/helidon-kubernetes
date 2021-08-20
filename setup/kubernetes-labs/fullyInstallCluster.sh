@@ -2,7 +2,8 @@
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied, you must provide the name of your department - in lower case and only a-z, e.g. tims"
-    exit -1 
+    exit -1 :q!
+    
 fi
 if [ $# -eq 1 ]
   then
