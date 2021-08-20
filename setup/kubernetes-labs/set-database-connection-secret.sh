@@ -20,7 +20,7 @@ fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
 temp="$config".tmp
 echo Updating the database connection secret config in $config to set $1 as the database connection
-echo command is "s/<database connection name>/$1/"
+# echo command is "s/<database connection name>/$1/"
 cat $config | sed -e "s/<database connection name>/$1/" > $temp
 rm $config
 mv $temp $config

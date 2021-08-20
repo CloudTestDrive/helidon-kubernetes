@@ -20,7 +20,7 @@ fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
 temp="$config".tmp
 echo Updating the stockmanager config in $config to set $1 as the department name
-echo command is "s/#  department: \"My Shop\"/  department: \"$1 Shop\"/"
+# echo command is "s/#  department: \"My Shop\"/  department: \"$1 Shop\"/"
 cat $config | sed -e "s/#  department: \"My Shop\"/  department: \"$1 Shop\"/" > $temp
 rm $config
 mv $temp $config

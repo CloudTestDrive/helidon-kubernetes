@@ -19,7 +19,7 @@ if [ $# -eq 1 ]
 fi
 
 echo Updating ingress removing $1 as the external IP address
-echo command is "s/store.$1.nip.io/store.<External IP>.nip.io>/"
+# echo command is "s/store.$1.nip.io/store.<External IP>.nip.io>/"
 cat ingressConfig.yaml | sed -e "s/store.$1.nip.io/store.<External IP>.nip.io/" > ingressConfig.yaml.tmp
 rm ingressConfig.yaml
 mv ingressConfig.yaml.tmp ingressConfig.yaml
