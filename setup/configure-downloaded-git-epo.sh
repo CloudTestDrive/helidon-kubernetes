@@ -1,0 +1,24 @@
+#!/bin/bash
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied, you must provide the name of your department, e.g. Tims"
+    exit -1 
+fi
+if [ $# -eq 1 ]
+  then
+    echo setting up config in downloaded git repo using $1 as the department name and $HOME/Wallet.zip as the DB wallet file.
+    read -p "Proceed ? " -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+      then
+        echo OK, exiting
+        exit 1
+    fi
+  else
+    echo "Skipping confirmation"
+fi
+# run the config setup - note that the skips tell the sub scripts not to ask for confirmation
+bash ./set-stockmanager-config-department.sh $1 skip
+bash ./install-db-wallet.sh $HOME/Wallet.zip skip
+dbConnection=`bash ./get-database-connection-name.sh`
+bash ./set-database-connection-secret.sh $dbConnection skip
