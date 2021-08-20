@@ -15,7 +15,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping database connection secret confirmation"
 fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
 temp="$config".tmp

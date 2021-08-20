@@ -15,7 +15,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping configure-repo confirmation"
 fi
 # run the config setup - note that the skips tell the sub scripts not to ask for confirmation
 bash ./set-stockmanager-config-department.sh $1 skip

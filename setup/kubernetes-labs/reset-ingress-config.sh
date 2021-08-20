@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the External IP address of the ingress controler service"
+    echo "No arguments supplied, you must provide the current External IP address of the ingress controler service"
     exit -1 
 fi
 if [ $# -eq 1 ]
@@ -15,11 +15,13 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping reset-ingress-config confirmation"
 fi
 
 echo Updating ingress removing $1 as the external IP address
-# echo command is "s/store.$1.nip.io/store.<External IP>.nip.io>/"
-cat ingressConfig.yaml | sed -e "s/store.$1.nip.io/store.<External IP>.nip.io/" > ingressConfig.yaml.tmp
-rm ingressConfig.yaml
-mv ingressConfig.yaml.tmp ingressConfig.yaml
+config=$HOME/helidon-kubernetes/base-kubernetes/ingressConfig.yaml.yaml
+temp="$config".tmp
+# echo command is "s/store.$1.nip.io/store.<External IP>.nip.io/"
+cat $config | sed -e "s/store.$1.nip.io/store.<External IP>.nip.io/" > $temp
+rm $config
+mv $temp $config

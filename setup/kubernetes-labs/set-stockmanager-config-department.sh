@@ -15,7 +15,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping stockmanager department setup confirmation"
 fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
 temp="$config".tmp

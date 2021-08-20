@@ -15,7 +15,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping db wallet install confirmation"
 fi
 walletDir=$HOME/helidon-kubernetes/configurations/stockmanagerconf/Wallet_ATP
 echo Initiing wallet Directory

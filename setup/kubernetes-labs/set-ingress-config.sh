@@ -15,11 +15,13 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping confirmation"
+    echo "Skipping ingress rule setup confirmation"
 fi
 
-echo Updating ingress setting $1 as the external IP address
+echo Updating ingress rules - setting $1 as the external IP address
+config=$HOME/helidon-kubernetes/base-kubernetes/ingressConfig.yaml.yaml
+temp="$config".tmp
 # echo command is "s/store.<External IP>.nip.io/store.$1.nip.io/"
-cat ingressConfig.yaml | sed -e "s/store.<External IP>.nip.io/store.$1.nip.io/" > ingressConfig.yaml.tmp
-rm ingressConfig.yaml
-mv ingressConfig.yaml.tmp ingressConfig.yaml
+cat $config | sed -e "s/store.<External IP>.nip.io/store.$1.nip.io/" > $temp
+rm $config
+mv $temp $config
