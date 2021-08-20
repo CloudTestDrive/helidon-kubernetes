@@ -19,7 +19,7 @@ if [ $# -eq 1 ]
 fi
 
 echo Updating ingress removing $1 as the external IP address
-config=$HOME/helidon-kubernetes/base-kubernetes/ingressConfig.yaml.yaml
+config=$HOME/helidon-kubernetes/base-kubernetes/ingressConfig.yaml
 temp="$config".tmp
 # echo command is "s/store.$1.nip.io/store.<External IP>.nip.io/"
 cat $config | sed -e "s/store.$1.nip.io/store.<External IP>.nip.io/" > $temp
