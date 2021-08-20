@@ -52,7 +52,7 @@ spec:
     secretName: tls-store
   rules:
     # <External IP> must be replaced with the IP address of the ingress controller
-  - host: store.<external IP>.nip.io
+  - host: store.<External IP>.nip.io
     http:
       paths:
         #any path starting with sf will have the /sf removed before being passed to the service on the specified url
