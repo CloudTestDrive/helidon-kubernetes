@@ -36,4 +36,4 @@ then
     exit 1
 fi
 
-bash ./executeRunStack $1 $2
+bash ./executeRunStack.sh $1 $2

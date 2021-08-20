@@ -2,8 +2,8 @@
 cd $HOME/helidon-kubernetes/base-kubernetes
 bash ./create-namespace.sh $1
 echo Creating tls store secret
-bash $HOME/helidon-kubernetes/setup/create-store-cert.sh $2
-bash $HOME/helidon-kubernetes/setup/set-ingress-config.sh $2 skip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/create-store-cert.sh $2
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/set-ingress-config.sh $2 skip
 echo Creating services
 kubectl apply -f servicesClusterIP.yaml
 echo Services are 
