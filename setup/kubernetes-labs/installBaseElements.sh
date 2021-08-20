@@ -14,7 +14,7 @@ echo install Ingress using helm
 helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=10Mbps
 echo Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancert
 ip=""
-while [ -z $ip ]; do
+while [ -z "$ip" ]; do
   echo "Waiting for ingress external IP"
   ip=$(kubectl get svc ingress-nginx-controller --namespace ingress-nginx --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
   [ -z "$ip" ] && sleep 10

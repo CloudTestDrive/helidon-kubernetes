@@ -12,8 +12,9 @@ if [ $# -eq 0 ]
     fi
 fi
 if [ $# -eq 1 ]
+    then
     echo "Skipping confirmation, destroying existing instalation in $$NAMESPACE, and remove the ingress controller and dashboard"
 fi
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/teardownStack $NAMESPACE skip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/teardownStack.sh $NAMESPACE skip
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/removeBaseElements.sh skip

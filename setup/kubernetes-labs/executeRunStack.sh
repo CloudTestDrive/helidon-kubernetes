@@ -18,3 +18,5 @@ bash ./create-secrets.sh
 bash ./create-configmaps.sh
 cd ..
 bash ./deploy.sh
+
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/waitForServices.sh $1
