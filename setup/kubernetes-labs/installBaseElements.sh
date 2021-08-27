@@ -1,9 +1,11 @@
 #!/bin/bash
 infoFile=$HOME/clusterInfo
-echo reseting info file
+echo reseting cluster info file
 echo > $infoFile
 
 settingsFile=$HOME/clusterSettings
+echo reset cluster settings file
+echo > $settingsFile
 
 echo Getting helm chart versions
 source helmChartVersions.sh
