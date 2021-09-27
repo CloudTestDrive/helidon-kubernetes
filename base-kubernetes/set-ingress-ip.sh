@@ -19,9 +19,4 @@ if [ $# -eq 1 ]
 fi
 
 echo Updating ingress rules - setting $1 as the external IP address
-config=$HOME/helidon-kubernetes/base-kubernetes/ingressConfig.yaml
-temp="$config".tmp
-# echo command is "s/store.<External IP>.nip.io/store.$1.nip.io/"
-cat $config | sed -e "s/store.<External IP>.nip.io/store.$1.nip.io/" > $temp
-rm $config
-mv $temp $config
+bash $HOME/helidon-kubernetes/base-kubernetes/scripts/update-ingress.sh  '${EXTERNAL_IP}' $1

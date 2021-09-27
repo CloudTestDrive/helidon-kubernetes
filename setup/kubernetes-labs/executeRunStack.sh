@@ -5,15 +5,9 @@ bash ./create-namespace.sh $1
 echo NAMESPACE=$1 >> $HOME/clusterSettings
 echo Creating tls store secret
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/create-store-cert.sh $2
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/set-ingress-config.sh $2 skip
-echo Creating services
-kubectl apply -f servicesClusterIP.yaml
-echo Services are 
-kubectl get services
-echo Creating ingress rules
-kubectl apply -f ingressConfig.yaml
-echo Ingress rules are
-kubectl get ingress
+bash ./set-ingress-ip.sh $2 skip
+bash ./create-services.sh
+bash ./create-ingress-rules.sh
 bash ./create-secrets.sh
 bash ./create-configmaps.sh
 cd ..

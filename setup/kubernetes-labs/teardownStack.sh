@@ -18,4 +18,4 @@ kubectl delete namespace $NAMESPACE  --ignore-not-found=true
 echo Blanking saved namespace
 echo NAMESPACE= >> $HOME/clusterSettings
 echo resetting ingress rules file
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/reset-ingress-config.sh  $ip skip
+bash $HOME/helidon-kubernetes/base-kubernetes/scripts/reset-ingress-config.sh  $ip skip
