@@ -18,4 +18,4 @@ if [ $# -eq 1 ]
     echo "Skipping reset-ingress-config confirmation"
 fi
 
-bash $HOME/helidon-kubernetes/base-kubernetes/scripts/update-ingress $1 '${EXTERNAL_IP}'
+bash $HOME/helidon-kubernetes/base-kubernetes/scripts/update-ingress.sh $1 '${EXTERNAL_IP}'
