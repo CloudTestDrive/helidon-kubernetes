@@ -17,6 +17,9 @@ spec:
     http:
       paths:
       - path: /zipkin
+        pathType: Prefix
         backend:
-          serviceName: zipkin
-          servicePort: zipkin
+          service:
+            name: zipkin
+            port:
+              name: zipkin

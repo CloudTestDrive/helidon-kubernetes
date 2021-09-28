@@ -17,12 +17,15 @@ spec:
     http:
       paths:
       - path: /stocklevel
+        pathType: Prefix
         backend:
-          serviceName: stockmanager
-          servicePort: stockmanager          
+          service:
+            name: stockmanager
+            port: 
+              name: stockmanager          
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: stockmanager-rewrite-ingress
@@ -45,11 +48,17 @@ spec:
         #any path starting with sm will have the /sm removed before being passed to the service on the specified url
         #for example this handles /sm/status -> /status on arrival at the storefront server
       - path: /sm(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
-          serviceName: stockmanager
-          servicePort: stockmanager
+          service:
+            name: stockmanager
+            port: 
+              name: stockmanager    
         #any path starting with smmtg will have the /smmgt removed before being passed to the service on the specified url
       - path: /smmgt(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
-          serviceName: stockmanager
-          servicePort: stockmngr-mgt
+          service:
+            name: stockmanager
+            port: 
+              name: stockmngr-mgt

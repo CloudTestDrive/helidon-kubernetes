@@ -17,17 +17,23 @@ spec:
     http:
       paths:
       - path: /store
+        pathType: Prefix
         backend:
-          serviceName: storefront
-          servicePort: storefront
+          service:
+            name: storefront
+            port:
+              name: storefront
       - path: /openapi
+        pathType: Exact
         backend:
-          serviceName: storefront
-          servicePort: storefront
+          service:
+            name: storefront
+            port:
+              name: storefront
           
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: storefront-rewrite-ingress
@@ -51,11 +57,17 @@ spec:
         #for example this handles /sf/status -> /status and /sf/minimumChange -> /minimumChange on arrival at the 
         #storefront server
       - path: /sf(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
-          serviceName: storefront
-          servicePort: storefront
+          service:
+            name: storefront
+            port:
+              name: storefront
         #any path starting with sfmtg will have the /sfmgt removed before being passed to the service on the specified url
       - path: /sfmgt(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
-          serviceName: storefront
-          servicePort: storefront-mgt
+          service:
+            name: storefront
+            port:
+              name: storefront-mgt
