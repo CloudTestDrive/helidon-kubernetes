@@ -1,9 +1,24 @@
 #!/bin/bash
-infoFile=$HOME/clusterInfo
+currentContext=`bash get-current-context.sh`
+if [ $# -eq 0 ]
+  then
+    echo setting up config in downloaded git repo $currentContext is the kubernetes current context name
+    read -p "Proceed ? " -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+      then
+        echo OK, exiting
+        exit 1
+    fi
+  else
+    echo "Skipping fully install cluster confirmation $currentContext is the kubernetes cluster name"
+fi
+
+infoFile=$HOME/clusterInfo.$currentContext
 echo reseting cluster info file
 echo > $infoFile
 
-settingsFile=$HOME/clusterSettings
+settingsFile=$HOME/clusterSettings.$currentContext
 echo reset cluster settings file
 echo > $settingsFile
 
@@ -14,7 +29,7 @@ echo Create ingress namespace
 kubectl create namespace ingress-nginx
 echo install Ingress using helm
 helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=10Mbps
-echo Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancert
+echo Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancer
 ip=""
 while [ -z "$ip" ]; do
   echo "Waiting for ingress external IP"
@@ -52,5 +67,8 @@ echo >> $infoFile
 
 echo saving External IP for later use
 echo ip=$ip >> $settingsFile
+
+# now we have the ingress we csan update the rules to fit it
+bash ./set-ingress-ip.sh $ip skip
 
 	

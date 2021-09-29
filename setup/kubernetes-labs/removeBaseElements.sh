@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 if [ $# -eq 0 ]
   then
     echo Delete ingress controller and dashboard ?
@@ -14,8 +15,11 @@ if [ $# -eq 0 ]
     echo "Skipping remove base elements confirmation"
 fi
 
-settingsFile=$HOME/clusterSettings
-infoFile=$HOME/clusterInfo
+currentContext=`bash get-current-context.sh`
+settingsFile=$HOME/clusterSettings.$currentContext
+infoFile=$HOME/clusterInfo.$currentContext
+
+source $settingsFile
 echo Removing dashboard user
 cd $HOME/helidon-kubernetes/base-kubernetes
 kubectl delete -f dashboard-user.yaml
@@ -28,6 +32,11 @@ helm uninstall ingress-nginx  --namespace ingress-nginx
 
 echo Delete ingress namespace
 kubectl delete namespace ingress-nginx
+
+echo resetting ingress rules files
+# Just to be sure
+cd $HOME/helidon-kubernetes/base-kubernetes
+bash scripts/reset-ingress-config.sh  $ip skip
 
 echo resetting info and settings files
 echo Not set > $settingsFile
