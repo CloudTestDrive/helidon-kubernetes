@@ -26,6 +26,8 @@ echo deleting logging namespace - if present
 kubectl delete namespace logging --ignore-not-found=true
 echo deleting your existing deployments in $NAMESPACE
 kubectl delete namespace $NAMESPACE  --ignore-not-found=true
+echo reseting to default namespace
+kubectl config set-context --current --namespace=default
 echo Blanking saved namespace
 echo NAMESPACE= >> $settingsFile
 bash delete-certs.sh skip

@@ -25,4 +25,4 @@ bash $HOME/helidon-kubernetes/setup/kubernetes-labs/installBaseElements.sh skip
 
 source $HOME/clusterSettings.$currentContext
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $department $ip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $department $ip skip
