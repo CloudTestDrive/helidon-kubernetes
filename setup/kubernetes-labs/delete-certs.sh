@@ -1,5 +1,4 @@
 #!/bin/bash -f
-source $HOME/clusterSettings
 if [ $# -eq 0 ]
   then
     echo 'About to remove all tls*.crt and tls*.key files'
