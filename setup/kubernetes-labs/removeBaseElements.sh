@@ -24,6 +24,9 @@ echo Removing dashboard user
 cd $HOME/helidon-kubernetes/base-kubernetes
 kubectl delete -f dashboard-user.yaml
 
+echo Remove metrics server
+helm uninstall metrics-server --namespace kube-system
+
 echo Delete dashboard
 helm uninstall kubernetes-dashboard --namespace kube-system 
 
