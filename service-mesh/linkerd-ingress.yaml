@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
@@ -16,14 +16,19 @@ metadata:
 spec:
   tls:
   - hosts: 
-    # <External IP> must be replaced with the IP address of the ingress controller
-    - linkerd.<External IP>.nip.io
+    # ${EXTERNAL_IP} must be replaced with the IP address of the ingress controller
+    - linkerd.${EXTERNAL_IP}.nip.io
     secretName: tls-linkerd
   rules:
-    # <External IP> must be replaced with the IP address of the ingress controller
-  - host: linkerd.<External IP>.nip.io
+    # ${EXTERNAL_IP} must be replaced with the IP address of the ingress controller
+  - host: linkerd.${EXTERNAL_IP}.nip.io
     http:
       paths:
-      - backend:
-          serviceName: web
-          servicePort: 8084
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 8084
+              
