@@ -1,6 +1,9 @@
 #!/bin/bash -f
-for ingressfile in $HOME/helidon-kubernetes/base-kubernetes/ingress*Rules.yaml 
+ingressdir=$1
+oldtext=$2
+newtext=$3
+for ingressfile in $ingressdir/ingress*Rules.yaml 
 do
    echo Updating $ingressfile 
-   bash $HOME/helidon-kubernetes/base-kubernetes/scripts/update-file.sh $ingressfile $1 $2
+   bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/update-file.sh $ingressfile $oldtext $newtext
 done

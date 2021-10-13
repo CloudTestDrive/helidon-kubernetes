@@ -69,6 +69,9 @@ echo saving External IP for later use
 echo ip=$ip >> $settingsFile
 
 # now we have the ingress we csan update the rules to fit it
-bash ./set-ingress-ip.sh $ip skip
+echo updating base ingress rules
+bash $HOME/helidon-kubernetes/base-kubernetes/set-ingress-ip.sh $ip skip
+echo updating service mesh ingress rules
+bash $HOME/helidon-kubernetes/service-mesh/set-ingress-ip.sh $ip skip
 
 	

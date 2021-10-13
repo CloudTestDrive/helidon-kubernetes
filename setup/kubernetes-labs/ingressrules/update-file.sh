@@ -1,8 +1,10 @@
 #!/bin/bash -f
-echo Updating $1 replacing $2 with $3 
 updatefile=$1
+oldtext=$2
+newtext=$3
+echo Updating $updatefile replacing $oldtext with $newtext 
 temp="$updatefile".tmp
-#echo command is "s/store.$2.nip.io/store.$3.nip.io/"
-cat $updatefile | sed -e "s/store.$2.nip.io/store.$3.nip.io/" > $temp
+#echo command is "s/store.$oldtext.nip.io/store.$newtext.nip.io/"
+cat $updatefile | sed -e "s/store.$oldtext.nip.io/store.$newtext.nip.io/" > $temp
 rm $updatefile
 mv $temp $updatefile
