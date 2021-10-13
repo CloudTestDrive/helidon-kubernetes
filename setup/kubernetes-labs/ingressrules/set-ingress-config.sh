@@ -17,6 +17,6 @@ if [ $# -eq 1 ]
   else
     echo "Skipping ingress rule setup confirmation"
 fi
-externip=$1
-echo Updating ingress rules - setting $externip as the external IP address
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes $externip
+
+echo Updating ingress rules - setting $1 as the external IP address
+bash $HOME/helidon-kubernetes/base-kubernetes/scripts/update-ingress.sh  '${EXTERNAL_IP}' $1

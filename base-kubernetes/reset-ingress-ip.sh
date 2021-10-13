@@ -6,7 +6,7 @@ if [ $# -eq 0 ]
 fi
 if [ $# -eq 1 ]
   then
-    echo Updating the ingress config to set $1 as the External IP address.
+    echo Updating the ingress config to reset $1 as the External IP address.
     read -p "Proceed ? " -n 1 -r
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -18,5 +18,5 @@ if [ $# -eq 1 ]
     echo "Skipping ingress rule setup confirmation"
 fi
 externip=$1
-echo Updating ingress rules - setting $externip as the external IP address
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes $externip
+echo Updating ingress rules - resetting $externip as the external IP address
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes $externip
