@@ -30,8 +30,8 @@ if [ -z $linkerdLoc ]
 fi
 
 echo Checking for linkerd-viz namespace
-linkerdViz=`kubectl get namespace linkerd-viz | grep  NotFound | wc -l` 
-if [ $linkerdViz -eq 1 ] 
+linkerdViz=`kubectl get namespace linkerd-viz --ignore-not-found=true | grep  linkerd-viz | wc -l` 
+if [ $linkerdViz -eq 0 ] 
   then
      echo linkerd-viz namespace not found
   else
@@ -42,8 +42,8 @@ if [ $linkerdViz -eq 1 ]
 fi
 
 echo Checking for linkerd namespace
-linkerd=`kubectl get namespace linkerd | grep  NotFound | wc -l` 
-if [ $linkerdViz -eq 1 ]
+linkerd=`kubectl get namespace linkerd   --ignore-not-found=true| grep  linkerd | wc -l` 
+if [ $linkerdViz -eq 0 ]
   then
      echo linkerd namespace not found, finished linkerd removal script
      exit 0 
