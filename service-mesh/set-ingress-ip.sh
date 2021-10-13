@@ -19,4 +19,4 @@ if [ $# -eq 1 ]
 fi
 externip=$1
 echo Updating service mesh ingress rules - setting $externip as the external IP address
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $externip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $externip skip
