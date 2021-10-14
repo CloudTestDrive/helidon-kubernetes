@@ -4,6 +4,7 @@ if [ $# -eq 0 ]
     echo you must supply your namespace
     exit 1
 fi
+NAMESPACE=$1
 if [ $# -eq 1 ]
   then
     echo About to try to remove linkerd from namespace $NAMESPACE the ingress namespace and the cluster
@@ -20,7 +21,7 @@ if [ $# -eq 1 ]
 fi
 
 echo Checking for linkerd executable
-echo linkerdLoc=`which linkerd | grep "no linkerd in"`
+linkerdLoc=`which linkerd | grep "no linkerd in"`
 if [ -z $linkerdLoc ] 
   then
      echo Located linked command, continuing
