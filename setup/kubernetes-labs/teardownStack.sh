@@ -16,10 +16,8 @@ if [ $# -eq 1 ]
   else
     echo "Skipping confirmation of stack teardown,  About to remove existing stack in $NAMESPACE cluster settings file $settingsFile Kuberetes context is $currentContext"
 fi
-echo deleting linkerd-viz namespace - if present
-kubectl delete namespace linkerd-viz --ignore-not-found=true
-echo deleting linkerd namespace - if present
-kubectl delete namespace linkerd --ignore-not-found=true
+echo Attempting to run linker removal script
+bash linkerd/linkerd-uninstall.sh $NAMESPACE skip
 echo deleting monitoring namespace - if present
 kubectl delete namespace monitoring --ignore-not-found=true
 echo deleting logging namespace - if present

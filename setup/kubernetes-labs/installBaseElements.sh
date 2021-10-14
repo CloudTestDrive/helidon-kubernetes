@@ -40,6 +40,8 @@ echo 'Ingress controller external IP is ' $ip
 echo External IP >> $infoFile
 echo $ip >> $infoFile
 echo >> $infoFile
+echo "export EXTERNAL_IP=$ip" >>$infoFile
+echo >> $infoFile
 echo installing dashboard using helm
 helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --set ingress.enabled=true --set ingress.hosts="{dashboard.kube-system.$ip.nip.io}" --version $dashboardHelmChartVersion
 echo Helm for dashboard completed - it may take a while for the dashboard to be running
@@ -69,6 +71,9 @@ echo saving External IP for later use
 echo ip=$ip >> $settingsFile
 
 # now we have the ingress we csan update the rules to fit it
-bash ./set-ingress-ip.sh $ip skip
+echo updating base ingress rules
+bash $HOME/helidon-kubernetes/base-kubernetes/set-ingress-ip.sh $ip skip
+echo updating service mesh ingress rules
+bash $HOME/helidon-kubernetes/service-mesh/set-ingress-ip.sh $ip skip
 
 	
