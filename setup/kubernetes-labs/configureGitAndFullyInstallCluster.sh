@@ -43,13 +43,25 @@ if [ $contextMatch -eq 0 ]
     echo Context $contextname found
 fi
 
+echo Configuring base location variables
+export LAB_LOCATION=$HOME/helidon-kubernetes
+export LAB_SETUP_LOCATION=$LAB_LOCATION/setup
+export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
+echo Configuring helm
+bash $KUBERNETES_SETUP_LOCATION/setupHelm.sh
+
 startContext=`bash get-current-context.sh`
 echo Saving current context of $startContext and switching to $contextname
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/switch-context.sh $contextname skip
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/configure-downloaded-git-repo.sh $department skip
+bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $contextname skip
+bash $KUBERNETES_SETUP_LOCATION/configure-downloaded-git-repo.sh $department skip
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/fullyInstallCluster.sh $department skip
+bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $department skip
+
+
+echo Creating test data
+source $HOME/clusterSettings.$contextname
+bash $LAB_LOCATION/create-test-date.sh $ip
 
 echo returning to previous context of $startContext
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/switch-context.sh $startContext skip
+bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $startContext skip
