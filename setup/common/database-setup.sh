@@ -41,7 +41,7 @@ echo Creating database
 DBNAME="$USER_INITIALS"db
 
 #allow for re-using an existing database
-if [ -z ATPDB_OCID ]
+if [ -z $ATPDB_OCID ]
   then
   # No existing ATPDB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo Checking for database $DBNAME in compartment $COMPARTMENT_NAME
@@ -65,30 +65,32 @@ if [ -z ATPDB_OCID ]
      fi
   fi
 
-  # save the ADB ID away
-  echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
 
   echo Downloading DB Wallet file
 
   if [ -f $HOME/Wallet.zip ]
   then
     echo "There is already a downloaded Wallet file in $HOME/Wallet.zip"
-    echo "Do you want to remove it and download the one for $DBNAME ?"
+    echo "Do you want to save it to $HOME/Wallet-orig.zip and download the one for $DBNAME ?"
     if [[ ! $CONFIRM =~ ^[Yy]$ ]]
    then
        echo removed old Wallet.zip file
-       rm $HOME/Wallet.zip
-       oci db autonomous-database generate-wallet --file Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+       mv $HOME/Wallet.zip $HOME/Wallet-orig.zip
+       oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
        echo Downloaded Wallet.zip file
    else
-       echo "OK, going to reuse existing Wallet"
+       echo "Existing wallet won't match this database, can't setup the labs user"
+       echo "save or remove $HOME/Wallet.zip and re-run this script"
    fi
   else
     echo "About to download Database wallet to $HOME/Wallet.zip"
-    oci db autonomous-database generate-wallet --file Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+    oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
     echo Downloaded Wallet.zip file
   fi
 
+  # save the ADB ID away
+  echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
+  
   echo Preparing temporary database connection details
 
   TMPWALLET=`pwd`/tmpwallet
