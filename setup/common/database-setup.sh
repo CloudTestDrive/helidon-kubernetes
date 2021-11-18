@@ -88,8 +88,6 @@ if [ -z $ATPDB_OCID ]
     echo Downloaded Wallet.zip file
   fi
 
-  # save the ADB ID away
-  echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
   
   echo Preparing temporary database connection details
 
@@ -117,6 +115,9 @@ if [ -z $ATPDB_OCID ]
   echo Deleting temporary database connection info
 
   rm -rf $TMPWALLET
+  
+  # save the ADB ID away
+  echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
 else
   # We'de been given an ATB OCID, let's check if it's there, if so assume it's been configured already
   DBNAME=`oci db autonomous-database get --autonomous-database-id $ATPDB_OCID | jq -j '.data."display-name"'`
