@@ -74,17 +74,18 @@ then
 
   COMPARTMENT_OCID=`oci iam compartment list --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID | jq -j '.data[0].id'`
   # does it already exist
-  if [ -z "$COMPARTMENT_OCID" ]
+  if [ -z $COMPARTMENT_OCID ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
-    if [ -z "$COMPARTMENT_OCID" ]
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" | jq -j '.data.id'`
+    if [ -z $COMPARTMENT_OCID ]
     then
       echo "The compartment has not been created for some reason, cannot continue"
       exit 3
     fi
     echo "Created compartment $COMPARTMENT_NAME in $PARENT_NAME It's OCID is $COMPARTMENT_OCID"
     echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
+    echo "It may take a short while before new compartment has propogated and the web UI reflects this"
   else
     echo "Compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
     read CONFIRM
