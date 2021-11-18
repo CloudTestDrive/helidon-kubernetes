@@ -73,7 +73,7 @@ if [ -z $ATPDB_OCID ]
     echo "There is already a downloaded Wallet file in $HOME/Wallet.zip"
     echo "Do you want to save it to $HOME/Wallet-orig.zip and download the one for $DBNAME ?"
     read CONFIRM
-    if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+    if [[ ! $CONFIRM =~ ^[Nn]$ ]]
     then
       echo removed old Wallet.zip file
       mv $HOME/Wallet.zip $HOME/Wallet-orig.zip
