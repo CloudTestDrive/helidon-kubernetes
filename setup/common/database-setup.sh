@@ -93,14 +93,16 @@ if [ -z $ATPDB_OCID ]
   
   echo Preparing temporary database connection details
 
+  echo Getting wallet contents for temporaty processing
   TMPWALLET=`pwd`/tmpwallet
   mkdir -p $TMPWALLET
   cp $HOME/Wallet.zip $TMPWALLET
   cd $TMPWALLET
   unzip Wallet.zip
 
+  echo updating temporary sqlnet.ora
   SQLNET=sqlnet.ora
-  cat $SQLNET | sed -e "s:\?/network/admin:$HOME/tmpwallet:" > tmp-$SQLNET
+  cat $SQLNET | sed -e "s:\?/network/admin:$TMPWALLET:" > tmp-$SQLNET
   mv $SQLNET orig-$SQLNET
   mv tmp-$SQLNET $SQLNET
 
