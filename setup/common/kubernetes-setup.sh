@@ -2,9 +2,6 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-
-COMPARTMENT_NAME=CTDOKE
-
 if [ -f $SETTINGS ]
   then
     echo Loading existing settings information
@@ -25,6 +22,18 @@ if [ -z $COMPARTMENT_OCID ]
 then
   echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
   exit 2
+fi
+
+
+# We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
+COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
+
+if [ -z $COMPARTMENT_NAME ]
+then
+  echo The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS
+  exit 99
+else
+  echo Operating in compartment $COMPARTMENT_NAME
 fi
 
 if [ -z OKE_OCID ]

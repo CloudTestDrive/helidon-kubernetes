@@ -22,7 +22,7 @@ then
   then
     # no, default to creating in the root compartment
     PARENT_COMPARTMENT_OCID=$OCI_TENANCY
-    echo PARENT_COMPARTMENT_OCID=$PARENT_COMPARTMENT_OCID >> $SETTINGS
+    echo Parent is tenancy root
   fi
 
   TENANCY_NAME=`oci iam tenancy get --tenancy-id=$OCI_TENANCY | jq -j '.data.name'`
@@ -46,7 +46,7 @@ then
 
   echo "If you want to use somewhere different from $PARENT_NAME as the parent of the compartment you are about to create (or re-use) then enter n, if you want to use $PARENT_NAME for your parent then enter y"
   read -p "Use the $PARENT_NAME (y/n) ? " REPLY
-  if [[ ! $REPLY =~ ^[Nn]$ ]]
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo You need to edit the $SETTINGS file and add a line of the form 
     echo 'PARENT_COMPARTMENT_OCID=<OCID>'
@@ -57,7 +57,7 @@ then
 
   echo "We are going to create or if it already exists reuse use a compartment called $COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the compartment name from $COMPARTMENT_NAME - this is not recommended and you will need to remember to use a different name in the lab." 
   read -p " Do you want to change the compartment name from $COMPARTMENT_NAME (y/n) ? " REPLY
-  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     echo "OK, this isn't the best of ideas, please enter the new name for your compartment, it must be a single word"
     read COMPARTMENT_NAME
@@ -77,14 +77,13 @@ then
   if [ -z "$COMPARTMENT_OCID" ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
     if [ -z "$COMPARTMENT_OCID" ]
     then
       echo "The compartment has not been created for some reason, cannot continue"
       exit 3
     fi
     echo "Created compartment $COMPARTMENT_NAME in $PARENT_NAME It's OCID is $COMPARTMENT_OCID"
-    echo COMPARTMENT_NAME=$COMPARTMENT_NAME >> $SETTINGS
     echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
   else
     echo "Compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
@@ -94,13 +93,12 @@ then
       echo "OK, This script is about to exit, re-run it entering a compartment name different from $COMPARTMENT_NAME"
       exit 1
     else
-      echo "OK, going to reuse compartment $COMPARTMENT_NAME in $PARENT_NAME"          
-      echo COMPARTMENT_NAME=$COMPARTMENT_NAME >> $SETTINGS
+      echo "OK, going to reuse compartment $COMPARTMENT_NAME in $PARENT_NAME" 
       echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
     fi
   fi
 else
-  # We'de been given an ATB OCID, let's check if it's there, if so assume it's been configured already
+  # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
   COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
   if [ -z $COMPARTMENT_NAME ]
   then
