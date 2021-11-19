@@ -1,17 +1,12 @@
 #!/bin/bash -f
 
-if [ $# -eq 0 ]
-  then
-    echo 'No arguments supplied, you must provide the directory to install step in e.g. $HOME/keys (recommended as this is used by other scripts) if the directory exists and you want it replaced then add a second argument of replace'
-    exit -1 
-fi
 
-step_dir=$1
+step_dir=$HOME/keys
 
 remove=false
-if [ $# -gt 1 ]
+if [ $# -gt 0 ]
   then
-    if [ $2 = replace ]
+    if [ $1 = replace ]
       then
         remove=true
     fi
