@@ -49,6 +49,21 @@ echo Creating database
 
 DBNAME="$USER_INITIALS"db
 
+read "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, please enter the name of the database to create / re-use, it must be a single word, e.g. TGDemo"
+    read DBNAME
+    if [ -z "$DBNAME" ]
+    then
+      echo "You do actually need to enter the new name for the database, exiting"
+      exit 1
+    fi
+  else     
+    echo "OK, going to use $DBNAME as the database name"
+  fi
+
 #allow for re-using an existing database
 if [ -z $ATPDB_OCID ]
   then
