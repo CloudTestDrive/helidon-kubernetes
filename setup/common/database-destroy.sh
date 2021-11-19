@@ -19,7 +19,7 @@ fi
 if [ $DATABASE_REUSED = true ]
 then
   echo You have been using a database that was not created by these scripts, you will need to destroy the cluster by hand
-  then remove DATABASE_REUSE and DATABASE_OCID from $SETTINGS 
+  echo then remove DATABASE_REUSE and DATABASE_OCID from $SETTINGS 
   exit 2
 fi
 

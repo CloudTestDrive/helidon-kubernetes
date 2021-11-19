@@ -18,8 +18,8 @@ fi
 
 if [ $COMPARTMENT_REUSED = true ]
 then
-  echo You have been using a database that was not created by these scripts, you will need to destroy the cluster by hand
-  then remove DATABASE_REUSE and DATABASE_OCID from $SETTINGS 
+  echo You have been using a comparment that was not created by these scripts, you will need to destroy the cluster by hand
+  echo remove COMPARTMENT_REUSED and COMPARTMENT_OCID from $SETTINGS 
   exit 2
 fi
 
