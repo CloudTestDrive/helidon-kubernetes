@@ -4,6 +4,8 @@ home_region="OCI_REGION"
 region="OCI_REGION"
 cluster_name="CLUSTER_NAME"
 
+vcn_name="oke-vcn-CLUSTER_NAME"
+
 create_bastion_host=false
 create_bastion_service=false
 create_operator=false

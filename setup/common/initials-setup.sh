@@ -14,4 +14,4 @@ else
     echo "OK, using $USER_INITIALS as your initials"
 fi
 
-echo export USER_INITIALS=$USER_INITIALS >> $SETTINGS
+echo USER_INITIALS=$USER_INITIALS >> $SETTINGS

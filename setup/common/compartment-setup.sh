@@ -13,6 +13,16 @@ if [ -f $SETTINGS ]
     echo No existing settings, using defaults
 fi
 
+
+if [ -z $COMPARTMENT_REUSED ]
+then
+  echo No reuse information for compartment
+else
+  echo This script has already configured compartment details, exiting
+  exit 3
+fi
+
+
 # do we have an existing compartment to use ?
 if [ -z $COMPARTMENT_OCID ]
 then
@@ -85,6 +95,7 @@ then
     fi
     echo "Created compartment $COMPARTMENT_NAME in $PARENT_NAME It's OCID is $COMPARTMENT_OCID"
     echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
+    echo COMPARTMENT_REUSED=false >> $$SETTINGS
     echo "It may take a short while before new compartment has propogated and the web UI reflects this"
   else
     echo "Compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
@@ -96,6 +107,7 @@ then
     else
       echo "OK, going to reuse compartment $COMPARTMENT_NAME in $PARENT_NAME" 
       echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
+      echo COMPARTMENT_REUSED=true >> $$SETTINGS
     fi
   fi
 else
@@ -108,5 +120,7 @@ else
     exit 5
   else
     echo Located compartment named $COMPARTMENT_NAME with pre-specified OCID of $COMPARTMENT_OCID, will use this compartment
+    # Flag this as reused and refuse to destroy it
+    echo COMPARTMENT_REUSED=true >> $SETTINGS
   fi
 fi

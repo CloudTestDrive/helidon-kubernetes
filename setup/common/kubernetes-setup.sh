@@ -13,7 +13,7 @@ fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your initials have not been set, you need to run the get-initials.sh script before you can run thie script
+  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script
   exit 1
 fi
 
@@ -24,6 +24,13 @@ then
   exit 2
 fi
 
+if [ -z $OKE_REUSED ]
+then
+  echo No reuse information for OKE
+else
+  echo This script has already configured OKE details, exiting
+  exit 3
+fi
 
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
@@ -36,7 +43,7 @@ else
   echo Operating in compartment $COMPARTMENT_NAME
 fi
 
-if [ -z OKE_OCID ]
+if [ -z $OKE_OCID ]
 then
   CLUSTER_NAME="$USER_INITIALS"lab
   echo Checking for cluster $CLUSTER_NAME
@@ -66,14 +73,17 @@ then
     echo Initialising Terraform
     terraform init
     echo Planning terraform deployment
-    terraform plan
-    echo Applying terraform
-    terraform apply
+    terraform plan --out=$TF_DIR/terraform.plan
+    echo Applying terraform - this may take a while
+    terraform apply $TF_DIR/terraform.plan
     echo Retrieving cluster OCID from Terraform
-    terraform output | grep cluster_id
+    OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
+    echo OKE_OCID=$OKE_OCID >> $SETTINGS
+    echo OKE_REUSED=false >> $SETTINGS
   else
     echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME
     echo OKE_OCID=$OKE_OCID >> $SETTINGS
+    echo OKE_REUSED=true >> $SETTINGS
   fi
   echo Downloading the kube config file
   KUBECONF=$HOME/.kube/config
@@ -97,5 +107,7 @@ else
     echo You are assumed to have downloaded the $HOME/kube/config file either by hand or using this script
     echo You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script
     echo You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script
+    # Flag this as reused and refuse to destroy it
+    echo OKE_REUSED=true >> $SETTINGS
   fi
 fi
