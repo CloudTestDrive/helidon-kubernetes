@@ -66,8 +66,8 @@ then
   fi
 
   echo "We are going to create or if it already exists reuse use a compartment called $COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the compartment name from $COMPARTMENT_NAME - this is not recommended and you will need to remember to use a different name in the lab." 
-  read -p " Do you want to change the compartment name from $COMPARTMENT_NAME (y/n) ? " REPLY
-  if [[ ! $REPLY =~ ^[Nn]$ ]]
+  read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "OK, this isn't the best of ideas, please enter the new name for your compartment, it must be a single word"
     read COMPARTMENT_NAME
