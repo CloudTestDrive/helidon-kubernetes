@@ -95,7 +95,7 @@ then
     fi
     echo "Created compartment $COMPARTMENT_NAME in $PARENT_NAME It's OCID is $COMPARTMENT_OCID"
     echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
-    echo COMPARTMENT_REUSED=false >> $$SETTINGS
+    echo COMPARTMENT_REUSED=false >> $SETTINGS
     echo "It may take a short while before new compartment has propogated and the web UI reflects this"
   else
     echo "Compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
@@ -107,7 +107,7 @@ then
     else
       echo "OK, going to reuse compartment $COMPARTMENT_NAME in $PARENT_NAME" 
       echo COMPARTMENT_OCID=$COMPARTMENT_OCID >> $SETTINGS
-      echo COMPARTMENT_REUSED=true >> $$SETTINGS
+      echo COMPARTMENT_REUSED=true >> $SETTINGS
     fi
   fi
 else
