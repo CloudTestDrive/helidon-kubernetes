@@ -95,24 +95,13 @@ if [ -z $ATPDB_OCID ]
   if [ -f $HOME/Wallet.zip ]
   then
     echo "There is already a downloaded Wallet file in $HOME/Wallet.zip"
-    echo "Do you want to save it to $HOME/Wallet-orig.zip and download the one for $DBNAME ?"
-    read CONFIRM
-    if [[ ! $CONFIRM =~ ^[Nn]$ ]]
-    then
-      echo removed old Wallet.zip file
-      mv $HOME/Wallet.zip $HOME/Wallet-orig.zip
-      oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
-      echo Downloaded Wallet.zip file
-    else
-      echo "Existing wallet won't match this database, can't setup the labs user"
-      echo "save or remove $HOME/Wallet.zip and re-run this script"
-      exit 80
-    fi
-  else
-    echo "About to download Database wallet to $HOME/Wallet.zip"
-    oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
-    echo Downloaded Wallet.zip file
+    echo Moving old $HOME/Wallet.zip file to $HOME/Wallet-orig.zip
+    mv $HOME/Wallet.zip $HOME/Wallet-orig.zip
   fi
+  echo "About to download Database wallet to $HOME/Wallet.zip"
+  oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+  echo Downloaded Wallet.zip file
+
 
   
   echo Preparing temporary database connection details
