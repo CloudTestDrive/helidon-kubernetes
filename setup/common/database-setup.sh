@@ -45,11 +45,9 @@ else
   echo Operating in compartment $COMPARTMENT_NAME
 fi
 
-echo Creating database
-
 DBNAME="$USER_INITIALS"db
 
-read "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
+read -p "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
