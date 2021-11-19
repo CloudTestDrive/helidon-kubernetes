@@ -35,4 +35,4 @@ echo Terminating database $DBNAME this may take a while
 oci db autonomous-database delete --autonomous-database-id $ATPDB_OCID
 
 bash ./delete-from-saved-settings.sh ATPDB_OCID
-bash ./delete-from-saved-settings.sh DATABSE_REUSED
+bash ./delete-from-saved-settings.sh DATABASE_REUSED
