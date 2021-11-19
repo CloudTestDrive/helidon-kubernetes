@@ -1,8 +1,8 @@
-compartment_id=COMPARTMENT_OCID
-tenancy_id=OCI_TENANCY
-home_region=OCI_REGION
-region=OCI_REGION
-cluster_name=CLUSTER_NAME
+compartment_id="COMPARTMENT_OCID"
+tenancy_id="OCI_TENANCY"
+home_region="OCI_REGION"
+region="OCI_REGION"
+cluster_name="CLUSTER_NAME"
 
 create_bastion_host=false
 create_bastion_service=false

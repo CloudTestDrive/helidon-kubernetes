@@ -38,12 +38,12 @@ fi
 
 if [ -z OKE_OCID ]
 then
-  OKENAME="$USER_INITIALS"lab
-  echo Checking for cluster $OKENAME
-  OKE_OCID=`oci ce cluster list --name $OKENAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0].id'`
+  CLUSTER_NAME="$USER_INITIALS"lab
+  echo Checking for cluster $CLUSTER_NAME
+  OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
-    echo Creating cluster
+    echo Creating cluster $CLUSTER_NAME
     echo Downloading terraform
     git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
     TF_DIR=`pwd`/terraform-oci-oke
@@ -58,21 +58,21 @@ then
     echo Update terraform.tfvars to set compartment OCID
     bash ../update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
     echo Update terraform.tfvars to set tenancy OCID
-    bash ../update-file.sh $TFV TENANCY_OCID $OCI_TENANCY
+    bash ../update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
     echo Update terraform.tfvars to set OCI Region
     bash ../update-file.sh $TFV OCI_REGION $OCI_REGION
     echo Update terraform.tfvars to set Cluster name
-    bash ../update-file.sh $TFV CLUSTER_NAME $OKE_NAME
+    bash ../update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
     echo Initialising Terraform
-    tf init
+    terraform init
     echo Planning terraform deployment
-    tf plan
+    terraform plan
     echo Applying terraform
-    tf apply
+    terraform apply
     echo Retrieving cluster OCID from Terraform
-    tf output | grep cluster_id
+    terraform output | grep cluster_id
   else
-    echo Located existing cluster named $OKENAME in $COMPARTMENT_NAME
+    echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME
     echo OKE_OCID=$OKE_OCID >> $SETTINGS
   fi
   echo Downloading the kube config file
@@ -86,14 +86,14 @@ then
   kubectl config rename-context $CURRENT_CONTEXT one
 
 else
-  OKENAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
-  if [ -z $OKENAME ] 
+  CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
+  if [ -z $CLUSTER_NAME ] 
   then
     echo Cannot locate a cluster with the specified OCID of $OKE_OCID
     echo Please check that the value of OKE_OCID in $SETTINGS is correct if nor remove or replace it
     exit 5
   else
-    echo Located cluster named $OKENAME using OCID $OKE_OCID
+    echo Located cluster named $CLUSTER_NAME using OCID $OKE_OCID
     echo You are assumed to have downloaded the $HOME/kube/config file either by hand or using this script
     echo You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script
     echo You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script
