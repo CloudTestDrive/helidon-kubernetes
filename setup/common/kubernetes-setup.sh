@@ -43,8 +43,34 @@ then
   OKE_OCID=`oci ce cluster list --name $OKENAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
-    echo NEED TO DO THE CLUSTER CREATION HERE
-    echo FOR NOW PLEASE CREATE A CLUSTER NAMES $OKENAME BY HAND IN COMPARTMENT $COMPARTMENT_NAME
+    echo Creating cluster
+    echo Downloading terraform
+    git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
+    TF_DIR=`pwd`/terraform-oci-oke
+    TFP=$TF_DIR/provider.tf
+    TFV=$TF_DIR/terraform.tfvars
+    echo Configuring terraform
+    cp oke-provider.tf $TFP
+    cp oke-terraform.tfvars $TFV
+    cd $TF_DIR
+    echo Update provider.tf set OCI_REGION to $OCI_REGION
+    bash ../update-file.sh $TFP OCI_REGION $OCI_REGION
+    echo Update terraform.tfvars to set compartment OCID
+    bash ../update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
+    echo Update terraform.tfvars to set tenancy OCID
+    bash ../update-file.sh $TFV TENANCY_OCID $OCI_TENANCY
+    echo Update terraform.tfvars to set OCI Region
+    bash ../update-file.sh $TFV OCI_REGION $OCI_REGION
+    echo Update terraform.tfvars to set Cluster name
+    bash ../update-file.sh $TFV CLUSTER_NAME $OKE_NAME
+    echo Initialising Terraform
+    tf init
+    echo Planning terraform deployment
+    tf plan
+    echo Applying terraform
+    tf apply
+    echo Retrieving cluster OCID from Terraform
+    tf output | grep cluster_id
   else
     echo Located existing cluster named $OKENAME in $COMPARTMENT_NAME
     echo OKE_OCID=$OKE_OCID >> $SETTINGS
