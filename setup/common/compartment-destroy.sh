@@ -31,7 +31,7 @@ fi
 
 TENANCY_NAME=`oci iam tenancy get --tenancy-id=$OCI_TENANCY | jq -j '.data.name'`
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name' | sed -e 's/"//g'`
-PARENT_COMPARTMENT_OCID=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.compartment_id' | sed -e 's/"//g'`
+PARENT_COMPARTMENT_OCID=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data."compartment-id"' | sed -e 's/"//g'`
 PARENT_COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $PARENT_COMPARTMENT_OCID | jq -j '.data.name' | sed -e 's/"//g'`
 
 if [ $PARENT_COMPARTMENT_NAME = $TENANCY_NAME ]
