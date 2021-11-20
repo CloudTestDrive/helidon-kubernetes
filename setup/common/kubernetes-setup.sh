@@ -48,7 +48,7 @@ else
 fi
 
 
-check for trying to re-use the context name
+#check for trying to re-use the context name
 CURRENT_CONTEXT=`kubectl config current-context`
 
 if [$CURRENT_CONTEXT = $context_name ]
