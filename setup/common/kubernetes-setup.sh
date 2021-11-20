@@ -47,6 +47,25 @@ else
   exit 3
 fi
 
+
+check for trying to re-use the context name
+CURRENT_CONTEXT=`kubectl config current-context`
+
+if [$CURRENT_CONTEXT = $context_name ]
+then
+  echo A kubernetes context called $context_name already exists this script cannot replace it.
+  if [ $# -gt 0 ]
+  then
+    echo Please re-run this script providing a different name than $context_name as the first argument
+  else
+    echo Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $context_name
+  fi
+  exit 40
+else
+  echo Using default context name of $context_name
+fi
+fi
+
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
 

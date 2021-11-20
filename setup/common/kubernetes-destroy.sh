@@ -71,6 +71,7 @@ then
     rm -rf $TF_DIR
     bash ./delete-from-saved-settings.sh OKE_OCID_$context_name
     bash ./delete-from-saved-settings.sh OKE_REUSED_$context_name
+    echo Removing context $context_name from the local kubernetes configuration
   else
     echo no state file, nothing to destroy
     echo cannot proceed
