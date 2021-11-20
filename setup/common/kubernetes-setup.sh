@@ -110,7 +110,7 @@ then
     echo Downloading terraform
     git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
     TF_DIR_BASE=`pwd`/terraform-oci-oke
-    TF_DIR=$TF_DIR_BASE-$context
+    TF_DIR=$TF_DIR_BASE-$context_name
 	mv $TF_DIR_BASE $TF_DIR
     TFP=$TF_DIR/provider.tf
     TFV=$TF_DIR/terraform.tfvars
