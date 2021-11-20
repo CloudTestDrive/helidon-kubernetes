@@ -72,6 +72,8 @@ then
     bash ./delete-from-saved-settings.sh OKE_OCID_$context_name
     bash ./delete-from-saved-settings.sh OKE_REUSED_$context_name
     echo Removing context $context_name from the local kubernetes configuration
+    kubectl config delete-context $context_name
+    echo The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name
   else
     echo no state file, nothing to destroy
     echo cannot proceed
