@@ -13,7 +13,7 @@ fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script
+  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run this script
   exit 1
 fi
 
@@ -43,9 +43,25 @@ else
   echo Operating in compartment $COMPARTMENT_NAME
 fi
 
+
+CLUSTER_NAME="$USER_INITIALS"lab
+read -p "Do you want to use $CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, please enter the name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. TGDemo"
+  read CLUSTER_NAME
+  if [ -z "$CLUSTER_NAME" ]
+  then
+    echo "You do actually need to enter the new name for the Kubernetes cluster, exiting"
+    exit 1
+  fi
+else     
+  echo "OK, going to use $CLUSTER_NAME as the Kubernetes cluster name"
+fi
+
 if [ -z $OKE_OCID ]
 then
-  CLUSTER_NAME="$USER_INITIALS"lab
   echo Checking for cluster $CLUSTER_NAME
   OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
