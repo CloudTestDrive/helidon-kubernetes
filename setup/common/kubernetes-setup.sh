@@ -1,5 +1,15 @@
 #!/bin/bash -f
 
+context_name=one
+
+if [ $# -gt 0 ]
+then
+  context_name=$1
+  echo Operating on context name $context_name
+else
+  echo Using default context name of $context_name
+fi
+
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -24,11 +34,16 @@ then
   exit 2
 fi
 
+#Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
+# Create a name using the variable
+OKE_REUSED_NAME=OKE_REUSED_$context_name
+# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
+OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo No reuse information for OKE
+  echo No reuse information for OKE context $context_name
 else
-  echo This script has already configured OKE details, exiting
+  echo This script has already configured OKE details for context $context_name, exiting
   exit 3
 fi
 
@@ -60,6 +75,12 @@ else
   echo "OK, going to use $CLUSTER_NAME as the Kubernetes cluster name"
 fi
 
+# Do the variable redirection trick again
+# Create a name using the variable
+OKE_OCID_NAME=OKE_OCID_$context_name
+# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
+OKE_OCID="${!OKE_OCID_NAME}"
+
 if [ -z $OKE_OCID ]
 then
   echo Checking for cluster $CLUSTER_NAME
@@ -69,7 +90,9 @@ then
     echo Creating cluster $CLUSTER_NAME
     echo Downloading terraform
     git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
-    TF_DIR=`pwd`/terraform-oci-oke
+    TF_DIR_BASE=`pwd`/terraform-oci-oke
+    TF_DIR=$TF_DIR_BASE-$context
+	mv $TF_DIR_BASE $TF_DIR
     TFP=$TF_DIR/provider.tf
     TFV=$TF_DIR/terraform.tfvars
     echo Configuring terraform
@@ -94,29 +117,29 @@ then
     terraform apply $TF_DIR/terraform.plan
     echo Retrieving cluster OCID from Terraform
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
-    echo OKE_OCID=$OKE_OCID >> $SETTINGS
-    echo OKE_REUSED=false >> $SETTINGS
+    echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
+    echo OKE_REUSED_$context_name=false >> $SETTINGS
   else
     echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME
-    echo OKE_OCID=$OKE_OCID >> $SETTINGS
-    echo OKE_REUSED=true >> $SETTINGS
+    echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
+    echo OKE_REUSED_$context_name=true >> $SETTINGS
   fi
   echo Downloading the kube config file
   KUBECONF=$HOME/.kube/config
   oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
   chmod 600 $KUBECONF
-  echo Renaming context
+  echo Renaming context to $context_name
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
   CURRENT_CONTEXT=`kubectl config current-context`
-  kubectl config rename-context $CURRENT_CONTEXT one
+  kubectl config rename-context $CURRENT_CONTEXT $context_name
 
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
   then
     echo Cannot locate a cluster with the specified OCID of $OKE_OCID
-    echo Please check that the value of OKE_OCID in $SETTINGS is correct if nor remove or replace it
+    echo Please check that the value of OKE_OCID_$context_name in $SETTINGS is correct if nor remove or replace it
     exit 5
   else
     echo Located cluster named $CLUSTER_NAME using OCID $OKE_OCID
@@ -124,6 +147,6 @@ else
     echo You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script
     echo You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script
     # Flag this as reused and refuse to destroy it
-    echo OKE_REUSED=true >> $SETTINGS
+    echo OKE_REUSED_$context_name=true >> $SETTINGS
   fi
 fi
