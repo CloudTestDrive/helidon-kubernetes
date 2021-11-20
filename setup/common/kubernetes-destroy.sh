@@ -39,7 +39,7 @@ TF_DIR=`pwd`/terraform-oci-oke-$context_name
 if [ $OKE_REUSED = true ]
 then
   echo You have been using a cluster that was not created by these scripts, as it may contain other resources this script cannot delete it, you will need to destroy the cluster by hand
-  echo and then remove OKE_REUSE_$context_name and OKE_OCID_$context_name from $SETTINGS and delete $TF_DIR
+  echo and then remove the variables OKE_REUSE_$context_name and OKE_OCID_$context_name from $SETTINGS and delete $TF_DIR
   exit 2
 fi
 
