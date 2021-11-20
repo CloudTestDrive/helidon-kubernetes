@@ -51,7 +51,7 @@ fi
 #check for trying to re-use the context name
 CURRENT_CONTEXT=`kubectl config current-context`
 
-if [$CURRENT_CONTEXT = $context_name ]
+if [ $CURRENT_CONTEXT = $context_name ]
 then
   echo A kubernetes context called $context_name already exists this script cannot replace it.
   if [ $# -gt 0 ]
