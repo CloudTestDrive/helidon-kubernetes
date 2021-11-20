@@ -120,9 +120,18 @@ then
     echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
     echo OKE_REUSED_$context_name=false >> $SETTINGS
   else
-    echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME
-    echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
-    echo OKE_REUSED_$context_name=true >> $SETTINGS
+    echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status
+    OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0]."lifecycle-state"'`
+    if [ $OKE_STATUS = ACTIVE ]
+    then
+      echo Cluster is Active, proceeding
+      echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
+      echo OKE_REUSED_$context_name=true >> $SETTINGS
+    else
+      echo Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used.
+      echo Please re-run this script and use a different name cluster name
+      exit 20 
+    fi
   fi
   echo Downloading the kube config file
   KUBECONF=$HOME/.kube/config
