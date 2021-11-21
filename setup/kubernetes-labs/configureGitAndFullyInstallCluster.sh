@@ -33,9 +33,9 @@ if [ $# -eq 1 ]
     fi
 fi
 
-contextMatch=`kubectl config get-contexts | awk '{print $2}'  | grep $contextname | wc -l`
+contextMatch=`kubectl config get-contexts --output=name | grep -w $contextname`
 
-if [ $contextMatch -eq 0 ]
+if [ -z $contextMatch ]
   then
     echo context $contextname not found, unable to continue
     exit 2
