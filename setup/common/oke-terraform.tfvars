@@ -10,7 +10,6 @@ create_bastion_host=false
 create_bastion_service=false
 create_operator=false
 control_plane_type="public"
-control_plane_allowed_cidrs=["0.0.0.0/0"]
 
 label_prefix="oke"
 
