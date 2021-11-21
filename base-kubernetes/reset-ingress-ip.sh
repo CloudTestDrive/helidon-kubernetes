@@ -1,12 +1,7 @@
 #!/bin/bash
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the External IP address of the ingress controler service"
-    exit -1 
-fi
-if [ $# -eq 1 ]
-  then
-    echo Updating the ingress config to reset $1 as the External IP address.
+    echo Updating the ingress config to remove templated files.
     read -p "Proceed ? " -n 1 -r
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -15,8 +10,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping ingress rule setup confirmation"
+    echo "Skipping ingress rule reset confirmation"
 fi
-externip=$1
-echo Updating ingress rules - resetting $externip as the external IP address
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes $externip skip
+echo Updating ingress rules - removing templated files
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes skip

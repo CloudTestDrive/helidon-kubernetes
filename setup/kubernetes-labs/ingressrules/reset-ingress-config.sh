@@ -1,12 +1,15 @@
 #!/bin/bash
-if [ $# -lt 2 ]
+if [ $# -eq 0 ]
   then
-    echo "Missing arguments supplied, you must provide the directory to process and External IP address of the ingress controler service"
+    echo "Missing arguments supplied, you must provide the directory to process"
     exit -1 
 fi
-if [ $# -eq 2 ]
+
+
+currentcontext=`kubectl config current-context`
+if [ $# -eq 1 ]
   then
-    echo Updating the ingress rules yaml in $1 to remove $2 as the External IP address.
+    echo Removing the ingress rules yaml for context $currentcontext in $ingressdir
     read -p "Proceed ? " -n 1 -r
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -17,7 +20,11 @@ if [ $# -eq 2 ]
   else
     echo "Skipping ingress rule remove confirmation"
 fi
-ingressdir=$1
-oldip=$2
-echo Updating ingress rules - updating the ingress rules yaml in $1 removing $2 as the external IP address
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/update-ingress.sh  $ingressdir $oldip '${EXTERNAL_IP}'
+
+echo Removing the ingress rules yaml for context $currentcontext in $ingressdir
+for ingressrulesfile in $ingressdir/ingress*Rules-$currentcontext.yaml 
+do
+  echo Removing ingress rules yaml $ingressrulesfile
+  rm $ingressrulesfile
+done
+#bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/update-ingress.sh  $ingressdir $oldip '${EXTERNAL_IP}'
