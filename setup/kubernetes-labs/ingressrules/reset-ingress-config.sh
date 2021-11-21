@@ -5,7 +5,7 @@ if [ $# -eq 0 ]
     exit -1 
 fi
 
-
+ingressdir=$1
 currentcontext=`kubectl config current-context`
 if [ $# -eq 1 ]
   then
