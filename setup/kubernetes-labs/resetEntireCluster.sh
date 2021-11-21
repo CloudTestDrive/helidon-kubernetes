@@ -8,9 +8,9 @@ fi
 
 context=$1
 
-contextMatch=`kubectl config get-contexts | awk '{print $2}'  | grep $context | wc -l`
+contextMatch=`kubectl config get-contexts --output=name  | grep -w $context `
 
-if [ $contextMatch -eq 0 ]
+if [ -z $contextMatch ]
   then
     echo context $context not found in Kubernetes, unable to continue
     exit 2
