@@ -1,6 +1,6 @@
 compartment_id="COMPARTMENT_OCID"
 tenancy_id="OCI_TENANCY"
-home_region="OCI_REGION"
+home_region="OCI_HOME_REGION"
 region="OCI_REGION"
 cluster_name="CLUSTER_NAME"
 

@@ -100,10 +100,14 @@ OKE_OCID_NAME=OKE_OCID_$context_name
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
 if [ -z $OKE_OCID ]
 then
-  echo Checking for cluster $CLUSTER_NAME
-  OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0].id'`
+  echo Checking for active cluster named $CLUSTER_NAME
+  OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
     echo Creating cluster $CLUSTER_NAME
@@ -120,6 +124,8 @@ then
     cd $TF_DIR
     echo Update provider.tf set OCI_REGION to $OCI_REGION
     bash ../update-file.sh $TFP OCI_REGION $OCI_REGION
+    echo Update provider.tf set OCI_HOME_REGION to $OCI_HOME_REGION
+    bash ../update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars to set compartment OCID
     bash ../update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
     echo Update terraform.tfvars to set tenancy OCID
