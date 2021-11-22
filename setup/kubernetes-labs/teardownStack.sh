@@ -28,4 +28,5 @@ echo reseting to default namespace
 kubectl config set-context --current --namespace=default
 echo Blanking saved namespace
 echo NAMESPACE= >> $settingsFile
-bash delete-certs.sh skip
+echo Tidying up security certificates and keys specific to $ip
+bash delete-certs.sh $ip skip
