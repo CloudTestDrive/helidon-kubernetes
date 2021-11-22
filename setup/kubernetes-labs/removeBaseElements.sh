@@ -39,9 +39,9 @@ kubectl delete namespace ingress-nginx
 echo resetting ingress rules files
 # Just to be sure
 echo resetting base ingress rules
-bash $HOME/helidon-kubernetes/base-kubernetes/reset-ingress-ip.sh $ip skip
+bash $HOME/helidon-kubernetes/base-kubernetes/reset-ingress-ip.sh skip
 echo resetting service mesh ingress rules
-bash $HOME/helidon-kubernetes/service-mesh/reset-ingress-ip.sh $ip skip
+bash $HOME/helidon-kubernetes/service-mesh/reset-ingress-ip.sh skip
 
 echo resetting info and settings files
 echo Not set > $settingsFile
