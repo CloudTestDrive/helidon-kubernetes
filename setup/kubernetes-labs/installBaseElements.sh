@@ -67,6 +67,10 @@ echo curl cmd >> $infoFile
 echo curl -i -X GET -u jack:password -k https://store.$ip.nip.io/store/stocklevel >> $infoFile
 echo >> $infoFile
 
+echo status command  >> $infoFile
+echo curl -i -X GET -k https://store.$ip.nip.io/sf/status  >> $infoFile
+echo >> $infoFile
+
 echo saving External IP for later use
 echo ip=$ip >> $settingsFile
 
