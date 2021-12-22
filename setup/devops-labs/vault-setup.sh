@@ -106,7 +106,7 @@ echo Setting up for Vault master key
 echo Getting vault endpoint for vault OCID $VAULT_OCID
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
 VAULT_KEY_NAME="$USER_INITIALS"Key
-echo Looking for key $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID
+echo Checking for existing key named $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID
 VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -e ".data[] | select (.\"display-name\" == \"$VAULT_KEY_NAME\") | .id"`
 if [ -z $VAULT_KEY_OCID ]
 then
@@ -118,3 +118,5 @@ else
   echo VAULT_KEY_REUSE=true >> $SETTINGS
 fi
 echo VAULT_KEY_OCID=$VAULT_KEY_OCID >> $SETTINGS
+
+echo Vault master key created with OCID $VAULT_KEY_OCID
