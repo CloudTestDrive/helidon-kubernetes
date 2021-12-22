@@ -72,7 +72,7 @@ if [ -z $VAULT_OCID ]
   if [ -z "$VAULT_OCID" ]
   then
      echo "Vault named $VAULT_NAME doesn't exist, creating it, there may be a short delay"
-     VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT | jq -j '.data.id'`
+     VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT --wait-for-state ACTIVE | jq -j '.data.id'`
      echo "Vault being created using OCID $VAULT_OCID"
      echo VAULT_OCID=$VAULT_OCID >>$SETTINGS
      echo VAULT_REUSE=false >> $SETTINGS
