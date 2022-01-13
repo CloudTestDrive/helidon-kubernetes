@@ -117,7 +117,7 @@ else
   echo 'Creating a new auth token for you'
   AUTH_TOKEN_JSON=`oci iam auth-token create --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
-  AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
+  AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
   echo AUTH_TOKEN_REUSED=false >> $SETTINGS
   echo AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID >> $SETTINGS 
   
