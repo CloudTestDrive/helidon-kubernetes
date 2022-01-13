@@ -1,6 +1,7 @@
 #!/bin/bash -f
 export SETTINGS=$HOME/hk8sLabsSettings
 
+
 if [ -f $SETTINGS ]
   then
     echo Loading existing settings information
@@ -34,6 +35,21 @@ then
   echo No user OCID information found, this is required to destroy the auth token,  you will need to destroy the auth token by hand
   echo and then remove AUTH_TOKEN_REUSED, AUTH_TOKEN_OCID and if present AUTH_TOKEN from $SETTINGS 
   exit 4
+fi
+
+
+echo Checking region
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
+if [ $OCI_REGION = $OCI_HOME_REGION ]
+then
+  echo You are in your home region and this script will continue
+else
+  echo You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION
+  echo Please switch to your OCI home region and re-run this script
+  exit 1
 fi
 
 echo Destroying auth token with id $AUTH_TOKEN_OCID 
