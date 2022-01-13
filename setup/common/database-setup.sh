@@ -71,11 +71,12 @@ if [ -z $ATPDB_OCID ]
 
   if [ -z "$ATPDB_OCID" ]
   then
-     echo "Database named $DBNAME doesn't exist, creating it, there may be a short delay"
+     echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
      DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
      ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1 | jq -j '.data.id'`
      echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
      echo DATABASE_REUSED=false >> $SETTINGS
+     echo Database creation started
      echo The generated database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later
   else
      echo "Database named $DBNAME already exists"
@@ -91,6 +92,7 @@ if [ -z $ATPDB_OCID ]
 
 
   echo Downloading DB Wallet file
+  echo There may be a delay of several minutes while the database completes it's creation process, don't worry.
 
   if [ -f $HOME/Wallet.zip ]
   then
