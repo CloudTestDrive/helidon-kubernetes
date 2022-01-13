@@ -11,30 +11,46 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z $OCIR_REUSED ]
+if [ -z $OCIR_STOCKMANAGER_REUSED ]
 then
-  echo No reuse information for OCIR cannot safely continue, you will have to destroy it manually
-  exit 1
+  echo No reuse information for OCIR stockmanager repo, cannot safely continue, you will have to destroy it manually
+else
+  if [ $OCIR_STOCKMANAGER_REUSED = true ]
+  then
+    echo You have been using an OCIR repo for the stock manager that was not created by these scripts, you will need to destroy the repo by hand
+  else 
+    echo Destroying repo
+    oci artifacts container repository delete --repository-id $OCIR_STOCKMANAGER_OCID --force
+  fi
+    echo Removing storefront repo saved values from $SETTINGS 
+    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_OCID
+    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_REUSED
+    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
 fi
 
-if [ $OCIR_REUSED = true ]
+if [ -z $OCIR_STOREFRONT_REUSED ]
 then
-  echo You have been using an OCIR repo that was not created by these scripts, you will need to destroy the repo by hand
-  echo Removing OCIR saved values from $SETTINGS 
-  bash ./delete-from-saved-settings.sh OCIR_OCID
-  bash ./delete-from-saved-settings.sh OCIR_REUSED
-  bash ./delete-from-saved-settings.sh OCIR_LOCATION
-  exit 2
+  echo No reuse information for OCIR storefront repo, cannot safely continue, you will have to destroy it manually
+else
+  if [ $OCIR_STOREFRONT_REUSED = true ]
+  then
+    echo You have been using an OCIR repo for the storefront that was not created by these scripts, you will need to destroy the repo by hand
+  else 
+    echo Destroying repo
+    oci artifacts container repository delete --repository-id $OCIR_STOREFRONT_OCID --force
+  fi
+    echo Removing storefront repo saved values from $SETTINGS 
+    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_OCID
+    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_REUSED
+    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
 fi
 
-echo Destroying repo
-oci artifacts container repository delete --repository-id $OCIR_OCID --force
-
-echo Removing OCIR saved values from $SETTINGS 
-bash ./delete-from-saved-settings.sh OCIR_OCID
-bash ./delete-from-saved-settings.sh OCIR_REUSED
-bash ./delete-from-saved-settings.sh OCIR_LOCATION
-
-echo You are still logged into docker for OCIR services in $OCIR_LOCATION
+echo You are still logged into docker for OCIR services on the storefront in $OCIR_STOREFRONT_LOCATION
 echo If you with to logout from that execute the command 
-echo docker logout $OCIR_LOCATION
+echo docker logout $OCIR_STOCKMANAGER_LOCATION
+
+echo You are still logged into docker for OCIR services on the storefront in $OCIR_STOREFRONT_LOCATION
+echo If you with to logout from that execute the command 
+echo docker logout $OCIR_STOREFRONT_LOCATION
+
+echo If both locations are the same you only need to do this once
