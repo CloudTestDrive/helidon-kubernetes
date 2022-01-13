@@ -108,7 +108,7 @@ else
   read -p 'Save the auth token ?' REPLY 
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
-    echo AUTH_TOKEN=\'$AUTH_TOKEN\` >> $SETTINGS
+    echo AUTH_TOKEN=\'$AUTH_TOKEN\' >> $SETTINGS
     echo Your new auth token is $AUTH_TOKEN While this has been saved in the $SETTINGS file its a good idea for you to
     echo take note of it as you may want it for other situations.
   else
