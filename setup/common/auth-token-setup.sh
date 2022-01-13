@@ -49,7 +49,7 @@ fi
 
 AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $USER_OCID --all | jq -e '.data | length'`
 
-if [ $AUTH_TOKEN_COUNT = 2 ]
+if [ $AUTH_TOKEN_COUNT -eq 2 ]
 then
   echo 'You are already at the maximum number of auth tokens, you must reuse one (r) in which case you must also know its'
   echo 'value or quit and manually delete an unneeded existing one to continue (d)'
@@ -66,7 +66,7 @@ then
     REUSE_TOKEN=true
   fi
 else
-  if [ $AUTH_TOKEN_COUNT = 0 ]
+  if [ $AUTH_TOKEN_COUNT -eq 0 ]
   then
     echo No existing auth tokens, will create a new one
     REUSE_TOKEN=false
