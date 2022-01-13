@@ -104,44 +104,6 @@ else
   echo OCI Repo for stock manager has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images
 fi
 
-if [ -z $OCIR_STOCKMANAGER_REUSED ]
-then
-  echo Checking for existing stockmanager repo
-  # do we already have one 
-
-  OCIR_STOCKMANAGER_NAME=$OCIR_NAME/stockmanager
-  OCIR_STOCKMANAGER_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME --all | jq -j '.data.items[0].id' `
-
-  if [ $OCIR_STOCKMANAGER_OCID = 'null' ]
-  then
-  # No existing repo for stock manager
-    echo Creating OCIR repo named $OCIR_STOCKMANAGER_NAME for the stock manager in your tenancy in compartment  $COMPARTMENT_NAME
-    OCIR_STOCKMANAGER_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME --is-immutable false --is-public true --wait-for-state AVAILABLE | jq -j '.data.id'`
-    echo OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
-    echo OCIR_STOCKMANAGER_REUSED=false >> $SETTINGS
-    # remove any existing location info and save the new one
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
-    echo OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION >> $SETTINGS
-  else
-    read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the stockmanager ?" REPLY
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-      echo OK, stopping script, the stockmanager repo has not been configured, you need to re-run this script before doing any container image pushes
-      echo docker has not been logged in for the stockmanager repo
-      exit 1
-    else     
-      echo "OK, for stockmanager going to use reuse existing container repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME"
-      echo OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
-      echo OCIR_STOCKMANAGER_REUSED=true >> $SETTINGS
-      # remove any existing location info and save the new one
-      bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
-      echo OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION >> $SETTINGS
-    fi
-  fi
-else
-  echo OCI Repo for stock manager has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images
-fi
-
 # now create the storefront
 if [ -z $OCIR_STOREFRONT_REUSED ]
 then
