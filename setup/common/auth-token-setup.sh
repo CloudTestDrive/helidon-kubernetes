@@ -109,7 +109,7 @@ then
       exit 0
     fi
     echo AUTH_TOKEN_REUSED=true >> $SETTINGS
-    echo AUTH_TOKEN=\'$AUTH_TOKEN\` >> $SETTINGS
+    echo AUTH_TOKEN=\'$AUTH_TOKEN\' >> $SETTINGS
   else
     echo AUTH_TOKEN_REUSED=true >> $SETTINGS
   fi

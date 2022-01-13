@@ -33,7 +33,10 @@ fi
 if [ -z $USER_OCID ]
 then
   echo No user OCID information found, this is required to destroy the auth token,  you will need to destroy the auth token by hand
-  echo and then remove AUTH_TOKEN_REUSED, AUTH_TOKEN_OCID and if present AUTH_TOKEN from $SETTINGS 
+  echo clearing values in $SETTINGS
+  bash ./delete-from-saved-settings.sh AUTH_TOKEN_OCID
+  bash ./delete-from-saved-settings.sh AUTH_TOKEN_REUSED
+  bash ./delete-from-saved-settings.sh AUTH_TOKEN
   exit 4
 fi
 
