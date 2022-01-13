@@ -71,8 +71,9 @@ else
   fi
 fi
 
-if [ $REUSE_TOKEN ]
+if [ $REUSE_TOKEN = true ]
 then
+  echo 'Reusing an auth token'
   echo 'Do you want to save the auth token value to make later reuse easier ?'
   echo 'This will make doing the lab easier as otherwise you will have to re-enter it when its needed, but '
   echo 'it is not good security practice, the token will not be accessible unless logged in as'

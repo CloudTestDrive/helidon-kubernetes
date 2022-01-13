@@ -12,7 +12,7 @@ fi
 
 if [ -z $AUTH_TOKEN_REUSED ]
 then
-  echo No reuse information for compartment cannot safely contiue, you will have to destroy it manually
+  echo No reuse information for token cannot safely continue, you will have to destroy it manually
   exit 1
 fi
 
