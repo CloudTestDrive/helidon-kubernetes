@@ -78,7 +78,7 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 # do we already have one 
 OCIR_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_NAME --all | jq -j '.data.items[0].id'`
 
-if [ -z $OCIR_OCID ]
+if [ $OCIR_OCID = null ]
 then
   # No existing repo
   echo Creating OCIR repo named $OCIR_NAME in your tenancy in compartment  $COMPARTMENT_NAME
