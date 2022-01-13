@@ -121,7 +121,7 @@ then
   # No existing repo for storefront
     echo Creating OCIR repo named $OCIR_STOREFRONT_NAME for the storefront in your tenancy in compartment  $COMPARTMENT_NAME
     OCIR_STOREFRONT_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME --is-immutable false --is-public true --wait-for-state AVAILABLE | jq -j '.data.id'`
-    echo OCIR_STOREFRONT_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
+    echo OCIR_STOREFRONT_OCID=$OCIR_STOREFRONT_OCID >> $SETTINGS 
     echo OCIR_STOREFRONT_REUSED=false >> $SETTINGS
     # remove any existing location info and save the new one
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
