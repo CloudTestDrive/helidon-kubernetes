@@ -51,7 +51,7 @@ AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $USER_OCID --all | jq -e '.d
 
 if [ -z $AUTH_TOKEN_COUNT ]
 then
-  AUTH_TOKEN_COUNT = 0
+  AUTH_TOKEN_COUNT=0
 fi
 
 if [ $AUTH_TOKEN_COUNT -eq 2 ]
