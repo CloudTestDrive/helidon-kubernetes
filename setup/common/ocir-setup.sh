@@ -76,9 +76,10 @@ fi
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
   
 # do we already have one 
-OCIR_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_NAME --all | jq -j '.data.items[0].id'`
+OCIR_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_NAME --all | jq -j '.data.items[0].id' `
 
-if [ $OCIR_OCID = null ]
+
+if [ $OCIR_OCID = 'null' ]
 then
   # No existing repo
   echo Creating OCIR repo named $OCIR_NAME in your tenancy in compartment  $COMPARTMENT_NAME
@@ -92,6 +93,7 @@ else
   then
     echo OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes
     echo docker has not been logged in
+    exit 1
   else     
     echo "OK, going to use reuse existing container repo called $OCIR_NAME in compartment $COMPARTMENT_NAME"
     echo OCIR_OCID=$OCIR_OCID >> $SETTINGS 
