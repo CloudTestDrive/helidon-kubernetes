@@ -41,14 +41,14 @@ then
   read -p 'Quit and delete an existing token (d) or reuse an existing one (r)' REPLY 
   if [[ ! $REPLY =~ ^[Rr]$ ]]
   then
-    echo OK, reusing existing token
-    REUSE_TOKEN=true
-  else 
     echo 'OK, exiting, you can delete an unneeded auth token by going to the  user details'
     echo 'page (click on the "shadow" person upper left then the user name) -> Auth Tokens in the resources'
     echo 'then click on the three dots menu for the auth token you want to delete and chose delete'
     echo ' You can then re-run this script'
     exit 2
+  else 
+    echo OK, reusing existing token
+    REUSE_TOKEN=true
   fi
 else
   if [ $AUTH_TOKEN_COUNT = 0 ]
@@ -62,9 +62,11 @@ else
     read -p 'Create a new auth token (c) or reuse an existing one (r)' REPLY 
     if [[ ! $REPLY =~ ^[Rr]$ ]]
     then
-      REUSE_TOKEN=true
-    else
+      echo Will create a token
       REUSE_TOKEN=false
+    else
+      echo Will reuse a token
+      REUSE_TOKEN=true
     fi
   fi
 fi
@@ -76,8 +78,8 @@ then
   echo 'it is not good security practice, the token will not be accessible unless logged in as'
   echo 'you so its not a major risk, but you should not do this if you are using this tenancy for'
   echo 'anything other than lab work' 
-  read -p 'Enter and save the auth token ?' REPLY 
-  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  read -p 'Save the auth token ?' REPLY 
+  if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     read -p 'OK, please enter the auth token value, if you do now know it enter an empty line and the script will exit' AUTH_TOKEN
     if [ -z $AUTH_TOKEN ]
@@ -103,8 +105,8 @@ else
   echo 'it is not good security practice, the token will not be accessible unless logged in as'
   echo 'you so its not a major risk, but you should not do this if you are using this tenancy for'
   echo 'anything other than lab work' 
-  read -p 'Enter and save the auth token ?' REPLY 
-  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  read -p 'Save the auth token ?' REPLY 
+  if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     echo AUTH_TOKEN=\'$AUTH_TOKEN\` >> $SETTINGS
     echo Your new auth token is $AUTH_TOKEN While this has been saved in the $SETTINGS file its a good idea for you to
