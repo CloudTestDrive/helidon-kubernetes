@@ -29,6 +29,9 @@ echo Determining settings
 
 OCI_REGION_KEY=`oci iam region list --all | jq -e  ".data[]| select (.name == \"$OCI_REGION\")" | jq -j '.key' | tr [:upper:] [:lower:]`
 
+OCIR_STOCKMANGER_LOCATION=$OCI_REGION_KEY.ocir.io
+OCIR_STOREFRONT_LOCATION=$OCI_REGION_KEY.ocir.io
+
 OCI_USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
 
 OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
