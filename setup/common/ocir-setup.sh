@@ -36,21 +36,27 @@ OCI_USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
 
 OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 
-OCIR_NAME="$USER_INITIALS"_repo
+OCIR_BASE_NAME="$USER_INITIALS"_labs_base_repo
 
-read -p "Do you want to use $OCIR_NAME as the base for naming your repo ? " REPLY
+read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the base name of the container image repo to use, it must be a single word or multiple wordes separated by underscore , e.g. tg_repo"
+  echo "OK, please enter the base name of the container image repo to use, it must be a single word or multiple words separated by underscore , e.g. $OCIR_BASE_NAME It cannot just be your initials"
   echo "This script will create two repos based on that name for each of the microservices"
-  read OCIR_NAME
-  if [ -z "$OCIR_NAME" ]
+  read OCIR_BASE_NAME
+  if [ -z "$OCIR_BASE_NAME" ]
   then
     echo "You do actually need to enter the new name for the container image repo, exiting"
     exit 1
   fi
+  if [ $OCIR_BASE_NAME = $USER_INITIALS ]
+  then
+    echo You cannot use just your initials for the base nane
+    echo This script will stop, please run it again and if you want enter a different name
+    exit 2
+  fi
 else     
-  echo "OK, going to use $OCIR_NAME as the container image repo name"
+  echo "OK, going to use $OCIR_BASE_NAME as the container image repo name"
 fi
 
 if [ -z $AUTH_TOKEN ]
@@ -74,7 +80,7 @@ then
   echo Checking for existing stockmanager repo
   # do we already have one 
 
-  OCIR_STOCKMANAGER_NAME=$OCIR_NAME/stockmanager
+  OCIR_STOCKMANAGER_NAME=$OCIR_BASE_NAME/stockmanager
   OCIR_STOCKMANAGER_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME --all | jq -j '.data.items[0].id' `
 
   if [ $OCIR_STOCKMANAGER_OCID = 'null' ]
@@ -95,7 +101,7 @@ then
       echo docker has not been logged in
       exit 1
     else     
-      echo "OK, going to use reuse existing container repo called $OCIR_NAME in compartment $COMPARTMENT_NAME"
+      echo "OK, going to use reuse existing container repo called $OCIR_BASE_NAME in compartment $COMPARTMENT_NAME"
       echo OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
       echo OCIR_STOCKMANAGER_REUSED=true >> $SETTINGS
       # remove any existing location info and save the new one
@@ -113,7 +119,7 @@ then
   echo Checking for existing storefront repo
   # do we already have one 
 
-  OCIR_STOREFRONT_NAME=$OCIR_NAME/storefront
+  OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
   OCIR_STOREFRONT_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME --all | jq -j '.data.items[0].id' `
 
   if [ $OCIR_STOREFRONT_OCID = 'null' ]
