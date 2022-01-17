@@ -44,7 +44,7 @@ if [ -z $IMAGE_STOCKMANAGER_LATEST ]
 then
   echo Cant locate latest stock manager image, skipping
 else
-  oci artifacts container image --delete --force --image-id $IMAGE_STOCKMANAGER_LATEST
+  oci artifacts container image delete --force --image-id $IMAGE_STOCKMANAGER_LATEST
   echo Removed stockmanager latest
 fi
 
@@ -53,7 +53,7 @@ if [ -z $IMAGE_STOCKMANAGER_V001 ]
 then
   echo Cant locate 0.0.1 stock manager image, skipping
 else
-  oci artifacts container image --delete --force --image-id $IMAGE_STOCKMANAGER_V001
+  oci artifacts container image delete --force --image-id $IMAGE_STOCKMANAGER_V001
   echo Removed stockmanager 0.0.1
 fi
 IMAGE_STOCKMANAGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.2`
@@ -61,7 +61,7 @@ if [ -z $IMAGE_STOCKMANAGER_V002 ]
 then
   echo Cant locate 0.0.2 stock manager image, skipping
 else
-  oci artifacts container image --delete --force --image-id $IMAGE_STOCKMANAGER_V002
+  oci artifacts container image delete --force --image-id $IMAGE_STOCKMANAGER_V002
   echo Removed stockmanager 0.0.2
 fi
 
@@ -77,7 +77,7 @@ if [ -z $IMAGE_STOREFRONT_LATEST ]
 then
   echo Cant locate latest storefront image, skipping
 else
-  oci artifacts container image --delete --force --image-id $IMAGE_STOREFRONT_LATEST
+  oci artifacts container image delete --force --image-id $IMAGE_STOREFRONT_LATEST
   echo Removed storefront latest
 fi
 
@@ -86,7 +86,7 @@ if [ -z $IMAGE_STOREFRONT_V001 ]
 then
   echo Cant locate 0.0.1 storefront image, skipping
 else
-  oci artifacts container image --delete --force  --image-id $IMAGE_STOREFRONT_V001
+  oci artifacts container image delete --force  --image-id $IMAGE_STOREFRONT_V001
   echo Removed storefront 0.0.1
 fi
 IMAGE_STOREFRONT_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.2`
@@ -94,6 +94,6 @@ if [ -z $IMAGE_STOREFRONT_V002 ]
 then
   echo Cant locate 0.0.2 storefront image, skipping
 else
-  oci artifacts container image --delete --force --image-id $IMAGE_STOREFRONT_V002
+  oci artifacts container image delete --force --image-id $IMAGE_STOREFRONT_V002
   echo Removed storefront 0.0.2
 fi
