@@ -54,8 +54,13 @@ then
   echo Completed setting location details for $DEPLOYMENT_YAML
 elif [ $CMD = reset ]
 then 
-  echo Configuring deployment $1 removing $DEPLOYMENT_YAML
-  rm $DEPLOYMENT_YAML
+  if [ -f $DEPLOYMENT_YAML ]
+  then
+    echo Configuring deployment $1 removing $DEPLOYMENT_YAML
+    rm $DEPLOYMENT_YAML
+  else
+    echo Deployment $DEPLOYMENT_YAML does not exist skipping
+  fi
 else
   echo Unknown operation $CMD, 1st argument must be either set or reset
 fi
