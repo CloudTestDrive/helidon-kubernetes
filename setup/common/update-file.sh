@@ -11,7 +11,6 @@ fi
 echo Updating $updatefile replacing $oldtext with $newtext 
 temp="$updatefile".tmp
 SED_CMD="s$SED_SEP$oldtext$SED_SEP$newtext$SED_SEP"
-echo Command is $SED_CMD
 cat $updatefile | sed -e $SED_CMD > $temp
 rm $updatefile
 mv $temp $updatefile
