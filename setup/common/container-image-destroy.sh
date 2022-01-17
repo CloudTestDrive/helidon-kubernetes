@@ -36,7 +36,7 @@ echo Removing stockmanager images
 OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCID | jq -r '.data."display-name"'`
 
 
-bash stockmanager-deployment-update.sh reset $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
+bash stockmanager-deployment-update.sh reset $OCIR_STOCKMANAGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOCKMANAGER_NAME
 
 IMAGE_STOCKMANAGER_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:latest`
 
@@ -69,7 +69,7 @@ echo Removing storefront images
 
 OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
-bash storefront-deployment-update.sh reset $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
+bash storefront-deployment-update.sh reset $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
 
 IMAGE_STOREFRONT_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:latest`
 

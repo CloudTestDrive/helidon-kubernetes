@@ -97,7 +97,7 @@ bash buildStockmanagerV0.0.2PushToRepo.sh
 
 cd $SCRIPTS_DIR
 
-bash stockmanager-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
+bash stockmanager-deployment-update.sh set $OCIR_STOCKMANAGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOCKMANAGER_NAME
 
 
 echo building and pushing storefront images
@@ -125,4 +125,4 @@ bash buildStorefrontPushToRepo.sh
 bash buildStorefrontV0.0.2PushToRepo.sh
 
 cd $SCRIPTS_DIR
-bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
+bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
