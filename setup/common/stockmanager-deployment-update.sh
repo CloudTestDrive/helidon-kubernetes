@@ -19,9 +19,9 @@ SM_DIR=$HK_DIR/service-mesh
 
 if [ $CMD = set ] || [ $CMD = reset ]
 then
-  for DEPLOYMENT_YAML in $HK_DIR/stockmanager-deployment.yaml $SM_DIR/stockmanager-deployment-broken.yaml $SM_DIR/stockmanager-deployment-v0.0.1.yaml $SM_DIR/stockmanager-deployment-v0.0.2.yaml
+  for TEMPLATE_YAML in $HK_DIR/stockmanager-deployment-template.yaml $SM_DIR/stockmanager-deployment-broken-template.yaml $SM_DIR/stockmanager-deployment-v0.0.1-template.yaml $SM_DIR/stockmanager-deployment-v0.0.2-template.yaml
   do
-    bash deployments-update.sh $CMD $DEPLOYMENT_YAML $OCIR_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_REPO
+    bash deployments-update.sh $CMD $TEMPLATE_YAML $OCIR_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_REPO
   done
 else
   echo Unknown operation $CMD, 1st argument must be either set or reset
