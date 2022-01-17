@@ -13,13 +13,13 @@ if [ -f $SETTINGS ]
 fi
 
 
-if [ -z $OCIR_STOCKMANAGER_OCIR ]
+if [ -z $OCIR_STOCKMANAGER_OCID ]
 then
   echo 'No OCIR id found for stockmanager repo have you run the ocir-setup.sh script ?'
   exit 1
 fi
 
-if [ -z $OCIR_STOREFRONT_OCIR ]
+if [ -z $OCIR_STOREFRONT_OCID ]
 then
   echo 'No OCIR id found for storefront repo have you run the ocir-setup.sh script ?'
   exit 1
@@ -74,7 +74,7 @@ echo building and pushing stockmanager images
 
 # Get the OCIR location
 
-OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCIR | jq -r '.data."display-name"'`
+OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCID | jq -r '.data."display-name"'`
 
 cd $WORK_DIR/"$STOCKMANAGER_GIT_NAME"
 
@@ -101,7 +101,7 @@ echo building and pushing storefront images
 
 # Get the OCIR location
 
-OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCIR | jq -r '.data."display-name"'`
+OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
 cd $WORK_DIR/"$STOREFRONT_GIT_NAME"
 
