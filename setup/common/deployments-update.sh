@@ -18,14 +18,14 @@ OCIR_REPO=$5
 
 if [ $CMD = set ]
 then
-  echo Configuring deployment $1 with provided location details
+  echo Configuring deployment $1 with provided location details of Location $OCIR _LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
   bash update-file.sh $1 OCIR_LOCATION $OCIR_LOCATION
   bash update-file.sh $1 OCIR_STORAGE_NAMESPACE $OCIR_STORAGE_NAMESPACE
   bash update-file.sh $1 OCIR_REPO $OCIR_REPO
   echo Completed setting location details for $1
 elif [ $CMD = reset ]
 then
-  echo Configuring deployment $1 removing provided location details
+  echo Configuring deployment $1 removing provided location details of Location $OCIR _LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
   bash update-file.sh $1 $OCIR_LOCATION OCIR_LOCATION
   bash update-file.sh $1 $OCIR_STORAGE_NAMESPACE OCIR_STORAGE_NAMESPACE
   bash update-file.sh $1 $OCIR_REPO OCIR_REPO
