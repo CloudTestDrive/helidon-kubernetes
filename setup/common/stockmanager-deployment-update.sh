@@ -19,6 +19,7 @@ SM_DIR=$HK_DIR/service-mesh
 
 if [ $CMD = set ] || [ $CMD = reset ]
 then
+  echo processing stockmanager deployment templates
   for TEMPLATE_YAML in $HK_DIR/stockmanager-deployment-template.yaml $SM_DIR/stockmanager-deployment-broken-template.yaml $SM_DIR/stockmanager-deployment-v0.0.1-template.yaml $SM_DIR/stockmanager-deployment-v0.0.2-template.yaml
   do
     bash deployments-update.sh $CMD $TEMPLATE_YAML $OCIR_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_REPO

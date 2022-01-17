@@ -19,10 +19,11 @@ TEMPLATE=$2
 TEMPLATE_DIR=`dirname $TEMPLATE`
 TEMPLATE_BASE=`basename $TEMPLATE -template.yaml`
 DEPLOYMENT_YAML=$TEMPLATE_DIR/$TEMPLATE_BASE.yaml
-if [ $CMD = set ]
+if [ $CMD == set ]
 then
   echo Configuring from $TEMPLATE
 elif [ $CMD = reset ]
+then
     echo Resetting to $TEMPLATE
 else
     display_usage
