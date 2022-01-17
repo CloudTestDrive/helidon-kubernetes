@@ -88,7 +88,7 @@ cd $STOCKMANAGER_LOCATION_IN_REPO
 
 
 # update the repo location
-echo REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME > repoStorefrontConfig.sh
+echo REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME > repoStockmanagerConfig.sh
 
 # build the images and push them
 bash buildStockmanagerPushToRepo.sh
