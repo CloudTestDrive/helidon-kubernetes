@@ -22,11 +22,13 @@ DEPLOYMENT_YAML=$TEMPLATE_DIR/$TEMPLATE_BASE.yaml
 if [ "$CMD" = "set" ]
 then
   echo Configuring from $TEMPLATE
-elif [ "$CMD" = "reset" ]
-  echo Resetting to $TEMPLATE
-else
-  display_usage
-  exit 2
+else 
+  if [ "$CMD" = "reset" ]
+    echo Resetting to $TEMPLATE
+  else
+    display_usage
+    exit 2
+  fi
 fi
 
 if [ "$CMD" = "set" ]
