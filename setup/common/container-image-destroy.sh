@@ -38,7 +38,7 @@ OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id
 
 bash stockmanager-deployment-update.sh reset $OCIR_STOCKMANAGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOCKMANAGER_NAME
 
-IMAGE_STOCKMANAGER_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:latest`
+IMAGE_STOCKMANAGER_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:latest | jq -r ".data.items[0].id"`
 
 if [ -z $IMAGE_STOCKMANAGER_LATEST ]
 then
@@ -48,7 +48,7 @@ else
   echo Removed stockmanager latest
 fi
 
-IMAGE_STOCKMANAGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.1`
+IMAGE_STOCKMANAGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.1 | jq -r ".data.items[0].id"`
 if [ -z $IMAGE_STOCKMANAGER_V001 ]
 then
   echo Cant locate 0.0.1 stock manager image, skipping
@@ -56,7 +56,7 @@ else
   oci artifacts container image delete --force --image-id $IMAGE_STOCKMANAGER_V001
   echo Removed stockmanager 0.0.1
 fi
-IMAGE_STOCKMANAGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.2`
+IMAGE_STOCKMANAGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.2 | jq -r ".data.items[0].id"`
 if [ -z $IMAGE_STOCKMANAGER_V002 ]
 then
   echo Cant locate 0.0.2 stock manager image, skipping
@@ -71,7 +71,7 @@ OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $
 
 bash storefront-deployment-update.sh reset $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
 
-IMAGE_STOREFRONT_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:latest`
+IMAGE_STOREFRONT_LATEST=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:latest | jq -r ".data.items[0].id"`
 
 if [ -z $IMAGE_STOREFRONT_LATEST ]
 then
@@ -81,7 +81,7 @@ else
   echo Removed storefront latest
 fi
 
-IMAGE_STOREFRONT_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.1`
+IMAGE_STOREFRONT_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.1 | jq -r ".data.items[0].id"`
 if [ -z $IMAGE_STOREFRONT_V001 ]
 then
   echo Cant locate 0.0.1 storefront image, skipping
@@ -89,7 +89,7 @@ else
   oci artifacts container image delete --force  --image-id $IMAGE_STOREFRONT_V001
   echo Removed storefront 0.0.1
 fi
-IMAGE_STOREFRONT_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.2`
+IMAGE_STOREFRONT_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.2 | jq -r ".data.items[0].id"`
 if [ -z $IMAGE_STOREFRONT_V002 ]
 then
   echo Cant locate 0.0.2 storefront image, skipping
