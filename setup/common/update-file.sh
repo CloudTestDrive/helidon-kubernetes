@@ -2,9 +2,16 @@
 updatefile=$1
 oldtext=$2
 newtext=$3
+if [ $# -gt 3 ]
+then 
+  SED_SEP=/
+else
+  SED_SEP=$4
+fi
 echo Updating $updatefile replacing $oldtext with $newtext 
 temp="$updatefile".tmp
-#echo command is "s/$oldtext/$newtext/"
-cat $updatefile | sed -e "s/$oldtext/$newtext/" > $temp
+SED_CMD="s$SED_SEP$oldtext$SED_SEP$newtext$SED_SEP"
+echo Command is $SED_CMD
+cat $updatefile | sed -e $SED_CMD > $temp
 rm $updatefile
 mv $temp $updatefile

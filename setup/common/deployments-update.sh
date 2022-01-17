@@ -21,14 +21,14 @@ then
   echo Configuring deployment $DEPLOYMENT_YAML with provided location details of Location $OCIR_LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
   bash update-file.sh $DEPLOYMENT_YAML OCIR_LOCATION $OCIR_LOCATION
   bash update-file.sh $DEPLOYMENT_YAML OCIR_STORAGE_NAMESPACE $OCIR_STORAGE_NAMESPACE
-  bash update-file.sh $DEPLOYMENT_YAML OCIR_REPO $OCIR_REPO
+  bash update-file.sh $DEPLOYMENT_YAML OCIR_REPO $OCIR_REPO ':'
   echo Completed setting location details for $DEPLOYMENT_YAML
 elif [ $CMD = reset ]
 then
   echo Configuring deployment $1 removing provided location details of Location $OCIR_LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
   bash update-file.sh $DEPLOYMENT_YAML $OCIR_LOCATION OCIR_LOCATION
   bash update-file.sh $DEPLOYMENT_YAML $OCIR_STORAGE_NAMESPACE OCIR_STORAGE_NAMESPACE
-  bash update-file.sh $DEPLOYMENT_YAML $OCIR_REPO OCIR_REPO
+  bash update-file.sh $DEPLOYMENT_YAML $OCIR_REPO OCIR_REPO  ':'
   echo Completed resetting location details for $DEPLOYMENT_YAML
   exit 0
 else
