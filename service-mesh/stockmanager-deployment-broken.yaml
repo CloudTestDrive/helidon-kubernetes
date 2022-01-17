@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: stockmanager
-        image: fra.ocir.io/oractdemeabdmnative/h-k8s_repo/stockmanager:0.0.2
+        image: OCIR_LOCATION/OCIR_STORAGE_NAMESPACE/OCIR_REPO:0.0.2
         imagePullPolicy: Always 
         ports:
         - name: service-port
