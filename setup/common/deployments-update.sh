@@ -19,10 +19,10 @@ TEMPLATE=$2
 TEMPLATE_DIR=`dirname $TEMPLATE`
 TEMPLATE_BASE=`basename $TEMPLATE -template.yaml`
 DEPLOYMENT_YAML=$TEMPLATE_DIR/$TEMPLATE_BASE.yaml
-if [ "$CMD" == "set" ]
+if [ $CMD = set ]
 then
   echo Configuring from $TEMPLATE
-elif [ "$CMD" == "reset" ]
+elif [ $CMD = reset ]
     echo Resetting to $TEMPLATE
 else
     display_usage
@@ -30,7 +30,7 @@ else
 fi
 
 
-if [ "$CMD" == "set" ]
+if [ $CMD = set ]
 then
   if [ $# -lt 5 ]
   then
@@ -43,7 +43,7 @@ then
 fi
 
 
-if [ "$CMD" == "set" ]
+if [ $CMD = set ]
 then
   echo Configuring deployment $DEPLOYMENT_YAML with provided location details of Location $OCIR_LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
   cp $TEMPLATE $DEPLOYMENT_YAML
@@ -51,7 +51,7 @@ then
   bash update-file.sh $DEPLOYMENT_YAML OCIR_STORAGE_NAMESPACE $OCIR_STORAGE_NAMESPACE
   bash update-file.sh $DEPLOYMENT_YAML OCIR_REPO $OCIR_REPO ':'
   echo Completed setting location details for $DEPLOYMENT_YAML
-elif [ "$CMD" == "reset" ]
+elif [ $CMD = reset ]
 then 
   echo Configuring deployment $1 removing $DEPLOYMENT_YAML
   rm $DEPLOYMENT_YAML
