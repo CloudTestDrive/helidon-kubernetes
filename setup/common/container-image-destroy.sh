@@ -13,13 +13,13 @@ if [ -f $SETTINGS ]
 fi
 
 
-if [ -z $OCIR_STOCKMANAGER_OCIR ]
+if [ -z $OCIR_STOCKMANAGER_OCID ]
 then
   echo 'No OCIR id found for stockmanager repo have you run the ocir-setup.sh script ?'
   exit 1
 fi
 
-if [ -z $OCIR_STOREFRONT_OCIR ]
+if [ -z $OCIR_STOREFRONT_OCID ]
 then
   echo 'No OCIR id found for storefront repo have you run the ocir-setup.sh script ?'
   exit 1

@@ -25,6 +25,7 @@ then
   exit 1
 fi
 
+SCRIPTS_DIR=`pwd`
 
 
 WORK_DIR=$HOME/tmp-docker-workspace-delete-me
@@ -39,7 +40,7 @@ STOCKMANAGER_GIT_REPO=https://github.com/oracle-devrel/"$STOCKMANAGER_GIT_NAME".
 STOREFRONT_GIT_REPO=https://github.com/oracle-devrel/"$STOREFRONT_GIT_NAME".git
 
 STOCKMANAGER_LOCATION_IN_REPO=helidon-stockmanager-full
-STOREFRONT_LOCATION_IN_REPO=helidon-stockmanager-full
+STOREFRONT_LOCATION_IN_REPO=helidon-storefront-full
 
 echo Removing any old directories
 cd $HOME
@@ -94,6 +95,8 @@ echo REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAG
 bash buildStockmanagerPushToRepo.sh
 bash buildStockmanagerV0.0.2PushToRepo.sh
 
+cd $SCRIPTS_DIR
+
 bash stockmanager-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
 
 
@@ -121,4 +124,5 @@ echo REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_N
 bash buildStorefrontPushToRepo.sh
 bash buildStorefrontV0.0.2PushToRepo.sh
 
+cd $SCRIPTS_DIR
 bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
