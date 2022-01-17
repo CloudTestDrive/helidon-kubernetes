@@ -8,7 +8,7 @@ display_usage () {
     echo "Name of the object storage namespace - this is a set of random letters and numbers usually"
     echo "Name of the OCIR repository for the namespace e.g. tg_base_lab_repo/storefront"
 }
-if [ $# -lt 2]
+if [ $# -lt 2 ]
 then
     display_usage
     exit 1
