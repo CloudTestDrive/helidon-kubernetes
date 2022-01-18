@@ -73,7 +73,7 @@ if [ -z $ATPDB_OCID ]
   then
      echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
      DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
-     ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1 | jq -j '.data.id'`
+     ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
      echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
      echo DATABASE_REUSED=false >> $SETTINGS
      echo Database creation started
