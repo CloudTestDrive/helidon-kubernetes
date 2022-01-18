@@ -23,14 +23,14 @@ then
   echo "Once you have done this the run the following commands in order in the region you want to run the lab"
   echo "in the $HOME/helidon-kubernetes/setup/common directory"
   echo "bash initials-setup.sh"
-  echo "bash compartment-setup.sh"
   echo "bash user-identity-setup.sh"
+  echo "bash compartment-setup.sh"
   echo "bash database-setup.sh"
   exit 1
 else
   echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
 fi
 bash initials-setup.sh
-bash compartment-setup.sh
 bash user-identity-setup.sh
+bash compartment-setup.sh
 bash database-setup.sh
