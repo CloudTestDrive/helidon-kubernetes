@@ -87,7 +87,7 @@ then
   if [ -z $COMPARTMENT_OCID ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" | jq -j '.data.id'`
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
     if [ -z $COMPARTMENT_OCID ]
     then
       echo "The compartment has not been created for some reason, cannot continue"
