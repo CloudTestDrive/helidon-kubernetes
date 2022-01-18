@@ -34,7 +34,18 @@ then
 fi
 
 
-TF_DIR=`pwd`/terraform-oci-oke-$context_name
+# Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
+TF_GIT_BASE=$HOME/oke-labs-terraform
+
+if [ -d $TF_GIT_BASE ]
+then
+  echo "Located saved terraform state directory"
+else
+  echo "Unable to locate $TF_GIT_BASE which is where the saved terraform information is held, cannot proceed"
+  exit 2
+fi
+
+TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$context_name
 
 if [ $OKE_REUSED = true ]
 then
