@@ -137,6 +137,8 @@ if [ -z $ATPDB_OCID ]
   echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
   if [ -z $DB_ADMIN_PW ]
   then
+    echo No saved DB password
+  else
     echo "The database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later"
   fi
 else
