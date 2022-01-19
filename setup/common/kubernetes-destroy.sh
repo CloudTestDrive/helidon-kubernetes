@@ -67,6 +67,7 @@ then
   exit 3
 fi
 
+SAVED_DIR=`pwd`
 if [ -d $TF_DIR ]
 then
   cd $TF_DIR
@@ -77,9 +78,9 @@ then
     terraform plan -destroy -out=$TF_DIR/destroy.plan
     echo Destroying cluster
     terraform apply -destroy $TF_DIR/destroy.plan
-    cd ..
     echo Removing terraform scripts
     rm -rf $TF_DIR
+    cd $SAVED_DIR
     bash ./delete-from-saved-settings.sh OKE_OCID_$context_name
     bash ./delete-from-saved-settings.sh OKE_REUSED_$context_name
     echo Removing context $context_name from the local kubernetes configuration
