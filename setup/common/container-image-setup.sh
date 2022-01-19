@@ -126,3 +126,5 @@ bash buildStorefrontV0.0.2PushToRepo.sh
 
 cd $SCRIPTS_DIR
 bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
+
+rm -rf $WORK_DIR
