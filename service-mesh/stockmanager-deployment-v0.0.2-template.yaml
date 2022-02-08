@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stockmanager
+  name: stockmanagerv0-0-2
 spec:
   replicas: 1
   strategy:
@@ -12,10 +12,12 @@ spec:
   selector:
     matchLabels:
       app: stockmanager
+      version: 0.0.2
   template:
     metadata:
       labels:
         app: stockmanager
+        version: 0.0.2
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/port: "9081"
@@ -23,7 +25,7 @@ spec:
     spec:
       containers:
       - name: stockmanager
-        image: fra.ocir.io/oractdemeabdmnative/h-k8s_repo/stockmanager:0.0.2
+        image: OCIR_LOCATION/OCIR_STORAGE_NAMESPACE/OCIR_REPO:0.0.2
         imagePullPolicy: Always 
         ports:
         - name: service-port

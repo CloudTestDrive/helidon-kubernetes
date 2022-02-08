@@ -28,28 +28,28 @@ if [ -z $COMPARTMENT_OCID ]
 then
   # no previous compartment set
   # has someone specified a parent compartment override previously of so let's try and get the name to use ?
-  if [ -z $PARENT_COMPARTMENT_OCID ]
+  if [ -z $COMPARTMENT_PARENT_OCID ]
   then
     # no, default to creating in the root compartment
-    PARENT_COMPARTMENT_OCID=$OCI_TENANCY
+    COMPARTMENT_PARENT_OCID=$OCI_TENANCY
     echo Parent is tenancy root
   fi
 
   TENANCY_NAME=`oci iam tenancy get --tenancy-id=$OCI_TENANCY | jq -j '.data.name'`
-  PARENT_COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $PARENT_COMPARTMENT_OCID | jq -j '.data.name' | sed -e 's/"//g'`
+  COMPARTMENT_PARENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_PARENT_OCID | jq -j '.data.name' | sed -e 's/"//g'`
 
-  if [ -z $PARENT_COMPARTMENT_NAME ]
+  if [ -z $COMPARTMENT_PARENT_NAME ]
   then
-    echo Unable to locate details for specified parent compoartment with OCID $PARENT_COMPARTMENT_OCID cannot contiue
-    echo Please edit the settings file $SETTINGS and ensure that the PARENT_COMPARTMENT_OCID variable contains a valid compartment OCID for this tenancy
+    echo Unable to locate details for specified parent compoartment with OCID $COMPARTMENT_PARENT_OCID cannot contiue
+    echo Please edit the settings file $SETTINGS and ensure that the COMPARTMENT_PARENT_OCID variable contains a valid compartment OCID for this tenancy
     exit 99
   fi
 
-  if [ $PARENT_COMPARTMENT_NAME = $TENANCY_NAME ]
+  if [ $COMPARTMENT_PARENT_NAME = $TENANCY_NAME ]
   then
     PARENT_NAME="Tenancy root"
   else 
-    PARENT_NAME="$PARENT_COMPARTMENT_NAME sub compartment"
+    PARENT_NAME="$COMPARTMENT_PARENT_NAME sub compartment"
   fi
 
   echo "This script will create a compartment called $COMPARTMENT_NAME for you if it doesn't exist, this will be in the $PARENT_NAME. If a compartment with the same name already exists you can re-use change the name to create or re-use a different compartment."
@@ -59,7 +59,7 @@ then
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo You need to edit the $SETTINGS file and add a line of the form 
-    echo 'PARENT_COMPARTMENT_OCID=<OCID>'
+    echo 'COMPARTMENT_PARENT_OCID=<OCID>'
     echo 'replacing <OCID> with the OCID of the parent compartment to be used when creating the compartment'
     echo 'Then re-run this script'
     exit 1
@@ -82,12 +82,12 @@ then
 
   # OK, actual do the work.
 
-  COMPARTMENT_OCID=`oci iam compartment list --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID | jq -j '.data[0].id'`
+  COMPARTMENT_OCID=`oci iam compartment list --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID | jq -j '.data[0].id'`
   # does it already exist
   if [ -z $COMPARTMENT_OCID ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $PARENT_COMPARTMENT_OCID --description "Labs compartment" | jq -j '.data.id'`
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
     if [ -z $COMPARTMENT_OCID ]
     then
       echo "The compartment has not been created for some reason, cannot continue"

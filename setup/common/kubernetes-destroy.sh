@@ -34,7 +34,18 @@ then
 fi
 
 
-TF_DIR=`pwd`/terraform-oci-oke-$context_name
+# Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
+TF_GIT_BASE=$HOME/oke-labs-terraform
+
+if [ -d $TF_GIT_BASE ]
+then
+  echo "Located saved terraform state directory"
+else
+  echo "Unable to locate $TF_GIT_BASE which is where the saved terraform information is held, cannot proceed"
+  exit 2
+fi
+
+TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$context_name
 
 if [ $OKE_REUSED = true ]
 then
@@ -56,6 +67,7 @@ then
   exit 3
 fi
 
+SAVED_DIR=`pwd`
 if [ -d $TF_DIR ]
 then
   cd $TF_DIR
@@ -66,9 +78,9 @@ then
     terraform plan -destroy -out=$TF_DIR/destroy.plan
     echo Destroying cluster
     terraform apply -destroy $TF_DIR/destroy.plan
-    cd ..
     echo Removing terraform scripts
     rm -rf $TF_DIR
+    cd $SAVED_DIR
     bash ./delete-from-saved-settings.sh OKE_OCID_$context_name
     bash ./delete-from-saved-settings.sh OKE_REUSED_$context_name
     echo Removing context $context_name from the local kubernetes configuration

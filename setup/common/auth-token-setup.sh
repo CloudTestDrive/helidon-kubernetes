@@ -121,6 +121,9 @@ else
   echo AUTH_TOKEN_REUSED=false >> $SETTINGS
   echo AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID >> $SETTINGS 
   
+  echo "Your new auth token is $AUTH_TOKEN It is critical that you do not lose this information so please take note of it."
+  echo "if needed you can delete the token by running the auth-token-destroy.sh script and then create a new one, but you will have"
+  echo "to repeat all of the processes that use it if you do."
   echo 'Do you want to save the auth token value to make later reuse easier ?'
   echo 'This will make doing the lab easier as otherwise you will have to re-enter it when its needed, but '
   echo 'it is not good security practice, the token will not be accessible unless logged in as'
@@ -130,11 +133,7 @@ else
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     echo AUTH_TOKEN=\'$AUTH_TOKEN\' >> $SETTINGS
-    echo Your new auth token is $AUTH_TOKEN While this has been saved in the $SETTINGS file its a good idea for you to
-    echo take note of it as you may want it for other situations.
-  else
-    echo Your new auth token is $AUTH_TOKEN It is critical that you do not lose this information so please take note of it.
-    echo if needed you can delete the token by running the auth-token-destroy.sh script and then create a new one, but you will have
-    echo to repeat all of the processes that use it if you do.
+    echo "Your new auth token is has been saved in the $SETTINGS file its a good idea for you to"
+    echo "still take note of it as you may want it for other situations."
   fi
 fi

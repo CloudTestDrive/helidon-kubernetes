@@ -104,6 +104,9 @@ OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.dat
 
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
+# Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
+TF_GIT_BASE=$HOME/oke-labs-terraform
+
 if [ -z $OKE_OCID ]
 then
   echo Checking for active cluster named $CLUSTER_NAME
@@ -111,29 +114,34 @@ then
   if [ -z $OKE_OCID ]
   then
     echo Creating cluster $CLUSTER_NAME
+    echo Preparing terraform directory
+    SAVED_DIR=`pwd`
+    TF_GIT_BASE=$HOME/oke-labs-terraform
+    mkdir -p $TF_GIT_BASE
+    cd $TF_GIT_BASE
     echo Downloading terraform
     git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
-    TF_DIR_BASE=`pwd`/terraform-oci-oke
+    TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
     TF_DIR=$TF_DIR_BASE-$context_name
 	mv $TF_DIR_BASE $TF_DIR
     TFP=$TF_DIR/provider.tf
     TFV=$TF_DIR/terraform.tfvars
     echo Configuring terraform
-    cp oke-provider.tf $TFP
-    cp oke-terraform.tfvars $TFV
+    cp $SAVED_DIR/oke-provider.tf $TFP
+    cp $SAVED_DIR/oke-terraform.tfvars $TFV
     cd $TF_DIR
     echo Update provider.tf set OCI_REGION to $OCI_REGION
-    bash ../update-file.sh $TFP OCI_REGION $OCI_REGION
+    bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
     echo Update provider.tf set OCI_HOME_REGION to $OCI_HOME_REGION
-    bash ../update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
+    bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars to set compartment OCID
-    bash ../update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
+    bash $SAVED_DIR/update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
     echo Update terraform.tfvars to set tenancy OCID
-    bash ../update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
+    bash $SAVED_DIR/update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
     echo Update terraform.tfvars to set OCI Region
-    bash ../update-file.sh $TFV OCI_REGION $OCI_REGION
+    bash $SAVED_DIR/update-file.sh $TFV OCI_REGION $OCI_REGION
     echo Update terraform.tfvars to set Cluster name
-    bash ../update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
+    bash $SAVED_DIR/update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
     echo Initialising Terraform
     terraform init
     echo Planning terraform deployment
@@ -144,6 +152,7 @@ then
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
     echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
     echo OKE_REUSED_$context_name=false >> $SETTINGS
+    cd $SAVED_DIR
   else
     echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status
     OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0]."lifecycle-state"'`

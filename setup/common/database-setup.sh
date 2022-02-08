@@ -73,11 +73,11 @@ if [ -z $ATPDB_OCID ]
   then
      echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
      DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
-     ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1 | jq -j '.data.id'`
+     ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
      echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
      echo DATABASE_REUSED=false >> $SETTINGS
      echo Database creation started
-     echo The generated database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later
+     echo "The generated database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later"
   else
      echo "Database named $DBNAME already exists"
      echo "To use this database please enter the database admin password (this will only be used to confiure the database labs used and will not be saved)"
@@ -135,6 +135,12 @@ if [ -z $ATPDB_OCID ]
   
   # save the ADB ID away
   echo ATPDB_OCID=$ATPDB_OCID >> $SETTINGS
+  if [ -z $DB_ADMIN_PW ]
+  then
+    echo No saved DB password
+  else
+    echo "The database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later"
+  fi
 else
   # We'de been given an ATB OCID, let's check if it's there, if so assume it's been configured already
   DBNAME=`oci db autonomous-database get --autonomous-database-id $ATPDB_OCID | jq -j '.data."display-name"'`

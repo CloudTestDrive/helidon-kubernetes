@@ -3,29 +3,22 @@ kind: Deployment
 metadata:
   name: stockmanager
 spec:
-  replicas: 1
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 1 
   selector:
     matchLabels:
       app: stockmanager
-      version: 0.0.1
   template:
     metadata:
       labels:
         app: stockmanager
-        version: 0.0.1
-      annotations:
-        prometheus.io/path: /metrics
-        prometheus.io/port: "9081"
-        prometheus.io/scrape: "true"
+      #annotations:
+      #  prometheus.io/path: /metrics
+      #  prometheus.io/port: "9081"
+      #  prometheus.io/scrape: "true"
     spec:
       containers:
       - name: stockmanager
-        image: fra.ocir.io/oractdemeabdmnative/h-k8s_repo/stockmanager:0.0.1
+        image: OCIR_LOCATION/OCIR_STORAGE_NAMESPACE/OCIR_REPO:0.0.1
         imagePullPolicy: Always 
         ports:
         - name: service-port
@@ -74,7 +67,8 @@ spec:
 #          httpGet:
 #             path: /health/live
 #             port: health-port
-#          # Give it a few seconds to make sure it's had a chance to start up
+#          # Give it time to make sure it's had a chance to start up
+#          # Comment this out when using a startup probe
 #          initialDelaySeconds: 120
 #          # Let it have a 5 second timeout to wait for a response
 #          timeoutSeconds: 5
@@ -82,7 +76,7 @@ spec:
 #          periodSeconds: 5
 #          # Need to have 3 failures before we decide the pod is dead, not just slow
 #          failureThreshold: 3
-        # This checks if the pod is ready to process requests
+#        # This checks if the pod is ready to process requests
 #        readinessProbe:
 #          exec:
 #            command:
@@ -90,6 +84,7 @@ spec:
 #            - -c
 #            - 'curl -s http://localhost:9081/health/ready | grep "\"outcome\":\"UP\""'
 #          # No point in checking until it's been running for at least 15 seconds
+#          # Comment this out when using a startup probe
 #          initialDelaySeconds: 15
 #          # Allow a short delay for the response
 #          timeoutSeconds: 10
@@ -97,22 +92,22 @@ spec:
 #          periodSeconds: 20
 #          # Need at least only one fail for this to be a problem
 #          failureThreshold: 1
-        # Use this to check if the pod is started this has to pass before the liveness kicks in
-        # note that this was released as beta in k8s V 1.18
-#         startupProbe:
+#        # Use this to check if the pod is started this has to pass before the liveness kicks in
+#        # note that this was released as beta in k8s V 1.18
+#        startupProbe:
 #          #Simple check to see if the status call works
 #          # If must return a 200 - 399 http status code
-#           httpGet:
-#              path: /status
-#              port: service-port
+#          httpGet:
+#             path: /status
+#             port: service-port
 #          # No initial delay - it starts checking immediately
 #          # Let it have a 5 second timeout
-#           timeoutSeconds: 5
-#          # allow for up to 12 failures
-#           failureThreshold: 12
+#          timeoutSeconds: 5
+#          # allow for up to 24 failures
+#          failureThreshold: 24
 #          # Check every 10 seconds
-#           periodSeconds: 10
-#          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (2 mins in this case)
+#          periodSeconds: 10
+#          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
         volumeMounts:
         - name: sm-config-map-vol
           mountPath: /conf
@@ -133,3 +128,5 @@ spec:
       - name: sm-wallet-atp
         secret:
           secretName: sm-wallet-atp
+#      imagePullSecrets:
+#      - name: my-docker-reg
