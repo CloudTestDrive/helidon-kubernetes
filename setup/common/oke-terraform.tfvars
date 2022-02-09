@@ -15,5 +15,5 @@ control_plane_allowed_cidrs=["0.0.0.0/0"]
 label_prefix="oke"
 
 node_pools = {
-  pool1 = { shape = "VM.Standard.E4.Flex", ocpus = 1, memory = 16, node_pool_size = 3, boot_volume_size = 50, label = {pool = "pool1" } }
+  pool1 = { shape = "WORKER_SHAPE", ocpus = 1, memory = 16, node_pool_size = 3, boot_volume_size = 50, label = {pool = "pool1" } }
 }

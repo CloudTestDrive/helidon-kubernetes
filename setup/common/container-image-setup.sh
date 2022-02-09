@@ -79,12 +79,6 @@ OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id
 
 cd $WORK_DIR/"$STOCKMANAGER_GIT_NAME"
 
-echo ===================================
-echo REMEMBER TO REMOVE THE GIT CHECKOUT
-echo ===================================
-
-git checkout initial-code-added
-
 cd $STOCKMANAGER_LOCATION_IN_REPO
 
 
@@ -107,12 +101,6 @@ echo building and pushing storefront images
 OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
 cd $WORK_DIR/"$STOREFRONT_GIT_NAME"
-
-echo ===================================
-echo REMEMBER TO REMOVE THE GIT CHECKOUT
-echo ===================================
-
-git checkout initial-code-added
 
 cd $STOREFRONT_LOCATION_IN_REPO
 

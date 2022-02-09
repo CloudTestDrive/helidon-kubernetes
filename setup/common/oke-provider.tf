@@ -4,6 +4,6 @@ provider "oci" {
 }
 provider "oci" {
    auth = "InstancePrincipal"
-   region = "OCI_REGION"
+   region = "OCI_HOME_REGION"
    alias  = "home"
 }
