@@ -113,6 +113,35 @@ then
   OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
+    echo Checking for VCN availability
+    bash resource-minimum-check-region.sh vcn vcn-count 1
+    AVAIL_VCN=$?
+
+    if [ $AVAIL_VCN -eq 0 ]
+    then
+      echo 'You have enough Virtual CLoud Networks to create the OKE cluster'
+    else
+      echo "Sorry, but there are no available virtual cloud network resources available to create the Kubernetes cluster."
+      echo "This script cannot continue"
+      exit 50
+    fi
+    echo Checking for E4 or E3 processor core availability for Kubernetes workers
+    # for now to get this done quickly just hard code the checks, at some point make this config driven
+    bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
+    AVAIL_E4_CORES=$?
+    bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
+    AVAIL_E3_CORES=$?
+    if [ $AVAIL_E4_CORES -eq 0 ]
+    then
+      WORKER_SHAPE=VM.Standard.E4.Flex
+    elif [ $AVAIL_E3_CORES -eq 0 ]
+    then
+      WORKER_SHAPE=VM.Standard.E3.Flex
+    else
+      echo "Sorry, but there are no available cores available to create the Kubernetes cluster, this script cannot continue."
+      echo "You will need to get some E3 or E4 cores to be able to create a Kubernetes cluster, if you are in a non free trial maybe switch to a different region"
+      exit 50
+    fi
     echo Creating cluster $CLUSTER_NAME
     echo Preparing terraform directory
     SAVED_DIR=`pwd`
@@ -130,6 +159,8 @@ then
     cp $SAVED_DIR/oke-provider.tf $TFP
     cp $SAVED_DIR/oke-terraform.tfvars $TFV
     cd $TF_DIR
+    echo Update provider.tf set WORKER_SHAPE to $WORKER_SHAPE
+    bash $SAVED_DIR/update-file.sh $TFP WORKER_SHAPE $WORKER_SHAPE
     echo Update provider.tf set OCI_REGION to $OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
     echo Update provider.tf set OCI_HOME_REGION to $OCI_HOME_REGION
