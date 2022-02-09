@@ -159,11 +159,11 @@ then
     cp $SAVED_DIR/oke-provider.tf $TFP
     cp $SAVED_DIR/oke-terraform.tfvars $TFV
     cd $TF_DIR
-    echo Update provider.tf set OCI_REGION to $OCI_REGION
+    echo Update provider.tf set OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
-    echo Update provider.tf set OCI_HOME_REGION to $OCI_HOME_REGION
+    echo Update provider.tf set OCI_HOME_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
-    echo Update terraform.tfvars set WORKER_SHAPE to $WORKER_SHAPE
+    echo Update terraform.tfvars set WORKER_SHAPE
     bash $SAVED_DIR/update-file.sh $TFV WORKER_SHAPE $WORKER_SHAPE
     echo Update terraform.tfvars to set compartment OCID
     bash $SAVED_DIR/update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
@@ -171,6 +171,8 @@ then
     bash $SAVED_DIR/update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
     echo Update terraform.tfvars to set OCI Region
     bash $SAVED_DIR/update-file.sh $TFV OCI_REGION $OCI_REGION
+    echo Update terraform.tfvars set OCI_HOME_REGION
+    bash $SAVED_DIR/update-file.sh $TFV OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars to set Cluster name
     bash $SAVED_DIR/update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
     echo Initialising Terraform
