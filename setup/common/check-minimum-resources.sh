@@ -85,6 +85,18 @@ else
   echo You already have an OKE cluster for context $context_name, not need to check resources
 fi
 
+bash resource-minimum-check-region.sh load-balancer lb-10mbps-count 1
+AVAIL_LB=$?
+if [ $AVAIL_LB -eq 0 ]
+then
+  echo 'You have enough load balancers available to setup your core cluster services'
+else
+  echo "Sorry, but you will a 10MBPS Load balancer to run the core cluster services."
+  echo "If you have other load balancer shapes available (e.g. a flexible load balancer) you can adjust the"
+  echo "helm commands used in the lab or the Kubernetes services setup scripts to use that instead"
+  RESOURCES_AVAILABLE=false
+fi
+
 if [ $RESOURCES_AVAILABLE ]
 then
   echo "Congratulations, you have either got an existing compartment and / or OKE cluster created from other labs, or"
@@ -94,6 +106,8 @@ then
 else
   echo "You do not have the resources available to run this lab."
   echo "THIS IS NOT A DISASTER, please read"
+  echo "If the missing resource is a load balancer AND YOU HAVE ALREADY SETUP YOUR INGRESS CONTROLLER"
+  echo "Then that will be re-used, and you need not worry"
   echo "In some cases you may have existing compartments or Kubernetes clusters that you have already created that"
   echo "You can re-use, perhaps you have done the Helidon lab or one of the other Kubernetes related labs"
   echo "In that case you can just re-use them"
