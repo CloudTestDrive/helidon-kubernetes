@@ -43,6 +43,24 @@ else
   RESOURCES_CREATED=false
 fi
 
+if [ -z $ATPDB_OCID ]
+  then
+  echo No existing database information
+  echo Checking for database resource availability
+  bash resource-minimum-check-region.sh database atp-ocpu-count 1
+  AVAIL_DATABASES=$?
+
+  if [ $AVAIL_DATABASES -eq 0 ]
+  then
+    echo 'You have enough ATP database cpus available to run this lab'
+  else
+    echo "Sorry, but there are no available ATP database cpu resources."
+    RESOURCES_AVAILABLE=false
+  fi
+else
+  echo "You have already configured an ATP database, it will be reused"
+  RESOURCES_CREATED=false
+fi
 
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
