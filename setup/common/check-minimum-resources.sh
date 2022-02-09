@@ -105,7 +105,7 @@ then
   exit 0
 else
   echo "You do not have the resources available to run this lab."
-  echo "THIS IS NOT A DISASTER, please read"
+  echo "THIS IS NOT A DISASTER, please read the following"
   echo "If the missing resource is a load balancer AND YOU HAVE ALREADY SETUP YOUR INGRESS CONTROLLER"
   echo "Then that will be re-used, and you need not worry"
   echo "In some cases you may have existing compartments or Kubernetes clusters that you have already created that"
@@ -116,6 +116,6 @@ else
   echo "If you are in a free trial which has changed to a always free tenancy this is to be expected as"
   echo "The always free trials to not currently have the ability to run OKE clusters"
   echo "If you are in a non free trial maybe switch to a different region (in which case you will"
-  echo "have to setup the auth tokens manually)"
+  echo "have to setup the auth tokens manually) or raise a service request to increase the resource limits"
   exit 50
 fi
