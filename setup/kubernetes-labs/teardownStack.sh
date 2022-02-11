@@ -18,9 +18,9 @@ if [ $# -eq 1 ]
 fi
 echo Attempting to run linker removal script
 bash linkerd/linkerd-uninstall.sh $NAMESPACE skip
-echo deleting monitoring namespace - if present
+echo "deleting monitoring namespace - if present"
 kubectl delete namespace monitoring --ignore-not-found=true
-echo deleting logging namespace - if present
+echo "deleting logging namespace - if present"
 kubectl delete namespace logging --ignore-not-found=true
 echo deleting your existing deployments in $NAMESPACE
 kubectl delete namespace $NAMESPACE  --ignore-not-found=true
@@ -28,5 +28,5 @@ echo reseting to default namespace
 kubectl config set-context --current --namespace=default
 echo Blanking saved namespace
 echo NAMESPACE= >> $settingsFile
-echo Tidying up security certificates and keys specific to $ip
-bash delete-certs.sh $ip skip
+echo Tidying up security certificates and keys specific to $EXTERNAL_IP
+bash delete-certs.sh $EXTERNAL_IP skip

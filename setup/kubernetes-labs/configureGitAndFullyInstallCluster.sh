@@ -61,7 +61,7 @@ bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $department skip
 
 echo Creating test data
 source $HOME/clusterSettings.$contextname
-bash $LAB_LOCATION/create-test-data.sh $ip
+bash $LAB_LOCATION/create-test-data.sh $EXTERNAL_IP
 
 echo returning to previous context of $startContext
 bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $startContext skip

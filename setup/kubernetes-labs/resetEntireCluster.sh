@@ -40,7 +40,7 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else 
-    echo "Skipping confirmation, Using context $context About to destroy existing instalation in $$NAMESPACE, and remove the ingress controller and dashboard"
+    echo "Skipping confirmation, Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
 fi
 
 currentContext=`bash get-current-context.sh`
