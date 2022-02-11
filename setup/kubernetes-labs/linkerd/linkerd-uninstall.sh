@@ -21,12 +21,13 @@ if [ $# -eq 1 ]
 fi
 
 echo Checking for linkerd executable
-linkerdLoc=`which linkerd | grep "no linkerd in"`
-if [ -z $linkerdLoc ] 
+which linkerd 
+linkerdLoc=$?
+if [ $linkerdLoc -eq 0 ] 
   then
-     echo Located linked command, continuing
+     echo Located linked command on the path, continuing
   else
-     echo Cannot locate linkerd command, so cant uninstall linkerd - or it may not have been installed to start with
+     echo Cannot locate linkerd command on the path, so cant uninstall linkerd - or it may not have been installed to start with
      exit 2
 fi
 
