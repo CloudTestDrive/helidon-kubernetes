@@ -73,6 +73,7 @@ echo >> $infoFile
 
 echo saving External IP for later use
 echo EXTERNAL_IP=$EXTERNAL_IP >> $settingsFile
+echo 'echo EXTERNAL_IP set to $EXTERNAL_IP' >> $settingsFile
 
 # now we have the ingress we csan update the rules to fit it
 echo updating base ingress rules
