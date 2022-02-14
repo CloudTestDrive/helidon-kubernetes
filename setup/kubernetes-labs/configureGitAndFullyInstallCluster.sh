@@ -8,7 +8,7 @@ contextname=one
 department=$1
 if [ $# -eq 1 ]
   then
-    echo setting up config in downloaded git repo using $department as the department name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file.
+    echo setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file.
     read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
