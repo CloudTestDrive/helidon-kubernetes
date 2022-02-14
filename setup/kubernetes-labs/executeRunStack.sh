@@ -26,7 +26,7 @@ cd $HOME/helidon-kubernetes/base-kubernetes
 echo Setup namespace
 bash ./create-namespace.sh $NAMESPACE
 echo export NAMESPACE=$NAMESPACE >> $settingFile
-echo 'echo NAMESPACE=$NAMESPACE'  >> $settingFile
+echo 'echo NAMESPACE is set to $NAMESPACE'  >> $settingFile
 echo Creating tls store secret
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/create-store-cert.sh $EXTERNAL_IP
 bash ./create-services.sh
