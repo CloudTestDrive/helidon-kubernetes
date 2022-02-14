@@ -6,7 +6,7 @@ if [ $# -eq 1 ]
   then
     echo About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $settingsFile Kuberetes context is $currentContext
     
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

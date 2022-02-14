@@ -9,7 +9,7 @@ newcontext=$1
 if [ $# -eq 1 ]
   then
     echo "Switching the kubernetes context to $newcontext - this will apply across all calls unless you overrite using --context=<name> or switch to a new default context"
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? " 
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

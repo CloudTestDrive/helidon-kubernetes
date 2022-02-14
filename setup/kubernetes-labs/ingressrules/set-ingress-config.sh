@@ -9,7 +9,7 @@ newip=$2
 if [ $# -eq 2 ]
   then
     echo Templating the ingress rules yaml in $ingressdir to set $newip as the External IP address.
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? " 
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

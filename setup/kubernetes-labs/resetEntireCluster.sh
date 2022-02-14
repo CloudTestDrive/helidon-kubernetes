@@ -32,7 +32,7 @@ fi
 if [ $# -eq 1 ]
   then
     echo Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
