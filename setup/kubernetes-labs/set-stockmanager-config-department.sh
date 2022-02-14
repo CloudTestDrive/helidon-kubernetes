@@ -8,7 +8,7 @@ department=$1
 if [ $# -eq 1 ]
   then
     echo Updating the stockmanager config to set $department as the department name.
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

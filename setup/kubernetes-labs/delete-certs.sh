@@ -4,11 +4,11 @@ if [ $# -eq 0 ]
     echo You must provide the IP address used to create the certificate files
     exist 1
 fi
-ip=$1
+EXTERNAL_IP=$1
 if [ $# -eq 1 ]
   then
-    echo 'About to remove all tls*$ip.crt and tls*$ip.key files'
-    read -p "Proceed ? " -n 1 -r
+    echo 'About to remove all tls*$EXTERNAL_IP.crt and tls*$EXTERNAL_IP.key files'
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
@@ -16,9 +16,9 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo 'Removing all tls*$ip.crt and tls*$ip.key files'
+    echo 'Removing all tls*$EXTERNAL_IP.crt and tls*$EXTERNAL_IP.key files'
 fi
 echo key files
-find $HOME/helidon-kubernetes -name tls\*$ip.key -print -exec rm '{}' \;
+find $HOME/helidon-kubernetes -name tls\*$EXTERNAL_IP.key -print -exec rm '{}' \;
 echo crt files
-find $HOME/helidon-kubernetes -name tls\*$ip.crt -print -exec rm '{}' \;
+find $HOME/helidon-kubernetes -name tls\*$EXTERNAL_IP.crt -print -exec rm '{}' \;

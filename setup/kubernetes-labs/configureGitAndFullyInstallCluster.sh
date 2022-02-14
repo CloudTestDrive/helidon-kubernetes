@@ -8,8 +8,8 @@ contextname=one
 department=$1
 if [ $# -eq 1 ]
   then
-    echo setting up config in downloaded git repo using $department as the department name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file.
-    read -p "Proceed ? " -n 1 -r
+    echo setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file.
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
@@ -21,7 +21,7 @@ if [ $# -eq 1 ]
     then
       contextname=$2
       echo "Setting up config in downloaded git repo using $department as the department name, $contextname as the cluster context name (which must exist in the kubeconf) and $HOME/Wallet.zip as the DB wallet file."
-      read -p "Proceed ? " -n 1 -r
+      read -p "Proceed ? " 
       echo    # (optional) move to a new line
       if [[ ! $REPLY =~ ^[Yy]$ ]]
         then
@@ -61,7 +61,7 @@ bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $department skip
 
 echo Creating test data
 source $HOME/clusterSettings.$contextname
-bash $LAB_LOCATION/create-test-data.sh $ip
+bash $LAB_LOCATION/create-test-data.sh $EXTERNAL_IP
 
 echo returning to previous context of $startContext
 bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $startContext skip

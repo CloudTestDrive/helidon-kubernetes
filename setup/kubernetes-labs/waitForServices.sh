@@ -7,9 +7,9 @@ fi
 
 echo checking https://store.$1.nip.io/store/stocklevel for a 200 response
 
-ip=""
-while [ -z "$ip" ] ; do
+resp=""
+while [ -z "$resp" ] ; do
   echo "Waiting for services to start"
-  ip=$(curl -i -X GET -u jack:password -k -s https://store.$1.nip.io/store/stocklevel | grep "200 OK")
-  [ -z "$ip" ] && sleep 10
+  resp=$(curl -i -X GET -u jack:password -k -s https://store.$1.nip.io/store/stocklevel | grep "200 OK")
+  [ -z "$resp" ] && sleep 10
 done

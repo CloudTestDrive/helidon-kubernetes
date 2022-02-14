@@ -10,7 +10,7 @@ department=$1
 if [ $# -eq 1 ]
   then
     echo setting up config in downloaded git repo using $department as the department name $currentContext is the kubernetes current context name and $HOME/Wallet.zip as the DB wallet file.
-    read -p "Proceed ? " -n 1 -r
+    read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
@@ -25,4 +25,4 @@ bash $HOME/helidon-kubernetes/setup/kubernetes-labs/installBaseElements.sh skip
 
 source $HOME/clusterSettings.$currentContext
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $department $ip skip
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/executeRunStack.sh $department $EXTERNAL_IP skip
