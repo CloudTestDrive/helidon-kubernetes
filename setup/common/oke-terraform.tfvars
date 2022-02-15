@@ -12,6 +12,9 @@ create_operator=false
 control_plane_type="public"
 control_plane_allowed_cidrs=["0.0.0.0/0"]
 
+enable_operator_pv_encryption_in_transit = false
+operator_volume_kms_id = ""
+
 label_prefix="oke"
 
 node_pools = {
