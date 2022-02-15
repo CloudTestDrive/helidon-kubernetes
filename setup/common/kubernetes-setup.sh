@@ -153,6 +153,10 @@ then
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
     TF_DIR=$TF_DIR_BASE-$context_name
 	mv $TF_DIR_BASE $TF_DIR
+	cd $TF_DIR
+	echo Switching to 2fec7c712d835ea6fa5f13f311f6fb40ec61ace7
+	git checkout 2fec7c712d835ea6fa5f13f311f6fb40ec61ace7
+    cd $TF_GIT_BASE
     TFP=$TF_DIR/provider.tf
     TFV=$TF_DIR/terraform.tfvars
     echo Configuring terraform
