@@ -177,10 +177,25 @@ then
     bash $SAVED_DIR/update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
     echo Initialising Terraform
     terraform init
+    if [ $? -eq 0 ]
+    then
+      echo "Problem initialising terraform, cannot continue"
+      exit 10
+    fi
     echo Planning terraform deployment
     terraform plan --out=$TF_DIR/terraform.plan
+    if [ $? -eq 0 ]
+    then
+      echo "Problem doing terraform plan, cannot continue"
+      exit 11
+    fi
     echo Applying terraform - this may take a while
     terraform apply $TF_DIR/terraform.plan
+    if [ $? -eq 0 ]
+    then
+      echo "Problem applying terraform, cannot continue"
+      exit 12
+    fi
     echo Retrieving cluster OCID from Terraform
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
     echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
