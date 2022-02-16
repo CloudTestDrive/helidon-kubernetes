@@ -67,7 +67,7 @@ if [ -z $ATPDB_OCID ]
   then
   # No existing ATPDB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo Checking for database $DBNAME in compartment $COMPARTMENT_NAME
-  ATPDB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME | jq -j '.data[0].id'`
+  ATPDB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
 
   if [ -z "$ATPDB_OCID" ]
   then
