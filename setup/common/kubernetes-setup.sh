@@ -154,8 +154,9 @@ then
     TF_DIR=$TF_DIR_BASE-$context_name
 	mv $TF_DIR_BASE $TF_DIR
 	cd $TF_DIR
-	echo Switching to 2fec7c712d835ea6fa5f13f311f6fb40ec61ace7
-	git checkout 2fec7c712d835ea6fa5f13f311f6fb40ec61ace7
+	OKE_TF_COMMIT_ID=bace9fb9a70d0b812b5e2a60e0e04e8354da8dda
+    echo Switching to commit $OKE_TF_COMMIT_ID
+    git checkout $OKE_TF_COMMIT_ID
     cd $TF_GIT_BASE
     TFP=$TF_DIR/provider.tf
     TFV=$TF_DIR/terraform.tfvars
