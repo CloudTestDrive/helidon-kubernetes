@@ -79,7 +79,7 @@ fi
 
 
 CLUSTER_NAME="lab-$CLUSTER_CONTEXT_NAME-$USER_INITIALS"lab
-read -p "Do you want to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+read -p "Do you want to use $CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
