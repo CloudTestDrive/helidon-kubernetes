@@ -79,11 +79,11 @@ fi
 
 
 CLUSTER_NAME="$USER_INITIALS"lab
-read -p "Do you want to use $CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+read -p "Do you want to use lab-$context_name-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. TGDemo"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with this name exists it will be re-used, if not a new cluster will be created named lab-$context_name-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
