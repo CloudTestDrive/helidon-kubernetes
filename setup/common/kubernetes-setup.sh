@@ -113,6 +113,35 @@ then
   OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
+    echo Checking for cluster specific settings directory
+    TF_SOURCE_CONFIG_DIR=`pwd`/oke-terraform-config
+    if [ -d $TF_SOURCE_CONFIG_DIR ]
+    then
+      echo "Located cluster specific settings as $TF_SOURCE_CONFIG_DIR"
+    else
+      echo "Cannot locate directory $TF_SOURCE_CONFIG_DIR, cannot continue"
+      exit 10
+    fi
+    echo Checking for cluster specific settings file
+    CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.txt
+    if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
+    then
+      echo "Located cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS"
+    else
+      echo "Cannot locate cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS, cannot continue"
+      exit 10
+    fi
+    echo Loading cluster specific settings
+    source $CLUSTER_SPECIFIC_SETTINGS
+    # Check for the VCN Network address being set
+    if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
+    then
+      echo 'Unable to locate the VCN Nertwork CIDR variable ( VCN_CLASS_B_NETWORK_CIDR_START )'
+      echo 'Cannot continue'
+      exit 20
+    else
+      echo Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START
+    fi
     echo Checking for VCN availability
     bash resource-minimum-check-region.sh vcn vcn-count 1
     AVAIL_VCN=$?
@@ -151,32 +180,38 @@ then
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
     TF_DIR=$TF_DIR_BASE-$CLUSTER_CONTEXT_NAME
 	mkdir -p $TF_DIR
-    TFP=$TF_DIR/oke-provider.tf
-    TFM=$TF_DIR/oke-module.tf
-    TFO=$TF_DIR/oke-outputs.tf
+	TF_PROVIDER_FILE=oke-provider.tf
+	TF_MODULE_FILE=oke-module.tf
+	TF_OUTPUTS_FILE=oke-outputs.tf
+    TFP=$TF_DIR/$TF_PROVIDER_FILE
+    TFM=$TF_DIR/$TF_MODULE_FILE
+    TFO=$TF_DIR/$TF_OUTPUTS_FILE
     echo Configuring terraform
-    cp $SAVED_DIR/oke-provider.tf $TFP
-    cp $SAVED_DIR/oke-module.tf $TFM
-    cp $SAVED_DIR/oke-outputs.tf $TFO
+    cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
+    cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
+    cp $TF_SOURCE_CONFIG_DIR/oke-outputs.tf $TFO
     cd $TF_DIR
-    echo Update provider.tf set OCI_REGION
+    echo Update $TF_PROVIDER_FILE set OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
-    echo Update provider.tf set OCI_HOME_REGION
+    echo Update $TF_PROVIDER_FILE set OCI_HOME_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
-    echo Update terraform.tfvars set WORKER_SHAPE
+    echo Update $TF_MODULE_FILE set WORKER_SHAPE
     bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
-    echo Update terraform.tfvars to set compartment OCID
+    echo Update $TF_MODULE_FILE to set compartment OCID
     bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
-    echo Update terraform.tfvars to set tenancy OCID
+    echo Update $TF_MODULE_FILE to set tenancy OCID
     bash $SAVED_DIR/update-file.sh $TFM OCI_TENANCY $OCI_TENANCY
-    echo Update terraform.tfvars to set OCI Region
+    echo Update $TF_MODULE_FILE to set OCI Region
     bash $SAVED_DIR/update-file.sh $TFM OCI_REGION $OCI_REGION
-    echo Update terraform.tfvars set OCI_HOME_REGION
+    echo Update $TF_MODULE_FILE set OCI_HOME_REGION
     bash $SAVED_DIR/update-file.sh $TFM OCI_HOME_REGION $OCI_HOME_REGION
-    echo Update terraform.tfvars to set Cluster name
+    echo Update $TF_MODULE_FILE to set Cluster name
     bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
-    echo Update terraform.tfvars to set Label prefix to context
+    echo Update $TF_MODULE_FILE to set Label prefix to context
     bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
+    echo Update $TF_MODULE_FILE to set Label prefix to context
+    bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_NUMBER $VCN_CLASS_B_NETWORK_NUMBER
+    
     echo Initialising Terraform
     terraform init
     if [ $? -ne 0 ]
