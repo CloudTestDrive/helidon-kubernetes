@@ -45,13 +45,13 @@ else
   echo Operating in compartment $COMPARTMENT_NAME
 fi
 
-VAULT_NAME="$USER_INITIALS"DevOps
+VAULT_NAME="$USER_INITIALS"LabsVault
 
 read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the name of the vault to create / re-use, it must be a single word, e.g. tgDevOps"
+  echo "OK, please enter the name of the vault to create / re-use, it must be a single word, e.g. tgLabsVault"
   read VAULT_NAME
   if [ -z "$VAULT_NAME" ]
   then
@@ -111,7 +111,7 @@ VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID -
 if [ -z $VAULT_KEY_OCID ]
 then
   echo No existing key with name $VAULT_KEY_NAME, creating it
-  VAULT_KEY_OCID=`oci kms management key create --display-name $VAULT_KEY_NAME  --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --key-shape '{"algorithm":"AES", "length":32}' | jq -j ".data.id" | sed -e 's/"//g'`
+  VAULT_KEY_OCID=`oci kms management key create --display-name $VAULT_KEY_NAME  --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --key-shape '{"algorithm":"AES", "length":32}' --wait-for-state  ENABLED | jq -j ".data.id" | sed -e 's/"//g'`
   echo VAULT_KEY_REUSE=false >> $SETTINGS
 else
   echo Found existing key with name $VAULT_KEY_NAME, reusing it
