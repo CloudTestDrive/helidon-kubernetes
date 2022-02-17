@@ -78,7 +78,7 @@ else
 fi
 
 
-CLUSTER_NAME="$USER_INITIALS"lab
+CLUSTER_NAME="lab-$CLUSTER_CONTEXT_NAME-$USER_INITIALS"lab
 read -p "Do you want to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -91,7 +91,7 @@ then
     exit 1
   fi
 else     
-  echo "OK, going to use $CLUSTER_NAME as the Kubernetes cluster name"
+  echo "OK, going to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the Kubernetes cluster name"
 fi
 
 # Do the variable redirection trick again
@@ -142,7 +142,7 @@ then
       echo "You will need to get some E3 or E4 cores to be able to create a Kubernetes cluster, if you are in a non free trial maybe switch to a different region"
       exit 50
     fi
-    echo Creating cluster $CLUSTER_NAME
+    echo Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME
     echo Preparing terraform directory
     SAVED_DIR=`pwd`
     TF_GIT_BASE=$HOME/oke-labs-terraform
@@ -228,30 +228,18 @@ then
     fi
   fi
   echo Updating the kube config file
-  # get the downloaded context
-  DL_CONFIG_FILE=$TF_DIR/generated/kubeconfig
-  DL_CONTEXT=`kubectl config current-context --kubeconfig $DL_CONFIG_FILE`
-  # rename the downloaded context
-  kubectl config rename-context $DL_CONTEXT $CLUSTER_CONTEXT_NAME--kubeconfig $DL_CONFIG_FILE
   # ensure the context file exists
   KUBECONF_DIR=$HOME/.kube
   KUBECONF_FILE=$KUBECONF_DIR/config
   mkdir -p $KUBECONF_DIR
   touch $KUBECONF_FILE
-  # merge the old and new configs
-  KUBECONFIG=$KUBECONF_FILE:$DL_CONFIG_FILE kubectl config view --flatten > new_config
-  # Move it across
-  mv new_config $KUBECONF_FILE
-  chmod 600 $KUBECONF_FILE
-  # use the new one as the default for consistency with the way the oci command works
-  kubectl config use-context $CLUSTER_CONTEXT_NAME --kubeconfig $KUBECONF_FILE
-  #oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
+  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF_FILE --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
-  #chmod 600 $KUBECONF
-  #echo Renaming context to $CLUSTER_CONTEXT_NAME
+  chmod 600 $KUBECONF
+  echo Renaming context to $CLUSTER_CONTEXT_NAME
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
-  #CURRENT_CONTEXT=`kubectl config current-context`
-  #kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
+  CURRENT_CONTEXT=`kubectl config current-context`
+  kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
