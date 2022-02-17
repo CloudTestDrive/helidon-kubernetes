@@ -123,7 +123,7 @@ then
       exit 10
     fi
     echo Checking for cluster specific settings file
-    CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.txt
+    CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.sh
     if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
     then
       echo "Located cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS"
