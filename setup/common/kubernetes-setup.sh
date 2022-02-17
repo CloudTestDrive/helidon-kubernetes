@@ -122,7 +122,7 @@ then
       echo "Cannot locate directory $TF_SOURCE_CONFIG_DIR, cannot continue"
       exit 10
     fi
-    echo Checking for cluster specific settings file
+    echo "Checking for cluster specific settings file"
     CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.sh
     if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
     then
@@ -138,9 +138,30 @@ then
     then
       echo 'Unable to locate the VCN Network CIDR start variable ( VCN_CLASS_B_NETWORK_CIDR_START )'
       echo 'Cannot continue'
-      exit 20
+      exit 11
     else
       echo Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START
+    fi
+    
+    echo "Checking for teraform module specific settings file"
+    GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/generic-oke-terraform-settings.sh
+    if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
+    then
+      echo "Located general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS"
+    else
+      echo "Cannot locate general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS, cannot continue"
+      exit 12
+    fi
+    echo Loading generic OKE terraform settings
+    source $GENERIC_OKE_TERRAFORM_SETTINGS
+    # Check for the TF OKE module version
+    if [ -z $TERRAFORM_OKE_MODULE_VERSION ]
+    then
+      echo 'Unable to locate the terraform-oke-module version ( TERRAFORM_OKE_MODULE_VERSION )'
+      echo 'Cannot continue'
+      exit 13
+    else
+      echo Located terraform-oke-module version as $TERRAFORM_OKE_MODULE_VERSION
     fi
     echo Checking for VCN availability
     bash resource-minimum-check-region.sh vcn vcn-count 1
@@ -211,6 +232,9 @@ then
     bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
     echo Update $TF_MODULE_FILE to set Label prefix to context
     bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
+    echo Update $TF_MODULE_FILE to set Label prefix to context
+    bash $SAVED_DIR/update-file.sh $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
+    
     
     echo Initialising Terraform
     terraform init

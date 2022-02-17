@@ -1,7 +1,7 @@
 module oke {
 
   source  = "oracle-terraform-modules/oke/oci"
-  version = "4.1.5"
+  version = "TERRAFORM_OKE_MODULE_VERSION"
   compartment_id="COMPARTMENT_OCID"
   tenancy_id="OCI_TENANCY"
   home_region="OCI_HOME_REGION"
