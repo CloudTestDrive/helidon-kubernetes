@@ -136,7 +136,7 @@ then
     # Check for the VCN Network address being set
     if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
     then
-      echo 'Unable to locate the VCN Nertwork CIDR variable ( VCN_CLASS_B_NETWORK_CIDR_START )'
+      echo 'Unable to locate the VCN Network CIDR start variable ( VCN_CLASS_B_NETWORK_CIDR_START )'
       echo 'Cannot continue'
       exit 20
     else
@@ -210,7 +210,7 @@ then
     echo Update $TF_MODULE_FILE to set Label prefix to context
     bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
     echo Update $TF_MODULE_FILE to set Label prefix to context
-    bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_NUMBER $VCN_CLASS_B_NETWORK_NUMBER
+    bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     
     echo Initialising Terraform
     terraform init

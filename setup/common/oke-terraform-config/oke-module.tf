@@ -9,7 +9,7 @@ module oke {
   cluster_name="CLUSTER_NAME"
 
   vcn_name="oke-vcn-CLUSTER_NAME"
-  vcn_cidrs=["VCN_CLASS_B_NETWORK_NUMBER.0.0/16"]
+  vcn_cidrs=["VCN_CLASS_B_NETWORK_CIDR_START.0.0/16"]
 
   create_bastion_host=false
   create_bastion_service=false
