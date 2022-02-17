@@ -77,9 +77,9 @@ else
   echo Operating in compartment $COMPARTMENT_NAME
 fi
 
-
-CLUSTER_NAME="lab-$CLUSTER_CONTEXT_NAME-$USER_INITIALS"lab
-read -p "Do you want to use $CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+CLUSTER_NAME="$USER_INITIALS"
+CLUSTER_NAME_FULL="lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
+read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -91,7 +91,8 @@ then
     exit 1
   fi
 else     
-  echo "OK, going to use $CLUSTER_NAME as the Kubernetes cluster name"
+  echo "OK, going to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the Kubernetes cluster name"
+  CLUSTER_NAME_FULL=lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME
 fi
 
 # Do the variable redirection trick again
@@ -109,8 +110,8 @@ TF_GIT_BASE=$HOME/oke-labs-terraform
 
 if [ -z $OKE_OCID ]
 then
-  echo Checking for active cluster named $CLUSTER_NAME
-  OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
+  echo Checking for active cluster named $CLUSTER_NAME_FULL
+  OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME_FULL --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
     echo Checking for cluster specific settings directory
