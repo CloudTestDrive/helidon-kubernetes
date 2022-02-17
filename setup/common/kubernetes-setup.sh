@@ -144,7 +144,7 @@ then
     fi
     
     echo "Checking for teraform module specific settings file"
-    GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/generic-oke-terraform-settings.sh
+    GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
     if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
     then
       echo "Located general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS"
