@@ -200,6 +200,16 @@ then
     fi
     echo Retrieving cluster OCID from Terraform
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
+    if [ -z $OKE_OCID ]
+    then
+      echo 'ERROR unable to retrieve cluster OCID from the terraform output unable to continue'
+      echo 'You need to manually download the config file, look at the OCI Web UI for this cluster'
+      echo 'and click the "Access cluster" button to get the detailed instructions'
+      echo 'Once you have downloaded the kubeconfig you will need to update your context.'
+      echo 'Execute the following command to do this'
+      echo "kubectl config rename-context `kubectl config current-context` $context_name"
+      exit 1
+    fi
     echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
     echo OKE_REUSED_$context_name=false >> $SETTINGS
     cd $SAVED_DIR
