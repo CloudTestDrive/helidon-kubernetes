@@ -157,6 +157,7 @@ then
     echo Configuring terraform
     cp $SAVED_DIR/oke-provider.tf $TFP
     cp $SAVED_DIR/oke-module.tf $TFM
+    cp $SAVED_DIR/oke-outputs.tf $TFO
     cd $TF_DIR
     echo Update provider.tf set OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
