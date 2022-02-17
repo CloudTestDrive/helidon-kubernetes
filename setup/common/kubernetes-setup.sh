@@ -294,7 +294,7 @@ then
   touch $KUBECONF_FILE
   oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF_FILE --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
-  chmod 600 $KUBECONF
+  chmod 600 $KUBECONF_FILE
   echo Renaming context to $CLUSTER_CONTEXT_NAME
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
   CURRENT_CONTEXT=`kubectl config current-context`
