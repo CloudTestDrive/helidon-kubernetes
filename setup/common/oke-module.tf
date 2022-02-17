@@ -15,7 +15,7 @@ create_operator=false
 control_plane_type="public"
 control_plane_allowed_cidrs=["0.0.0.0/0"]
 
-label_prefix="oke"
+label_prefix="K8S_CONTEXT-oke"
 
 node_pools = {
   pool1 = { shape = "WORKER_SHAPE", ocpus = 1, memory = 16, node_pool_size = 3, boot_volume_size = 50, label = {pool = "pool1" } }

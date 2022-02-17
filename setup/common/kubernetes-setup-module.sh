@@ -152,27 +152,30 @@ then
     TF_DIR=$TF_DIR_BASE-$context_name
 	mkdir -p $TF_DIR
     TFP=$TF_DIR/provider.tf
-    TFV=$TF_DIR/oke.tf
+    TFM=$TF_DIR/oke-module.tf
+    TFO=$TF_DIR/oke-outputs.tf
     echo Configuring terraform
     cp $SAVED_DIR/oke-provider.tf $TFP
-    cp $SAVED_DIR/oke-module.tf $TFV
+    cp $SAVED_DIR/oke-module.tf $TFM
     cd $TF_DIR
     echo Update provider.tf set OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
     echo Update provider.tf set OCI_HOME_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars set WORKER_SHAPE
-    bash $SAVED_DIR/update-file.sh $TFV WORKER_SHAPE $WORKER_SHAPE
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
     echo Update terraform.tfvars to set compartment OCID
-    bash $SAVED_DIR/update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
+    bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo Update terraform.tfvars to set tenancy OCID
-    bash $SAVED_DIR/update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
+    bash $SAVED_DIR/update-file.sh $TFM OCI_TENANCY $OCI_TENANCY
     echo Update terraform.tfvars to set OCI Region
-    bash $SAVED_DIR/update-file.sh $TFV OCI_REGION $OCI_REGION
+    bash $SAVED_DIR/update-file.sh $TFM OCI_REGION $OCI_REGION
     echo Update terraform.tfvars set OCI_HOME_REGION
-    bash $SAVED_DIR/update-file.sh $TFV OCI_HOME_REGION $OCI_HOME_REGION
+    bash $SAVED_DIR/update-file.sh $TFM OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars to set Cluster name
-    bash $SAVED_DIR/update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
+    bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
+    echo Update terraform.tfvars to set Label prefix to context
+    bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $context_name
     echo Initialising Terraform
     terraform init
     if [ $? -ne 0 ]
