@@ -79,11 +79,11 @@ fi
 
 
 CLUSTER_NAME="$USER_INITIALS"lab
-read -p "Do you want to use $CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+read -p "Do you want to use lab-$context_name-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. TGDemo"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with this name exists it will be re-used, if not a new cluster will be created named lab-$context_name-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
@@ -148,38 +148,35 @@ then
     TF_GIT_BASE=$HOME/oke-labs-terraform
     mkdir -p $TF_GIT_BASE
     cd $TF_GIT_BASE
-    echo Downloading terraform
-    git clone https://github.com/oracle-terraform-modules/terraform-oci-oke.git
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
     TF_DIR=$TF_DIR_BASE-$context_name
-	mv $TF_DIR_BASE $TF_DIR
-	cd $TF_DIR
-	OKE_TF_COMMIT_ID=bace9fb9a70d0b812b5e2a60e0e04e8354da8dda
-    echo Switching to commit $OKE_TF_COMMIT_ID
-    git checkout $OKE_TF_COMMIT_ID
-    cd $TF_GIT_BASE
-    TFP=$TF_DIR/provider.tf
-    TFV=$TF_DIR/terraform.tfvars
+	mkdir -p $TF_DIR
+    TFP=$TF_DIR/oke-provider.tf
+    TFM=$TF_DIR/oke-module.tf
+    TFO=$TF_DIR/oke-outputs.tf
     echo Configuring terraform
     cp $SAVED_DIR/oke-provider.tf $TFP
-    cp $SAVED_DIR/oke-terraform.tfvars $TFV
+    cp $SAVED_DIR/oke-module.tf $TFM
+    cp $SAVED_DIR/oke-outputs.tf $TFO
     cd $TF_DIR
     echo Update provider.tf set OCI_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
     echo Update provider.tf set OCI_HOME_REGION
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars set WORKER_SHAPE
-    bash $SAVED_DIR/update-file.sh $TFV WORKER_SHAPE $WORKER_SHAPE
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
     echo Update terraform.tfvars to set compartment OCID
-    bash $SAVED_DIR/update-file.sh $TFV COMPARTMENT_OCID $COMPARTMENT_OCID
+    bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo Update terraform.tfvars to set tenancy OCID
-    bash $SAVED_DIR/update-file.sh $TFV OCI_TENANCY $OCI_TENANCY
+    bash $SAVED_DIR/update-file.sh $TFM OCI_TENANCY $OCI_TENANCY
     echo Update terraform.tfvars to set OCI Region
-    bash $SAVED_DIR/update-file.sh $TFV OCI_REGION $OCI_REGION
+    bash $SAVED_DIR/update-file.sh $TFM OCI_REGION $OCI_REGION
     echo Update terraform.tfvars set OCI_HOME_REGION
-    bash $SAVED_DIR/update-file.sh $TFV OCI_HOME_REGION $OCI_HOME_REGION
+    bash $SAVED_DIR/update-file.sh $TFM OCI_HOME_REGION $OCI_HOME_REGION
     echo Update terraform.tfvars to set Cluster name
-    bash $SAVED_DIR/update-file.sh $TFV CLUSTER_NAME $CLUSTER_NAME
+    bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
+    echo Update terraform.tfvars to set Label prefix to context
+    bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $context_name
     echo Initialising Terraform
     terraform init
     if [ $? -ne 0 ]
@@ -203,6 +200,16 @@ then
     fi
     echo Retrieving cluster OCID from Terraform
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
+    if [ -z $OKE_OCID ]
+    then
+      echo 'ERROR unable to retrieve cluster OCID from the terraform output unable to continue'
+      echo 'You need to manually download the config file, look at the OCI Web UI for this cluster'
+      echo 'and click the "Access cluster" button to get the detailed instructions'
+      echo 'Once you have downloaded the kubeconfig you will need to update your context.'
+      echo 'Execute the following command to do this'
+      echo "kubectl config rename-context `kubectl config current-context` $context_name"
+      exit 1
+    fi
     echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
     echo OKE_REUSED_$context_name=false >> $SETTINGS
     cd $SAVED_DIR
