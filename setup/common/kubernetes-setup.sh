@@ -1,13 +1,13 @@
 #!/bin/bash -f
 
-context_name=one
+CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
-  context_name=$1
-  echo Operating on context name $context_name
+  CLUSTER_CONTEXT_NAME=$1
+  echo Operating on context name $CLUSTER_CONTEXT_NAME
 else
-  echo Using default context name of $context_name
+  echo Using default context name of $CLUSTER_CONTEXT_NAME
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
@@ -36,31 +36,31 @@ fi
 
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=OKE_REUSED_$context_name
+OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo No reuse information for OKE context $context_name
+  echo No reuse information for OKE context $CLUSTER_CONTEXT_NAME
 else
-  echo This script has already configured OKE details for context $context_name, exiting
+  echo This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting
   exit 3
 fi
 
 
 #check for trying to re-use the context name
-CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $context_name`
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CLUSTER_CONTEXT_NAME`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
-  echo Using context name of $context_name
+  echo Using context name of $CLUSTER_CONTEXT_NAME
 else
-  echo A kubernetes context called $context_name already exists, this script cannot replace it.
+  echo A kubernetes context called $CLUSTER_CONTEXT_NAME already exists, this script cannot replace it.
   if [ $# -gt 0 ]
   then
-    echo Please re-run this script providing a different name than $context_name as the first argument
+    echo Please re-run this script providing a different name than $CLUSTER_CONTEXT_NAME as the first argument
   else
-    echo Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $context_name
+    echo Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $CLUSTER_CONTEXT_NAME
   fi
   exit 40
 fi
@@ -79,11 +79,11 @@ fi
 
 
 CLUSTER_NAME="$USER_INITIALS"lab
-read -p "Do you want to use lab-$context_name-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+read -p "Do you want to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with this name exists it will be re-used, if not a new cluster will be created named lab-$context_name-<your name>"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with this name exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
@@ -96,7 +96,7 @@ fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=OKE_OCID_$context_name
+OKE_OCID_NAME=OKE_OCID_$CLUSTER_CONTEXT_NAME
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
@@ -149,7 +149,7 @@ then
     mkdir -p $TF_GIT_BASE
     cd $TF_GIT_BASE
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
-    TF_DIR=$TF_DIR_BASE-$context_name
+    TF_DIR=$TF_DIR_BASE-$CLUSTER_CONTEXT_NAME
 	mkdir -p $TF_DIR
     TFP=$TF_DIR/oke-provider.tf
     TFM=$TF_DIR/oke-module.tf
@@ -176,7 +176,7 @@ then
     echo Update terraform.tfvars to set Cluster name
     bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
     echo Update terraform.tfvars to set Label prefix to context
-    bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $context_name
+    bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
     echo Initialising Terraform
     terraform init
     if [ $? -ne 0 ]
@@ -207,11 +207,11 @@ then
       echo 'and click the "Access cluster" button to get the detailed instructions'
       echo 'Once you have downloaded the kubeconfig you will need to update your context.'
       echo 'Execute the following command to do this'
-      echo "kubectl config rename-context `kubectl config current-context` $context_name"
+      echo "kubectl config rename-context `kubectl config current-context` $CLUSTER_CONTEXT_NAME"
       exit 1
     fi
-    echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
-    echo OKE_REUSED_$context_name=false >> $SETTINGS
+    echo OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID >> $SETTINGS
+    echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=false >> $SETTINGS
     cd $SAVED_DIR
   else
     echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status
@@ -219,30 +219,45 @@ then
     if [ $OKE_STATUS = ACTIVE ]
     then
       echo Cluster is Active, proceeding
-      echo OKE_OCID_$context_name=$OKE_OCID >> $SETTINGS
-      echo OKE_REUSED_$context_name=true >> $SETTINGS
+      echo OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID >> $SETTINGS
+      echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=true >> $SETTINGS
     else
       echo Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used.
       echo Please re-run this script and use a different name cluster name
       exit 20 
     fi
   fi
-  echo Downloading the kube config file
-  KUBECONF=$HOME/.kube/config
-  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
+  echo Updating the kube config file
+  # get the downloaded context
+  DL_CONFIG_FILE=$TF_DIR/generated/kubeconfig
+  DL_CONTEXT=`kubectl config current-context --kubeconfig $DL_CONFIG_FILE`
+  # rename the downloaded context
+  kubectl config rename-context $DL_CONTEXT $CLUSTER_CONTEXT_NAME--kubeconfig $DL_CONFIG_FILE
+  # ensure the context file exists
+  KUBECONF_DIR=$HOME/.kube
+  KUBECONF_FILE=$KUBECONF_DIR/config
+  mkdir -p $KUBECONF_DIR
+  touch $KUBECONF_FILE
+  # merge the old and new configs
+  KUBECONFIG=$KUBECONF_FILE:$DL_CONFIG_FILE kubectl config view --flatten > new_config
+  # Move it across
+  mv new_config $KUBECONF_FILE
+  chmod 600 $KUBECONF_FILE
+  # use the new one as the default for consistency with the way the oci command works
+  kubectl config use-context $CLUSTER_CONTEXT_NAME --kubeconfig $KUBECONF_FILE
+  #oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
-  chmod 600 $KUBECONF
-  echo Renaming context to $context_name
+  #chmod 600 $KUBECONF
+  #echo Renaming context to $CLUSTER_CONTEXT_NAME
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
-  CURRENT_CONTEXT=`kubectl config current-context`
-  kubectl config rename-context $CURRENT_CONTEXT $context_name
-
+  #CURRENT_CONTEXT=`kubectl config current-context`
+  #kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
   then
     echo Cannot locate a cluster with the specified OCID of $OKE_OCID
-    echo Please check that the value of OKE_OCID_$context_name in $SETTINGS is correct if nor remove or replace it
+    echo Please check that the value of OKE_OCID_$CLUSTER_CONTEXT_NAME in $SETTINGS is correct if nor remove or replace it
     exit 5
   else
     echo Located cluster named $CLUSTER_NAME using OCID $OKE_OCID
@@ -250,6 +265,6 @@ else
     echo You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script
     echo You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script
     # Flag this as reused and refuse to destroy it
-    echo OKE_REUSED_$context_name=true >> $SETTINGS
+    echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=true >> $SETTINGS
   fi
 fi
