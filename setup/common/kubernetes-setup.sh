@@ -91,7 +91,7 @@ then
     exit 1
   fi
 else     
-  echo "OK, going to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the Kubernetes cluster name"
+  echo "OK, going to use $CLUSTER_NAME as the Kubernetes cluster name"
 fi
 
 # Do the variable redirection trick again
