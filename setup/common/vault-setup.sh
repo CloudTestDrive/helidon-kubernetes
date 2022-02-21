@@ -116,7 +116,7 @@ then
   echo VAULT_KEY_REUSED=false >> $SETTINGS
 else
   echo Found existing key with name $VAULT_KEY_NAME, reusing it
-  echo VAULT_KEY_REUSE=true >> $SETTINGS
+  echo VAULT_KEY_REUSED=true >> $SETTINGS
 fi
 echo VAULT_KEY_OCID=$VAULT_KEY_OCID >> $SETTINGS
 
