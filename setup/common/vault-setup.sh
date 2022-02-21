@@ -75,7 +75,7 @@ if [ -z $VAULT_OCID ]
      VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT --wait-for-state ACTIVE | jq -j '.data.id'`
      echo "Vault being created using OCID $VAULT_OCID"
      echo VAULT_OCID=$VAULT_OCID >>$SETTINGS
-     echo VAULT_REUSE=false >> $SETTINGS
+     echo VAULT_REUSED=false >> $SETTINGS
   else
      echo VAULT_OCID=$VAULT_OCID >> $SETTINGS
      echo VAULT_REUSED=true >> $SETTINGS
@@ -112,7 +112,7 @@ if [ -z $VAULT_KEY_OCID ]
 then
   echo No existing key with name $VAULT_KEY_NAME, creating it
   VAULT_KEY_OCID=`oci kms management key create --display-name $VAULT_KEY_NAME  --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --key-shape '{"algorithm":"AES", "length":32}' --wait-for-state  ENABLED | jq -j ".data.id" | sed -e 's/"//g'`
-  echo VAULT_KEY_REUSE=false >> $SETTINGS
+  echo VAULT_KEY_REUSED=false >> $SETTINGS
 else
   echo Found existing key with name $VAULT_KEY_NAME, reusing it
   echo VAULT_KEY_REUSE=true >> $SETTINGS
