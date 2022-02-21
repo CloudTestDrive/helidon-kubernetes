@@ -2,7 +2,7 @@
 
 if [ $# -ne 1 ]
 then
-  echo "This script $0 requires one arguments:"
+  echo "This script $0 requires one argument:"
   echo "1st is the name of the setting e.g. OCIR_HOST - the script will appeneded / prepend the required strings around that value"
 fi
 SETTINGS_NAME=$1
