@@ -12,5 +12,5 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-bash vault-individual-secret-delete.sh OCIR_HOST
-bash vault-individual-secret-delete.sh OCIR_STORAGE_NAMESPACE
+bash vault-individual-secret-destroy.sh OCIR_HOST
+bash vault-individual-secret-destroy.sh OCIR_STORAGE_NAMESPACE
