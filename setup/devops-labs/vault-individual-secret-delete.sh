@@ -50,6 +50,6 @@ echo "it's not then you can using the OCI Vault UI create a new version of the s
 echo "the value you want"
 oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME}"
 
-# clean uip the settings
-bash ../common/delete-from-saved-settings.sh "${!VAULT_SECRET_NAME}"
+# clean up the settings
+bash ../common/delete-from-saved-settings.sh "${!VAULT_SECRET_OCID_NAME}"
 bash ../common/delete-from-saved-settings.sh "${!SECRET_REUSED_VAR_NAME}"
