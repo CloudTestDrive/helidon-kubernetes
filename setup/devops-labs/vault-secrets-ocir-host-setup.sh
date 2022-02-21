@@ -2,6 +2,7 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
+VAULT_SECRET_NAME=OCIR_HOST_VAULT
 
 if [ -f $SETTINGS ]
   then
@@ -16,7 +17,8 @@ if [ -z $VAULT_SECRET_OCIR_HOST_REUSED ]
 then
   echo No existing reuse information for OCIR_HOST_VAULT, continuing
 else
-  echo The OCIR_HOST_VAULT secret has already been setup, will not be recreated. this script will exit
+  echo "The OCIR_HOST_VAULT secret has already been setup, will not be recreated."
+  echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID"
   exit 0
 fi
 
@@ -53,7 +55,6 @@ else
   echo Found vault key
 fi
 
-VAULT_SECRET_NAME=OCIR_HOST_VAULT
 #lets see it it exists already
 echo "Checking if secret $VAULT_SECRET_NAME already exists"
 VAULT_SECRET_OCIR_HOST_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`

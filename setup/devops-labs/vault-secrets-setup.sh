@@ -12,14 +12,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z $VAULT_SECRET_OCIR_HOST_REUSED ] 
-then
-  echo No existing reuse information for OCIR_HOST_VAULT, continuing
-else
-  echo The OCIR_HOST_VAULT secret has already been setup, will not be recreated. this script will exit
-  exit 0
-fi
-
 if [ -z $COMPARTMENT_OCID ]
 then
   echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
