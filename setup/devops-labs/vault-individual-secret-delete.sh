@@ -45,7 +45,11 @@ echo "Scheduling deletion of secret $VAULT_SECRET_NAME"
 echo "The actuall deletion will happen later (usually in a month) and you can cancel the"
 echo "deletion in the intervening time if you wish."
 echo "If you re-run this lab while the secrets deletion is still pending you will need to"
-echo "Cancel the deletion and ensure that the value int he secret is what you require. If"
+echo "Cancel the deletion and ensure that the value in the secret is what you require. If"
 echo "it's not then you can using the OCI Vault UI create a new version of the secret with"
 echo "the value you want"
 oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME}"
+
+# clean uip the settings
+bash ../common/delete-from-saved-settings.sh "${!VAULT_SECRET_NAME}"
+bash ../common/delete-from-saved-settings.sh "${!SECRET_REUSED_VAR_NAME}"
