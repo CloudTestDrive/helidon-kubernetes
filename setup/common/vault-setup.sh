@@ -77,6 +77,7 @@ if [ -z $VAULT_OCID ]
      echo VAULT_OCID=$VAULT_OCID >>$SETTINGS
      echo VAULT_REUSED=false >> $SETTINGS
   else
+     echo "Found existing vault names $VAULT_NAME, reusing it"
      echo VAULT_OCID=$VAULT_OCID >> $SETTINGS
      echo VAULT_REUSED=true >> $SETTINGS
   fi
@@ -107,7 +108,7 @@ echo Getting vault endpoint for vault OCID $VAULT_OCID
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
 VAULT_KEY_NAME="$USER_INITIALS"Key
 echo Checking for existing key named $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID
-VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -e ".data[] | select (.\"display-name\" == \"$VAULT_KEY_NAME\") | .id"`
+VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -e ".data[] | select (.\"display-name\" == \"$VAULT_KEY_NAME\") | .id" | sed -e 's/"//g'`
 if [ -z $VAULT_KEY_OCID ]
 then
   echo No existing key with name $VAULT_KEY_NAME, creating it
