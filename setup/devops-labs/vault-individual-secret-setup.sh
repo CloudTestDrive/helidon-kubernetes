@@ -60,7 +60,7 @@ fi
 
 BASE64_VAULT_SECRET_VALUE=`echo $VAULT_SECRET_VALUE | base64`
 #lets see it it exists already
-eecho "Checking if secret $VAULT_SECRET_NAME already exists"
+echo "Checking if secret $VAULT_SECRET_NAME already exists"
 VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
 
 VAULT_SECRET_PENDING_DELETION_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state PENDING_DELETION --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
