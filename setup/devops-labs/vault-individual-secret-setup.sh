@@ -47,20 +47,20 @@ else
 fi
 
 VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED
+SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
 
 if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
   echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, continuing"
 else
   echo "The "$SETTINGS_NAME"_VAULT secret has already been setup, will not be recreated."
-  echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID"
+  echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID "
   exit 0
 fi
 
 BASE64_VAULT_SECRET_VALUE=`echo $VAULT_SECRET_VALUE | base64`
 #lets see it it exists already
-echo "Checking if secret $VAULT_SECRET_NAME already exists"
+eecho "Checking if secret $VAULT_SECRET_NAME already exists"
 VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
 
 VAULT_SECRET_PENDING_DELETION_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state PENDING_DELETION --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
