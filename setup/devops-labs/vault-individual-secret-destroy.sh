@@ -48,6 +48,7 @@ echo "If you re-run this lab while the secrets deletion is still pending you wil
 echo "Cancel the deletion and ensure that the value in the secret is what you require. If"
 echo "it's not then you can using the OCI Vault UI create a new version of the secret with"
 echo "the value you want"
+echo "Note, a secret that is pending deletion will prevent the compartment that contains it from being deleted"
 oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME}"
 
 # clean up the settings
