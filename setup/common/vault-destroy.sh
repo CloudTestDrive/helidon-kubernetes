@@ -18,6 +18,15 @@ then
   exit 2
 fi
 
+if [ -z $VAULT_OCID ]
+then
+  echo "Cannot locate OCID for the vault , unable to proceed with key of vault deletion"
+  exit 10
+else
+  echo "Locating vault endpoint" 
+  VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
+fi
+
 if [ -z $VAULT_KEY_REUSED ]
 then
   echo "No reuse information for vault key, cannot safely proceed to schedule it's deletion"
@@ -36,7 +45,7 @@ else
       echo "The key deletion is cancled, this will also require that you cancel the vault deletion"
       echo "as you can't have a active key in a vault that is itself pending deletion"
       echo "Note, a key that is pending deletion will prevent the compartment that contains it from being deleted"
-      oci kms management key schedule-deletion --key-id $VAULT_KEY_OCID
+      oci kms management key schedule-deletion --key-id $VAULT_KEY_OCID --endpoint $VAULT_ENDPOINT
       echo Removing details from the settings file
       bash ./delete-from-saved-settings.sh VAULT_KEY_OCID
       bash ./delete-from-saved-settings.sh VAULT_KEY_REUSED
