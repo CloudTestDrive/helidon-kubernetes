@@ -1,5 +1,16 @@
 #!/bin/bash -f
 
+if [ $# -ne 3 ]
+then
+  echo "This script $0 requires three arguments:"
+  echo "1st is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
+  echo "2nd the description to be used - note that is this is multiple words it must be in quotes"
+  echo "3rd the value to be used for the secret"
+fi
+SETTINGS_NAME=$1
+VAULT_SECRET_DESCRIPTION=$2
+VAULT_SECRET_VALUE=$3
+
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -35,29 +46,10 @@ else
   echo Found vault key
 fi
 
-
-## This is specific to the secret being generated
-
-SETTINGS_NAME=OCIR_HOST
-VAULT_SECRET_DESCRIPTION='OCIR hostname'
-
-if [ -z $OCIR_STOREFRONT_LOCATION ]
-then
-  echo "No OCIR host variable for the storefront image set, have you run the image-environment-setup.sh or ocir-setup.sh script ?"
-  echo "Cannot continue"
-  exit 14
-else
-  echo "Found storefront host location"
-fi
-
-VAULT_SECRET_VALUE=$OCIR_STOREFRONT_LOCATION
-
-
-## Back to generic code again
-
 VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
+SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED
 
-if [ -z $VAULT_SECRET_OCIR_HOST_REUSED ] 
+if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
   echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, continuing"
 else
