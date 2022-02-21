@@ -56,7 +56,7 @@ else
     then
       echo "Cannot locate OCID for the vault , unable to schedule it's deletion"
     else
-      echo "Scheduling deletion of , this will normally take effect in a months time"
+      echo "Scheduling deletion of vault, this will normally take effect in a months time"
       echo "should you with to cancel during that time you can do so."
       echo "While deletion is pending any secretes in this vault will be unavailable unless"
       echo "The vault deletion is cancled"
