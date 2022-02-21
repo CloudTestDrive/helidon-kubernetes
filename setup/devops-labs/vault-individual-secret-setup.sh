@@ -84,8 +84,7 @@ then
 else
   echo "A Vault secret named $VAULT_SECRET_NAME already exists but has a deletion scheduled. It "
   echo "cannot be used unless the deletion is cancled."
-  echo "Do you want to cancel the pending deletion ?"
-  read -p "Are you running in a free trial environment (y/n) ? " REPLY
+  read -p "Do you want to cancel the pending deletion ? " REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "OK, you cannot use the secret name $VAULT_SECRET_NAME, you can manually create another secret"
