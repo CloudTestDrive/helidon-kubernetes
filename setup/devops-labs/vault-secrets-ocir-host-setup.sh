@@ -103,6 +103,6 @@ else
     echo "OK, canceling pending deletion"
     oci vault secret cancel-secret-deletion --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID
     echo "Pending deletion cancled, please ensure that the value of the secret $VAULT_SECRET_NAME is set to $VAULT_SECRET_VALUE"
-    echo "Optionally you can re-run this script
+    echo "Optionally you can re-run this script"
   fi
 fi
