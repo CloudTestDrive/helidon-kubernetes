@@ -45,6 +45,7 @@ else
 fi
 
 OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
+BASE64_OCIR_STORAGE_NAMESPACE_VAULT=`echo $OBJECT_STORAGE_NAMESPACE | base64`
 
 VAULT_SECRET_NAME=OCIR_STORAGE_NAMESPACE_VAULT
 #lets see it it exists already
@@ -61,8 +62,11 @@ then
   echo "VAULT_SECRET_OCIR_STORAGE_NAMESPACE_REUSED=false" >> $SETTINGS
 else
   # it exists, we will just re-use it
-  echo "$VAULT_SECRET_NAME already exists, reusing it, if you need to change the contents you will have to do that manually"
+  echo "$VAULT_SECRET_NAME already exists, reusing it, we recommend that you check it contains the value $OBJECT_STORAGE_NAMESPACE (remember to"
+  echo "convert the vault vault form base64 when checking). If you need to change the contents you will have to do that manually"
   echo "VAULT_SECRET_OCIR_STORAGE_NAMESPACE_OCID=$VAULT_SECRET_OCIR_STORAGE_NAMESPACE_OCID" >> $SETTINGS
   echo "VAULT_SECRET_OCIR_STORAGE_NAMESPACE_REUSED=true" >> $SETTINGS
 
 fi
+
+echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_STORAGE_NAMESPACE_OCID"

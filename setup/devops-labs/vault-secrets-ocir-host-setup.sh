@@ -68,8 +68,10 @@ then
   echo "VAULT_SECRET_OCIR_HOST_REUSED=false" >> $SETTINGS
 else
   # it exists, we will just re-use it
-  echo "$VAULT_SECRET_NAME already exists, reusing it, if you need to change the contents you will have to do that manually"
+  echo "$VAULT_SECRET_NAME already exists, reusing it, we recommend that you check it contains the value $OCIR_STOREFRONT_LOCATION (remember to"
+  echo "convert the vault vault from base64 when checking). If you need to change the contents you will have to do that manually"
   echo "VAULT_SECRET_OCIR_HOST_OCID=$VAULT_SECRET_OCIR_HOST_OCID" >> $SETTINGS
   echo "VAULT_SECRET_OCIR_HOST_REUSED=true" >> $SETTINGS
-
 fi
+
+echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID"
