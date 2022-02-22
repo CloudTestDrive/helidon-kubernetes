@@ -49,13 +49,13 @@ fi
 
 GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME | jq -r '.data[0].id'`
 
-GROUP_RULE="ANY {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
+GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
 
 echo "Checking for existing dynamic group named $GROUP_NAME"
 if [ -z "$GROUP_OCID" ]
 then
   echo "No existing dynamic group found, creating"
-  GROUP_OCID=`oci iam dynamic-group create --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "\"$GROUP_RULE\"" --wait-for-state ACTIVE | jq -r '.data.id'`
+  GROUP_OCID=`oci iam dynamic-group create --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "$GROUP_RULE" --wait-for-state ACTIVE | jq -r '.data.id'`
   echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
   echo $GROUP_REUSED_NAME=false >> $SETTINGS
   exit 0
