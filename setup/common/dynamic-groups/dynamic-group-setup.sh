@@ -1,8 +1,8 @@
 #!/bin/bash -f
 
-if [ $# -lt 2 ]
+if [ $# -lt 3 ]
 then
-  echo "The user group setup script requires three arguments:"
+  echo "The dynamic setup script requires three arguments:"
   echo "the name of the dynamic group to create"
   echo "the resource typoe of the dynamic group e.g. devopsbuildpipeline"
   echo "the description of the dynamic group (which needs to be quoted)"
