@@ -52,5 +52,5 @@ echo "Note, a secret that is pending deletion will prevent the compartment that 
 oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME}"
 
 # clean up the settings
-bash ../common/delete-from-saved-settings.sh "${!VAULT_SECRET_OCID_NAME}"
-bash ../common/delete-from-saved-settings.sh "${!SECRET_REUSED_VAR_NAME}"
+bash ../common/delete-from-saved-settings.sh "$VAULT_SECRET_OCID_NAME"
+bash ../common/delete-from-saved-settings.sh "$SECRET_REUSED_VAR_NAME"
