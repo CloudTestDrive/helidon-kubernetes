@@ -28,7 +28,7 @@ if [ -z $COMPARTMENT_OCID ]
   then
   echo No existing compartment information
   echo Checking for compartment availability
-  bash resource-minimum-check-region.sh compartments compartment-count 1
+  bash ./resources/resource-minimum-check-region.sh compartments compartment-count 1
   AVAIL_COMPARTMENTS=$?
 
   if [ $AVAIL_COMPARTMENTS -eq 0 ]
@@ -47,7 +47,7 @@ if [ -z $ATPDB_OCID ]
   then
   echo No existing database information
   echo Checking for database resource availability
-  bash resource-minimum-check-region.sh database atp-ocpu-count 1
+  bash ./resources/resource-minimum-check-region.sh database atp-ocpu-count 1
   AVAIL_DATABASES=$?
 
   if [ $AVAIL_DATABASES -eq 0 ]
@@ -72,7 +72,7 @@ then
   echo No already configured OKE context $context_name, checking resource availability
   
   echo Checking for VCN availability for Kubernetes workers
-  bash resource-minimum-check-region.sh vcn vcn-count 1
+  bash ./resources/resource-minimum-check-region.sh vcn vcn-count 1
   AVAIL_VCN=$?
 
   if [ $AVAIL_VCN -eq 0 ]
@@ -85,9 +85,9 @@ then
 
   echo Checking for E4 or E3 processor core availability for Kubernetes workers
   # for now to get this done quickly just hard code the checks, at some point make this config driven
-  bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
+  bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
   AVAIL_E4_CORES=$?
-  bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
+  bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
   AVAIL_E3_CORES=$?
   if [ $AVAIL_E4_CORES -eq 0 ]
   then
@@ -103,7 +103,7 @@ else
   echo You already have an OKE cluster for context $context_name, not need to check resources
 fi
 
-bash resource-minimum-check-region.sh load-balancer lb-10mbps-count 1
+bash ./resources/resource-minimum-check-region.sh load-balancer lb-10mbps-count 1
 AVAIL_LB=$?
 if [ $AVAIL_LB -eq 0 ]
 then

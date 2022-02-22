@@ -8,6 +8,7 @@ then
   echo 'The minimum required number of resources e.g. 1'
   echo 'It will return 0 if the available number of resources is equal to or more than than the minimum required'
   echo 'It will return 50 if the available number of resources is less than the minimum required'
+  echo 'It will return 98 if the resource availability is null'
   echo 'It will return 99 if the resource availability cannot be retrieved'
   echo 'With the arguments above this script will return a zero code if the available number of vcns equals or exceeds 1'
   exit 1
@@ -23,6 +24,12 @@ if [ -z "$AVAIL_RESOURCES" ]
 then
   echo "Unable to get resource availability for resource $LIMIT_NAME in service $SERVICE_NAME in region, cannot continue"
   exit 99
+fi
+
+if [ "$AVAIL_RESOURCES" = "null" ]
+then
+  echo "Unable to get resource availability for resource $LIMIT_NAME in service $SERVICE_NAME in region the limit is null"
+  exit 98
 fi
 
 if [ $AVAIL_RESOURCES -lt $MINIMUM_REQUIRED ]
