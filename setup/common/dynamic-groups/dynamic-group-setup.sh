@@ -47,7 +47,7 @@ fi
 
 # see if we can find the existing group
 
-GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME | jq -r '.data[0].id`
+GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME | jq -r '.data[0].id'`
 
 GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
 
