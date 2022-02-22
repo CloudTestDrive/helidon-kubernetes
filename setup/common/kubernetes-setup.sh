@@ -165,7 +165,7 @@ then
       echo Located terraform-oke-module version as $TERRAFORM_OKE_MODULE_VERSION
     fi
     echo Checking for VCN availability
-    bash resource-minimum-check-region.sh vcn vcn-count 1
+    bash ./resources/resource-minimum-check-region.sh vcn vcn-count 1
     AVAIL_VCN=$?
 
     if [ $AVAIL_VCN -eq 0 ]
@@ -178,9 +178,9 @@ then
     fi
     echo Checking for E4 or E3 processor core availability for Kubernetes workers
     # for now to get this done quickly just hard code the checks, at some point make this config driven
-    bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
+    bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
     AVAIL_E4_CORES=$?
-    bash resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
+    bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
     AVAIL_E3_CORES=$?
     if [ $AVAIL_E4_CORES -eq 0 ]
     then
