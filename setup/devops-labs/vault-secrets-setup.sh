@@ -38,6 +38,9 @@ fi
 
 # now actually create the host ane nameslace secrets
 
+
+cd ../common/vault-secrets
+
 if [ -z $OCIR_STOREFRONT_LOCATION ]
 then
   echo "No OCIR host variable for the storefront image set, have you run the image-environment-setup.sh or ocir-setup.sh script ?"
@@ -49,4 +52,4 @@ fi
 # the object storage namespace should exist as it's a tenancy level property, so no need to check
 OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 
-bash ../common/vault-secrets/vault-individual-secret-setup.sh OCIR_STORAGE_NAMESPACE 'OCIR Storage namespace' $OBJECT_STORAGE_NAMESPACE
+bash ./vault-individual-secret-setup.sh OCIR_STORAGE_NAMESPACE 'OCIR Storage namespace' $OBJECT_STORAGE_NAMESPACE
