@@ -11,3 +11,4 @@ if [ -f $SETTINGS ]
 fi
 
 bash ./delete-from-saved-settings.sh USER_OCID
+bash ./delete-from-saved-settings.sh USER_TYPE

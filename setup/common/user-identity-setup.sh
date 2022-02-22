@@ -32,6 +32,7 @@ LOCAL_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.user' | wc -l`
 if [ $LOCAL_USER = 1 ]
   then
     echo USER_OCID=$OCI_CS_USER_OCID >> $SETTINGS
+    echo USER_TYPE=local >> $SETTINGS
     USERNAME=`oci iam user get --user-id $OCI_CS_USER_OCID | jq -j '.data.name'`
     echo You are a local user, and do not use an identity provider, your user name is $USERNAME, saved details
     exit 0
@@ -52,22 +53,25 @@ if [ $FEDERATED_USER = 1 ]
     USER_OCID=`oci iam user list --name $USERNAME_PROVISIONAL | jq -j '.data[0].id'`
     if [ -z $USER_OCID ]
     then
-      echo Cannot locate OCID for user named $USERNAME_PROVISIONAL
-      echo you will have to locate your user OCID 
-      echo in the OCI Console then edit the file $SETTINGS
-      echo and add a line of the form 
+      echo "Cannot locate OCID for user named $USERNAME_PROVISIONAL"
+      echo "you will have to locate your user OCID"
+      echo "in the OCI Console then edit the file $SETTINGS"
+      echo "and add lines of the form"
       echo 'export USER_OCID=<user odic>'
+      echo 'export USER_TYPE=[local or federated]'
       exit 11
     fi
     echo USER_OCID=$USER_OCID >> $SETTINGS
+    echo USER_TYPE=federated >> $SETTINGS
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
     echo You are a federated user, your user name is $USERNAME, saved details
     exit 0
 fi
 
-echo Unknown user type $OCI_CS_USER_OCID 
-echo You may be using an Active Directory federated user, 
-echo in which case you will have to locate your user OCID 
-echo in the OCI Concolem then edit the file $SETTINGS
-echo and add a line of the form 
+echo "Unknown user type $OCI_CS_USER_OCID"
+echo "You may be using an Active Directory federated user,"
+echo "in which case you will have to locate your user OCID"
+echo "in the OCI Console then edit the file $SETTINGS"
+echo "and add lines of the form"
 echo 'export USER_OCID=<user odic>'
+echo 'export USER_TYPE=[local or federated]'
