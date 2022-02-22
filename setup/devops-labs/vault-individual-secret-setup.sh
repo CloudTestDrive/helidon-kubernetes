@@ -103,6 +103,14 @@ else
   else
     echo "OK, canceling pending deletion"
     oci vault secret cancel-secret-deletion --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID
+    VAULT_SECRET_STATE=`oci vault secret get --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID | jq -r '.data."lifecycle-state"'`
+    while [ $VAULT_SECRET_STATE !=  ACTIVE ]
+    do
+      echo "Waiting for deletion cancelation to complete, state is $VAULT_SECRET_STATE"
+      sleep 5
+      VAULT_SECRET_STATE=`oci vault secret get --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID | jq -r '.data."lifecycle-state"'`
+    done
+    echo "Scheduled deletion cancled, validating secret contents"
     VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_PENDING_DELETION_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
     if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
     then
