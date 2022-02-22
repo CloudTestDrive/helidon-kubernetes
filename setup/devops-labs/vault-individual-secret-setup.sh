@@ -68,7 +68,7 @@ if [ -z $VAULT_SECRET_PENDING_DELETION_OCID ]
 then
   if [ -z $VAULT_SECRET_OCID ]
   then
-    echo "secret $VAULT_SECRET_NAME Does not exist, creating it and setting it to $VAULT_SECRET_VALUE"
+    echo "secret $VAULT_SECRET_NAME Does not exist, creating it and setting it to $VAULT_SECRET_VALUE and description $VAULT_SECRET_DESCRIPTION"
     # Create the secrets
     VAULT_SECRET_OCID=`oci vault secret create-base64 --compartment-id $COMPARTMENT_OCID --secret-name $VAULT_SECRET_NAME --vault-id "$VAULT_OCID" --description "$VAULT_SECRET_DESCRIPTION" --key-id "$VAULT_KEY_OCID"  --secret-content-content "$BASE64_VAULT_SECRET_VALUE" | jq -j '.data.id'` 
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
