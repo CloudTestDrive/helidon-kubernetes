@@ -1,11 +1,9 @@
 #!/bin/bash -f
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   echo "The user group setup script requires one argument"
   echo "the name of the dynamic group to destroy"
-  echo "the resource typoe of the dynamic group e.g. devopsbuildpipeline"
-  echo "the description of the dynamic group (which needs to be quoted)"
   exit 1
 fi
 
