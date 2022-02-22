@@ -75,8 +75,18 @@ then
     echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
   else
     # it exists, we will just re-use it
-    echo "$VAULT_SECRET_NAME already exists, reusing it, we recommend that you check it contains the value $VAULT_SECRET_VALUE (remember to"
-    echo "convert the vault vault from base64 when checking). If you need to change the contents you will have to do that manually"
+    echo "$VAULT_SECRET_NAME already exists, reusing it"
+    VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
+    if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
+    then
+      echo "The contents of the existing secret match the provided value of $VAULT_SECRET_VALUE"
+    else
+      echo "The contents of the existing secret are $VAULT_SECRET_CONTENTS this does not match the"
+      echo "specified value of $VAULT_SECRET_VALUE"
+      echo "This script will not overwrite the existing contents as it may be needed for other"
+      echo "purposes, however yor lab will probabaly not work until you manually create a new secret version"
+      echo "with the specified contents of $VAULT_SECRET_VALUE" 
+    fi
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
     echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=true" >> $SETTINGS
   fi
@@ -93,7 +103,17 @@ else
   else
     echo "OK, canceling pending deletion"
     oci vault secret cancel-secret-deletion --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID
-    echo "Pending deletion cancled, please ensure that the value of the secret $VAULT_SECRET_NAME is set to $VAULT_SECRET_VALUE"
+    VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_PENDING_DELETION_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
+    if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
+    then
+      echo "The contents of the undeleted secret match the provided value of $VAULT_SECRET_VALUE"
+    else
+      echo "The contents of the undeleted secret are $VAULT_SECRET_CONTENTS this does not match the"
+      echo "specified value of $VAULT_SECRET_VALUE"
+      echo "This script will not overwrite the existing contents as it may be needed for other"
+      echo "purposes, however yor lab will probabaly not work until you manually create a new secret version"
+      echo "with the specified contents of $VAULT_SECRET_VALUE" 
+    fi
     echo "Saving details of restored secet"
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS
     echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
