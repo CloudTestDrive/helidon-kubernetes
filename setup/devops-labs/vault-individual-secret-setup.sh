@@ -70,7 +70,7 @@ then
   then
     echo "secret $VAULT_SECRET_NAME Does not exist, creating it and setting it to $VAULT_SECRET_VALUE"
     # Create the secrets
-    VAULT_SECRET_OCID=`oci vault secret create-base64 --compartment-id $COMPARTMENT_OCID --secret-name $VAULT_SECRET_NAME --vault-id $VAULT_OCID --description $VAULT_SECRET_DESCRIPTION --key-id $VAULT_KEY_OCID  --secret-content-content $BASE64_VAULT_SECRET_VALUE | jq -j '.data.id'` 
+    VAULT_SECRET_OCID=`oci vault secret create-base64 --compartment-id $COMPARTMENT_OCID --secret-name $VAULT_SECRET_NAME --vault-id "$VAULT_OCID" --description "$VAULT_SECRET_DESCRIPTION" --key-id "$VAULT_KEY_OCID"  --secret-content-content "$BASE64_VAULT_SECRET_VALUE" | jq -j '.data.id'` 
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
     echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
   else
