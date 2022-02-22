@@ -1,13 +1,13 @@
 #!/bin/bash -f
 
-context_name=one
+CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
-  context_name=$1
-  echo Operating on context name $context_name
+  CLUSTER_CONTEXT_NAME=$1
+  echo Operating on context name $CLUSTER_CONTEXT_NAME
 else
-  echo Using default context name of $context_name
+  echo Using default context name of $CLUSTER_CONTEXT_NAME
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
@@ -24,7 +24,7 @@ fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=OKE_REUSED_$context_name
+OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
@@ -45,25 +45,25 @@ else
   exit 2
 fi
 
-TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$context_name
+TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
 
 if [ $OKE_REUSED = true ]
 then
   echo You have been using a cluster that was not created by these scripts, as it may contain other resources this script cannot delete it, you will need to destroy the cluster by hand
-  echo and then remove the variables OKE_REUSE_$context_name and OKE_OCID_$context_name from $SETTINGS and delete $TF_DIR
+  echo and then remove the variables OKE_REUSE_$CLUSTER_CONTEXT_NAME and OKE_OCID_$CLUSTER_CONTEXT_NAME from $SETTINGS and delete $TF_DIR
   exit 2
 fi
 
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=OKE_OCID_$context_name
+OKE_OCID_NAME=OKE_OCID_$CLUSTER_CONTEXT_NAME
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
 if [ -z $OKE_OCID ]
 then 
-  echo No OKE OCID information found for context $context_name , cannot continue
+  echo No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue
   exit 3
 fi
 
@@ -81,10 +81,14 @@ then
     echo Removing terraform scripts
     rm -rf $TF_DIR
     cd $SAVED_DIR
-    bash ./delete-from-saved-settings.sh OKE_OCID_$context_name
-    bash ./delete-from-saved-settings.sh OKE_REUSED_$context_name
-    echo Removing context $context_name from the local kubernetes configuration
-    kubectl config delete-context $context_name
+    bash ./delete-from-saved-settings.sh OKE_OCID_$CLUSTER_CONTEXT_NAME
+    bash ./delete-from-saved-settings.sh OKE_REUSED_$CLUSTER_CONTEXT_NAME
+    echo Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration
+    CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | 's/*//' | awk '{print $2}'`
+    USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | 's/*//' | awk '{print $3}'`
+    kubectl config delete-user $USER_INFO
+    kubectl config delete-cluster $CLUSTER_INFO
+    kubectl config delete-context $CLUSTER_CONTEXT_NAME
     echo The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name
   else
     echo no state file, nothing to destroy
