@@ -39,6 +39,8 @@ fi
 
 if [ -z "${!GROUP_REUSED_NAME}" ]
 then
+  echo "No reuse info for dynamic group $GROUP_NAME"
+else
   echo "This script has already setup the dynamic group $GROUP_NAME"
   exit 0
 fi
