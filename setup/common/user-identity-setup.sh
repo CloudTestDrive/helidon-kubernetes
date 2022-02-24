@@ -12,7 +12,7 @@ fi
 
 if [ -z $USER_OCID ]
   then
-    echo No existing user info, retrieving
+    echo "No existing user info, retrieving"
   else
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'` 
     echo "User OCID is already set to and maps to $USERNAME"
