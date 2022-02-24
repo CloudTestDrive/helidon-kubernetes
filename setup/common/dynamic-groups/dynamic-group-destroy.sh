@@ -45,7 +45,7 @@ then
   exit 3
 fi
 
-echo "Deleting dynamic group"
+echo "Deleting dynamic group $GROUP_NAME"
 oci iam dynamic-group delete --dynamic-group-id "${!GROUP_OCID_NAME}" --force
 bash ../delete-from-saved-settings.sh $GROUP_OCID_NAME
 bash ../delete-from-saved-settings.sh $GROUP_REUSED_NAME
