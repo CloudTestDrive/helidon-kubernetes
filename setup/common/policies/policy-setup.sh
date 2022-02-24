@@ -6,7 +6,7 @@ then
   echo "the name of the policy to create"
   echo "the type of policy e.g. group or dynamic-group"
   echo "The subject of the polidy c.c. tgDevopsGroup"
-  echo "the description of the dynamic group (which needs to be quoted)"
+  echo "the description of the dynamic group (which needs to be quoted if it's multiple words)"
   exit 1
 fi
 

@@ -41,11 +41,11 @@ fi
 
 if [ "${!POLICY_REUSED_NAME}" = true ]
 then
-  echo "Cannot delete a policynot created by these scripts"
+  echo "Cannot delete a policy not created by these scripts"
   exit 3
 fi
 
-echo "Deleting dynamic group"
+echo "Deleting policy $POLICY_NAME"
 oci iam policy delete --policy-id "${!POLICY_OCID_NAME}" --force
 bash ../delete-from-saved-settings.sh $POLICY_OCID_NAME
 bash ../delete-from-saved-settings.sh $POLICY_REUSED_NAME
