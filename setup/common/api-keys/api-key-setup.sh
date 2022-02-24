@@ -1,4 +1,5 @@
 #!/bin/bash -f
+export SETTINGS=$HOME/hk8sLabsSettings
 if [ $# -lt 1 ]
 then
   echo "The upload-api-key.sh script requires one argument, the file name of the public key to upload, this must be in PEM format"
