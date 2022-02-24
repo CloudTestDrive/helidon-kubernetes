@@ -7,5 +7,5 @@ then
 fi
 
 ORIG=$1
-UPPER=`echo $ORIG | tr a-z A-Z`
+UPPER=`echo $ORIG | tr a-z A-Z | sed -e 's:/:_:`
 echo $UPPER
