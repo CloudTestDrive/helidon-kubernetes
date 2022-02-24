@@ -34,7 +34,7 @@ if [ $LOCAL_USER = 1 ]
     echo USER_OCID=$OCI_CS_USER_OCID >> $SETTINGS
     echo USER_TYPE=local >> $SETTINGS
     USERNAME=`oci iam user get --user-id $OCI_CS_USER_OCID | jq -j '.data.name'`
-    echo You are a local user, and do not use an identity provider, your user name is $USERNAME, saved details
+    echo "You are a local user, and do not use an identity provider, your user name is $USERNAME, saved details"
     exit 0
 fi
 
@@ -43,7 +43,7 @@ FEDERATED_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.saml' | wc -l`
 
 if [ $FEDERATED_USER = 1 ]
   then
-    echo You are a federated user, getting information
+    echo "You are a federated user, getting information"
     PROVIDER_OCID=`cut -d '/' -f 1 <<< $OCI_CS_USER_OCID`
     USER_ID=`cut -d '/' -f 2 <<< $OCI_CS_USER_OCID`
     # look through all of the proders looking for one that matches
@@ -64,7 +64,7 @@ if [ $FEDERATED_USER = 1 ]
     echo USER_OCID=$USER_OCID >> $SETTINGS
     echo USER_TYPE=federated >> $SETTINGS
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
-    echo You are a federated user, your user name is $USERNAME, saved details
+    echo "You are a federated user, your user name is $USERNAME, saved details"
     exit 0
 fi
 
