@@ -33,3 +33,6 @@ fi
 echo "Deleting API key"
 
 oci iam user api-key delete --user-id $USER_OCID --fingerprint $API_KEY_FINGERPRINT --force
+
+bash ../delete-from-saved-settings.sh API_KEY_FINGERPRINT
+bash ../delete-from-saved-settings.sh API_KEY_REUSED
