@@ -59,7 +59,7 @@ RESP=`oci iam user api-key upload --user-id $USER_OCID --key-file $PUBLIC_KEY_FI
 # Look for an error
 ERROR_MESSAGE=`echo $RESP | sed -e 's/ServiceError: //' | jq -r '.message'`
 
-if [ $ERROR_MESSAGE = "null" ]
+if [ "$ERROR_MESSAGE" = "null" ]
 then
   API_KEY_FINGERPRINT=`echo $RESP | jq -r '.data.fingerprint'`
   echo API_KEY_FINGERPRINT=$API_KEY_FINGERPRINT >> $SETTINGS
