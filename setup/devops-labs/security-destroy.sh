@@ -25,5 +25,29 @@ then
   exit 2
 fi
 
-bash ./policies-destroy.sh
-bash ./dynamic-groups-destroy.sh
+
+
+# get the compartment parent
+COMPARTMENT_PARENT_OCID=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | jq -r '.data."compartment-id"'`
+
+# work out the parent's name
+if [ $OCI_TENANCY = $COMPARTMENT_PARENT_OCID ]
+then
+   COMPARTMENT_PARENT_NAME="Tenancy root"
+else
+   COMPARTMENT_PARENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID | jq -r '.data.name'`
+fi
+
+
+read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "You will need to follow the manual instructions to delete the user group, the dynamic"
+  echo "Groups and associated policies"
+  echo "If you are a federated user you may also need unmap the federated group from the local"
+  echo "group, then remove your user and federated group from your federated environment"
+  exit 1
+else
+  bash ./policies-destroy.sh
+  bash ./dynamic-groups-destroy.sh
+fi
