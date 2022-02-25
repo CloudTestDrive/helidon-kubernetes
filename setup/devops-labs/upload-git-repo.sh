@@ -44,11 +44,11 @@ echo "Assuming it finds these it will download into the OCI cloud shell the sour
 echo "and will then configure your local git environment and upload the source code to the OCI Code repo"
 echo "in your project."
 
-echo "Checking environment - lookikng for project $PROJECT_NAME"
+echo "Checking environment - looking for project $PROJECT_NAME"
 
 PROJECT_OCID=`oci devops project list --compartment-id $COMPARTMENT_OCID --all --name $PROJECT_NAME --lifecycle-state ACTIVE | jq -r '.data.items[0].id'`
 
-if [ -z $PROJECT_OCID ]
+if [ "$PROJECT_OCID" = "null" ]
 then
   echo "Cannot locate a project called $PROJECT_NAME in $COMPARTMENT_NAME"
   echo "Have you create the project ?"
@@ -64,7 +64,7 @@ echo "Checking environment - looking for OCI Code repo $REPO_NAME"
 
 REPO_OCID=`oci devops repository list --all --lifecycle-state ACTIVE --name $REPO_NAME --project-id  $PROJECT_OCID | jq -r '.data.items[0].id'`
 
-if [ -z $REPO_OCID ]
+if [ "$REPO_OCID" = "null" ]
 then
   echo "Cannot locate a OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
   echo "Have you create the OCI Code Repo ?"
@@ -98,8 +98,6 @@ else
   echo "You will have to manually configure the OCI Code repo"
 fi
 
-COMMIT_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."commit-count"'`
-
 REPO_SSH=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."ssh-url"'`
 
 if [ -z $REPO_SSH ]
@@ -108,7 +106,7 @@ then
   echo "This shouldn't happen !"
   exit 22
 else
-  echo "Locate OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
+  echo "Located ssh access details for OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
 fi
 
 read -p "Ready to start demo project code transfer, proceed ?"
@@ -139,7 +137,7 @@ git remote add devops  $REPO_SSH
 git remote remove origin
 
 echo "Updating from core OCI Code repo main branch"
-git pull --no-edit devops main
+git pull --no-edit --allow-unrelated-histories devops main
 
 echo "Uploading to OCI Code repo"
 git push devops main
