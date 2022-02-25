@@ -127,7 +127,7 @@ cd $HOME
 echo "Downloading sample code into OCI Cloud Shell"
 git clone https://github.com/oracle-devrel/$REPO_NAME.git
 
-cd cloudnative-helidon-storefront
+cd $REPO_NAME
 
 echo "Configuring git user info"
 git config user.email "$USER_INITIAL@email.com"
@@ -145,3 +145,5 @@ git push devops main
 
 echo "Sample code transfered"
 echo "IMPORTANT this will be on the default branch, remember to create a working branch before making any code changes"
+
+cd $SAVED_PWD
