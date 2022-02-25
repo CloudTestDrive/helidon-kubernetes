@@ -42,7 +42,7 @@ echo "Deleting the SSH key pair $SSH_KEY_FILE_BASE in $SSH_DIR and the pem file"
 if [ -f "$SSH_DIR/$SSH_KEY_FILE_BASE" ]
 then
   echo "Deleted the private key"
-  rm  "$SSH_DIR/$SSH_KEY_FILE_BASE"
+  rm  -f "$SSH_DIR/$SSH_KEY_FILE_BASE"
 else 
   echo "Private key file could not be located"
 fi
