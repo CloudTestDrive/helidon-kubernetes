@@ -49,8 +49,9 @@ USER_NAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
 TENANCY_NAME=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data.name'`
 
 mkdir -p $HOME/.ssh
-echo 'Host devops.scmservice.*.oci.oraclecloud.com # SCRIPT ADDED' >> $SSH_CONFIG_FILE
-echo "  User $USER_NAME@$TENANCY_NAME # SCRIPT ADDED" >> $SSH_CONFIG_FILE
-echo "  IdentityFile ~/$SSH_DIR/$SSH_KEY_FILE_BASE # SCRIPT ADDED" >> $SSH_CONFIG_FILE
-
+echo "# Start of script added lines" >> $SSH_CONFIG_FILE
+echo 'Host devops.scmservice.*.oci.oraclecloud.com' >> $SSH_CONFIG_FILE
+echo "  User $USER_NAME@$TENANCY_NAME" >> $SSH_CONFIG_FILE
+echo "  IdentityFile $SSH_DIR/$SSH_KEY_FILE_BASED" >> $SSH_CONFIG_FILE
+echo "# End of script added lines" >> $SSH_CONFIG_FILE
 echo DEVOPS_SSH_API_KEY_CONFIGURED=true >> $SETTINGS
