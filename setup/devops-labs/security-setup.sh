@@ -40,8 +40,8 @@ fi
 read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "You will need to follow the manual instructions to setup the user group, the dynamic"
-  echo "Groups and associated policies"
+  echo "You will need to follow the manual instructions to setup the users ssh api key, the user"
+  echo "group, the dynamic groups and associated policies"
   echo "If you are a federated user you may also need to setup the user group in your"
   echo "Federated environment, add your usert to it, then map that federated group to your"
   echo "local group"
