@@ -51,5 +51,5 @@ else
   echo "Starting security setting clean up"
   bash ./policies-destroy.sh
   bash ./dynamic-groups-destroy.sh
-  bash ./ssh-api-key-setup.sh
+  bash ./ssh-api-key-destroy.sh
 fi
