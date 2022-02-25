@@ -1,5 +1,6 @@
 #!/bin/bash -f
 
+export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
