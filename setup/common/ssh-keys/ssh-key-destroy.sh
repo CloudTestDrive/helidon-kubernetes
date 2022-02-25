@@ -29,7 +29,6 @@ then
   exit 2
 else
   echo "The SSH key info has been set by this script, continuing"
-  exit 2
 fi
 
 if [ "${!SSH_KEY_REUSED_NAME}" = true ]
