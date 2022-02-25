@@ -37,6 +37,9 @@ else
    COMPARTMENT_PARENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID | jq -r '.data.name'`
 fi
 
+echo "SSH key setup starting"
+bash ./ssh-api-key-setup.sh
+
 read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -45,10 +48,8 @@ then
   echo "If you are a federated user you may also need to setup the user group in your"
   echo "Federated environment, add your usert to it, then map that federated group to your"
   echo "local group"
-  exit 1
 else
-  echo "OK, starting security setup"
-  bash ./ssh-api-key-setup.sh
+  echo "OK, starting security groups and policy setup"
   bash ./dynamic-groups-setup.sh
   bash ./policies-setup.sh
 fi

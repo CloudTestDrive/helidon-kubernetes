@@ -46,10 +46,10 @@ then
   echo "group, the dynamic groups and associated policies"
   echo "If you are a federated user you may also need unmap the federated group from the local"
   echo "group, then remove your user and federated group from your federated environment"
-  exit 1
 else
   echo "Starting security setting clean up"
   bash ./policies-destroy.sh
   bash ./dynamic-groups-destroy.sh
-  bash ./ssh-api-key-destroy.sh
 fi
+echo "SSH key removal starting"
+bash ./ssh-api-key-destroy.sh
