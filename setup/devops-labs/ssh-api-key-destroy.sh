@@ -12,7 +12,7 @@ fi
 
 SSH_DIR_NAME=ssh
 SSH_DIR=$HOME/$SSH_DIR_NAME
-SSH_KEY_FILE_BASE=id_rsa
+SSH_KEY_FILE_BASE=id_rsa_devops
 
 if [ -z "$DEVOPS_SSH_API_KEY_CONFIGURED" ]
 then
