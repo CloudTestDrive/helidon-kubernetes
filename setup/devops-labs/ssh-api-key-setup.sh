@@ -52,6 +52,6 @@ mkdir -p $HOME/.ssh
 echo "# Start of script added lines" >> $SSH_CONFIG_FILE
 echo 'Host devops.scmservice.*.oci.oraclecloud.com' >> $SSH_CONFIG_FILE
 echo "  User $USER_NAME@$TENANCY_NAME" >> $SSH_CONFIG_FILE
-echo "  IdentityFile $SSH_DIR/$SSH_KEY_FILE_BASED" >> $SSH_CONFIG_FILE
+echo "  IdentityFile $SSH_DIR/$SSH_KEY_FILE_BASE" >> $SSH_CONFIG_FILE
 echo "# End of script added lines" >> $SSH_CONFIG_FILE
 echo DEVOPS_SSH_API_KEY_CONFIGURED=true >> $SETTINGS
