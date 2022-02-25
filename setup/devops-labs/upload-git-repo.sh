@@ -121,7 +121,7 @@ then
   echo "OK, stopping"
   exit 0
 else
-  echo "OK' starting to transfer sample code"
+  echo "OK, starting to transfer sample code"
 fi
 
 
