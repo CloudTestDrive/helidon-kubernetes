@@ -48,6 +48,7 @@ then
   exit 1
 else
   echo "OK, starting security setup"
+  bash ./ssh-api-key-setup.sh
   bash ./dynamic-groups-setup.sh
   bash ./policies-setup.sh
 fi

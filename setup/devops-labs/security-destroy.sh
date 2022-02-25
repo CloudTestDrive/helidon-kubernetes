@@ -4,10 +4,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot contiue"
     exit 10
 fi
 
@@ -15,13 +15,13 @@ source $SETTINGS
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your USER_INITIALS has not been set, you need to run the initials-setup.sh before you can run this script
+  echo "Your USER_INITIALS has not been set, you need to run the initials-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -42,12 +42,14 @@ fi
 read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "You will need to follow the manual instructions to delete the user group, the dynamic"
-  echo "Groups and associated policies"
+  echo "You will need to follow the manual instructions to delete the users ssh API key, ther user"
+  echo "group, the dynamic groups and associated policies"
   echo "If you are a federated user you may also need unmap the federated group from the local"
   echo "group, then remove your user and federated group from your federated environment"
   exit 1
 else
+  echo "Starting security setting clean up"
   bash ./policies-destroy.sh
   bash ./dynamic-groups-destroy.sh
+  bash ./ssh-api-key-setup.sh
 fi
