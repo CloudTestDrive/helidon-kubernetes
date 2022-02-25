@@ -26,11 +26,7 @@ fi
 
 REPO_NAME=cloudnative-helidon-storefront
 
-if [ -d $REPO_NAME ]
-then
-  echo "The directory $REPO_NAME already exists, to prvend unintentional damage this script will stop"
-  exit 1
-fi
+
 
 PROJECT_NAME="$USER_INITIALS"DevOpsProject
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -r '.data.name'`
@@ -43,6 +39,16 @@ echo "You must have manually created both of these in advance as this script wil
 echo "Assuming it finds these it will download into the OCI cloud shell the source code to be used in this lab"
 echo "and will then configure your local git environment and upload the source code to the OCI Code repo"
 echo "in your project."
+
+echo "Checking environment - looking for an existing local repo"
+
+if [ -d $HOME/$REPO_NAME ]
+then
+  echo "The directory $REPO_NAME already exists, to prvend unintentional damage this script will stop"
+  exit 1
+else
+  echo "No local repo, continuing"
+fi
 
 echo "Checking environment - looking for project $PROJECT_NAME"
 
