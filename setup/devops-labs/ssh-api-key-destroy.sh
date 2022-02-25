@@ -29,8 +29,7 @@ SAVED_PWD=`pwd`
 SSH_CONFIG_DIR=$HOME/.ssh
 SSH_CONFIG_FILE=$SSH_CONFIG_DIR/config
 
-cat $SSH_CONFIG_FILE | grep -v ' # SCRIPT ADDED' > $SSH_CONFIG_FILE.tmp
-mv $SSH_CONFIG_FILE.tmp $SSH_CONFIG_FILE
+echo "You need to edit the $SSH_CONFIG_FILE file and remove the entries between the script start and script end comments"
 
 # remove the api key from the users account
 
