@@ -32,7 +32,7 @@ then
   exit 1
 fi
 
-PROJECT_NAME="$USER_INISIALS"DevOpsProject
+PROJECT_NAME="$USER_INITIALS"DevOpsProject
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -r '.data.name'`
 
 echo "This script looks for an existing project called $PROJECT_NAME in $COMPARTMENT_NAME"
