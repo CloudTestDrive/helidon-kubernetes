@@ -34,12 +34,13 @@ mv $SSH_CONFIG_FILE.tmp $SSH_CONFIG_FILE
 
 # remove the api key from the users account
 
-cd ../api-keys
+cd ../common/api-keys
 
 bash ./api-key-destroy.sh 
 
 # delete the ssh key files
 
+cd $SAVED_PWD 
 cd ../common/ssh-keys
 
 bash ./ssh-key-destroy.sh $SSH_DIR $SSH_KEY_FILE_BASE

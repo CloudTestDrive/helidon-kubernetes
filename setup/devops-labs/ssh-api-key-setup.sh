@@ -22,6 +22,8 @@ else
   exit 1
 fi
 
+SAVED_PWD=`pwd`
+
 # create the ssh key
 cd ../common/ssh-keys
 
@@ -29,11 +31,14 @@ bash ./ssh-key-setup.sh $SSH_DIR $SSH_KEY_FILE_BASE
 
 # Upload it
 
-cd ../api-keys
+cd $SAVED_PWD
+
+cd ../common/api-keys
 
 bash ./api-keys-setup.sh "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
 
 # update the .ssh file
+cd $SAVED_PWD
 
 SSH_CONFIG_DIR=$HOME/.ssh
 SSH_CONFIG_FILE=$SSH_CONFIG_DIR/config
