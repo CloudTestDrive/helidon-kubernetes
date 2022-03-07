@@ -1,7 +1,7 @@
 #!/bin/bash -f
 
 
-step_dir=$HOME/keys
+KEYS_DIR=$HOME/keys
 
 remove=false
 if [ $# -gt 0 ]
@@ -13,26 +13,26 @@ if [ $# -gt 0 ]
 fi
 
 do_step_install=true
-if [ -d $step_dir ]
+if [ -d $KEYS_DIR ]
   then 
-    echo Step instalation directory $step_dir already exists
+    echo Step instalation directory $KEYS_DIR already exists
     if [ $remove = true ]
       then
-        echo Removing $step_dir and all of its contents
-        rm -rf $step_dir
-        mkdir -p $step_dir
+        echo Removing $KEYS_DIR and all of its contents
+        rm -rf $KEYS_DIR
+        mkdir -p $KEYS_DIR
       else
-        echo Wont remove $step_dir unless you add a 2nd argument to this script with a value of replace
+        echo Wont remove $KEYS_DIR unless you add a 2nd argument to this script with a value of replace
         echo Will skip download of step and attempt to continue using existing step setup
         do_step_install=false
     fi   
   else
-     echo $step_dir does not exist creating
-     mkdir -p $step_dir
+     echo $KEYS_DIR does not exist creating
+     mkdir -p $KEYS_DIR
 fi
 
 
-cd $step_dir
+cd $KEYS_DIR
 
 if [ $do_step_install = true ]
   then
@@ -57,17 +57,17 @@ if [ $do_step_install = true ]
 fi
 
 echo Root certificate processing
-if [ -x $step_dir/step ]
+if [ -x $KEYS_DIR/step ]
   then
-    if [ -f root.crt ] 
+    if [ -f $KEYS_DIR/root.crt ] 
       then
         echo Root certificate already exists, not creating
       else
         echo Creating root certificate
-        ./step certificate create root.cluster.local root.crt root.key --profile root-ca --no-password --insecure
+        $KEYS_DIR/step certificate create root.cluster.local $KEYS_DIR/root.crt $KEYS_DIR/root.key --profile root-ca --no-password --insecure --kty=RSA
     fi
   else
-    if [ -f root.crt ] 
+    if [ -f $KEYS_DIR/root.crt ] 
       then
         echo Step command does not exist, other scripts may fail, Root certificate already exists you may be able to reuse it
       else
