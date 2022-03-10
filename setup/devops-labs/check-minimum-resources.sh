@@ -42,8 +42,7 @@ then
     RESOURCES_AVAILABLE=false
   fi
 else
-  echo "This script has already configured vault , exiting"
-  exit 3
+  echo "This script has already configured vault no need to check it's resource availability"
 fi
 
 # how many dynamic groups are needed ?
