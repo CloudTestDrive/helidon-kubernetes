@@ -5,33 +5,45 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot contiue"
     exit 10
 fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
   exit 1
 fi
 
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
 
 if [ -z $VAULT_REUSED ]
 then
-  echo No reuse information for vault
+  echo "No reuse information for vault"
 else
-  echo This script has already configured vault details, exiting
+  echo "This script has already configured vault details, exiting"
   exit 3
+fi
+
+# check for resource availability
+
+bash ./resources/resource-minimum-check-region-compartment.sh $COMPARTMENT_OCID kms virtual-vault-count 1
+
+if [ $? = 0 ]
+then
+  echo "Vault resources ara available, continuing"
+else
+  echo "No vault resources available, cannot continue"
+  exit 10
 fi
 
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
@@ -39,10 +51,10 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 if [ -z $COMPARTMENT_NAME ]
 then
-  echo The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS
+  echo "The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS"
   exit 99
 else
-  echo Operating in compartment $COMPARTMENT_NAME
+  echo "Operating in compartment $COMPARTMENT_NAME"
 fi
 
 VAULT_NAME="$USER_INITIALS"LabsVault
@@ -87,40 +99,40 @@ if [ -z $VAULT_OCID ]
     echo "Vault named $VAULT_NAME doesn't exist, creating it, there may be a short delay"
     VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT --wait-for-state ACTIVE | jq -j '.data.id'`
     echo "Vault being created using OCID $VAULT_OCID"
-    echo VAULT_OCID=$VAULT_OCID >>$SETTINGS
-    echo VAULT_REUSED=false >> $SETTINGS
+    echo "VAULT_OCID=$VAULT_OCID" >>$SETTINGS
+    echo "VAULT_REUSED=false" >> $SETTINGS
   else
     echo "Found existing vault names $VAULT_NAME, reusing it"
-    echo VAULT_OCID=$VAULT_OCID >> $SETTINGS
-    echo VAULT_REUSED=true >> $SETTINGS
+    echo "VAULT_OCID=$VAULT_OCID" >> $SETTINGS
+    echo "VAULT_REUSED=true" >> $SETTINGS
   fi
 else
   # We'de been given an VAULT_OCID, let's check if it's there, if so assume it's been configured already
-  echo Trying to locate vault using specified OCID $VAULD_OCID
+  echo "Trying to locate vault using specified OCID $VAULT_OCID"
   VAULT_NAME=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."display-name"'`
   if [ -z $DBNAME ]
   then
-    echo Unable to locate vault for OCID $VAULT_OCID 
-    echo Please check that the value of VAULT_OCID in $SETTINGS is correct if nor remove or replace it
+    echo "Unable to locate vault for OCID $VAULT_OCID"
+    echo "Please check that the value of VAULT_OCID in $SETTINGS is correct if nor remove or replace it"
     exit 5
   else
-    echo Located vault named $VAULT_NAME with pre-specified OCID of $VAULT_OCID, checking status
+    echo "Located vault named $VAULT_NAME with pre-specified OCID of $VAULT_OCID, checking status"
     VAULT_LIFECYCLE=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."lifecycle-state"'`
-    if [ $VAULT_LIFECYCLE -ne ACTIVE ]
+    if [ $VAULT_LIFECYCLE -ne "ACTIVE" ]
     then
-      echo Vault $VAULT_NAME is not active, cannot use it
+      echo "Vault $VAULT_NAME is not active, cannot use it"
     else
-      echo Vault $VAULT_NAME is active, reusing it
+      echo "Vault $VAULT_NAME is active, reusing it"
       # Flag this as reused and refuse to destroy it
-      echo VAULT_REUSED=true >> $SETTINGS
+      echo "VAULT_REUSED=true" >> $SETTINGS
     fi
   fi
 fi
-echo Setting up for Vault master key
-echo Getting vault endpoint for vault OCID $VAULT_OCID
+echo "Setting up for Vault master key"
+echo "Getting vault endpoint for vault OCID $VAULT_OCID"
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
 VAULT_KEY_NAME="$USER_INITIALS"Key
-echo Checking for existing key named $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID
+echo "Checking for existing key named $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID"
 
 VAULT_PENDING_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -e ".data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_KEY_NAME\")) | .id" | sed -e 's/"//g'`
 if [ -z "$VAULT_PENDING_KEY_OCID" ]
@@ -141,11 +153,11 @@ if [ -z $VAULT_KEY_OCID ]
 then
   echo "No existing key with name $VAULT_KEY_NAME, creating it"
   VAULT_KEY_OCID=`oci kms management key create --display-name $VAULT_KEY_NAME  --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --key-shape '{"algorithm":"AES", "length":32}' --wait-for-state  ENABLED | jq -j ".data.id" | sed -e 's/"//g'`
-  echo VAULT_KEY_REUSED=false >> $SETTINGS
+  echo "VAULT_KEY_REUSED=false" >> $SETTINGS
 else
   echo "Found existing key with name $VAULT_KEY_NAME, reusing it"
-  echo VAULT_KEY_REUSED=true >> $SETTINGS
+  echo "VAULT_KEY_REUSED=true" >> $SETTINGS
 fi
-echo VAULT_KEY_OCID=$VAULT_KEY_OCID >> $SETTINGS
+echo "VAULT_KEY_OCID=$VAULT_KEY_OCID" >> $SETTINGS
 
-echo Vault master key created with OCID $VAULT_KEY_OCID
+echo "Vault master key created with OCID $VAULT_KEY_OCID"
