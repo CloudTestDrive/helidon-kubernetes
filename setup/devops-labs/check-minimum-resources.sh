@@ -52,7 +52,7 @@ DYNAMIC_GROUPS_COUNT=`oci iam dynamic-group list --compartment-id $OCI_TENANCY -
 
 if [ -z "$DYNAMIC_GROUPS_COUNT" ]
 then
-  DYNAMIC_GROUPS_COUNT=$DYNAMIC_GROUPS_MAX
+  DYNAMIC_GROUPS_COUNT=0
 fi
 
 let DYNAMIC_GROUPS_AVAIL=$DYNAMIC_GROUPS_MAX-$DYNAMIC_GROUPS_COUNT
@@ -61,6 +61,8 @@ if [ "$DYNAMIC_GROUPS_AVAIL" -lt "$DYNAMIC_GROUPS_NEEDED" ]
 then
   echo "You need $DYNAMIC_GROUPS_NEEDED in your tenacy to run this lab, unfortunately you only have $DYNAMIC_GROUPS_AVAIL"
   RESOURCES_AVAILABLE=false
+else
+  echo "You have enough dynamic groups in your tenancy to run the lab, you have $DYNAMIC_GROUPS_AVAIL available you need $DYNAMIC_GROUPS_NEEDED" 
 fi
 
 if [ $RESOURCES_AVAILABLE ]
