@@ -104,7 +104,19 @@ then
     echo "Checking for active compartment state"
     while [ "$COMPARTMENT_STATUS"  !=  "ACTIVE" ]
     do
-      COMPARTMENT_STATUS=`oci iam compartment list --all --compartment-id $COMPARTMENT_PARENT_OCID --name $COMPARTMENT_NAME | jq -j '.data[0]."lifecycle-state"'`
+      echo "Retrieving compartment state"
+      COMPARTMENT_STATUS_RESP=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID 2>&1`
+      COMPARTMENT_STATUS_CODE=`echo $COMPARTMENT_STATUS_RESP | jq -j '.status'`
+      if [ -z "COMPARTMENT_STATUS_CODE" ] 
+      then
+        echo "Retrieved compartment info, checking for active status"
+      else
+        echo "Got status $COMPARTMENT_STATUS_CODE, re-checking soon"
+        sleep 5
+        continue
+      fi
+      
+      COMPARTMENT_STATUS=`echo $COMPARTMENT_STATUS_RESP | jq -j '.data."lifecycle-state"'`
       echo "Status is $COMPARTMENT_STATUS"
       if [ "$COMPARTMENT_STATUS" = "ACTIVE" ]
       then
