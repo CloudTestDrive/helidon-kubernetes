@@ -58,7 +58,7 @@ OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME can't continue, has this cluster"
+  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME cannot continue. Has this cluster"
   echo "been setup using the kubernrtes-setup.sh script ?"
   exit 3
 else
