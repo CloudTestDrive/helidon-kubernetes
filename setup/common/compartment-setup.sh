@@ -109,6 +109,7 @@ then
         sleep 10
       fi
     done
+    echo "Compartment $COMPARTMENT_NAME in $PARENT_NAME is now ready for use"
   else
     echo "Compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
     read CONFIRM
