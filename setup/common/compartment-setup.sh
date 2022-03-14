@@ -100,11 +100,13 @@ then
     # Wait for the compartment to exist, there have been cases where the --wait-for-state has not worked and that had broken downstream stages
     COMPARTMENT_STATUS="WATTING"
     echo "Checking for active compartment state"
-    while [ "$COMPARTMENT_STATUS" -ne "ACTIVE" ]
+    while [ "$COMPARTMENT_STATUS"  !=  "ACTIVE" ]
     do
       COMPARTMENT_STATUS=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | jq -j '.data."lifecycle-state"'`
-      if [ "$COMPARTMENT_STATUS" -ne "ACTIVE" ]
+      if [ "$COMPARTMENT_STATUS" = "ACTIVE" ]
       then
+        echo "Compartment is active, continuing"
+      else
         echo "Waiting for active compartment state"
         sleep 10
       fi
