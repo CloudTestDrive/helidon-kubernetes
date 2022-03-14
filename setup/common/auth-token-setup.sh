@@ -5,10 +5,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -19,31 +19,31 @@ fi
 
 if [ -z $AUTH_TOKEN_REUSED ]
 then
-  echo No existing auth token. 
+  echo "No existing auth token."
 else
-  echo Your auth token has already been set, to remove it run the auth-token-destroy.sh script
+  echo "Your auth token has already been set, to remove it run the auth-token-destroy.sh script"
   exit 1
 fi
 
 if [ -z $AUTH_TOKEN_OCID ]
 then
-  echo No existing auth token OCID. 
+  echo "No existing auth token OCID."
 else
-  echo Your auth token has already been set, to remove it run the auth-token-destroy.sh script
+  echo "Your auth token has already been set, to remove it run the auth-token-destroy.sh script"
   exit 1
 fi
 
-echo Checking region
+echo "Checking region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
 if [ $OCI_REGION = $OCI_HOME_REGION ]
 then
-  echo You are in your home region and this script will continue
+  echo "You are in your home region and this script will continue"
 else
-  echo You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION
-  echo Please switch to your OCI home region and re-run this script
+  echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
+  echo "Please switch to your OCI home region and re-run this script"
   exit 1
 fi
 
@@ -67,13 +67,13 @@ then
     echo ' You can then re-run this script'
     exit 2
   else 
-    echo OK, reusing existing token
+    echo "OK, reusing existing token"
     REUSE_TOKEN=true
   fi
 else
   if [ $AUTH_TOKEN_COUNT -eq 0 ]
   then
-    echo No existing auth tokens, will create a new one
+    echo "No existing auth tokens, will create a new one"
     REUSE_TOKEN=false
   else
     echo 'Do you want to re-use an existing auth token (r) if not then the script will let you create a new one (c) '
@@ -82,10 +82,10 @@ else
     read -p 'Create a new auth token (c) or reuse an existing one (r)' REPLY 
     if [[ ! $REPLY =~ ^[Rr]$ ]]
     then
-      echo Will create a token
+      echo "Will create a token"
       REUSE_TOKEN=false
     else
-      echo Will reuse a token
+      echo "Will reuse a token"
       REUSE_TOKEN=true
     fi
   fi
@@ -105,21 +105,21 @@ then
     read -p 'OK, please enter the auth token value, if you do now know it enter an empty line and the script will exit' AUTH_TOKEN
     if [ -z $AUTH_TOKEN ]
     then
-      echo Nothing entered, this script will exit and no changes have been made, you can re-run it
+      echo "Nothing entered, this script will exit and no changes have been made, you can re-run it"
       exit 0
     fi
-    echo AUTH_TOKEN_REUSED=true >> $SETTINGS
-    echo AUTH_TOKEN=\'$AUTH_TOKEN\' >> $SETTINGS
+    echo "AUTH_TOKEN_REUSED=true" >> $SETTINGS
+    echo "AUTH_TOKEN='$AUTH_TOKEN'" >> $SETTINGS
   else
-    echo AUTH_TOKEN_REUSED=true >> $SETTINGS
+    echo "AUTH_TOKEN_REUSED=true" >> $SETTINGS
   fi
 else
   echo 'Creating a new auth token for you'
   AUTH_TOKEN_JSON=`oci iam auth-token create --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
-  echo AUTH_TOKEN_REUSED=false >> $SETTINGS
-  echo AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID >> $SETTINGS 
+  echo "AUTH_TOKEN_REUSED=false" >> $SETTINGS
+  echo "AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID" >> $SETTINGS 
   
   echo "Your new auth token is $AUTH_TOKEN It is critical that you do not lose this information so please take note of it."
   echo "if needed you can delete the token by running the auth-token-destroy.sh script and then create a new one, but you will have"
@@ -132,7 +132,7 @@ else
   read -p 'Save the auth token ?' REPLY 
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
-    echo AUTH_TOKEN=\'$AUTH_TOKEN\' >> $SETTINGS
+    echo "AUTH_TOKEN='$AUTH_TOKEN'" >> $SETTINGS
     echo "Your new auth token is has been saved in the $SETTINGS file its a good idea for you to"
     echo "still take note of it as you may want it for other situations."
   fi
