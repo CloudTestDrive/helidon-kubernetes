@@ -79,10 +79,20 @@ if [ -z $VAULT_OCID ]
   then
   # No existing VAULT_OCID so need to potentially create it
   echo "Checking for  vault $VAULT_NAME in compartment $COMPARTMENT_NAME"
-  VAULT_PENDING_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -e ".data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" | sed -e 's/"//g'`
+  SCHEDULING_DELETION_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" `
+  if [ -z "$SCHEDULING_DELETION_OCID" ]
+  then
+    echo "No vaults named $VAULT_NAME in scheduling deletion state, continuing"
+  else
+    echo "There is a vault named $VAULT_NAME that currently has a scheduling deletion activity"
+    echo "underway, please wait until that has finished (this may take a few mins) then re-run"
+    echo "this script to cancel the deletion and re-use that vault"
+    exit 0
+  fi
+  VAULT_PENDING_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" `
   if [ -z "$VAULT_PENDING_OCID" ]
   then
-    echo "No vault named $VAULT_NAME pending deletion"
+    echo "No vault named $VAULT_NAME pending deletion, creating a new vault for you"
   else
     read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
     if [[ ! $REPLY =~ ^[Yy]$ ]]
