@@ -89,7 +89,7 @@ then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
     # Ideally we'd use these flags for have thew OCI command wait for us, but that seems broken at the moment
     #  --wait-for-state ACTIVE --wait-interval-seconds 10
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" | jq -j '.data.id'`
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
     if [ -z $COMPARTMENT_OCID ]
     then
       echo "The compartment has not been created for some reason, cannot continue"
@@ -106,7 +106,7 @@ then
     do
       echo "Retrieving compartment state"
       COMPARTMENT_STATUS_RESP=`oci iam compartment get --compartment-id $COMPARTMENT_OCID 2>&1 | grep -v "ServiceError"`
-      echo "Returned info is \n$COMPARTMENT_STATUS_RESP"
+      # echo "Returned info is \n$COMPARTMENT_STATUS_RESP"
       COMPARTMENT_STATUS_CODE=`echo $COMPARTMENT_STATUS_RESP | jq -j '.status'`
       if [ "$COMPARTMENT_STATUS_CODE" = "null" ]
       then
@@ -115,15 +115,15 @@ then
       fi
       if [ -z "$COMPARTMENT_STATUS_CODE" ] 
       then
-        echo "No error status returned, checking for active status"
+        echo "No in progress status returned, checking for active status"
       else
-        echo "Got status $COMPARTMENT_STATUS_CODE, re-checking soon"
+        echo "Got in progress status $COMPARTMENT_STATUS_CODE, re-checking soon"
         sleep 5
         continue
       fi
       
       COMPARTMENT_STATUS=`echo $COMPARTMENT_STATUS_RESP | jq -j '.data."lifecycle-state"'`
-      echo "Status is $COMPARTMENT_STATUS"
+      # echo "Status is $COMPARTMENT_STATUS"
       if [ "$COMPARTMENT_STATUS" = "ACTIVE" ]
       then
         echo "Compartment is active, continuing"
