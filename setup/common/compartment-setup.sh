@@ -87,7 +87,9 @@ then
   if [ -z $COMPARTMENT_OCID ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
-    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
+    # Ideally we'd use these flags for have thew OCI command wait for us, but that seems broken at the moment
+    #  --wait-for-state ACTIVE --wait-interval-seconds 10
+    COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" | jq -j '.data.id'`
     if [ -z $COMPARTMENT_OCID ]
     then
       echo "The compartment has not been created for some reason, cannot continue"
@@ -108,7 +110,7 @@ then
         echo "Compartment is active, continuing"
       else
         echo "Waiting for active compartment state"
-        sleep 10
+        sleep 5
       fi
     done
     echo "Compartment $COMPARTMENT_NAME in $PARENT_NAME is now ready for use"
