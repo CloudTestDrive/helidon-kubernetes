@@ -107,9 +107,9 @@ then
       echo "Retrieving compartment state"
       COMPARTMENT_STATUS_RESP=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID 2>&1`
       COMPARTMENT_STATUS_CODE=`echo $COMPARTMENT_STATUS_RESP | jq -j '.status'`
-      if [ -z "COMPARTMENT_STATUS_CODE" ] 
+      if [ -z "$COMPARTMENT_STATUS_CODE" ] 
       then
-        echo "Retrieved compartment info, checking for active status"
+        echo "No error status returned, checking for active status"
       else
         echo "Got status $COMPARTMENT_STATUS_CODE, re-checking soon"
         sleep 5
