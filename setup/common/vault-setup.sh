@@ -79,7 +79,7 @@ if [ -z $VAULT_OCID ]
   then
   # No existing VAULT_OCID so need to potentially create it
   echo "Checking for  vault $VAULT_NAME in compartment $COMPARTMENT_NAME"
-  SCHEDULING_DELETION_OCID=VAULT_PENDING_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" `
+  SCHEDULING_DELETION_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" `
   if [ -z "$SCHEDULING_DELETION_OCID" ]
   then
     echo "No vaults named $VAULT_NAME in scheduling deletion state, continuing"
