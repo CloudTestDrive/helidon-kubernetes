@@ -6,60 +6,57 @@ context_name=one
 if [ $# -gt 0 ]
 then
   context_name=$1
-  echo Operating on context name $context_name
+  echo "Operating on context name $context_name"
 else
-  echo Using default context name of $context_name
+  echo "Using default context name of $context_name"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings
+    echo "No existing settings"
 fi
 
 RESOURCES_AVAILABLE=true
-RESOURCES_CREATED=false
 
 if [ -z $COMPARTMENT_OCID ]
   then
-  echo No existing compartment information
-  echo Checking for compartment availability
+  echo "No existing compartment information"
+  echo "Checking for compartment availability"
   bash ./resources/resource-minimum-check-region.sh compartments compartment-count 1
   AVAIL_COMPARTMENTS=$?
 
   if [ $AVAIL_COMPARTMENTS -eq 0 ]
   then
-    echo 'You have enough compartments available to run this lab'
+    echo "You have enough compartments available to run this lab"
   else
     echo "Sorry, but there are no available compartment resources."
     RESOURCES_AVAILABLE=false
   fi
 else
   echo "You have already configured a compartment, it will be reused"
-  RESOURCES_CREATED=false
 fi
 
 if [ -z $ATPDB_OCID ]
   then
-  echo No existing database information
-  echo Checking for database resource availability
+  echo "No existing database information"
+  echo "Checking for database resource availability"
   bash ./resources/resource-minimum-check-region.sh database atp-ocpu-count 1
   AVAIL_DATABASES=$?
 
   if [ $AVAIL_DATABASES -eq 0 ]
   then
-    echo 'You have enough ATP database cpus available to run this lab'
+    echo "You have enough ATP database cpus available to run this lab"
   else
     echo "Sorry, but there are no available ATP database cpu resources."
     RESOURCES_AVAILABLE=false
   fi
 else
   echo "You have already configured an ATP database, it will be reused"
-  RESOURCES_CREATED=false
 fi
 
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
@@ -69,9 +66,9 @@ OKE_REUSED_NAME=OKE_REUSED_$context_name
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo No already configured OKE context $context_name, checking resource availability
+  echo "No already configured OKE context $context_name, checking resource availability"
   
-  echo Checking for VCN availability for Kubernetes workers
+  echo "Checking for VCN availability for Kubernetes workers"
   bash ./resources/resource-minimum-check-region.sh vcn vcn-count 1
   AVAIL_VCN=$?
 
@@ -83,7 +80,7 @@ then
     RESOURCES_AVAILABLE=false
   fi
 
-  echo Checking for E4 or E3 processor core availability for Kubernetes workers
+  echo "Checking for E4 or E3 processor core availability for Kubernetes workers"
   # for now to get this done quickly just hard code the checks, at some point make this config driven
   bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
   AVAIL_E4_CORES=$?
@@ -91,16 +88,16 @@ then
   AVAIL_E3_CORES=$?
   if [ $AVAIL_E4_CORES -eq 0 ]
   then
-    echo 'You have enough E4 shapes to create the OKE cluster'
+    echo "You have enough E4 shapes to create the OKE cluster"
   elif [ $AVAIL_E3_CORES -eq 0 ]
   then
-  echo 'You have enough E3 shapes to create the OKE cluster'
+  echo "You have enough E3 shapes to create the OKE cluster"
   else
     echo "Sorry, but there are no available E3 or E4 processor resources available to create the Kubernetes cluster."
     RESOURCES_AVAILABLE=false
   fi
 else
-  echo You already have an OKE cluster for context $context_name, not need to check resources
+  echo "You already have an OKE cluster for context $context_name, not need to check resources"
 fi
 
 bash ./resources/resource-minimum-check-region.sh load-balancer lb-10mbps-count 1

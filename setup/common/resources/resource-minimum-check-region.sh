@@ -1,4 +1,10 @@
 #!/bin/hash -f
+# To get a list of available aervice groupings
+# oci limits service list --compartment-id $OCI_TENANCY --all
+# To get the limits for a specific servce (use the name from above)
+# oci limits value list --compartment-id $OCI_TENANCY --all --service-name <name>
+# to get the recource limits IN AN AD in the current region
+# oci limits resource-availability get --compartment-id $OCI_TENANCY --service-name $SERVICE_NAME --limit-name $LIMIT_NAME
 
 if [ $# -lt 3 ]
 then
