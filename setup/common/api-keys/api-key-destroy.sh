@@ -6,7 +6,7 @@ if [ -f $SETTINGS ]
     echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot contiue"
+    echo "No existing settings cannot continue"
     exit 10
 fi
 

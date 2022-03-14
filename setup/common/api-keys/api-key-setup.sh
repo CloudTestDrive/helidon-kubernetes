@@ -21,7 +21,7 @@ if [ -f $SETTINGS ]
     echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot contiue"
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -62,8 +62,8 @@ ERROR_MESSAGE=`echo $RESP | sed -e 's/ServiceError: //' | jq -r '.message'`
 if [ "$ERROR_MESSAGE" = "null" ]
 then
   API_KEY_FINGERPRINT=`echo $RESP | jq -r '.data.fingerprint'`
-  echo API_KEY_FINGERPRINT=$API_KEY_FINGERPRINT >> $SETTINGS
-  echo API_KEY_REUSED=false >> $SETTINGS
+  echo "API_KEY_FINGERPRINT=$API_KEY_FINGERPRINT" >> $SETTINGS
+  echo "API_KEY_REUSED=false" >> $SETTINGS
   echo "Uploaded key with fingerprint $API_KEY_FINGERPRINT"
   exit 0
 else
@@ -71,7 +71,7 @@ else
   if [ "$ERROR_CODE" = "KeyAlreadyExists" ]
   then
     echo "The key has already been uploaded, it will be reused"
-    echo API_KEY_REUSED=true >> $SETTINGS
+    echo "API_KEY_REUSED=true" >> $SETTINGS
     exit 100
   fi
   echo "Problem uploading the PEM file, the error message was"

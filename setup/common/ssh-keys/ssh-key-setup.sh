@@ -13,7 +13,7 @@ if [ -f $SETTINGS ]
     echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot contiue"
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -68,4 +68,4 @@ fi
 echo "Generating PEM file from public key file"
 ssh-keygen -f "$SSH_DIR/$SSH_KEY_FILE_BASE".pub -e -m pkcs8 > "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
 
-echo $SSH_KEY_REUSED_NAME=$SSH_KEY_FILE_REUSED >> $SETTINGS
+echo "$SSH_KEY_REUSED_NAME=$SSH_KEY_FILE_REUSED" >> $SETTINGS

@@ -6,26 +6,26 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot continue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run this script
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
   exit 1
 fi
 
 if [ -z $USER_OCID ]
 then
-  echo Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script
+  echo "Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script"
   exit 1
 fi
 
-echo Determining settings
+echo "Determining settings"
 
 OCI_REGION_KEY=`oci iam region list --all | jq -e  ".data[]| select (.name == \"$OCI_REGION\")" | jq -j '.key' | tr [:upper:] [:lower:]`
 
@@ -51,8 +51,8 @@ then
   fi
   if [ $OCIR_BASE_NAME = $USER_INITIALS ]
   then
-    echo You cannot use just your initials for the base nane
-    echo This script will stop, please run it again and if you want enter a different name
+    echo "You cannot use just your initials for the base nane"
+    echo "This script will stop, please run it again and if you want enter a different name"
     exit 2
   fi
 else     
@@ -61,15 +61,16 @@ fi
 
 if [ -z $AUTH_TOKEN ]
 then
-  echo There is no saved auth token which is needed to log in to docker
+  echo "There is no saved auth token which is needed to log in to docker"
   read -p "Please enter a valid auth token for your account" AUTH_TOKEN
   if [ -z $AUTH_TOKEN ]
   then
-    echo You did not enter an auth token, this script cannot proceed without that
-    echo Script stopping
+    echo "You did not enter an auth token, this script cannot proceed without that"
+    echo "Script stopping"
+    exit 4
   fi
 else
-  echo Using the saved auth token for the docker login
+  echo "Using the saved auth token for the docker login"
 fi
 
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
@@ -77,7 +78,7 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 if [ -z $OCIR_STOCKMANAGER_REUSED ]
 then
-  echo Checking for existing stockmanager repo
+  echo "Checking for existing stockmanager repo"
   # do we already have one 
 
   OCIR_STOCKMANAGER_NAME=$OCIR_BASE_NAME/stockmanager
@@ -86,37 +87,37 @@ then
   if [ $OCIR_STOCKMANAGER_OCID = 'null' ]
   then
   # No existing repo for stock manager
-    echo Creating OCIR repo named $OCIR_STOCKMANAGER_NAME for the stock manager in your tenancy in compartment  $COMPARTMENT_NAME
+    echo "Creating OCIR repo named $OCIR_STOCKMANAGER_NAME for the stock manager in your tenancy in compartment  $COMPARTMENT_NAME"
     OCIR_STOCKMANAGER_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME --is-immutable false --is-public true --wait-for-state AVAILABLE | jq -j '.data.id'`
-    echo OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
-    echo OCIR_STOCKMANAGER_REUSED=false >> $SETTINGS
+    echo "OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID" >> $SETTINGS 
+    echo "OCIR_STOCKMANAGER_REUSED=false" >> $SETTINGS
     # remove any existing location info and save the new one
     bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
-    echo OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION >> $SETTINGS
+    echo "OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION" >> $SETTINGS
   else
     read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes
-      echo docker has not been logged in
+      echo "OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes"
+      echo "docker has not been logged in"
       exit 1
     else     
       echo "OK, going to use reuse existing container repo called $OCIR_BASE_NAME in compartment $COMPARTMENT_NAME"
-      echo OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID >> $SETTINGS 
-      echo OCIR_STOCKMANAGER_REUSED=true >> $SETTINGS
+      echo "OCIR_STOCKMANAGER_OCID=$OCIR_STOCKMANAGER_OCID" >> $SETTINGS 
+      echo "OCIR_STOCKMANAGER_REUSED=true" >> $SETTINGS
       # remove any existing location info and save the new one
       bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
-      echo OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION >> $SETTINGS
+      echo "OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION" >> $SETTINGS
     fi
   fi
 else
-  echo OCI Repo for stock manager has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images
+  echo "OCI Repo for stock manager has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images"
 fi
 
 # now create the storefront
 if [ -z $OCIR_STOREFRONT_REUSED ]
 then
-  echo Checking for existing storefront repo
+  echo "Checking for existing storefront repo"
   # do we already have one 
 
   OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
@@ -125,39 +126,39 @@ then
   if [ $OCIR_STOREFRONT_OCID = 'null' ]
   then
   # No existing repo for storefront
-    echo Creating OCIR repo named $OCIR_STOREFRONT_NAME for the storefront in your tenancy in compartment  $COMPARTMENT_NAME
+    echo "Creating OCIR repo named $OCIR_STOREFRONT_NAME for the storefront in your tenancy in compartment  $COMPARTMENT_NAME"
     OCIR_STOREFRONT_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME --is-immutable false --is-public true --wait-for-state AVAILABLE | jq -j '.data.id'`
-    echo OCIR_STOREFRONT_OCID=$OCIR_STOREFRONT_OCID >> $SETTINGS 
-    echo OCIR_STOREFRONT_REUSED=false >> $SETTINGS
+    echo "OCIR_STOREFRONT_OCID=$OCIR_STOREFRONT_OCID" >> $SETTINGS 
+    echo "OCIR_STOREFRONT_REUSED=false" >> $SETTINGS
     # remove any existing location info and save the new one
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
-    echo OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION >> $SETTINGS
+    echo "OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION" >> $SETTINGS
   else
     read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo OK, stopping script, the storefront repo has not been configured, you need to re-run this script before doing any container image pushes
-      echo docker has not been logged in for the stockmanager repo
+      echo "OK, stopping script, the storefront repo has not been configured, you need to re-run this script before doing any container image pushes"
+      echo "docker has not been logged in for the stockmanager repo"
       exit 1
     else     
       echo "OK, for storefront going to use reuse existing container repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME"
-      echo OCIR_STOREFRONT_OCID=$OCIR_STOREFRONT_OCID >> $SETTINGS 
-      echo OCIR_STOREFRONT_REUSED=true >> $SETTINGS
+      echo "OCIR_STOREFRONT_OCID=$OCIR_STOREFRONT_OCID" >> $SETTINGS 
+      echo "OCIR_STOREFRONT_REUSED=true" >> $SETTINGS
       # remove any existing location info and save the new one
       bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
-      echo OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION >> $SETTINGS
+      echo "OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION" >> $SETTINGS
     fi
   fi
 else
-  echo OCI Repo for storefront has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images
+  echo "OCI Repo for storefront has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images"
 fi
 
 
-echo About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token ads the password
-echo Please ignore warnings about insecure password storage
+echo "About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
+echo "Please ignore warnings about insecure password storage"
 echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
 
 
-echo About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token ads the password
-echo Please ignore warnings about insecure password storage
+echo "About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
+echo "Please ignore warnings about insecure password storage"
 echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin

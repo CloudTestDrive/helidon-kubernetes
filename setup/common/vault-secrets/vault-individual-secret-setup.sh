@@ -15,16 +15,16 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 11
 fi
 
@@ -34,7 +34,7 @@ then
   echo "Cannot continue"
   exit 12
 else
-  echo Found vault
+  echo "Found vault information"
 fi
 
 if [ -z $VAULT_KEY_OCID ]
@@ -43,7 +43,7 @@ then
   echo "Cannot continue"
   exit 13
 else
-  echo Found vault key
+  echo "Found vault key information"
 fi
 
 VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"

@@ -13,8 +13,8 @@ then
     echo "You are in your home region and this script will continue"
     SAFE_TO_BUILD=true
   else
-    echo You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION
-    echo Please switch to your OCI home region and re-run this script
+    echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
+    echo "Please switch to your OCI home region and re-run this script"
     SAFE_TO_BUILD=false
   fi
 else

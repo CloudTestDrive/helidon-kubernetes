@@ -4,10 +4,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings
+    echo "Loading existing settings"
     source $SETTINGS
   else 
-    echo No existing settings, using defaults
+    echo "No existing settings, using defaults"
 fi
 
 if [ -z $USER_OCID ]
@@ -26,19 +26,19 @@ fi
 # If it starts with ocid1.saml then they are a federated user and we'll have to parse the user name out and out oracleidentitycloudservice in front of it
 # If it doesn't start with either then the user will need to provide the name themselves.
 
-echo Checking for local user
+echo "Checking for local user"
 LOCAL_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.user' | wc -l`
 
 if [ $LOCAL_USER = 1 ]
   then
-    echo USER_OCID=$OCI_CS_USER_OCID >> $SETTINGS
-    echo USER_TYPE=local >> $SETTINGS
+    echo "USER_OCID=$OCI_CS_USER_OCID" >> $SETTINGS
+    echo "USER_TYPE=local" >> $SETTINGS
     USERNAME=`oci iam user get --user-id $OCI_CS_USER_OCID | jq -j '.data.name'`
     echo "You are a local user, and do not use an identity provider, your user name is $USERNAME, saved details"
     exit 0
 fi
 
-echo Checking for federated user
+echo "Checking for federated user"
 FEDERATED_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.saml' | wc -l`
 
 if [ $FEDERATED_USER = 1 ]
@@ -61,8 +61,8 @@ if [ $FEDERATED_USER = 1 ]
       echo 'export USER_TYPE=[local or federated]'
       exit 11
     fi
-    echo USER_OCID=$USER_OCID >> $SETTINGS
-    echo USER_TYPE=federated >> $SETTINGS
+    echo "USER_OCID=$USER_OCID" >> $SETTINGS
+    echo "USER_TYPE=federated" >> $SETTINGS
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
     echo "You are a federated user, your user name is $USERNAME, saved details"
     exit 0

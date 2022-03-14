@@ -5,16 +5,16 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -46,7 +46,7 @@ else
       echo "as you can't have a active key in a vault that is itself pending deletion"
       echo "Note, a key that is pending deletion will prevent the compartment that contains it from being deleted"
       oci kms management key schedule-deletion --key-id $VAULT_KEY_OCID --endpoint $VAULT_ENDPOINT
-      echo Removing details from the settings file
+      echo "Removing details from the settings file"
       bash ./delete-from-saved-settings.sh VAULT_KEY_OCID
       bash ./delete-from-saved-settings.sh VAULT_KEY_REUSED
     fi
@@ -71,7 +71,7 @@ else
       echo "The vault deletion is cancled"
       echo "Note, a vault that is pending deletion will prevent the compartment that contains it from being deleted"
       oci kms management vault schedule-deletion --vault-id $VAULT_OCID
-      echo Removing details from the settings file
+      echo "Removing details from the settings file"
       bash ./delete-from-saved-settings.sh VAULT_OCID
       bash ./delete-from-saved-settings.sh VAULT_REUSED
     fi
