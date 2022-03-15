@@ -69,7 +69,7 @@ then
   read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it must be a single word"
+    echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it must be a single word, and cannot be the same as the parent name ($PARENT_NAME)"
     read COMPARTMENT_NAME
     if [ -z "$COMPARTMENT_NAME" ]
     then
@@ -78,6 +78,12 @@ then
     fi
   else     
     echo "OK, going to use $COMPARTMENT_NAME as the sub compartment name"
+  fi
+  
+  if [  $COMPARTMENT_NAME = $PARENT_NAME]
+  then
+    echo "Unable to continue, OCI will not allow a sub compartment to have the same name as it's parent"
+    exit 100
   fi
 
   # OK, actual do the work.
