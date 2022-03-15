@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
@@ -59,7 +64,13 @@ fi
 
 VAULT_NAME="$USER_INITIALS"LabsVault
 
-read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled,  use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME defaulting to $REPLY"
+else
+  read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
+fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -94,7 +105,13 @@ if [ -z $VAULT_OCID ]
   then
     echo "No vault named $VAULT_NAME pending deletion, creating a new vault for you"
   else
-    read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, cancel pending deletion of vault $VAULT_NAME defaulting to $REPLY"
+    else
+      read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
       echo "OK will try to create a new vault for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
@@ -149,7 +166,13 @@ if [ -z "$VAULT_PENDING_KEY_OCID" ]
 then
   echo "No key named $VAULT_KEY_NAME pending deletion"
 else
-  read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it ?" REPLY
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, cancel pending deletion of master key $VAULT_KEY_NAME defaulting to $REPLY"
+  else
+    read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it ?" REPLY
+  fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"

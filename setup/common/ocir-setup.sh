@@ -13,6 +13,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -38,7 +43,13 @@ OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 
 OCIR_BASE_NAME="$USER_INITIALS"_labs_base_repo
 
-read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, use $OCIR_BASE_NAME as the base for naming your repo defaulting to $REPLY"
+else
+  read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
+fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, please enter the base name of the container image repo to use, it must be a single word or multiple words separated by underscore , e.g. $OCIR_BASE_NAME It cannot just be your initials"
@@ -95,7 +106,13 @@ then
     bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
     echo "OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION" >> $SETTINGS
   else
-    read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME for stockmanager defaulting to $REPLY"
+    else
+      read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
       echo "OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes"
@@ -134,7 +151,13 @@ then
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
     echo "OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION" >> $SETTINGS
   else
-    read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME for storefront defaulting to $REPLY"
+    else
+      read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
       echo "OK, stopping script, the storefront repo has not been configured, you need to re-run this script before doing any container image pushes"

@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
@@ -48,7 +53,13 @@ fi
 
 DBNAME="$USER_INITIALS"db
 
-read -p "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, using $DBNAME for database defaulting to $REPLY"
+else
+  read -p "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
+fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then

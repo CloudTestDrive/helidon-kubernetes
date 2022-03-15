@@ -1,11 +1,23 @@
 #!/bin/bash -f
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 echo "Getting region environment details"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 echo "This script will run the required commands to setup your own images"
 echo "It assumes you are working in a free trial environment"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
-read -p "Are you running in a free trial environment (y/n) ? " REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, in free trial defaulting to $REPLY"
+else
+  read -p "Are you running in a free trial environment (y/n) ? " REPLY
+fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   if [ $OCI_REGION = $OCI_HOME_REGION ]

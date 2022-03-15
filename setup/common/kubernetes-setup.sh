@@ -21,6 +21,12 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -79,7 +85,13 @@ fi
 
 CLUSTER_NAME="$USER_INITIALS"
 CLUSTER_NAME_FULL="lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
-read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, using $CLUSTER_NAME_FULL question for cluster name defaulting to $REPLY"
+else
+  read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
