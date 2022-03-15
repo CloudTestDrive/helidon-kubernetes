@@ -50,4 +50,4 @@ then
   echo "Problem setting up policy "$USER_INITIALS"DevOpsDeployPolicy response is $RESP"
   FINAL_RESP=$RESP
 fi
-echo $FINAL_RESP
+exit $FINAL_RESP
