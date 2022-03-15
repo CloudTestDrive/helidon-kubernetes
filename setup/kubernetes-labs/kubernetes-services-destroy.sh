@@ -37,7 +37,6 @@ then
   exit 1
 else
   echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
-  exit 2
 fi
 
 #check for trying to re-use the context name
@@ -63,19 +62,6 @@ then
   exit 3
 else
   echo "Located details of Kubernetes cluster $CLUSTER_CONTEXT_NAME, continuing"
-fi
-
-
-
-OKE_SERVICES_CONFIGURED_SETTING_NAME=OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME
-
-if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
-then
-  echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
-  exit 1
-else
-  echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
-  exit 2
 fi
 
 # run the pre-existing script
