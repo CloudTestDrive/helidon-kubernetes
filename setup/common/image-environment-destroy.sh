@@ -34,8 +34,26 @@ if [ $SAFE_TO_DESTROY = true ]
 then
   echo "Let's clean your container image environment up"
   bash container-image-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the container images, cannot continue"
+    exit $RESP
+  fi
   bash ocir-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the OCIR repos, cannot continue"
+    exit $RESP
+  fi
   bash auth-token-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the auth tokens cannot continue"
+    exit $RESP
+  fi
 else
   echo "OK, you are not in a free trial or your home region, you will need to do the following in"
   echo "the $HOME/helidon-kubernetes/setup/common directory "

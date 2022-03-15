@@ -10,7 +10,31 @@ then
 else
   echo "OK destroying resources"
   bash database-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the database cannot continue"
+    exit $RESP
+  fi
   bash user-identity-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure removing the user identity cannot continue"
+    exit $RESP
+  fi
   bash compartment-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the compartment cannot continue"
+    exit $RESP
+  fi
   bash initials-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure removing the user initials cannot continue"
+    exit $RESP
+  fi
 fi

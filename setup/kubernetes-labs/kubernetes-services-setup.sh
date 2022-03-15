@@ -73,4 +73,11 @@ fi
 # run the pre-existing script
 bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS
 
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure setting up the cluster services, cannot continue"
+  exit $RESP
+fi
+
 echo "$OKE_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS

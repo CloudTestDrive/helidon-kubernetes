@@ -25,8 +25,29 @@ fi
 if [ $SAFE_TO_BUILD = true ]
 then
   bash auth-token-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the auth token, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
   bash ocir-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the OCIR repos, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
   bash container-image-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the container images, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
 else
   echo "OK, you will need to do the following in the $HOME/helidon-kubernetes/setup/common directory "
   echo "In your HOME REGION of $OCI_HOME_REGION (you are currently in $OCI_REGION) you will need"
