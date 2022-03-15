@@ -82,7 +82,7 @@ else
   echo "Located OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
 fi
 
-echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no branches"
+echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no commits"
 
 COMMIT_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."commit-count"'`
 if [ "$COMMIT_COUNT" = "null" ]
