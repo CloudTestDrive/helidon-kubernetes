@@ -231,9 +231,9 @@ then
     bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
     echo "Update $TF_MODULE_FILE to set Label prefix to context"
     bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
-    echo "Update $TF_MODULE_FILE to set Label prefix to context"
+    echo "Update $TF_MODULE_FILE to set VCN CIDR"
     bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
-    echo "Update $TF_MODULE_FILE to set Label prefix to context"
+    echo "Update $TF_MODULE_FILE to set OKE TF Module version"
     bash $SAVED_DIR/update-file.sh $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
     
     
