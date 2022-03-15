@@ -22,10 +22,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -72,12 +72,13 @@ if [ -z "$POLICY_OCID" ]
 then
   echo "No existing policy found, creating"
   POLICY_OCID=`oci iam policy create --name "$POLICY_NAME" --description "$POLICY_DESCRIPTION"  --statements "$POLICY_RULE" --compartment-id $COMPARTMENT_PARENT_OCID --wait-for-state ACTIVE | jq -r '.data.id'`
-  echo $POLICY_OCID_NAME=$POLICY_OCID >> $SETTINGS
-  echo $POLICY_REUSED_NAME=false >> $SETTINGS
+  echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
+  echo "$POLICY_REUSED_NAME=false" >> $SETTINGS
   exit 0
 else
   echo "Policy named $POLICY_NAME already exists, please manually add the following statement to it " 
-  echo $POLICY_RULE
-  echo $POLICY_OCID_NAME=$POLICY_OCID >> $SETTINGS
-  echo $POLICY_REUSED_NAME=true >> $SETTINGS
+  echo "$POLICY_RULE"
+  echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
+  echo "$POLICY_REUSED_NAME=true" >> $SETTINGS
+  exit 1
 fi

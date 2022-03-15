@@ -5,10 +5,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot continue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -71,7 +71,7 @@ git clone $STOREFRONT_GIT_REPO
 OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 
 
-echo building and pushing stockmanager images
+echo "Building and pushing stockmanager images"
 
 # Get the OCIR location
 
@@ -83,7 +83,7 @@ cd $STOCKMANAGER_LOCATION_IN_REPO
 
 
 # update the repo location
-echo REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME > repoStockmanagerConfig.sh
+echo "REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME" > repoStockmanagerConfig.sh
 
 # build the images and push them
 bash buildStockmanagerPushToRepo.sh
@@ -94,7 +94,7 @@ cd $SCRIPTS_DIR
 bash stockmanager-deployment-update.sh set $OCIR_STOCKMANAGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOCKMANAGER_NAME
 
 
-echo building and pushing storefront images
+echo "Building and pushing storefront images"
 
 # Get the OCIR location
 
@@ -106,7 +106,7 @@ cd $STOREFRONT_LOCATION_IN_REPO
 
 
 # update the repo location
-echo REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME > repoStorefrontConfig.sh
+echo "REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME" > repoStorefrontConfig.sh
 
 # build the images and push them
 bash buildStorefrontPushToRepo.sh

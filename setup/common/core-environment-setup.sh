@@ -31,6 +31,34 @@ else
   echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
 fi
 bash initials-setup.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure setting up the initials, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi
 bash user-identity-setup.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure setting up the user identity, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi
 bash compartment-setup.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure creating the compartment, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi
 bash database-setup.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure creating the database, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi

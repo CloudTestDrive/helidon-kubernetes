@@ -31,7 +31,7 @@ then
   echo "No reuse information for vault"
 else
   echo "This script has already configured vault details, exiting"
-  exit 3
+  exit 0
 fi
 
 # check for resource availability

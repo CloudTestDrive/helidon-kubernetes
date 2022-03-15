@@ -13,7 +13,7 @@ if [ -f $SETTINGS ]
     echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot contiue"
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -27,8 +27,8 @@ if [ -z "${!SSH_KEY_REUSED_NAME}" ]
 then
   echo "No saved SSH key information, continuing."
 else
-  echo "Your SSH key has already been set using these scripts, stopping"
-  exit 2
+  echo "Your SSH key has already been set using these scripts, it will be reused"
+  exit 0
 fi
 
 if [ -f "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem ]
@@ -68,4 +68,4 @@ fi
 echo "Generating PEM file from public key file"
 ssh-keygen -f "$SSH_DIR/$SSH_KEY_FILE_BASE".pub -e -m pkcs8 > "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
 
-echo $SSH_KEY_REUSED_NAME=$SSH_KEY_FILE_REUSED >> $SETTINGS
+echo "$SSH_KEY_REUSED_NAME=$SSH_KEY_FILE_REUSED" >> $SETTINGS

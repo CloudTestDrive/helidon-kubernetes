@@ -21,10 +21,10 @@ TEMPLATE_BASE=`basename $TEMPLATE -template.yaml`
 DEPLOYMENT_YAML=$TEMPLATE_DIR/$TEMPLATE_BASE.yaml
 if [ $CMD == set ]
 then
-  echo Configuring from $TEMPLATE
+  echo "Configuring from $TEMPLATE"
 elif [ $CMD = reset ]
 then
-    echo Resetting to $TEMPLATE
+    echo "Resetting to $TEMPLATE"
 else
     display_usage
     exit 2
@@ -46,21 +46,21 @@ fi
 
 if [ $CMD = set ]
 then
-  echo Configuring deployment $DEPLOYMENT_YAML with provided location details of Location $OCIR_LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO
+  echo "Configuring deployment $DEPLOYMENT_YAML with provided location details of Location $OCIR_LOCATION storage namespace $OCIR_STORAGE_NAMESPACE and repo $OCIR_REPO"
   cp $TEMPLATE $DEPLOYMENT_YAML
   bash update-file.sh $DEPLOYMENT_YAML OCIR_LOCATION $OCIR_LOCATION
   bash update-file.sh $DEPLOYMENT_YAML OCIR_STORAGE_NAMESPACE $OCIR_STORAGE_NAMESPACE
   bash update-file.sh $DEPLOYMENT_YAML OCIR_REPO $OCIR_REPO ':'
-  echo Completed setting location details for $DEPLOYMENT_YAML
+  echo "Completed setting location details for $DEPLOYMENT_YAML"
 elif [ $CMD = reset ]
 then 
   if [ -f $DEPLOYMENT_YAML ]
   then
-    echo Configuring deployment $1 removing $DEPLOYMENT_YAML
+    echo "Configuring deployment $1 removing $DEPLOYMENT_YAML"
     rm $DEPLOYMENT_YAML
   else
-    echo Deployment $DEPLOYMENT_YAML does not exist skipping
+    echo "Deployment $DEPLOYMENT_YAML does not exist skipping"
   fi
 else
-  echo Unknown operation $CMD, 1st argument must be either set or reset
+  echo "Unknown operation $CMD, 1st argument must be either set or reset"
 fi

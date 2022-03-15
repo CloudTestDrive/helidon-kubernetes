@@ -4,10 +4,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
 then
-  echo Loading existing settings
+  echo "Loading existing settings"
   source $SETTINGS
 else
-  echo Creating new settings information
+  echo "Creating new settings information"
 fi
 
 if [ -z "$USER_INITIALS" ]
@@ -25,5 +25,5 @@ if [ -z "$USER_INITIALS" ]
   fi
   echo USER_INITIALS=$USER_INITIALS >> $SETTINGS
 else
-  echo "Initials already set"
+  echo "Initials already set to $USER_INITIALS will re-use them"
 fi

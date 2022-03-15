@@ -13,8 +13,8 @@ then
     echo "You are in your home region and this script will continue"
     SAFE_TO_BUILD=true
   else
-    echo You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION
-    echo Please switch to your OCI home region and re-run this script
+    echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
+    echo "Please switch to your OCI home region and re-run this script"
     SAFE_TO_BUILD=false
   fi
 else
@@ -25,8 +25,29 @@ fi
 if [ $SAFE_TO_BUILD = true ]
 then
   bash auth-token-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the auth token, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
   bash ocir-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the OCIR repos, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
   bash container-image-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the container images, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi
 else
   echo "OK, you will need to do the following in the $HOME/helidon-kubernetes/setup/common directory "
   echo "In your HOME REGION of $OCI_HOME_REGION (you are currently in $OCI_REGION) you will need"

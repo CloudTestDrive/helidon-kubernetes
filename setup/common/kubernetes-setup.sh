@@ -5,45 +5,45 @@ CLUSTER_CONTEXT_NAME=one
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo Operating on context name $CLUSTER_CONTEXT_NAME
+  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo Using default context name of $CLUSTER_CONTEXT_NAME
+  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo Your initials have not been set, you need to run the initials-setup.sh script before you can run this script
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
   exit 1
 fi
 
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
-#Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
+# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
 OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo No reuse information for OKE context $CLUSTER_CONTEXT_NAME
+  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME"
 else
-  echo This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting
+  echo "This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting"
   exit 3
 fi
 
@@ -53,14 +53,14 @@ CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CLUSTER_CONT
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
-  echo Using context name of $CLUSTER_CONTEXT_NAME
+  echo "Using context name of $CLUSTER_CONTEXT_NAME"
 else
-  echo A kubernetes context called $CLUSTER_CONTEXT_NAME already exists, this script cannot replace it.
+  echo "A kubernetes context called $CLUSTER_CONTEXT_NAME already exists, this script cannot replace it."
   if [ $# -gt 0 ]
   then
-    echo Please re-run this script providing a different name than $CLUSTER_CONTEXT_NAME as the first argument
+    echo "Please re-run this script providing a different name than $CLUSTER_CONTEXT_NAME as the first argument"
   else
-    echo Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $CLUSTER_CONTEXT_NAME
+    echo "Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $CLUSTER_CONTEXT_NAME"
   fi
   exit 40
 fi
@@ -71,10 +71,10 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 if [ -z $COMPARTMENT_NAME ]
 then
-  echo The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS
+  echo "The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS"
   exit 99
 else
-  echo Operating in compartment $COMPARTMENT_NAME
+  echo "Operating in compartment $COMPARTMENT_NAME"
 fi
 
 CLUSTER_NAME="$USER_INITIALS"
@@ -83,7 +83,7 @@ read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes clu
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with this name exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with the name lab-$CLUSTER_CONTEXT_NAME-nameyouenter exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
@@ -110,11 +110,11 @@ TF_GIT_BASE=$HOME/oke-labs-terraform
 
 if [ -z $OKE_OCID ]
 then
-  echo Checking for active cluster named $CLUSTER_NAME_FULL
+  echo "Checking for active cluster named $CLUSTER_NAME_FULL"
   OKE_OCID=`oci ce cluster list --name $CLUSTER_NAME_FULL --compartment-id $COMPARTMENT_OCID --lifecycle-state ACTIVE | jq -j '.data[0].id'`
   if [ -z $OKE_OCID ]
   then
-    echo Checking for cluster specific settings directory
+    echo "Checking for cluster specific settings directory"
     TF_SOURCE_CONFIG_DIR=`pwd`/oke-terraform-config
     if [ -d $TF_SOURCE_CONFIG_DIR ]
     then
@@ -132,7 +132,7 @@ then
       echo "Cannot locate cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS, cannot continue"
       exit 10
     fi
-    echo Loading cluster specific settings
+    echo "Loading cluster specific settings"
     source $CLUSTER_SPECIFIC_SETTINGS
     # Check for the VCN Network address being set
     if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
@@ -141,7 +141,7 @@ then
       echo 'Cannot continue'
       exit 11
     else
-      echo Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START
+      echo "Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START"
     fi
     
     echo "Checking for teraform module specific settings file"
@@ -153,7 +153,7 @@ then
       echo "Cannot locate general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS, cannot continue"
       exit 12
     fi
-    echo Loading generic OKE terraform settings
+    echo "Loading generic OKE terraform settings"
     source $GENERIC_OKE_TERRAFORM_SETTINGS
     # Check for the TF OKE module version
     if [ -z $TERRAFORM_OKE_MODULE_VERSION ]
@@ -162,9 +162,9 @@ then
       echo 'Cannot continue'
       exit 13
     else
-      echo Located terraform-oke-module version as $TERRAFORM_OKE_MODULE_VERSION
+      echo "Located terraform-oke-module version as $TERRAFORM_OKE_MODULE_VERSION"
     fi
-    echo Checking for VCN availability
+    echo "Checking for VCN availability"
     bash ./resources/resource-minimum-check-region.sh vcn vcn-count 1
     AVAIL_VCN=$?
 
@@ -176,7 +176,7 @@ then
       echo "This script cannot continue"
       exit 50
     fi
-    echo Checking for E4 or E3 processor core availability for Kubernetes workers
+    echo "Checking for E4 or E3 processor core availability for Kubernetes workers"
     # for now to get this done quickly just hard code the checks, at some point make this config driven
     bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
     AVAIL_E4_CORES=$?
@@ -193,8 +193,8 @@ then
       echo "You will need to get some E3 or E4 cores to be able to create a Kubernetes cluster, if you are in a non free trial maybe switch to a different region"
       exit 50
     fi
-    echo Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME
-    echo Preparing terraform directory
+    echo "Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
+    echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     TF_GIT_BASE=$HOME/oke-labs-terraform
     mkdir -p $TF_GIT_BASE
@@ -208,57 +208,57 @@ then
     TFP=$TF_DIR/$TF_PROVIDER_FILE
     TFM=$TF_DIR/$TF_MODULE_FILE
     TFO=$TF_DIR/$TF_OUTPUTS_FILE
-    echo Configuring terraform
+    echo "Configuring terraform"
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/oke-outputs.tf $TFO
     cd $TF_DIR
-    echo Update $TF_PROVIDER_FILE set OCI_REGION
+    echo "Update $TF_PROVIDER_FILE set OCI_REGION"
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
-    echo Update $TF_PROVIDER_FILE set OCI_HOME_REGION
+    echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
-    echo Update $TF_MODULE_FILE set WORKER_SHAPE
+    echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
     bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
-    echo Update $TF_MODULE_FILE to set compartment OCID
+    echo "Update $TF_MODULE_FILE to set compartment OCID"
     bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
-    echo Update $TF_MODULE_FILE to set tenancy OCID
+    echo "Update $TF_MODULE_FILE to set tenancy OCID"
     bash $SAVED_DIR/update-file.sh $TFM OCI_TENANCY $OCI_TENANCY
-    echo Update $TF_MODULE_FILE to set OCI Region
+    echo "Update $TF_MODULE_FILE to set OCI Region"
     bash $SAVED_DIR/update-file.sh $TFM OCI_REGION $OCI_REGION
-    echo Update $TF_MODULE_FILE set OCI_HOME_REGION
+    echo "Update $TF_MODULE_FILE set OCI_HOME_REGION"
     bash $SAVED_DIR/update-file.sh $TFM OCI_HOME_REGION $OCI_HOME_REGION
-    echo Update $TF_MODULE_FILE to set Cluster name
+    echo "Update $TF_MODULE_FILE to set Cluster name"
     bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
-    echo Update $TF_MODULE_FILE to set Label prefix to context
+    echo "Update $TF_MODULE_FILE to set Label prefix to context"
     bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
-    echo Update $TF_MODULE_FILE to set Label prefix to context
+    echo "Update $TF_MODULE_FILE to set VCN CIDR"
     bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
-    echo Update $TF_MODULE_FILE to set Label prefix to context
+    echo "Update $TF_MODULE_FILE to set OKE TF Module version"
     bash $SAVED_DIR/update-file.sh $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
     
     
-    echo Initialising Terraform
+    echo "Initialising Terraform"
     terraform init
     if [ $? -ne 0 ]
     then
       echo "Problem initialising terraform, cannot continue"
       exit 10
     fi
-    echo Planning terraform deployment
+    echo "Planning terraform deployment"
     terraform plan --out=$TF_DIR/terraform.plan
     if [ $? -ne 0 ]
     then
       echo "Problem doing terraform plan, cannot continue"
       exit 11
     fi
-    echo Applying terraform - this may take a while
+    echo "Applying terraform - this may take a while"
     terraform apply $TF_DIR/terraform.plan
     if [ $? -ne 0 ]
     then
       echo "Problem applying terraform, cannot continue"
       exit 12
     fi
-    echo Retrieving cluster OCID from Terraform
+    echo "Retrieving cluster OCID from Terraform"
     OKE_OCID=`terraform output | grep cluster_id | awk '{print $3}' | sed -e 's/"//g'`
     if [ -z $OKE_OCID ]
     then
@@ -270,24 +270,24 @@ then
       echo "kubectl config rename-context `kubectl config current-context` $CLUSTER_CONTEXT_NAME"
       exit 1
     fi
-    echo OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID >> $SETTINGS
-    echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=false >> $SETTINGS
+    echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
+    echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=false" >> $SETTINGS
     cd $SAVED_DIR
   else
-    echo Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status
+    echo "Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status"
     OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0]."lifecycle-state"'`
     if [ $OKE_STATUS = ACTIVE ]
     then
-      echo Cluster is Active, proceeding
-      echo OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID >> $SETTINGS
-      echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=true >> $SETTINGS
+      echo "Cluster is Active, proceeding"
+      echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
+      echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
     else
-      echo Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used.
-      echo Please re-run this script and use a different name cluster name
+      echo "Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used."
+      echo "Please re-run this script and use a different name cluster name"
       exit 20 
     fi
   fi
-  echo Updating the kube config file
+  echo "Updating the kube config file"
   # ensure the context file exists
   KUBECONF_DIR=$HOME/.kube
   KUBECONF_FILE=$KUBECONF_DIR/config
@@ -296,7 +296,7 @@ then
   oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF_FILE --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
   chmod 600 $KUBECONF_FILE
-  echo Renaming context to $CLUSTER_CONTEXT_NAME
+  echo "Renaming context to $CLUSTER_CONTEXT_NAME"
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
   CURRENT_CONTEXT=`kubectl config current-context`
   kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
@@ -304,15 +304,15 @@ else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
   then
-    echo Cannot locate a cluster with the specified OCID of $OKE_OCID
-    echo Please check that the value of OKE_OCID_$CLUSTER_CONTEXT_NAME in $SETTINGS is correct if nor remove or replace it
+    echo "Cannot locate a cluster with the specified OCID of $OKE_OCID"
+    echo "Please check that the value of OKE_OCID_$CLUSTER_CONTEXT_NAME in $SETTINGS is correct if nor remove or replace it"
     exit 5
   else
-    echo Located cluster named $CLUSTER_NAME using OCID $OKE_OCID
-    echo You are assumed to have downloaded the $HOME/kube/config file either by hand or using this script
-    echo You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script
-    echo You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script
+    echo "Located cluster named $CLUSTER_NAME using OCID $OKE_OCID"
+    echo "You are assumed to have downloaded the $HOME/kube/config file either by hand or using this script"
+    echo "You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script"
+    echo "You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script"
     # Flag this as reused and refuse to destroy it
-    echo OKE_REUSED_$CLUSTER_CONTEXT_NAME=true >> $SETTINGS
+    echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
   fi
 fi

@@ -49,7 +49,28 @@ then
 else
   echo "Starting security setting clean up"
   bash ./policies-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the policies, exit code is $RESP, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi 
   bash ./dynamic-groups-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure destroying the dynamic groups, exit code is $RESP, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi 
 fi
 echo "SSH key removal starting"
 bash ./ssh-api-key-destroy.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure destroying the ssh key, exit code is $RESP, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi 

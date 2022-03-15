@@ -5,19 +5,19 @@ CLUSTER_CONTEXT_NAME=one
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo Operating on context name $CLUSTER_CONTEXT_NAME
+  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo Using default context name of $CLUSTER_CONTEXT_NAME
+  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo Loading existing settings information
+    echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo No existing settings cannot contiue
+    echo "No existing settings cannot continue"
     exit 10
 fi
 
@@ -29,7 +29,7 @@ OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo No reuse information for OKE cannot safely continue, you will have to destroy it manually
+  echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
   exit 1
 fi
 
@@ -49,8 +49,10 @@ TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
 
 if [ $OKE_REUSED = true ]
 then
-  echo You have been using a cluster that was not created by these scripts, as it may contain other resources this script cannot delete it, you will need to destroy the cluster by hand
-  echo and then remove the variables OKE_REUSE_$CLUSTER_CONTEXT_NAME and OKE_OCID_$CLUSTER_CONTEXT_NAME from $SETTINGS and delete $TF_DIR
+  echo "You have been using a cluster that was not created by these scripts, as it may"
+  echo "contain other resources this script cannot delete it, you will need to destroy the"
+  echo "cluster by hand and then remove the variables OKE_REUSE_$CLUSTER_CONTEXT_NAME"
+  echo "and OKE_OCID_$CLUSTER_CONTEXT_NAME from $SETTINGS and delete $TF_DIR"
   exit 2
 fi
 
@@ -63,7 +65,7 @@ OKE_OCID="${!OKE_OCID_NAME}"
 
 if [ -z $OKE_OCID ]
 then 
-  echo No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue
+  echo "No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue"
   exit 3
 fi
 
@@ -74,27 +76,27 @@ then
   TFS=$TF_DIR/terraform.tfstate
   if [ -e $TFS ]
   then
-    echo Planning destrucion
+    echo "Planning destrucion"
     terraform plan -destroy -out=$TF_DIR/destroy.plan
-    echo Destroying cluster
+    echo "Destroying cluster"
     terraform apply -destroy $TF_DIR/destroy.plan
-    echo Removing terraform scripts
+    echo "Removing terraform scripts"
     rm -rf $TF_DIR
     cd $SAVED_DIR
     bash ./delete-from-saved-settings.sh OKE_OCID_$CLUSTER_CONTEXT_NAME
     bash ./delete-from-saved-settings.sh OKE_REUSED_$CLUSTER_CONTEXT_NAME
-    echo Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration
+    echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
     CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $2}'`
     USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $3}'`
     kubectl config delete-user $USER_INFO
     kubectl config delete-cluster $CLUSTER_INFO
     kubectl config delete-context $CLUSTER_CONTEXT_NAME
-    echo The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name
+    echo "The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
   else
-    echo no state file, nothing to destroy
-    echo cannot proceed
+    echo "no state file, nothing to destroy"
+    echo "cannot proceed"
     exist 4
   fi
 else
-  echo $TF_DIR not found, nothing we can plan a destruction around
+  echo "$TF_DIR not found, nothing we can plan a destruction around"
 fi
