@@ -81,10 +81,12 @@ then
     echo "OK, going to use $COMPARTMENT_NAME as the sub compartment name"
   fi
   
-  if [  "$COMPARTMENT_NAME" = "$PARENT_NAME" ]
+  if [ "$COMPARTMENT_NAME" = "$COMPARTMENT_PARENT_NAME" ]
   then
     echo "Unable to continue, OCI will not allow a sub compartment to have the same name as it's parent"
     exit 100
+  else
+    echo "$COMPARTMENT_NAME is not the same as its parent, continuing"
   fi
 
   # OK, actual do the work.
