@@ -49,7 +49,15 @@ echo "Cancel the deletion and ensure that the value in the secret is what you re
 echo "it's not then you can using the OCI Vault UI create a new version of the secret with"
 echo "the value you want"
 echo "Note, a secret that is pending deletion will prevent the compartment that contains it from being deleted"
+
 oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME}"
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi 
 
 # clean up the settings
 bash ../delete-from-saved-settings.sh "$VAULT_SECRET_OCID_NAME"

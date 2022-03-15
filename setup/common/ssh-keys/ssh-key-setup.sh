@@ -27,8 +27,8 @@ if [ -z "${!SSH_KEY_REUSED_NAME}" ]
 then
   echo "No saved SSH key information, continuing."
 else
-  echo "Your SSH key has already been set using these scripts, stopping"
-  exit 2
+  echo "Your SSH key has already been set using these scripts, it will be reused"
+  exit 0
 fi
 
 if [ -f "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem ]

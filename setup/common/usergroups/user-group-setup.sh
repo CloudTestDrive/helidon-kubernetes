@@ -29,8 +29,8 @@ source $SETTINGS
 
 if [ -z "${!GROUP_REUSED_NAME}" ]
 then
-  echo "This script has already setup the group $GROUP_NAME"
-  exit 1
+  echo "This script has already setup the group $GROUP_NAME it will be reused"
+  exit 0
 fi
 
 # see if we can find the existing group
@@ -42,6 +42,11 @@ if [ -z "$GROUP_OCID" ]
 then
   echo "No existing group found, creating"
   GROUP_OCID=`oci iam create group --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION" | jq -r '.data.id'`
+  if [ -z "$GROUP_OCID" ]
+  then
+    echo "Problem setting up group $GROUP_NAME, cannot continue"
+    exit 12
+  fi
   echo "$GROUP_OCID_NAME=$GROUP_OCID" >> $SETTINGS
   echo "$GROUP_REUSED_NAME=false" >> $SETTINGS
 else

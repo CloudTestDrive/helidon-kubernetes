@@ -21,7 +21,6 @@ export SETTINGS=$HOME/hk8sLabsSettings
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings information"
-    source $SETTINGS
   else 
     echo "No existing settings cannot continue"
     exit 10
@@ -73,4 +72,5 @@ else
   echo $GROUP_RULE
   echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
   echo $GROUP_REUSED_NAME=true >> $SETTINGS
+  exit 1
 fi

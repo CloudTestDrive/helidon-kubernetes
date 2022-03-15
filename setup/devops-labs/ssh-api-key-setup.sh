@@ -28,6 +28,13 @@ SAVED_PWD=`pwd`
 cd ../common/ssh-keys
 
 bash ./ssh-key-setup.sh $SSH_DIR $SSH_KEY_FILE_BASE
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure creating the ssh keys, exit code is $RESP, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi 
 
 # Upload it
 
@@ -36,6 +43,13 @@ cd $SAVED_PWD
 cd ../common/api-keys
 
 bash ./api-key-setup.sh "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure uploading the api ssh keys, exit code is $RESP, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi 
 
 # update the .ssh file
 

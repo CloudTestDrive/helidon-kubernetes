@@ -91,6 +91,7 @@ then
 else
   echo "OCI Code repo $REPO_NAME has $COMMIT_COUNT existing commits, cannot proceed as there may be damage to existing data"
   echo "You will have to manually configure the OCI Code repo"
+  exit 5
 fi
 
 echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no branches"
@@ -102,6 +103,7 @@ then
 else
   echo "OCI Code repo $REPO_NAME has $BRANCH_COUNT existing branches, cannot proceed as there may be damage to existing data"
   echo "You will have to manually configure the OCI Code repo"
+  exit 6
 fi
 
 REPO_SSH=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."ssh-url"'`
@@ -119,7 +121,7 @@ read -p "Ready to start demo project code transfer, proceed ?"
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping"
-  exit 0
+  exit 1
 else
   echo "OK, starting to transfer sample code"
 fi

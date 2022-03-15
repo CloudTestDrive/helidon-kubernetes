@@ -37,6 +37,7 @@ cd ../common/api-keys
 
 bash ./api-key-destroy.sh 
 
+
 # delete the ssh key files
 
 cd $SAVED_PWD 

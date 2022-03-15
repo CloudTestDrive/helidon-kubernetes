@@ -54,8 +54,17 @@ then
   echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, continuing"
 else
   echo "The "$SETTINGS_NAME"_VAULT secret has already been setup, will not be recreated."
-  echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID "
-  exit 0
+  VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
+  VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
+  if [ "$VAULT_SECRET_CONTENTS" = "$VAULT_SECRET_VALUE" ]
+  then
+    echo "The vault secret contains the contents you specified of $VAULT_SECRET_VALUE"
+    echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCIR_HOST_OCID "
+    exit 0
+  else
+    echo "The vault secret contents of $VAULT_SECRET_CONTENTS does not match the content you specified of $VAULT_SECRET_VALUE"
+    exit 2
+  fi
 fi
 
 BASE64_VAULT_SECRET_VALUE=`echo $VAULT_SECRET_VALUE | base64`
@@ -70,7 +79,14 @@ then
   then
     echo "secret $VAULT_SECRET_NAME Does not exist, creating it and setting it to $VAULT_SECRET_VALUE and description $VAULT_SECRET_DESCRIPTION"
     # Create the secrets
-    VAULT_SECRET_OCID=`oci vault secret create-base64 --compartment-id $COMPARTMENT_OCID --secret-name $VAULT_SECRET_NAME --vault-id "$VAULT_OCID" --description "$VAULT_SECRET_DESCRIPTION" --key-id "$VAULT_KEY_OCID"  --secret-content-content "$BASE64_VAULT_SECRET_VALUE" | jq -j '.data.id'` 
+    VAULT_SECRET_OCID=`oci vault secret create-base64 --compartment-id $COMPARTMENT_OCID --secret-name $VAULT_SECRET_NAME --vault-id "$VAULT_OCID" --description "$VAULT_SECRET_DESCRIPTION" --key-id "$VAULT_KEY_OCID"  --secret-content-content "$BASE64_VAULT_SECRET_VALUE" | jq -j '.data.id'`
+    RESP=$?
+    if [ $RESP -ne 0 ]
+    then
+      echo "Failure creating the vault secret $VAULT_SECRET_NAME, exit code is $RESP, cannot continue"
+      echo "Please review the output and rerun the script"
+      exit $RESP
+    fi  
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
     echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
   else
@@ -103,6 +119,13 @@ else
   else
     echo "OK, canceling pending deletion"
     oci vault secret cancel-secret-deletion --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID
+    RESP=$?
+    if [ $RESP -ne 0 ]
+    then
+      echo "Failure canceling pending vault deletion the vault secret $VAULT_SECRET_NAME, exit code is $RESP, cannot continue"
+      echo "Please review the output and rerun the script"
+      exit $RESP
+    fi 
     VAULT_SECRET_STATE=`oci vault secret get --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID | jq -r '.data."lifecycle-state"'`
     while [ $VAULT_SECRET_STATE !=  ACTIVE ]
     do
@@ -110,7 +133,7 @@ else
       sleep 5
       VAULT_SECRET_STATE=`oci vault secret get --secret-id  $VAULT_SECRET_PENDING_DELETION_OCID | jq -r '.data."lifecycle-state"'`
     done
-    echo "Scheduled deletion cancled, validating secret contents"
+    echo "Pending deletion cancled, validating secret contents"
     VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_PENDING_DELETION_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
     if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
     then
@@ -121,6 +144,7 @@ else
       echo "This script will not overwrite the existing contents as it may be needed for other"
       echo "purposes, however yor lab will probabaly not work until you manually create a new secret version"
       echo "with the specified contents of $VAULT_SECRET_VALUE" 
+      exit 2
     fi
     echo "Saving details of restored secet"
     echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS

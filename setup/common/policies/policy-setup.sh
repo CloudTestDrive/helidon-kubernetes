@@ -80,4 +80,5 @@ else
   echo "$POLICY_RULE"
   echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
   echo "$POLICY_REUSED_NAME=true" >> $SETTINGS
+  exit 1
 fi

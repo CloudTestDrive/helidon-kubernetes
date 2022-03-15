@@ -37,8 +37,7 @@ else
    COMPARTMENT_PARENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID | jq -r '.data.name'`
 fi
 
-echo "SSH key setup starting"
-bash ./ssh-api-key-setup.sh
+
 
 read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -46,10 +45,35 @@ then
   echo "You will need to follow the manual instructions to setup the users ssh api key, the user"
   echo "group, the dynamic groups and associated policies"
   echo "If you are a federated user you may also need to setup the user group in your"
-  echo "Federated environment, add your usert to it, then map that federated group to your"
+  echo "Federated environment, add your user to it, then map that federated group to your"
   echo "local group"
+  exit 1
 else
-  echo "OK, starting security groups and policy setup"
+  echo "SSH key setup starting"
+  bash ./ssh-api-key-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the ssh keys, exit code is $RESP, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi 
+  echo "Starting dynamic groups setup"
   bash ./dynamic-groups-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the dynamic groups, exit code is $RESP, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi 
+  echo "Starting policies setup"
   bash ./policies-setup.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure creating the policies, exit code is $RESP, cannot continue"
+    echo "Please review the output and rerun the script"
+    exit $RESP
+  fi 
 fi
