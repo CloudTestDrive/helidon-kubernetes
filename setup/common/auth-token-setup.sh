@@ -21,8 +21,8 @@ if [ -z $AUTH_TOKEN_REUSED ]
 then
   echo "No existing auth token."
 else
-  echo "Your auth token has already been set, to remove it run the auth-token-destroy.sh script"
-  exit 1
+  echo "Your auth token has already been set, it will be reused, to remove it run the auth-token-destroy.sh script"
+  exit 0
 fi
 
 if [ -z $AUTH_TOKEN_OCID ]

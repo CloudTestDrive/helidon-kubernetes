@@ -30,8 +30,9 @@ if [ -z $DATABASE_REUSED ]
 then
   echo "No reuse information for database"
 else
-  echo "This script has already configured database details, exiting"
-  exit 3
+  echo "This script has already configured database details, they will be reused"
+  echo "If you need to reset them use the database-destroy.sh script"
+  exit 0
 fi
 
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already

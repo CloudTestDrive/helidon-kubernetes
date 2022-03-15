@@ -25,5 +25,5 @@ if [ -z "$USER_INITIALS" ]
   fi
   echo USER_INITIALS=$USER_INITIALS >> $SETTINGS
 else
-  echo "Initials already set"
+  echo "Initials already set to $USER_INITIALS will re-use them"
 fi

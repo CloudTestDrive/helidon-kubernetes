@@ -15,9 +15,9 @@ if [ -z $USER_OCID ]
     echo "No existing user info, retrieving"
   else
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'` 
-    echo "User OCID is already set to and maps to $USERNAME"
+    echo "User OCID is already set to and maps to $USERNAME, this information will be reused."
     echo "To reset this run the user-identity-destroy.sh script"
-    exit 1
+    exit 0
 fi
 
 

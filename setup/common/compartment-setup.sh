@@ -18,8 +18,9 @@ if [ -z $COMPARTMENT_REUSED ]
 then
   echo "No reuse information for compartment"
 else
-  echo "This script has already configured compartment details, exiting"
-  exit 3
+  echo "This script has already configured compartment details, and this information will be reused"
+  echo "Use the compartment-destroy.sh script to reset this"
+  exit 0
 fi
 
 
