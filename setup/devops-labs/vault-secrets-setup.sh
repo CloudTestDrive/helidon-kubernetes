@@ -55,8 +55,6 @@ else
     echo "Please review the output and rerun the script"
     FINAL_RESP=$RESP
   fi 
-
-exit $FINAL_RESP
 fi
 
 # the object storage namespace should exist as it's a tenancy level property, so no need to check
