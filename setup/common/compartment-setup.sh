@@ -5,7 +5,7 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 COMPARTMENT_NAME=CTDOKE
 
-if [ -f $SETTINGS ]
+if [ -f "$SETTINGS" ]
   then
     echo "Loading existing settings"
     source $SETTINGS
@@ -14,7 +14,7 @@ if [ -f $SETTINGS ]
 fi
 
 
-if [ -z $COMPARTMENT_REUSED ]
+if [ -z "$COMPARTMENT_REUSED" ]
 then
   echo "No reuse information for compartment"
 else
@@ -25,11 +25,11 @@ fi
 
 
 # do we have an existing compartment to use ?
-if [ -z $COMPARTMENT_OCID ]
+if [ -z "$COMPARTMENT_OCID" ]
 then
   # no previous compartment set
   # has someone specified a parent compartment override previously of so let's try and get the name to use ?
-  if [ -z $COMPARTMENT_PARENT_OCID ]
+  if [ -z "$COMPARTMENT_PARENT_OCID" ]
   then
     # no, default to creating in the root compartment
     COMPARTMENT_PARENT_OCID=$OCI_TENANCY
@@ -39,14 +39,14 @@ then
   TENANCY_NAME=`oci iam tenancy get --tenancy-id=$OCI_TENANCY | jq -j '.data.name'`
   COMPARTMENT_PARENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_PARENT_OCID | jq -j '.data.name' | sed -e 's/"//g'`
 
-  if [ -z $COMPARTMENT_PARENT_NAME ]
+  if [ -z "$COMPARTMENT_PARENT_NAME" ]
   then
     echo "Unable to locate details for specified parent compoartment with OCID $COMPARTMENT_PARENT_OCID cannot contiue"
     echo "Please edit the settings file $SETTINGS and ensure that the COMPARTMENT_PARENT_OCID variable contains a valid compartment OCID for this tenancy"
     exit 99
   fi
 
-  if [ $COMPARTMENT_PARENT_NAME = $TENANCY_NAME ]
+  if [ "$COMPARTMENT_PARENT_NAME" = "$TENANCY_NAME" ]
   then
     PARENT_NAME="Tenancy root"
   else 
@@ -68,7 +68,7 @@ then
 
   echo "We are going to create or if it already exists reuse use a sub compartment called $COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the sub compartment name from $COMPARTMENT_NAME - this is not recommended and you will need to remember to use a different name in the lab." 
   read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
-  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then
     echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it must be a single word, and cannot be the same as the parent name ($PARENT_NAME)"
     read COMPARTMENT_NAME
@@ -81,7 +81,7 @@ then
     echo "OK, going to use $COMPARTMENT_NAME as the sub compartment name"
   fi
   
-  if [  $COMPARTMENT_NAME = $PARENT_NAME ]
+  if [  "$COMPARTMENT_NAME" = "$PARENT_NAME" ]
   then
     echo "Unable to continue, OCI will not allow a sub compartment to have the same name as it's parent"
     exit 100
@@ -91,13 +91,13 @@ then
 
   COMPARTMENT_OCID=`oci iam compartment list --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID | jq -j '.data[0].id'`
   # does it already exist
-  if [ -z $COMPARTMENT_OCID ]
+  if [ -z "$COMPARTMENT_OCID" ]
   then
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
     # Ideally we'd use these flags for have thew OCI command wait for us, but that seems broken at the moment
     #  --wait-for-state ACTIVE --wait-interval-seconds 10
     COMPARTMENT_OCID=`oci iam compartment create --name $COMPARTMENT_NAME --compartment-id $COMPARTMENT_PARENT_OCID --description "Labs compartment" --wait-for-state ACTIVE --wait-interval-seconds 10 | jq -j '.data.id'`
-    if [ -z $COMPARTMENT_OCID ]
+    if [ -z "$COMPARTMENT_OCID" ]
     then
       echo "The sub compartment $COMPARTMENT_NAME has not been created for some reason, cannot continue"
       exit 3
@@ -143,7 +143,7 @@ then
   else
     echo "Sub compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
     read CONFIRM
-    if [[ ! $CONFIRM =~ ^[Yy]$ ]]
+    if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]
     then
       echo "OK, This script is about to exit, re-run it entering a name for the sub compartment which is different from $COMPARTMENT_NAME"
       exit 1
@@ -156,7 +156,7 @@ then
 else
   # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
   COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
-  if [ -z $COMPARTMENT_NAME ]
+  if [ -z "$COMPARTMENT_NAME" ]
   then
     echo "Unable to locate sub compartment for provided OCID $COMPARTMENT_OCID"
     echo "Please check that the value of COMPARTMENT_OCID in $SETTINGS is correct if nor remove or replace it"
