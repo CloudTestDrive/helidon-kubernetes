@@ -177,9 +177,12 @@ else
 fi
 
 
+MAX_LOGIN_ATTEMPTS=12
+DOCKER_LOGIN_FAILED_SLEEP_TIME=10
 echo "About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-for i in  `seq 1 10` 
+echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
+for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
 do
   echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
   RESP=$?
@@ -190,13 +193,19 @@ do
     break ;
   else
     echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
-    sleep 10
+    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
+  fi
+  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
+  then
+    echo "Unable to complete docker login after 12 attempts, cannot continue"
+    exit 10
   fi
 done
 
 echo "About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-for i in  `seq 1 10` 
+echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
+for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
 do
   echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
   RESP=$?
@@ -207,7 +216,12 @@ do
     break ;
   else
     echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
-    sleep 10
+    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
+  fi
+  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
+  then
+    echo "Unable to complete docker login after 12 attempts, cannot continue"
+    exit 10
   fi
 done
 
