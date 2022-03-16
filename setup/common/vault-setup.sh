@@ -211,13 +211,13 @@ else
   fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
+    echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this key"
   else
     echo "OK, trying to cancel key deletion"
     oci kms management key cancel-deletion --key-id $VAULT_PENDING_KEY_OCID --wait-for-state  ENABLED --wait-interval-seconds 10
   fi
 fi
-VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -e ".data[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$VAULT_KEY_NAME\")) | .id" | sed -e 's/"//g'`
+VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"ENABLED\") and (.\"display-name\"==\"$VAULT_KEY_NAME\")) | .id" `
 if [ -z $VAULT_KEY_OCID ]
 then
   echo "No existing key with name $VAULT_KEY_NAME, creating it"
