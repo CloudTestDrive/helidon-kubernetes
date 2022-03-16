@@ -116,7 +116,7 @@ if [ -z $VAULT_OCID ]
   VAULT_PENDING_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j ".data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\")) | .id" `
   if [ -z "$VAULT_PENDING_OCID" ]
   then
-    echo "No vault named $VAULT_NAME pending deletion, creating a new vault for you"
+    echo "No vault named $VAULT_NAME pending deletion"
   else
     if [ "$AUTO_CONFIRM" = true ]
     then
