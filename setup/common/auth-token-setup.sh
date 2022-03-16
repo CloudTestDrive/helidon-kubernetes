@@ -136,6 +136,19 @@ else
   AUTH_TOKEN_JSON=`oci iam auth-token create --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
+  # wait ubntiol the token is actove
+  AUTH_TOKEN_STATE="INACTIVE"
+  echo "Checking for active token"
+  while [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
+  do
+    AUTH_TOKEN_STATE=`oci iam auth-token list  --user-id $USER_OCID --all | jq -j ".data[] | select (.id = \"$AUTH_TOKEN_OCID\") | .\"lifecycle-state\""`
+    echo "Auth token state is $AUTH_TOKEN_STATE"
+    if [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
+    then
+      echo "Waiting to check auth token state"
+      sleep 10
+    fi
+  done
   echo "AUTH_TOKEN_REUSED=false" >> $SETTINGS
   echo "AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID" >> $SETTINGS 
   
