@@ -179,9 +179,35 @@ fi
 
 echo "About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-
+for i in ( `seq 1 10` )
+do
+  echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  RESP=$?
+  echo "Docker Login resp is $?"
+  if [ $RESP = 0 ]
+  then
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
+    break ;
+  else
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
+    sleep 10
+  fi
+done
 
 echo "About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+for i in ( `seq 1 10` )
+do
+  echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  RESP=$?
+  echo "Docker Login resp is $?"
+  if [ $RESP = 0 ]
+  then
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
+    break ;
+  else
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
+    sleep 10
+  fi
+done
+
