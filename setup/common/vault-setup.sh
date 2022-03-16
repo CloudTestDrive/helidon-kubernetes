@@ -144,7 +144,15 @@ if [ -z $VAULT_OCID ]
   else
     echo "Found existing vault names $VAULT_NAME, reusing it"
     echo "VAULT_OCID=$VAULT_OCID" >> $SETTINGS
-    echo "VAULT_REUSED=true" >> $SETTINGS
+    # if we rescued a vault from pending deletion then it'll have a pending OCID and we're allowed to delete it ourselves
+    if [ -z "$VAULT_PENDING_OCID" ]
+    then
+      # no pending deletion so we reused it
+      echo "VAULT_REUSED=true" >> $SETTINGS
+    else 
+      # there was a pending deletion so we can delete it later
+      echo "VAULT_REUSED=false" >> $SETTINGS
+    fi
   fi
 else
   # We'de been given an VAULT_OCID, let's check if it's there, if so assume it's been configured already
@@ -225,7 +233,15 @@ then
   echo "VAULT_KEY_REUSED=false" >> $SETTINGS
 else
   echo "Found existing key with name $VAULT_KEY_NAME, reusing it"
-  echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+  # if we rescued a key from pending deletion then it'll have a pending OCID and we're allowed to delete it ourselves
+  if [ -z "$VAULT_PENDING_KEY_OCID" ]
+  then
+    # no pending deletion so we reused it
+    echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+  else 
+    # there was a pending deletion so we can delete it later
+    echo "VAULT_KEY_REUSED=false" >> $SETTINGS
+  fi
 fi
 echo "VAULT_KEY_OCID=$VAULT_KEY_OCID" >> $SETTINGS
 
