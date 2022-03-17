@@ -42,12 +42,21 @@ STOREFRONT_GIT_REPO=https://github.com/oracle-devrel/"$STOREFRONT_GIT_NAME".git
 STOCKMANAGER_LOCATION_IN_REPO=helidon-stockmanager-full
 STOREFRONT_LOCATION_IN_REPO=helidon-storefront-full
 
-echo Removing any old directories
+echo "Removing any old directories"
 cd $HOME
-mkdir -p $WORK_DIR
-rm -rf $WORK_DIR
 
-echo About to install Java into $WORK_DIR from $JAVA_LOCATION
+if [ -d $WORK_DIR ]
+then
+  echo "Image build working directory $WORK_DIR exists, deleting"
+  rm -rf $WORK_DIR
+fi
+if [ -e $WORK_DIR ]
+then
+  echo "A file named the same as the image build working directory ($WORK_DIR) exists, deleting"
+  rm $WORK_DIR
+fi
+
+echo "About to install Java into $WORK_DIR from $JAVA_LOCATION"
 mkdir $WORK_DIR
 cd $WORK_DIR
 echo Downloading JDK
