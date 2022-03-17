@@ -7,7 +7,7 @@ SAVED_PWD=`pwd`
 cd $COMMON_DIR
 bash ./vault-setup.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Vault returned an error, unable to continue"
   exit $RESP
@@ -19,7 +19,7 @@ cd $SAVED_PWD
 cd $DEVOPS_LABS_DIR
 bash ./security-setup.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Security setup for devops returned an error, unable to continue"
   exit $RESP

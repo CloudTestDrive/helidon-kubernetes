@@ -17,7 +17,7 @@ then
   echo "in the lab documentation to manually configure your environment"
   exit 1
 fi
-echo "This script will configure the Kubernrtes services enviroinment:"
+echo "This script will configure the Kubernrtes services environment:"
 echo "  Download the step certificate tools and create a self signed root cert"
 echo "  Gather basic information (your initials)"
 echo "  Create a compartment for you to work in"
