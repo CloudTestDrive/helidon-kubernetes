@@ -37,9 +37,9 @@ echo "you will still be prompted for input."
 read -p "Do you want to use the automatic defaults ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-   export AUTO_CONFRM=false
+   export AUTO_CONFIRM=false
 else
-   export AUTO_CONFRM=true
+   export AUTO_CONFIRM=true
 fi
 
 SAVED_PWD=`pwd`
