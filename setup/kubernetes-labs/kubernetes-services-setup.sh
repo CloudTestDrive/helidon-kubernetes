@@ -71,7 +71,7 @@ else
 fi
 
 # run the pre-existing script
-bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS
+bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME skip
 
 RESP=$?
 if [ $RESP -ne 0 ]
