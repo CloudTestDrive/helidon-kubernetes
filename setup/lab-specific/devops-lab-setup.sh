@@ -60,7 +60,7 @@ cd $MODULES_DIR
 
 bash ./core-kubernetes-module.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Core Kubernetes module returned an error, unable to continue"
   exit $RESP
@@ -72,7 +72,7 @@ cd $MODULES_DIR
 
 bash ./kubernetes-services-module.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Kubernetes services module returned an error, unable to continue"
   exit $RESP
@@ -84,7 +84,7 @@ cd $MODULES_DIR
 
 bash ./devops-module.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "DevOps module returned an error, unable to continue"
   exit $RESP
