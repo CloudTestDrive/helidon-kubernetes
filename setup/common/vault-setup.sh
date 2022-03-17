@@ -129,7 +129,7 @@ if [ -z $VAULT_OCID ]
     then
       echo "OK will try to create a new vault for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
     else
-      echo "OK, trying to cancel vault deletion"
+      echo "OK, trying to cancel vault deletion, this may take a short time"
       oci kms management vault cancel-deletion --vault-id $VAULT_PENDING_OCID --wait-for-state ACTIVE
     fi
   fi
@@ -221,7 +221,7 @@ else
   then
     echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this key"
   else
-    echo "OK, trying to cancel key deletion"
+    echo "OK, trying to cancel key deletion, this may take a short time"
     oci kms management key cancel-deletion --key-id $VAULT_PENDING_KEY_OCID --wait-for-state  ENABLED --wait-interval-seconds 10
   fi
 fi
@@ -234,14 +234,23 @@ then
 else
   echo "Found existing key with name $VAULT_KEY_NAME, reusing it"
   # if we rescued a key from pending deletion then it'll have a pending OCID and we're allowed to delete it ourselves
-  if [ -z "$VAULT_PENDING_KEY_OCID" ]
+  # if the vault itself was pending deletion then the key will also have been
+  if [ -z "$VAULT_PENDING_OCID" ]
   then
-    # no pending deletion so we reused it
-    echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+    # no pending deletion on the vault, what about the key 
+    if [ -z "$VAULT_PENDING_KEY_OCID" ]
+    then
+      # no pending deletion on the key so we reused an existing one
+      echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+    else 
+      # there was a pending deletion on the key so we can delete it later
+      echo "VAULT_KEY_REUSED=false" >> $SETTINGS
+    fi
   else 
-    # there was a pending deletion so we can delete it later
+    # there was a pending deletion on the vault so there was also on the key, mark as not reused
     echo "VAULT_KEY_REUSED=false" >> $SETTINGS
   fi
+  
 fi
 echo "VAULT_KEY_OCID=$VAULT_KEY_OCID" >> $SETTINGS
 
