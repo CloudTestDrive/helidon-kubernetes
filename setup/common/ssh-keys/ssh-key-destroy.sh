@@ -34,7 +34,7 @@ fi
 if [ "${!SSH_KEY_REUSED_NAME}" = true ]
 then
   echo "The SSH key pair $SSH_KEY_FILE_BASE in $SSH_DIR was not created by this script not deleting them"
-  exit 3
+  exit 0
 fi
 
 echo "Deleting the SSH key pair $SSH_KEY_FILE_BASE in $SSH_DIR and the pem file"

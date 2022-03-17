@@ -28,7 +28,7 @@ then
   echo "API Key was not created by this script, cannot continue."
   bash ../delete-from-saved-settings.sh API_KEY_FINGERPRINT
   bash ../delete-from-saved-settings.sh API_KEY_REUSED
-  exit 3
+  exit 0
 else
   echo "API key reuse info found, proceeding"
 fi

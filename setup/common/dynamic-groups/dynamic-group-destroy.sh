@@ -42,7 +42,7 @@ fi
 if [ "${!GROUP_REUSED_NAME}" = true ]
 then
   echo "Cannot delete a dynamic group not created by these scripts, please delete the matching rule by hand"
-  exit 3
+  exit 0
 fi
 
 echo "Deleting dynamic group $GROUP_NAME"

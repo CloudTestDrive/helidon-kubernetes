@@ -50,7 +50,7 @@ then
   echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME"
 else
   echo "This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting"
-  exit 3
+  exit 0
 fi
 
 

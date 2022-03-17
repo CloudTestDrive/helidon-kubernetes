@@ -32,7 +32,7 @@ fi
 if [ "${!SECRET_REUSED_VAR_NAME}"  = true ] 
 then
   echo "The secret $VAULT_SECRET_NAME was not created by this script, will not delete it"
-  exit 12
+  exit 0
 fi
 
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 

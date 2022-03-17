@@ -42,7 +42,7 @@ fi
 if [ "${!POLICY_REUSED_NAME}" = true ]
 then
   echo "Cannot delete a policy not created by these scripts"
-  exit 3
+  exit 0
 fi
 
 echo "Deleting policy $POLICY_NAME"
