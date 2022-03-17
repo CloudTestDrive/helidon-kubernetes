@@ -20,7 +20,7 @@ if [ $DATABASE_REUSED = true ]
 then
   echo "You have been using a database that was not created by these scripts, you will need to destroy the database by hand"
   echo "and then remove DATABASE_REUSE and DATABASE_OCID from $SETTINGS "
-  exit 2
+  exit 0
 fi
 
 if [ -z $ATPDB_OCID ]

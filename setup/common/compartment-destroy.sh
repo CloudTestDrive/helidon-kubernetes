@@ -20,7 +20,7 @@ if [ $COMPARTMENT_REUSED = true ]
 then
   echo "You have been using a comparment that was not created by these scripts, you will need to destroy the compartment by hand"
   echo "and then remove COMPARTMENT_REUSED and COMPARTMENT_OCID from $SETTINGS" 
-  exit 2
+  exit 0
 fi
 
 if [ -z $COMPARTMENT_OCID ]
