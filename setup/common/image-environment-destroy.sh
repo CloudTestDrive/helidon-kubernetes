@@ -34,7 +34,6 @@ then
 else
   read -p "Are you running in a free trial environment (y/n) ? " REPLY
 fi
-read -p "Are you running in a free trial environment (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   if [ $OCI_REGION = $OCI_HOME_REGION ]
