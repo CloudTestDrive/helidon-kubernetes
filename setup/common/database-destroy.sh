@@ -45,11 +45,11 @@ fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
+  echo "OK, not detroying database"
+else
   echo "Terminating database $DBNAME this may take a while"
   oci db autonomous-database delete --autonomous-database-id $ATPDB_OCID --force
 
   bash ./delete-from-saved-settings.sh ATPDB_OCID
   bash ./delete-from-saved-settings.sh DATABASE_REUSED
-else
-  echo "OK, not detroying database"
 fi
