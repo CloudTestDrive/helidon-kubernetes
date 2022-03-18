@@ -65,7 +65,7 @@ else
 fi
 
 # run the pre-existing script
-bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME
+bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME skip
 RESP=$?
 if [ $RESP -ne 0 ]
 then
