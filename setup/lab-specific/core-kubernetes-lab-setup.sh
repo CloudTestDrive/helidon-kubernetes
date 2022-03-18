@@ -22,7 +22,7 @@ echo "  Download the step certificate tools and create a self signed root cert"
 echo "  Gather basic information (your initials)"
 echo "  Create a compartment for you to work in"
 echo "  Create and configure a database for you to use"
-echo "  Create a Kubernertes cluster"
+echo "  Create a Kubernetes cluster"
 echo "  Create an auth token to use when talking to OCIR"
 echo "  Create OCIR repos for the storefront and stockmanager microservices"
 echo "  Build, package and upload to OCIR the images you will use"
@@ -46,11 +46,11 @@ SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
 
-bash ./core-kubernetes-module.sh
+bash ./core-kubernetes-setup-module.sh
 RESP=$?
 if ( "$RESP" -ne 0 ]
 then
-  echo "Core kubernrtes module returned an error, unable to continue"
+  echo "Core kubernetes setup module returned an error, unable to continue"
   exit $RESP
 fi
 

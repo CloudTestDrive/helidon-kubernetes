@@ -17,7 +17,7 @@ then
   echo "in the lab documentation to manually configure your environment"
   exit 1
 fi
-echo "This script will configure the Kubernrtes services environment:"
+echo "This script will configure the Kubernetes services environment:"
 echo "  Download the step certificate tools and create a self signed root cert"
 echo "  Gather basic information (your initials)"
 echo "  Create a compartment for you to work in"
@@ -28,10 +28,10 @@ echo "  Create OCIR repos for the storefront and stockmanager microservices"
 echo "  Build, package and upload to OCIR the images you will use"
 echo "  Setup YAML files for database and image locations"
 echo "  Setup Helm chart repos"
-echo "  Start core Kubernrtes services (Ingress contrtoller, Kubernetes dashboard)"
+echo "  Start core Kubernetes services (Ingress contrtoller, Kubernetes dashboard)"
 echo "  Create service certificates and associated secrets based on Ingress load balancer IP"
 echo "  Create ingress rules, secrets and config maps based on the above info"
-echo "  Start three microservcies (sotrfront, stockmanager and zipkin)"
+echo "  Start three microservcies (storefront, stockmanager and zipkin)"
 echo "  Upload test data to the database"
 echo ""
 echo "It will then configure for the DevOps services labs by :"
@@ -58,11 +58,11 @@ SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
 
-bash ./core-kubernetes-module.sh
+bash ./core-kubernetes-setup-module.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Core Kubernetes module returned an error, unable to continue"
+  echo "Core Kubernetes setup module returned an error, unable to continue"
   exit $RESP
 fi
 
@@ -70,11 +70,11 @@ cd $SAVED_PWD
 
 cd $MODULES_DIR
 
-bash ./kubernetes-services-module.sh
+bash ./kubernetes-services-setup-module.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Kubernetes services module returned an error, unable to continue"
+  echo "Kubernetes services setup module returned an error, unable to continue"
   exit $RESP
 fi
 
@@ -82,11 +82,11 @@ cd $SAVED_PWD
 
 cd $MODULES_DIR
 
-bash ./devops-module.sh
+bash ./devops-setup-module.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "DevOps module returned an error, unable to continue"
+  echo "DevOps module setup returned an error, unable to continue"
   exit $RESP
 fi
 

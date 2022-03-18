@@ -25,7 +25,7 @@ bash ./core-environment-setup.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "core setup returned an error, unable to continue"
+  echo "core environment setup returned an error, unable to continue"
   exit $RESP
 fi
 
