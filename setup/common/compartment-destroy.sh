@@ -13,7 +13,7 @@ fi
 if [ -z $COMPARTMENT_REUSED ]
 then
   echo "No reuse information for compartment cannot safely contiue, you will have to destroy it manually"
-  exit 1
+  exit 0
 fi
 
 if [ $COMPARTMENT_REUSED = true ]

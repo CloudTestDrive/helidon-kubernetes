@@ -1,11 +1,25 @@
 #!/bin/bash -f
+
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 echo "Getting region environment details"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 echo "This script will run the required commands to destroy the container images setup for the lab"
 echo "It will only destroy repositories and tokens created by these scripts, if you reused an existing resource"
 echo "then those resources will not be destroyed, and neither will the compartment containing them"
-read -p "Are you sure you want to destroy these resources (y/n) ? " REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, in a destroy resources defaulting to $REPLY"
+else
+  read -p "Are you sure you want to destroy these resources (y/n) ? " REPLY
+fi
+
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping script"
@@ -13,6 +27,13 @@ then
 fi
 echo "This script assumes you are working in a free trial environment"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, in a free trial defaulting to $REPLY"
+else
+  read -p "Are you running in a free trial environment (y/n) ? " REPLY
+fi
 read -p "Are you running in a free trial environment (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then

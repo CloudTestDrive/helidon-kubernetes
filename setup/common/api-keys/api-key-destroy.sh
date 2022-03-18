@@ -17,8 +17,8 @@ then
 fi
 if [ -z "$API_KEY_REUSED" ]
 then
-  echo "No saved API key information, cannot safely proceed."
-  exit 2
+  echo "No saved API key information, perhaps it's already been removed ? Cannot safely proceed."
+  exit 0
 else
   echo "API key reuse info found, proceeding"
 fi

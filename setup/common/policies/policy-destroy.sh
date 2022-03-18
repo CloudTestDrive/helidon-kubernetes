@@ -26,22 +26,22 @@ fi
 source $SETTINGS
 
 
-if [ -z "${!POLICY_OCID_NAME}" ]
-then
-  echo "No policy OCID information, cannot proceed"
-  exit 1
-fi
-
 
 if [ -z "${!POLICY_REUSED_NAME}" ]
 then
-  echo "No reuse information, cannot safely proceed with policy"
-  exit 2
+  echo "No reuse information, cannot safely proceed with policy delete"
+  exit 0
 fi
 
 if [ "${!POLICY_REUSED_NAME}" = true ]
 then
   echo "Cannot delete a policy not created by these scripts"
+  exit 0
+fi
+
+if [ -z "${!POLICY_OCID_NAME}" ]
+then
+  echo "No policy OCID information, perhaps it's already been deleted ? cannot proceed"
   exit 0
 fi
 

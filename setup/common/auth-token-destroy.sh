@@ -13,8 +13,8 @@ fi
 
 if [ -z $AUTH_TOKEN_REUSED ]
 then
-  echo "No reuse information for token cannot safely continue, you will have to destroy it manually"
-  exit 1
+  echo "No reuse information for token cannot safely continue, , perhaps it's already been removed ? You will have to destroy it manually"
+  exit 0
 fi
 
 if [ $AUTH_TOKEN_REUSED = true ]

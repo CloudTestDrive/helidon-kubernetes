@@ -25,8 +25,8 @@ SSH_KEY_REUSED_NAME=`bash ../settings/to-valid-name.sh "$SSH_DIR/$SSH_KEY_FILE_B
 
 if [ -z "${!SSH_KEY_REUSED_NAME}" ]
 then
-  echo "No reuse information, unsafe to proceed"
-  exit 2
+  echo "No reuse information, perhaps it's already been removed ? unsafe to proceed"
+  exit 0
 else
   echo "The SSH key info has been set by this script, continuing"
 fi

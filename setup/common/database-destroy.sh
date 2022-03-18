@@ -10,10 +10,15 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $DATABASE_REUSED ]
 then
   echo "No reuse information for database safely cannot continue, you will have to destroy it manually"
-  exit 1
+  exit 0
 fi
 
 if [ $DATABASE_REUSED = true ]
@@ -30,9 +35,21 @@ then
 fi
 
 DBNAME=`oci db autonomous-database get --autonomous-database-id $ATPDB_OCID | jq -j '.data."display-name"'`
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, destroy database $DBNAME defaulting to $REPLY"
+else
+  read -p "Are you sure you want to destroy the database $DBNAMe and data it contains (y/n) ? " REPLY
+fi
 
-echo "Terminating database $DBNAME this may take a while"
-oci db autonomous-database delete --autonomous-database-id $ATPDB_OCID
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "Terminating database $DBNAME this may take a while"
+  oci db autonomous-database delete --autonomous-database-id $ATPDB_OCID --force
 
-bash ./delete-from-saved-settings.sh ATPDB_OCID
-bash ./delete-from-saved-settings.sh DATABASE_REUSED
+  bash ./delete-from-saved-settings.sh ATPDB_OCID
+  bash ./delete-from-saved-settings.sh DATABASE_REUSED
+else
+  echo "OK, not detroying database"
+fi

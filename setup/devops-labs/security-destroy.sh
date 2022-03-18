@@ -13,6 +13,11 @@ fi
 
 source $SETTINGS
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -38,8 +43,14 @@ else
    COMPARTMENT_PARENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_PARENT_OCID | jq -r '.data.name'`
 fi
 
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, in a free trial defaulting to $REPLY"
+else
+  read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
+fi
 
-read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "You will need to follow the manual instructions to delete the users ssh API key, ther user"
