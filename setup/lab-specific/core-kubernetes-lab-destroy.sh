@@ -57,17 +57,6 @@ else
 fi
 
 SAVED_PWD=`pwd`
-cd $MODULES_DIR
-
-bash ./devops-destroy-module.sh
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "DevOps module destroy returned an error, unable to continue"
-  exit $RESP
-fi
-
-cd $SAVED_PWD
 
 cd $MODULES_DIR
 
