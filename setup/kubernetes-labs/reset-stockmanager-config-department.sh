@@ -7,7 +7,7 @@ fi
 department=$1
 if [ $# -eq 1 ]
   then
-    echo "Updating the stockmanager config to set $department as the department name."
+    echo "Updating the stockmanager config to reset $department as the department name."
     read -p "Proceed ? "
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -16,12 +16,12 @@ if [ $# -eq 1 ]
         exit 1
     fi
   else
-    echo "Skipping stockmanager department set confirmation using $department as the department name"
+    echo "Skipping stockmanager department reset confirmation using $department as the department name"
 fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
 temp="$config".tmp
 echo "Updating the stockmanager config in $config to reset $department as the department name"
-# echo command is "s/#  department: \"My Shop\"/  department: \"$department Shop\"/"
-cat $config | sed -e "s/#  department: \"My Shop\"/  department: \"$department Shop\"/" > $temp
+# echo command is "s/  department: \"$department Shop\"/#  department: \"My Shop\"/"
+cat $config | sed -e "s/  department: \"$department Shop\"/#  department: \"My Shop\"/" > $temp
 rm $config
 mv $temp $config

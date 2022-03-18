@@ -43,14 +43,22 @@ if [ $# -eq 1 ]
     echo "Skipping confirmation, Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
 fi
 
+echo Configuring base location variables
+export LAB_LOCATION=$HOME/helidon-kubernetes
+export LAB_SETUP_LOCATION=$LAB_LOCATION/setup
+export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
+
 currentContext=`bash get-current-context.sh`
 
 echo Saving current context of $currentContext and switching to $context
 
 
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/switch-context.sh $context skip
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/teardownStack.sh $NAMESPACE skip
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/removeBaseElements.sh skip
+bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $context skip
+bash $KUBERNETES_SETUP_LOCATION/teardownStack.sh $NAMESPACE skip
+bash $KUBERNETES_SETUP_LOCATION/removeBaseElements.sh skip
+
+
+bash $KUBERNETES_SETUP_LOCATION/unconfigure-downloaded-git-repo.sh $department skip
 
 echo returning to previous context of $currentContext
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/switch-context.sh $currentContext skip
