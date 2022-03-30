@@ -22,7 +22,7 @@ echo "It will demove the DevOps services lab speciifc content by :"
 echo "  Delete the policies based on the dynamic groups which allow Devops services to run builds and update your Kubernetes cluster"
 echo "  Delete the dynamic groups used to identify various dev ops service elements"
 echo "  Delete the ssh key to use when connecting to the OCI code repo (note that the $HOME/.ssh/config file will not be modified)"
-echo "  Schedcule deletion of the Vault and master signing key"
+echo "  Schedcule deletion of the Vault serets, the master signing key and the Vault"
 echo ""
 echo "This script will destroy the Kubernetes services environment:"
 echo "  Delete the microservices images and repos in OCIR"
@@ -35,8 +35,7 @@ echo "  Attempt to remove your working a compartment (this will fail if it conta
 echo "  Remove gathered basic information such as your initials"
 echo "  Remove the downloaded step certificate manager and certificats it's generated"
 echo "At completion this will have removed the resources created by the setup scripts, however any resources that"
-echo "you configured outside the devops-lab-setup.sh script (for example your devops project, and the vault secres"
-echo "OCIR_HOST_VAULT) will remain."
+echo "you configured outside the devops-lab-setup.sh script (for example your devops project will remain."
 
 read -p "Do you want to proceed ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
