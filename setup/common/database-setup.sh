@@ -106,16 +106,18 @@ if [ -z $ATPDB_OCID ]
   echo "Downloading DB Wallet file"
   echo "There may be a delay of several minutes while the database completes it's creation process, don't worry."
 
-  if [ -f $HOME/Wallet.zip ]
+  DB_WALLET_LOCATION=$HOME/Wallet.zip
+  if [ -f "$DB_WALLET_LOCATION" ]
   then
-    echo "There is already a downloaded Wallet file in $HOME/Wallet.zip"
-    echo "Moving old $HOME/Wallet.zip file to $HOME/Wallet-orig.zip"
-    mv $HOME/Wallet.zip $HOME/Wallet-orig.zip
+    echo "There is already a downloaded Wallet file in $DB_WALLET_LOCATION"
+    echo "Moving old $DB_WALLET_LOCATION file to Orig-$DB_WALLET_LOCATION"
+    mv $DB_WALLET_LOCATION Orig-$DB_WALLET_LOCATION
   fi
-  echo "About to download Database wallet to $HOME/Wallet.zip"
-  oci db autonomous-database generate-wallet --file $HOME/Wallet.zip --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
-  echo "Downloaded Wallet.zip file"
+  echo "About to download Database wallet to $DB_WALLET_LOCATION"
+  oci db autonomous-database generate-wallet --file $DB_WALLET_LOCATION --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+  echo "Downloaded database Wallet file"
 
+  echo "DB_WALLET_LOCATION=$DB_WALLET_LOCATION" >> $SETTINGS
 
   
   echo "Preparing temporary database connection details"
@@ -123,7 +125,7 @@ if [ -z $ATPDB_OCID ]
   echo "Getting wallet contents for temporaty processing"
   TMPWALLET=`pwd`/tmpwallet
   mkdir -p $TMPWALLET
-  cp $HOME/Wallet.zip $TMPWALLET
+  cp $DB_WALLET_LOCATION $TMPWALLET
   cd $TMPWALLET
   unzip Wallet.zip
 
