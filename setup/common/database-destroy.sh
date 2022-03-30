@@ -53,18 +53,29 @@ else
   bash ./delete-from-saved-settings.sh ATPDB_OCID
   bash ./delete-from-saved-settings.sh DATABASE_REUSED
   
-  echo "Checking if the DB Wallet needs removing"
-  if [ -z "$DB_WALLET_LOCATION" ]
+  if [ -z "$DB_WALLET_REUSED" ]
   then
-    echo "No stored location of the database wallet, can't remove it"
-  else
-    if [ -f "$DB_WALLET_LOCATION" ]
+    echo "No reuse information regarding the downloaded database wallet, will not attempt to remove it"
+  else  
+    if [ "$DB_WALLET_REUSED" = "true" ]
     then
-      echo "Deleting $DB_WALLET_LOCATION"
-      rm $DB_WALLET_LOCATION
+      echo "The database wallet file is reused, will not attempt to delete it"
     else
-      echo "Can't locate $DB_WALLET_LOCATION for removal, if it's been renamed please remove it manually"
+      echo "Checking if the DB Wallet needs removing"
+      if [ -z "$DB_WALLET_LOCATION" ]
+      then
+        echo "No stored location of the database wallet, can't remove it"
+      else
+        if [ -f "$DB_WALLET_LOCATION" ]
+        then
+          echo "Deleting $DB_WALLET_LOCATION"
+          rm $DB_WALLET_LOCATION
+        else
+          echo "Can't locate $DB_WALLET_LOCATION for removal, if it's been renamed please remove it manually"
+        fi
+      fi
     fi
-    bash ./delete-from-saved-settings.sh DB_WALLET_LOCATION
   fi
+  bash ./delete-from-saved-settings.sh DB_WALLET_LOCATION
+  bash ./delete-from-saved-settings.sh DB_WALLET_REUSED
 fi

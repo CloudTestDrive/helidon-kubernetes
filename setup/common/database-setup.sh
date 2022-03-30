@@ -118,6 +118,7 @@ if [ -z $ATPDB_OCID ]
   echo "Downloaded database Wallet file"
 
   echo "DB_WALLET_LOCATION=$DB_WALLET_LOCATION" >> $SETTINGS
+  echo "DB_WALLET_REUSED=false" >> $SETTINGS
 
   
   echo "Preparing temporary database connection details"
@@ -165,7 +166,13 @@ else
     exit 5
   else
     echo "Located database named $DBNAME with pre-specified OCID of $ATPDB_OCID, will use this database"
-    echo "It is assumed you have downloaded this database wallet to $HOME/Wallet.zip by hand or using this script"
+    if [ -f "$DB_WALLET_LOCATION" ]
+    then
+      echo "There is no database wallet file at $DB_WALLET_LOCATION, you will need to download the database wallet to this location"
+    else
+      echo "Assuming the database wallet file at $DB_WALLET_LOCATION relates to this database" 
+      echo "DB_WALLET_REUSED=true" >> $SETTINGS
+    fi
     echo "It is assumed you have created the db user for the labs by hand or using this script"
     # Flag this as reused and refuse to destroy it
     echo "DATABASE_REUSED=true" >> $SETTINGS
