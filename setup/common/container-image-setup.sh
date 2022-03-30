@@ -162,20 +162,15 @@ cd $STOCKMANAGER_LOCATION_IN_REPO
 echo "REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME" > repoStockmanagerConfig.sh
 
 # build the images and push them if needed
-if [ -z $"IMAGE_STOCKMANAGER_V001_OCID" ]
+if [ "$IMAGE_STOCKMANAGER_V001_OCID" = "null" ]
 then
   bash buildStockmanagerPushToRepo.sh
 else 
   echo "Located a Stockmanager v 0.0.1 image, reusing it"
 fi
 
-if [ -z $"IMAGE_STOCKMANAGER_V001_OCID" ]
-then
-  bash buildStockmanagerPushToRepo.sh
-fi
 
-
-if [ -z $"IMAGE_STOCKMANAGER_V002_OCID" ]
+if [ "$IMAGE_STOCKMANAGER_V002_OCID" = "null" ]
 then
   bash buildStockmanagerV0.0.2PushToRepo.sh
 else 
@@ -197,14 +192,14 @@ cd $STOREFRONT_LOCATION_IN_REPO
 echo "REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME" > repoStorefrontConfig.sh
 
 # build the images and push them
-if [ -z $"IMAGE_STOREFRONT_V001_OCID" ]
+if [ "$IMAGE_STOREFRONT_V001_OCID" = "null" ]
 then
   bash buildStorefrontPushToRepo.sh
 else 
   echo "Located a Storefront v 0.0.1 image, reusing it"
 fi
 
-if [ -z $"IMAGE_STOREFRONT_V002_OCID" ]
+if [ "$IMAGE_STOREFRONT_V002_OCID" = "null" ]
 then
   bash buildStorefrontV0.0.2PushToRepo.sh
 else 
