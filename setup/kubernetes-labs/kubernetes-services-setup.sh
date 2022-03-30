@@ -35,8 +35,8 @@ if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, continuing"
 else
-  echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME, to reset it run the kubernrtes-services-destroy.sh script, stopping."
-  exit 2
+  echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME, to reset it run the kubernetes-services-destroy.sh script, stopping."
+  exit 0
 fi
 
 if [ -z $USER_INITIALS ]
