@@ -13,7 +13,6 @@ then
   exit $RESP
 fi
 
-exit 0
 cd $SAVED_PWD
 
 cd $DEVOPS_LABS_DIR

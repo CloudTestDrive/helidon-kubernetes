@@ -29,19 +29,19 @@ source $SETTINGS
 
 if [ -z "${!POLICY_REUSED_NAME}" ]
 then
-  echo "No reuse information, cannot safely proceed with policy delete"
+  echo "No reuse information, cannot safely proceed with delete of policy $POLICY_NAME"
   exit 0
 fi
 
 if [ "${!POLICY_REUSED_NAME}" = true ]
 then
-  echo "Cannot delete a policy not created by these scripts"
+  echo "Cannot delete a policy ( $POLICY_NAME ) not created by these scripts"
   exit 0
 fi
 
 if [ -z "${!POLICY_OCID_NAME}" ]
 then
-  echo "No policy OCID information, perhaps it's already been deleted ? cannot proceed"
+  echo "No OCID information for policy namnes $POLICY_NAME, perhaps it's already been deleted ? cannot proceed"
   exit 0
 fi
 
