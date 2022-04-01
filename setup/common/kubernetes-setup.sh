@@ -287,13 +287,14 @@ then
     cd $SAVED_DIR
   else
     echo "Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status"
-    OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0]."lifecycle-state"'`
-    if [ $OKE_STATUS = ACTIVE ]
+    OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID  --lifecycle-state ACTIVE | jq -j '.data[0]."lifecycle-state"'`
+    if [ "$OKE_STATUS" = "ACTIVE" ]
     then
       echo "Cluster is Active, proceeding"
       echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
       echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
     else
+      OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID  | jq -j '.data[0]."lifecycle-state"'`
       echo "Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used."
       echo "Please re-run this script and use a different name cluster name"
       exit 20 
