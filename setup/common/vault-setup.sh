@@ -46,18 +46,6 @@ if [ -z "$VAULT_REUSED" ]
 then
   echo "No reuse information for vault"
 
-  # check for resource availability
-
-  bash ./resources/resource-minimum-check-region-compartment.sh $COMPARTMENT_OCID kms virtual-vault-count 1
-
-  if [ $? = 0 ]
-  then
-    echo "Vault resources ara available, continuing"
-  else
-    echo "No vault resources available, cannot continue"
-    exit 10
-  fi
-
   VAULT_NAME="$USER_INITIALS"LabsVault
   if [ "$AUTO_CONFIRM" = true ]
   then
@@ -117,7 +105,7 @@ then
       fi
       if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
-        echo "OK will try to create a new vault for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
+        echo "OK will try to create a new vault for you with this name $VAULT_NAME"
       else
         echo "OK, trying to cancel vault deletion"
         oci kms management vault cancel-deletion --vault-id $VAULT_PENDING_OCID --wait-for-state ACTIVE
@@ -130,6 +118,15 @@ then
     fi
     if [ "$VAULT_OCID" = "null" ]
     then
+      # check for resource availability
+      bash ./resources/resource-minimum-check-region-compartment.sh $COMPARTMENT_OCID kms virtual-vault-count 1
+      if [ $? = 0 ]
+      then
+        echo "Vault resources are available, continuing"
+      else
+        echo "No vault resources available, cannot continue"
+        exit 10
+      fi
       echo "Vault named $VAULT_NAME doesn't exist, creating it, there may be a short delay"
       VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT --wait-for-state ACTIVE | jq -j '.data.id'`
       echo "Vault being created using OCID $VAULT_OCID"
