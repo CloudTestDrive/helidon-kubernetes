@@ -77,15 +77,23 @@ then
     SCHEDULING_DELETION_VAULT_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\"))] | first | .id" `
     if [ -z "$SCHEDULING_DELETION_VAULT_OCID" ]
     then
+      SCHEDULING_DELETION_VAULT_OCID=null
+    fi
+    if [ "$SCHEDULING_DELETION_VAULT_OCID" = "null"]
+    then
       echo "No vaults named $VAULT_NAME in scheduling deletion state, continuing"
     else
       echo "There is a vault named $VAULT_NAME that currently has a scheduling deletion activity"
       echo "underway, please wait until that has finished (this may take a few mins) then re-run"
       echo "this script to cancel the deletion and re-use that vault"
-      exit 0
+      exit 2
     fi
     VAULT_PENDING_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_NAME\"))] | first | .id" `
     if [ -z "$VAULT_PENDING_OCID" ]
+    then
+      VAULT_PENDING_OCID=null
+    fi
+    if [ "$VAULT_PENDING_OCID" = "null" ]
     then
       echo "No vault named $VAULT_NAME pending deletion, creating a new vault for you"
     else
@@ -100,6 +108,10 @@ then
     fi
     VAULT_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$VAULT_NAME\"))] | first | .id" `
     if [ -z "$VAULT_OCID" ]
+    then
+      VAULT_OCID=null
+    fi
+    if [ "$VAULT_OCID" = "null" ]
     then
       echo "Vault named $VAULT_NAME doesn't exist, creating it, there may be a short delay"
       VAULT_OCID=`oci kms management vault create --compartment-id $COMPARTMENT_OCID --display-name $VAULT_NAME --vault-type DEFAULT --wait-for-state ACTIVE | jq -j '.data.id'`
@@ -119,6 +131,10 @@ then
     echo "Trying to locate vault using specified OCID $VAULT_OCID"
     VAULT_NAME=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."display-name"'`
     if [ -z "$VAULT_NAME" ]
+    then
+      VAULT_NAME=null
+    fi
+    if [ "$VAULT_NAME" = "null" ]
     then
       echo "Unable to locate vault for OCID $VAULT_OCID"
       echo "Please check that the value of VAULT_OCID in $SETTINGS is correct if nor remove or replace it"
@@ -181,17 +197,25 @@ then
   fi
   echo "Checking for existing key named $VAULT_KEY_NAME in endpoint $VAULT_ENDPOINT in compartment OCID $COMPARTMENT_OCID"
   SCHEDULING_DELETION_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$VAULT_KEY_NAME\"))] | first | .id"`
-    if [ -z "$SCHEDULING_DELETION_VAULT_OCID" ]
-    then
-      echo "No vaults named $VAULT_NAME in scheduling deletion state, continuing"
-    else
-      echo "There is a vault named $VAULT_NAME that currently has a scheduling deletion activity"
-      echo "underway, please wait until that has finished (this may take a few mins) then re-run"
-      echo "this script to cancel the deletion and re-use that vault"
-      exit 0
-    fi
+  if [ -z "$SCHEDULING_DELETION_KEY_OCID" ]
+  then
+    SCHEDULING_DELETION_KEY_OCID=null
+  fi
+  if [ "$SCHEDULING_DELETION_KEY_OCID" = "null" ]
+  then
+    echo "No key named $VAULT_KEY_NAME in scheduling deletion state in vault $VAULT_NAME, continuing"
+  else
+    echo "There is a key named $VAULT_KEY_NAME in vault $VAULT_NAME that currently has a scheduling deletion activity"
+    echo "underway, please wait until that has finished (this may take a few mins) then re-run"
+    echo "this script to cancel the deletion and re-use that key"
+    exit 1
+  fi
   VAULT_PENDING_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$VAULT_KEY_NAME\"))] | first | .id"`
   if [ -z "$VAULT_PENDING_KEY_OCID" ]
+  then
+    VAULT_PENDING_KEY_OCID=null
+  fi
+  if [ "$VAULT_PENDING_KEY_OCID" = "null" ]
   then
     echo "No key named $VAULT_KEY_NAME pending deletion"
   else
@@ -206,6 +230,10 @@ then
   fi
   VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ENABLED\") and (.\"display-name\"==\"$VAULT_KEY_NAME\"))] | first | .id" `
   if [ -z $VAULT_KEY_OCID ]
+  then
+    VAULT_KEY_OCID=null
+  fi
+  if [ "$VAULT_KEY_OCID" = "null" ]
   then
     echo "No existing key with name $VAULT_KEY_NAME, creating it"
     VAULT_KEY_OCID=`oci kms management key create --display-name $VAULT_KEY_NAME  --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --key-shape '{"algorithm":"AES", "length":32}' --wait-for-state  ENABLED | jq -j ".data.id"`
