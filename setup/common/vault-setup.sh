@@ -155,12 +155,11 @@ else
   fi
 fi
 
-
+echo "Getting vault endpoint for vault OCID $VAULT_OCID"
+VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
 if [ -z "VAULT_KEY_REUSED" ]
 then
   echo "No resuse information for the key, setting up for Vault master key"
-  echo "Getting vault endpoint for vault OCID $VAULT_OCID"
-  VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
   VAULT_KEY_NAME="$USER_INITIALS"Key
 
   read -p "Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME?" REPLY
@@ -213,7 +212,7 @@ else
     echo "Edit the state file and provide the VAULT_KEY_OCID or remove VAULT_KEY_REUSED"
     echo 12
   fi
-  VAULT_KEY_NAME=`oci kms management key get --key-id $VAULT_KEY_OCID | jq -j '.data."display-name"'`
+  VAULT_KEY_NAME=`oci kms management key get --key-id $VAULT_KEY_OCID --endpoint $VAULT_ENDPOINT | jq -j '.data."display-name"'`
   if [ -z "$VAULT_KEY_NAME" ]
   then
     VAULT_KEY_NAME=null
