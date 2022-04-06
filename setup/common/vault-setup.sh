@@ -3,7 +3,7 @@
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
-if [ -f $SETTINGS ]
+if [ -f "$SETTINGS" ]
   then
     echo "Loading existing settings information"
     source $SETTINGS
@@ -12,21 +12,21 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z $USER_INITIALS ]
+if [ -z "$USER_INITIALS" ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
   exit 1
 fi
 
 
-if [ -z $COMPARTMENT_OCID ]
+if [ -z "$COMPARTMENT_OCID" ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
 
-if [ -z $VAULT_REUSED ]
+if [ -z "$VAULT_REUSED" ]
 then
   echo "No reuse information for vault"
 else
@@ -49,7 +49,7 @@ fi
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
 
-if [ -z $COMPARTMENT_NAME ]
+if [ -z "$COMPARTMENT_NAME" ]
 then
   echo "The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS"
   exit 99
@@ -61,7 +61,7 @@ VAULT_NAME="$USER_INITIALS"LabsVault
 
 read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
 
-if [[ ! $REPLY =~ ^[Yy]$ ]]
+if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
   echo "OK, please enter the name of the vault to create / re-use, it must be a single word, e.g. tgLabsVault"
   read VAULT_NAME
@@ -75,7 +75,7 @@ else
 fi
 
 #allow for re-using an existing vault if specified
-if [ -z $VAULT_OCID ]
+if [ -z "$VAULT_OCID" ]
   then
   # No existing VAULT_OCID so need to potentially create it
   echo "Checking for  vault $VAULT_NAME in compartment $COMPARTMENT_NAME"
@@ -120,7 +120,7 @@ else
   # We'de been given an VAULT_OCID, let's check if it's there, if so assume it's been configured already
   echo "Trying to locate vault using specified OCID $VAULT_OCID"
   VAULT_NAME=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."display-name"'`
-  if [ -z $DBNAME ]
+  if [ -z "$VAULT_NAME" ]
   then
     echo "Unable to locate vault for OCID $VAULT_OCID"
     echo "Please check that the value of VAULT_OCID in $SETTINGS is correct if nor remove or replace it"
@@ -128,7 +128,7 @@ else
   else
     echo "Located vault named $VAULT_NAME with pre-specified OCID of $VAULT_OCID, checking status"
     VAULT_LIFECYCLE=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."lifecycle-state"'`
-    if [ $VAULT_LIFECYCLE -ne "ACTIVE" ]
+    if [ "$VAULT_LIFECYCLE" -ne "ACTIVE" ]
     then
       echo "Vault $VAULT_NAME is not active, cannot use it"
     else
