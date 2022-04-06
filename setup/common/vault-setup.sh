@@ -79,7 +79,7 @@ then
     then
       SCHEDULING_DELETION_VAULT_OCID=null
     fi
-    if [ "$SCHEDULING_DELETION_VAULT_OCID" = "null"]
+    if [ "$SCHEDULING_DELETION_VAULT_OCID" = "null" ]
     then
       echo "No vaults named $VAULT_NAME in scheduling deletion state, continuing"
     else
