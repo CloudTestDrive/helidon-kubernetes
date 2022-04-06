@@ -160,7 +160,7 @@ fi
 
 echo "Getting vault endpoint for vault OCID $VAULT_OCID"
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
-if [ -z "VAULT_KEY_REUSED" ]
+if [ -z "$VAULT_KEY_REUSED" ]
 then
   echo "No resuse information for the key, setting up for Vault master key"
   VAULT_KEY_NAME="$USER_INITIALS"Key
