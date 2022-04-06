@@ -12,6 +12,12 @@ if [ -f "$SETTINGS" ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
+
 if [ -z "$USER_INITIALS" ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
@@ -53,9 +59,14 @@ then
   fi
 
   VAULT_NAME="$USER_INITIALS"LabsVault
-
-  read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
-
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled,  use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME defaulting to $REPLY"
+  else
+    read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
+  fi
+  
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then
     echo "OK, please enter the name of the vault to create / re-use, it must be a single word, e.g. tgLabsVault"
@@ -95,9 +106,15 @@ then
     fi
     if [ "$VAULT_PENDING_OCID" = "null" ]
     then
-      echo "No vault named $VAULT_NAME pending deletion, creating a new vault for you"
+      echo "No vault named $VAULT_NAME pending deletion, continuing"
     else
-      read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
+      if [ "$AUTO_CONFIRM" = true ]
+      then
+        REPLY="y"
+        echo "Auto confirm is enabled,  found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it defaulting to $REPLY"
+      else
+        read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
+      fi
       if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
         echo "OK will try to create a new vault for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
@@ -181,8 +198,15 @@ then
   echo "No resuse information for the key, setting up for Vault master key"
   VAULT_KEY_NAME="$USER_INITIALS"Key
 
-  read -p "Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME?" REPLY
-
+  
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME defaulting to $REPLY"
+  else
+    read -p "Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME?" REPLY
+  fi
+  
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then
     echo "OK, please enter the name of the key to create / re-use, it must be a single word, e.g. tgKey"
@@ -219,7 +243,13 @@ then
   then
     echo "No key named $VAULT_KEY_NAME pending deletion"
   else
-    read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it defaulting to $REPLY"
+    else
+      read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
       echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
