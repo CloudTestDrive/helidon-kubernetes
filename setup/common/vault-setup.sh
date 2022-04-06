@@ -106,6 +106,9 @@ then
       echo "Vault being created using OCID $VAULT_OCID"
       echo "VAULT_OCID=$VAULT_OCID" >>$SETTINGS
       echo "VAULT_REUSED=false" >> $SETTINGS
+      # if we created the vault then any existing key information is invalid
+      unset VAULT_KEY_OCID
+      unset VAULT_KEY_REUSE
     else
       echo "Found existing vault names $VAULT_NAME, reusing it"
       echo "VAULT_OCID=$VAULT_OCID" >> $SETTINGS
