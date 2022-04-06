@@ -255,7 +255,7 @@ then
       echo "OK will try to create a new key for you with this name $VAULT_NAME, if you hit resource limits you will need to come back and re-use this vault"
     else
       echo "OK, trying to cancel key deletion"
-      oci kms management key cancel-deletion --vault-id $VAULT_PENDING_KEY_OCID --wait-for-state  ENABLED
+      oci kms management key cancel-deletion --key-id $VAULT_PENDING_KEY_OCID --endpoint $VAULT_ENDPOINT  --wait-for-state  ENABLED
     fi
   fi
   VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ENABLED\") and (.\"display-name\"==\"$VAULT_KEY_NAME\"))] | first | .id" `
