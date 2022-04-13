@@ -114,6 +114,19 @@ then
   # does it already exist
   if [ -z "$COMPARTMENT_OCID" ]
   then
+    echo "Checking region"
+    OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+
+    OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
+    if [ $OCI_REGION = $OCI_HOME_REGION ]
+    then
+      echo "You are in your home region and this script will continue"
+    else
+      echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
+      echo "Please switch to your OCI home region and re-run this script"
+      exit 1
+    fi
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
     # Ideally we'd use these flags for have thew OCI command wait for us, but that seems broken at the moment
     #  --wait-for-state ACTIVE --wait-interval-seconds 10
