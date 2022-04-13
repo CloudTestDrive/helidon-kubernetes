@@ -52,6 +52,7 @@ else
 
   bash ./delete-from-saved-settings.sh ATPDB_OCID
   bash ./delete-from-saved-settings.sh DATABASE_REUSED
+  bash ./delete-from-saved-settings.sh DATABASE_ADMIN_PASSWORD
   
   if [ -z "$DB_WALLET_REUSED" ]
   then

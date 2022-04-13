@@ -88,6 +88,17 @@ if [ -z $ATPDB_OCID ]
      ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
      echo "ATPDB_OCID=$ATPDB_OCID" >> $SETTINGS
      echo "DATABASE_REUSED=false" >> $SETTINGS
+     if [ "$AUTO_CONFIRM" = true ]
+     then
+       REPLY="y"
+       echo "Auto confirm is enabled, save db password $DBNAME for database defaulting to $REPLY"
+     else
+       read -p "Do you want to save the database admin password to $SETTINGS ?" REPLY
+     fi
+     if [[ ! $REPLY =~ ^[Yy]$ ]]
+     then
+       echo "DATABASE_ADMIN_PASSWORD=$DB_ADMIN_PW" >> $SETTINGS
+     fi
      echo "Database creation started"
      echo "The generated database admin password is $DB_ADMIN_PW Please ensure that you save this information in case you need it later"
   else
