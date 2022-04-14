@@ -31,11 +31,11 @@ then
   exit 1
 fi
 
-echo "It will demove the DevOps services lab speciifc content by :"
+echo "It will remove the DevOps services lab speciifc content by :"
 echo "  Delete the policies based on the dynamic groups which allow Devops services to run builds and update your Kubernetes cluster"
 echo "  Delete the dynamic groups used to identify various dev ops service elements"
 echo "  Delete the ssh key to use when connecting to the OCI code repo (note that the $HOME/.ssh/config file will not be modified)"
-echo "  Schedcule deletion of the Vault serets, the master signing key and the Vault"
+echo "  Schedule deletion of the Vault secrets, the master signing key and the Vault"
 echo ""
 echo "This script will destroy the Kubernetes services environment:"
 echo "  Delete the microservices images and repos in OCIR"
