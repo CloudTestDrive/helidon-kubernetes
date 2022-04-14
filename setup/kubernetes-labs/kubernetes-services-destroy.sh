@@ -34,7 +34,7 @@ OKE_SERVICES_CONFIGURED_SETTING_NAME=OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NA
 if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
-  exit 1
+  exit 0
 else
   echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
 fi
@@ -46,7 +46,7 @@ if [ -z $CONTEXT_NAME_EXISTS ]
 then
   echo "Kubernetes context name of $CLUSTER_CONTEXT_NAME does not exist, cannot continue."
   echo "have you run the kubernetes-setup.sh script ?"
-  exit 40
+  exit 0
 else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
@@ -58,8 +58,8 @@ OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
   echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME cannot continue. Has this cluster"
-  echo "been setup using the kubernrtes-setup.sh script ?"
-  exit 3
+  echo "been setup using the kubernetes-setup.sh script ?"
+  exit 0
 else
   echo "Located details of Kubernetes cluster $CLUSTER_CONTEXT_NAME, continuing"
 fi
