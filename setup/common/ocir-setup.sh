@@ -115,7 +115,7 @@ then
     fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo "OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes"
+      echo "OK, stopping script, the repo has not been reused, you need to re-run this script before doing any container image pushes"
       echo "docker has not been logged in"
       exit 1
     else     
@@ -160,7 +160,7 @@ then
     fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo "OK, stopping script, the storefront repo has not been configured, you need to re-run this script before doing any container image pushes"
+      echo "OK, stopping script, the storefront repo has not been reused, you need to re-run this script before doing any container image pushes"
       echo "docker has not been logged in for the stockmanager repo"
       exit 1
     else     
