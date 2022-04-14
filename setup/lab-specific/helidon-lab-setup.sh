@@ -57,7 +57,7 @@ cd $COMMON_DIR
 
 bash ./core-environment-setup.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Core setup returned an error, unable to continue"
   exit $RECP

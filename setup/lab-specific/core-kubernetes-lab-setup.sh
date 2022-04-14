@@ -63,7 +63,7 @@ cd $MODULES_DIR
 
 bash ./core-kubernetes-setup-module.sh
 RESP=$?
-if ( "$RESP" -ne 0 ]
+if [ "$RESP" -ne 0 ]
 then
   echo "Core kubernetes setup module returned an error, unable to continue"
   exit $RESP
