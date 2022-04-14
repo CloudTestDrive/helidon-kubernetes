@@ -25,7 +25,7 @@ fi
 read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "Unfortunately if you are not an adminitrator or in a free trial account this script cannot automatically"
+  echo "Unfortunately if you are not an administrator or in a free trial account this script cannot automatically"
   echo "configure your environment."
   exit 1
 fi
