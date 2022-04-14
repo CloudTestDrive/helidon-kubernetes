@@ -41,7 +41,7 @@ echo "  Terminate the Kubernetes cluster"
 echo "  Terminate the database and destroy test data"
 echo "  Attempt to remove your working a compartment (this will fail if it contains resources you've created)"
 echo "  Remove gathered basic information such as your initials"
-echo "  Remove the downloaded step certificate manager and certificats it's generated"
+echo "  Remove the downloaded step certificate manager and certificates it's generated"
 echo "At completion this will have removed the resources created by the setup scripts, however any resources that"
 echo "you configured manually (for example your devops project) will remain"
 
