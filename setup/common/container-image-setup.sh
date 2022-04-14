@@ -104,11 +104,13 @@ JAVA_LOCATION=https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.ta
 # Old version of Java
 #JAVA_LOCATION=https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
 
+DEV_REL_GITHUB=https://github.com/oracle-devrel
+
 STOCKMANAGER_GIT_NAME=cloudnative-helidon-stockmanager
 STOREFRONT_GIT_NAME=cloudnative-helidon-storefront
 
-STOCKMANAGER_GIT_REPO=https://github.com/oracle-devrel/"$STOCKMANAGER_GIT_NAME".git
-STOREFRONT_GIT_REPO=https://github.com/oracle-devrel/"$STOREFRONT_GIT_NAME".git
+STOCKMANAGER_GIT_REPO="$DEV_REL_GITHUB"/"$STOCKMANAGER_GIT_NAME".git
+STOREFRONT_GIT_REPO="$DEV_REL_GITHUB"/"$STOREFRONT_GIT_NAME".git
 
 STOCKMANAGER_LOCATION_IN_REPO=helidon-stockmanager-full
 STOREFRONT_LOCATION_IN_REPO=helidon-storefront-full
