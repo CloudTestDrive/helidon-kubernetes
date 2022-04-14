@@ -36,7 +36,7 @@ echo "  It will attempt to delete any namespaces setup in the optional labs (mon
 echo "  Delete the microservices images and repos in OCIR"
 echo "  Delete the auth token created to access OCIR (it will not logout of docker though)"
 echo "  Reset the Kubernetes cluster to it's defult state by deleting the microservices and related objects"
-echo "  Reset the Kubernetes configfuration files (ingress rules, config info etc.)"
+echo "  Reset the Kubernetes configuration files (ingress rules, config info etc.)"
 echo "  Terminate the Kubernetes cluster"
 echo "  Terminate the database and destroy test data"
 echo "  Attempt to remove your working a compartment (this will fail if it contains resources you've created)"
@@ -51,13 +51,6 @@ then
   echo "OK, exiting this script"
   exit 0 
 fi
-
-echo "This script can in most cases automatically apply a sensible default answer to questions (for example the name used"
-echo "for the database or the compartment location). Alternatively you can specify answers manually which would let you"
-echo "chose customise names and locations."
-echo "Note that for some inputs (e.g. entering your initials) it is not possible to make an automatic guess, in those cases"
-echo "you will still be prompted for input."
-
 read -p "Do you want to use the automatic defaults ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
