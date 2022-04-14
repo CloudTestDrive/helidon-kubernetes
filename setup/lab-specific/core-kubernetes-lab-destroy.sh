@@ -35,7 +35,7 @@ echo "This script will destroy the Core Kubernetes environment:"
 echo "  Delete the microservices images and repos in OCIR"
 echo "  Delete the auth token created to access OCIR (it will not logout of docker though)"
 echo "  Reset the Kubernetes cluster to it's defult state by deleting the microservices and related objects"
-echo "  Reset the Kubernetes configfuration files (ingress rules, config info etc.)"
+echo "  Reset the Kubernetes configuration files (ingress rules, config info etc.)"
 echo "  Terminate the Kubernetes cluster"
 echo "  Terminate the database and destroy test data"
 echo "  Attempt to remove your working a compartment (this will fail if it contains resources you've created)"
@@ -73,15 +73,13 @@ SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
 
-bash ./kubernetes-services-destroy-module.sh
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Kubernetes services destroy module returned an error, unable to continue"
-  exit $RESP
-fi
+# Try and tidy things up in the cluster
+# fortunately everything uses the same ingress so only one LB which is created when the ingrss controller is creted
+# so just delete the controller namespoace which will delete the LB, everything else is inside OKE so will be destroyed 
+# with the cluster
 
-cd $SAVED_PWD
+kubectl delete namespace ingress-nginx --ignore-not-found=true
+
 cd $MODULES_DIR
 
 bash ./core-kubernetes-destroy-module.sh
