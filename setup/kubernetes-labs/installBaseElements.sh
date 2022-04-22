@@ -43,7 +43,7 @@ echo >> $infoFile
 echo "export EXTERNAL_IP=$EXTERNAL_IP" >>$infoFile
 echo >> $infoFile
 echo installing dashboard using helm
-helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --set ingress.enabled=true --set ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --version $dashboardHelmChartVersion
+helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --set ingress.enabled=true --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx --set ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --version $dashboardHelmChartVersion
 echo Helm for dashboard completed - it may take a while for the dashboard to be running
 
 echo Dashboard URL >> $infoFile
