@@ -1,3 +1,3 @@
 #!/bin/bash
-ingressHelmChartVersion=3.38.0
-dashboardHelmChartVersion=5.2.0
+ingressHelmChartVersion=4.1.0
+dashboardHelmChartVersion=5.4.1
