@@ -5,13 +5,18 @@ export SETTINGS=$HOME/hk8sLabsSettings
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings information"
-    source $SETTINGS
   else 
     echo "No existing settings cannot contiue"
     exit 10
 fi
 
 source $SETTINGS
+
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 if [ -z $COMPARTMENT_OCID ]
 then
@@ -38,8 +43,14 @@ else
 fi
 
 
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, using a free trial defaulting to $REPLY"
+else
+  read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
+fi
 
-read -p "Are you running in a free trial environment or running with administrator rights to the compartment $COMPARTMENT_PARENT_NAME (y/n) ? " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "You will need to follow the manual instructions to setup the users ssh api key, the user"

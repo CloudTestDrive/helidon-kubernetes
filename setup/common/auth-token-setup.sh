@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_OCID ]
   then
     echo 'No user ocid, unable to continue - have you run the user-identity-setup.sh script ?'
@@ -79,7 +84,14 @@ else
     echo 'Do you want to re-use an existing auth token (r) if not then the script will let you create a new one (c) '
     echo 'To reuse an existing one you will need to enter the auth tokens OCID (User details page -> Auth Tokens -> Three dots menu -> Copy OCID)'
     echo 'To reuse an existing auth token you will also need to know its value for later use, if you do not know the value then you will have to create a new one'
-    read -p 'Create a new auth token (c) or reuse an existing one (r)' REPLY 
+    
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="c"
+      echo "Auto confirm is enabled, reuse or create defaulting to $REPLY"
+    else
+     read -p 'Create a new auth token (c) or reuse an existing one (r)' REPLY 
+    fi
     if [[ ! $REPLY =~ ^[Rr]$ ]]
     then
       echo "Will create a token"
@@ -99,14 +111,20 @@ then
   echo 'it is not good security practice, the token will not be accessible unless logged in as'
   echo 'you so its not a major risk, but you should not do this if you are using this tenancy for'
   echo 'anything other than lab work' 
-  read -p 'Save the auth token ?' REPLY 
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, save token defaulting to $REPLY"
+  else
+    read -p 'Save the auth token ?' REPLY 
+  fi
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     read -p 'OK, please enter the auth token value, if you do now know it enter an empty line and the script will exit' AUTH_TOKEN
     if [ -z $AUTH_TOKEN ]
     then
       echo "Nothing entered, this script will exit and no changes have been made, you can re-run it"
-      exit 0
+      exit 1
     fi
     echo "AUTH_TOKEN_REUSED=true" >> $SETTINGS
     echo "AUTH_TOKEN='$AUTH_TOKEN'" >> $SETTINGS
@@ -118,6 +136,19 @@ else
   AUTH_TOKEN_JSON=`oci iam auth-token create --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
+  # wait ubntiol the token is actove
+  AUTH_TOKEN_STATE="INACTIVE"
+  echo "Checking for active token"
+  while [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
+  do
+    AUTH_TOKEN_STATE=`oci iam auth-token list  --user-id $USER_OCID --all | jq -j ".data[] | select (.id = \"$AUTH_TOKEN_OCID\") | .\"lifecycle-state\""`
+    echo "Auth token state is $AUTH_TOKEN_STATE"
+    if [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
+    then
+      echo "Waiting to check auth token state"
+      sleep 10
+    fi
+  done
   echo "AUTH_TOKEN_REUSED=false" >> $SETTINGS
   echo "AUTH_TOKEN_OCID=$AUTH_TOKEN_OCID" >> $SETTINGS 
   
@@ -129,7 +160,13 @@ else
   echo 'it is not good security practice, the token will not be accessible unless logged in as'
   echo 'you so its not a major risk, but you should not do this if you are using this tenancy for'
   echo 'anything other than lab work' 
-  read -p 'Save the auth token ?' REPLY 
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, save token defaulting to $REPLY"
+  else
+    read -p 'Save the auth token ?' REPLY 
+  fi
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then
     echo "AUTH_TOKEN='$AUTH_TOKEN'" >> $SETTINGS

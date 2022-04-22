@@ -13,15 +13,15 @@ fi
 
 if [ -z $AUTH_TOKEN_REUSED ]
 then
-  echo "No reuse information for token cannot safely continue, you will have to destroy it manually"
-  exit 1
+  echo "No reuse information for token cannot safely continue, , perhaps it's already been removed ? You will have to destroy it manually"
+  exit 0
 fi
 
 if [ $AUTH_TOKEN_REUSED = true ]
 then
   echo "You have been using an auth token that was not created by these scripts, you will need to destroy the auth token by hand"
   echo "and then remove AUTH_TOKEN_REUSED, AUTH_TOKEN_OCID and if present AUTH_TOKEN from $SETTINGS" 
-  exit 2
+  exit 0
 fi
 
 if [ -z $AUTH_TOKEN_OCID ]

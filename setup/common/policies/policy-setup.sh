@@ -42,9 +42,9 @@ fi
 
 if [ -z "${!POLICY_REUSED_NAME}" ]
 then
-  echo "No reuse info for dynamic group $POLICY_NAME"
+  echo "No reuse info for policy $POLICY_NAME"
 else
-  echo "This script has already setup the dynamic group $POLICY_NAME"
+  echo "This script has already setup the policy $POLICY_NAME"
   exit 0
 fi
 

@@ -13,6 +13,10 @@ if [ -f "$SETTINGS" ]
     echo "No existing settings, using defaults"
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 if [ -z "$COMPARTMENT_REUSED" ]
 then
@@ -54,9 +58,16 @@ then
   fi
 
   echo "This script will create a sub compartment called $COMPARTMENT_NAME for you if it doesn't exist, this will be in the $PARENT_NAME. If a sub compartment with the same name already exists in $PARENT_NAME you can re-use change the name to create or re-use a different compartment."
-
   echo "If you want to use somewhere different from $PARENT_NAME as the parent of the sub compartment you are about to create (or re-use) then enter n, if you want to use $PARENT_NAME for your parent then enter y"
-  read -p "Use the $PARENT_NAME (y/n) ? " REPLY
+  
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, use $PARENT_NAME defaulting to $REPLY"
+  else
+    read -p "Use the $PARENT_NAME (y/n) ? " REPLY  
+  fi
+
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "You need to edit the $SETTINGS file and add a line of the form"
@@ -67,7 +78,15 @@ then
   fi
 
   echo "We are going to create or if it already exists reuse use a sub compartment called $COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the sub compartment name from $COMPARTMENT_NAME - this is not recommended and you will need to remember to use a different name in the lab." 
-  read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
+  
+  
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, use $COMPARTMENT_NAME defaulting to $REPLY"
+  else
+    read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
+  fi
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then
     echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it must be a single word, and cannot be the same as the parent name ($PARENT_NAME)"
@@ -95,6 +114,19 @@ then
   # does it already exist
   if [ -z "$COMPARTMENT_OCID" ]
   then
+    echo "Checking region"
+    OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+
+    OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
+    if [ $OCI_REGION = $OCI_HOME_REGION ]
+    then
+      echo "You are in your home region and this script will continue"
+    else
+      echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
+      echo "Please switch to your OCI home region and re-run this script"
+      exit 1
+    fi
     echo "Compartment $COMPARTMENT_NAME, doesn't already exist in $PARENT_NAME, creating it"
     # Ideally we'd use these flags for have thew OCI command wait for us, but that seems broken at the moment
     #  --wait-for-state ACTIVE --wait-interval-seconds 10
@@ -143,9 +175,14 @@ then
     done
     echo "Sub compartment $COMPARTMENT_NAME in $PARENT_NAME is now ready for use"
   else
-    echo "Sub compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?"
-    read CONFIRM
-    if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse $COMPARTMENT_NAME defaulting to $REPLY"
+    else
+      read -p "Sub compartment $COMPARTMENT_NAME already exists in $PARENT_NAME, do you want to re-use it (y/n) ?" REPLY
+    fi 
+    if [[ ! "$REPLY" =~ ^[Yy]$ ]]
     then
       echo "OK, This script is about to exit, re-run it entering a name for the sub compartment which is different from $COMPARTMENT_NAME"
       exit 1
