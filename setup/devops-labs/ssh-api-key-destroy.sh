@@ -17,7 +17,7 @@ SSH_KEY_FILE_BASE=id_rsa_devops
 if [ -z "$DEVOPS_SSH_API_KEY_CONFIGURED" ]
 then
   echo "SSH API Key for devops not previously configured by these scripts, cannot proceed"
-  exit 1
+  exit 0
 else
   echo "These scripts have previously setup the SSH API Key for devops, removing it"
 fi

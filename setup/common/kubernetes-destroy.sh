@@ -53,7 +53,7 @@ then
   echo "contain other resources this script cannot delete it, you will need to destroy the"
   echo "cluster by hand and then remove the variables OKE_REUSE_$CLUSTER_CONTEXT_NAME"
   echo "and OKE_OCID_$CLUSTER_CONTEXT_NAME from $SETTINGS and delete $TF_DIR"
-  exit 2
+  exit 0
 fi
 
 

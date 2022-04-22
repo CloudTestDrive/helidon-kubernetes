@@ -36,7 +36,7 @@ then
   echo "No saved API key information, continuing."
 else
   echo "Your API key has already been set using these scripts"
-  exit 2
+  exit 0
 fi
 
 API_KEY_COUNT=`oci iam user api-key list --user-id $USER_OCID --all | jq -e '.data | length'`

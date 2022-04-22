@@ -13,6 +13,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -38,7 +43,13 @@ OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 
 OCIR_BASE_NAME="$USER_INITIALS"_labs_base_repo
 
-read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, use $OCIR_BASE_NAME as the base for naming your repo defaulting to $REPLY"
+else
+  read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
+fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, please enter the base name of the container image repo to use, it must be a single word or multiple words separated by underscore , e.g. $OCIR_BASE_NAME It cannot just be your initials"
@@ -95,10 +106,16 @@ then
     bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
     echo "OCIR_STOCKMANAGER_LOCATION=$OCIR_STOCKMANAGER_LOCATION" >> $SETTINGS
   else
-    read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME for stockmanager defaulting to $REPLY"
+    else
+      read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo "OK, stopping script, the repo has not been used, you need to re-run this script before doing any container image pushes"
+      echo "OK, stopping script, the repo has not been reused, you need to re-run this script before doing any container image pushes"
       echo "docker has not been logged in"
       exit 1
     else     
@@ -134,10 +151,16 @@ then
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
     echo "OCIR_STOREFRONT_LOCATION=$OCIR_STOREFRONT_LOCATION" >> $SETTINGS
   else
-    read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME for storefront defaulting to $REPLY"
+    else
+      read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-      echo "OK, stopping script, the storefront repo has not been configured, you need to re-run this script before doing any container image pushes"
+      echo "OK, stopping script, the storefront repo has not been reused, you need to re-run this script before doing any container image pushes"
       echo "docker has not been logged in for the stockmanager repo"
       exit 1
     else     
@@ -154,11 +177,51 @@ else
 fi
 
 
+MAX_LOGIN_ATTEMPTS=12
+DOCKER_LOGIN_FAILED_SLEEP_TIME=10
 echo "About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-
+echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
+for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
+do
+  echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  RESP=$?
+  echo "Docker Login resp is $RESP"
+  if [ $RESP = 0 ]
+  then
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
+    break ;
+  else
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
+    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
+  fi
+  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
+  then
+    echo "Unable to complete docker login after 12 attempts, cannot continue"
+    exit 10
+  fi
+done
 
 echo "About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
 echo "Please ignore warnings about insecure password storage"
-echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
+for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
+do
+  echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  RESP=$?
+  echo "Docker Login resp is $RESP"
+  if [ $RESP = 0 ]
+  then
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
+    break ;
+  else
+    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
+    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
+  fi
+  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
+  then
+    echo "Unable to complete docker login after 12 attempts, cannot continue"
+    exit 10
+  fi
+done
+

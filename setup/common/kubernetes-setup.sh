@@ -21,6 +21,12 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -44,7 +50,7 @@ then
   echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME"
 else
   echo "This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting"
-  exit 3
+  exit 0
 fi
 
 
@@ -79,7 +85,13 @@ fi
 
 CLUSTER_NAME="$USER_INITIALS"
 CLUSTER_NAME_FULL="lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
-read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, using $CLUSTER_NAME_FULL question for cluster name defaulting to $REPLY"
+else
+  read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -274,15 +286,16 @@ then
     echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=false" >> $SETTINGS
     cd $SAVED_DIR
   else
-    echo "Located existing cluster named $CLUSTER_NAME in $COMPARTMENT_NAME checking its status"
-    OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME --compartment-id $COMPARTMENT_OCID | jq -j '.data[0]."lifecycle-state"'`
-    if [ $OKE_STATUS = ACTIVE ]
+    echo "Located existing cluster named $CLUSTER_NAME_FULL in $COMPARTMENT_NAME checking its status"
+    OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME_FULL --compartment-id $COMPARTMENT_OCID  --lifecycle-state ACTIVE | jq -j '.data[0]."lifecycle-state"'`
+    if [ "$OKE_STATUS" = "ACTIVE" ]
     then
       echo "Cluster is Active, proceeding"
       echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
       echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
     else
-      echo "Cluster $CLUSTER_NAME in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used."
+      OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME_FULL --compartment-id $COMPARTMENT_OCID  | jq -j '.data[0]."lifecycle-state"'`
+      echo "Cluster $CLUSTER_NAME_FULL in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used."
       echo "Please re-run this script and use a different name cluster name"
       exit 20 
     fi

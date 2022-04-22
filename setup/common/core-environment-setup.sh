@@ -1,8 +1,20 @@
 #!/bin/bash -f
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 echo "This script will run the required commands to setup your core environment"
 echo "It assumes you are working in a free trial tenancy exclusively used by yourself"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
-read -p "Are you running in a free trial environment (y/n) ? " REPLY
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, free trial defaulting to $REPLY"
+else
+  read -p "Are you running in a free trial environment (y/n) ? " REPLY
+fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, you are not in a free trial tenancy exclusively used by yourself"

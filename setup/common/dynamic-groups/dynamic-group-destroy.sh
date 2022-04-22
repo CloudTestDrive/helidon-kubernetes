@@ -26,23 +26,23 @@ fi
 source $SETTINGS
 
 
-if [ -z "${!GROUP_OCID_NAME}" ]
-then
-  echo "No dynamic group OCID information, cannot proceed"
-  exit 1
-fi
-
 
 if [ -z "${!GROUP_REUSED_NAME}" ]
 then
-  echo "No reuse information, cannot safely proceed with deleting group"
-  exit 2
+  echo "No reuse information, , perhaps it's already been removed ? Cannot safely proceed with deleting group"
+  exit 0
 fi
 
 if [ "${!GROUP_REUSED_NAME}" = true ]
 then
   echo "Cannot delete a dynamic group not created by these scripts, please delete the matching rule by hand"
-  exit 3
+  exit 0
+fi
+
+if [ -z "${!GROUP_OCID_NAME}" ]
+then
+  echo "No dynamic group OCID information, cannot proceed"
+  exit 0
 fi
 
 echo "Deleting dynamic group $GROUP_NAME"

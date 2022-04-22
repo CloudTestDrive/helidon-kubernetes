@@ -21,7 +21,7 @@ fi
 if [ -z $VAULT_OCID ]
 then
   echo "Cannot locate OCID for the vault , unable to proceed with key of vault deletion"
-  exit 10
+  exit 0
 else
   echo "Locating vault endpoint" 
   VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
