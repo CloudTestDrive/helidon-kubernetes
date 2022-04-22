@@ -18,8 +18,9 @@ if [ -z "$DEVOPS_SSH_API_KEY_CONFIGURED" ]
 then
   echo "SSH API Key for devops not previously configured, setting up"
 else
-  echo "These scripts have previously setup the SSH API Key for devops, to remove it please run the ssh-api-key-destroy.sh script"
-  exit 1
+  echo "These scripts have previously setup the SSH API Key for devops, that configuration"
+  echo "will be reused. To remove it please run the ssh-api-key-destroy.sh script"
+  exit 0
 fi
 
 SAVED_PWD=`pwd`
