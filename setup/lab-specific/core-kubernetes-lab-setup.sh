@@ -8,7 +8,7 @@ else
   exit -1
 fi
 
-echo "Welcome the the core kubernetes specific lab setup script."
+echo "Welcome to the core kubernetes specific lab setup script."
 
 echo "Checking region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`

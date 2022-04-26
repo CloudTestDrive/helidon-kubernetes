@@ -8,7 +8,7 @@ else
   exit -1
 fi
 
-echo "Welcome the the Core Kubernrtes specific lab destroy script."
+echo "Welcome to the Core Kubernrtes specific lab destroy script."
 echo "Checking region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
