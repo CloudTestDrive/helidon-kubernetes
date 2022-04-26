@@ -247,7 +247,8 @@ then
     bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     echo "Update $TF_MODULE_FILE to set OKE TF Module version"
     bash $SAVED_DIR/update-file.sh $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
-    
+    echo "Update $TF_MODULE_FILE to set OKE Kubernetes version"
+    bash $SAVED_DIR/update-file.sh $TFM OKE_KUBERNETES_VERSION $OKE_KUBERNETES_VERSION
     
     echo "Initialising Terraform"
     terraform init

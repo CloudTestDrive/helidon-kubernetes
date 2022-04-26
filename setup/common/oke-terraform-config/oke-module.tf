@@ -16,6 +16,8 @@ module oke {
   create_operator=false
   control_plane_type="public"
   control_plane_allowed_cidrs=["0.0.0.0/0"]
+  
+  kubernetes_version="OKE_KUBERNETES_VERSION"
 
   label_prefix="lab-K8S_CONTEXT"
 
