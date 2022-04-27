@@ -250,6 +250,9 @@ then
     echo "Update $TF_MODULE_FILE to set OKE Kubernetes version"
     bash $SAVED_DIR/update-file.sh $TFM OKE_KUBERNETES_VERSION $OKE_KUBERNETES_VERSION
     
+    echo "Downloading TF versions file"
+    curl https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf
+    
     echo "Initialising Terraform"
     terraform init
     if [ $? -ne 0 ]
