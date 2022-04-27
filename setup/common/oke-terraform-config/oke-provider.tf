@@ -1,4 +1,4 @@
-1provider "oci" {
+provider "oci" {
    auth = "InstancePrincipal"
    region = "OCI_REGION"
 }
