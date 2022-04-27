@@ -97,6 +97,9 @@ if [ -z $ATPDB_OCID ]
      fi
      if [[ ! $REPLY =~ ^[Yy]$ ]]
      then
+       echo "OK, not saving DB password, please ensure that you remember $DB_ADMIN_PW if you want to admin it in the future"
+     else
+       echo "OK, saving DB admin password"
        echo "DATABASE_ADMIN_PASSWORD=$DB_ADMIN_PW" >> $SETTINGS
      fi
      echo "Database creation started"
