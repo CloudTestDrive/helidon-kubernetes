@@ -62,18 +62,30 @@ echo Dashboard Token >> $infoFile
 echo $dashboardUserToken >> $infoFile
 echo >> $infoFile
 
-# save the core curl cmd
-echo curl cmd >> $infoFile
-echo curl -i -X GET -u jack:password -k https://store.$EXTERNAL_IP.nip.io/store/stocklevel >> $infoFile
-echo >> $infoFile
+BASE_URL=https://store.$EXTERNAL_IP.nip.io
 
-echo status command  >> $infoFile
-echo curl -i -X GET -k https://store.$EXTERNAL_IP.nip.io/sf/status  >> $infoFile
-echo >> $infoFile
-
-echo saving External IP for later use
-echo EXTERNAL_IP=$EXTERNAL_IP >> $settingsFile
+echo "saving External IP for later use"
+echo "EXTERNAL_IP=$EXTERNAL_IP" >> $settingsFile
 echo 'echo EXTERNAL_IP set to $EXTERNAL_IP' >> $settingsFile
+
+
+echo 'BASE_URL=https://store.$EXTERNAL_IP.nip.io' >> $settingsFile
+echo 'echo BASE_URL set to $BASE_URL' >> $settingsFile
+echo ""  >> $infoFile
+
+# save the base url
+echo "saving base url for later use"
+echo "Base URL is $BASE_URL"  >> $infoFile
+
+# save the core curl cmd
+echo "curl cmd" >> $infoFile
+echo "curl -i -X GET -u jack:password -k $BASE_URL/store/stocklevel" >> $infoFile
+echo >> $infoFile
+
+echo "status command"  >> $infoFile
+echo "curl -i -X GET -k $BASE_URL/sf/status"  >> $infoFile
+echo >> $infoFile
+
 
 # now we have the ingress we csan update the rules to fit it
 echo updating base ingress rules
