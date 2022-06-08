@@ -114,7 +114,7 @@ fi
 
 if [ "$AUTO_CONFIRM" = "true" ]
 then
-  echo "Checking for available auth tokens"
+  echo "Getting user info to check for available auth tokens"
   # try to locate the user type
   LOCAL_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.user' | wc -l`
 
@@ -151,7 +151,7 @@ then
     RESOURCES_AVAILABLE=false
   else 
     echo "Checking for available auth token spaces"
-    AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $OCI_CS_USER_OCID --all | jq -e '.data | length'`
+    AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $USER_OCID --all | jq -e '.data | length'`
     if [ -z $AUTH_TOKEN_COUNT ]
     then
       AUTH_TOKEN_COUNT=0
