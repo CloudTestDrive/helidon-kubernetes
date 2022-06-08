@@ -153,8 +153,8 @@ then
     echo "Checking for available auth token spaces"
     AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $OCI_CS_USER_OCID --all | jq -e '.data | length'`
     if [ -z $AUTH_TOKEN_COUNT ]
-      AUTH_TOKEN_COUNT=0
     then
+      AUTH_TOKEN_COUNT=0
     fi
     if [ $AUTH_TOKEN_COUNT -eq 2 ]
     then
