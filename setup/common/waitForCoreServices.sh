@@ -43,7 +43,7 @@ do
   
   OKE_OCID="${!OKE_OCID_NAME}"
   
-  echo -n "Testing for $OKE_OCID_NAME"
+  echo -n "Testing for $OKE_OCID_NAME "
   if [ -z "$OKE_OCID" ]
   then
     echo "Not present"
@@ -63,7 +63,7 @@ do
   
   if [ "$CORE_SERVICES_READY" = "true" ]
   then
-    echo "Required core setup scripts complete, continuing"
+    echo "Required core setup scripts complete"
   else
     echo "Waiting for the next test"
     sleep 10
