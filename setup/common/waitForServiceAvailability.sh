@@ -19,7 +19,7 @@ do
   # remove any previous values that may have been set
   for varName in "$@"
   do
-    unset "$var"
+    unset "$varName"
   done
   # get the latest settings
   source $SETTINGS
