@@ -138,10 +138,10 @@ else
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
   # wait ubntiol the token is actove
   AUTH_TOKEN_STATE="INACTIVE"
-  echo "Checking for active token"
+  echo "Checking for active token with OCID $AUTH_TOKEN_OCID"
   while [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
   do
-    AUTH_TOKEN_STATE=`oci iam auth-token list  --user-id $USER_OCID --all | jq -j ".data[] | select (.id = \"$AUTH_TOKEN_OCID\") | .\"lifecycle-state\""`
+    AUTH_TOKEN_STATE=`oci iam auth-token list  --user-id $USER_OCID --all | jq -j ".data[] | select (.id==\"$AUTH_TOKEN_OCID\") | .\"lifecycle-state\""`
     echo "Auth token state is $AUTH_TOKEN_STATE"
     if [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
     then
