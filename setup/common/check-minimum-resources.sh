@@ -112,6 +112,24 @@ else
   RESOURCES_AVAILABLE=false
 fi
 
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  echo "Checking for available auth token spaces"
+  AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $OCI_CS_USER_OCID --all | jq -e '.data | length'`
+  if [ -z $AUTH_TOKEN_COUNT ]
+  then
+    AUTH_TOKEN_COUNT=0
+  fi
+
+  if [ $AUTH_TOKEN_COUNT -eq 2 ]
+  then
+    echo "You are already at the maximum number of auth tokens, in automatic mode this script trys and create one for its use"
+    echo "as there are no available spaces you will have to run the script in non auto confirm mode and reuse an auth token"
+    echo "by entering the value when prompted"
+    RESOURCES_AVAILABLE=false
+  fi
+fi
+
 if [ $RESOURCES_AVAILABLE ]
 then
   echo "Congratulations, you have either got an existing compartment and / or OKE cluster created from other labs, or"
