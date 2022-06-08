@@ -31,7 +31,7 @@ do
       echo "Not present"
       CORE_SERVICES_READY=false
     else
-      echo "Found it"
+      echo "Found it, value is ${!varName}"
     fi
   done
   
