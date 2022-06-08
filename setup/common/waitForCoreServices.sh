@@ -26,9 +26,13 @@ fi
 CORE_SERVICES_READY=false
 until [ "$CORE_SERVICES_READY" = "true" ] 
 do
+  # remove any pre3vious values
+  unset ATPDB_OCID $OKE_OCID_NAME IMAGES_READY
+  echo -n "Testing at " 
+  date +'%H:%M:%S'
   source $SETTINGS
   CORE_SERVICES_READY=true
-  echo -n "Testing for ATP OCID - "
+  echo -n "Testing for ATPDB_OCID - "
   if [ -z "$ATPDB_OCID" ]
   then
     echo "Not present"
@@ -39,7 +43,7 @@ do
   
   OKE_OCID="${!OKE_OCID_NAME}"
   
-  echo -n "Testing for $OKE_OCID_NAME - "
+  echo -n "Testing for $OKE_OCID_NAME"
   if [ -z "$OKE_OCID" ]
   then
     echo "Not present"
