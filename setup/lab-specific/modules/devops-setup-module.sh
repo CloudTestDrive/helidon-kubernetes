@@ -57,7 +57,13 @@ fi
 if [ "$PARALLEL_SETUP" = "true" ]
 then
   cd $DEVOPS_LABS_DIR
-  
+  bash ./wait-for-devops-services.sh
+  RESP=$?
+  if [ "$RESP" -ne 0 ]
+  then
+    echo "Problem setting up devops securty setup, cannot continue"
+    exit $RESP
+  fi
 fi
 
 exit 0

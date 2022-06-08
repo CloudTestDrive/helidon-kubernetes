@@ -10,10 +10,16 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-SERVICES_READY=false
-until [ "$SERVICES_READY" = "true" ] 
+
+# ensure that we have a limit on how many times to loop for the check
+if [ -z "$WAIT_LOOP_COUNT" ]
+then 
+  WAIT_LOOP_COUNT=180
+fi
+
+for i in {1 .. $WAIT_LOOP_COUNT}
 do
-  echo -n "Testing at " 
+  echo -n "Testing $i at " 
   date +'%H:%M:%S'
   SERVICES_READY=true
   # remove any previous values that may have been set
@@ -38,8 +44,19 @@ do
   if [ "$SERVICES_READY" = "true" ]
   then
     echo "Required services are indicating ready"
+    break ;
   else
-    echo "Waiting for the next test"
+    echo "Waiting for the next test "
     sleep 10
+    continue ;
   fi
 done
+
+# check if the loop finished, if it did then $SERVICES_READY will be true
+if [ "$SERVICES_READY" = "true" ]
+then
+  exit 0
+else
+  echo "PROBLEM, one of more services are not ready after $WAIT_LOOP_COUNT test loops"
+  exit 1
+fi

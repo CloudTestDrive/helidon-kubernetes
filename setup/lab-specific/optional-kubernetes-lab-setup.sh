@@ -87,7 +87,6 @@ then
   exit $RESP
 fi
 
-exit 0
 cd $SAVED_PWD
 
 cd $MODULES_DIR

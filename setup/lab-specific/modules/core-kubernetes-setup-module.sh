@@ -97,6 +97,12 @@ fi
 if [ "$PARALLEL_SETUP" = "true" ]
 then
   bash ./wait-for-common-services.sh
+  RESP=$?
+  if [ "$RESP" -ne 0 ]
+  then
+    echo "Problem setting up core services, cannot continue"
+    exit $RESP
+  fi
 fi
 
 exit 0
