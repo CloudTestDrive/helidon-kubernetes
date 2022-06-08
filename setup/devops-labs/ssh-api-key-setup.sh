@@ -10,6 +10,14 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$SSH_API_KEY_CONFIGURED" ]
+then
+  echo "SSH key not configured, setting up"
+else
+  echo "SSH Key already configured"
+  exit 0
+fi
+
 SSH_DIR_NAME=ssh
 SSH_DIR=$HOME/$SSH_DIR_NAME
 SSH_KEY_FILE_BASE=id_rsa_devops
@@ -69,4 +77,7 @@ echo 'Host devops.scmservice.*.oci.oraclecloud.com' >> $SSH_CONFIG_FILE
 echo "  User $USER_NAME@$TENANCY_NAME" >> $SSH_CONFIG_FILE
 echo "  IdentityFile $SSH_DIR/$SSH_KEY_FILE_BASE" >> $SSH_CONFIG_FILE
 echo "# End of script added lines" >> $SSH_CONFIG_FILE
-echo DEVOPS_SSH_API_KEY_CONFIGURED=true >> $SETTINGS
+
+# remove any existing info on the API key
+bash ../common/delete-from-saved-settings.sh SSH_API_KEY_CONFIGURED
+echo SSH_API_KEY_CONFIGURED=true >> $SETTINGS

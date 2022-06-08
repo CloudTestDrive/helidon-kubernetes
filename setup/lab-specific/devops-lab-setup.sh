@@ -63,8 +63,23 @@ read -p "Do you want to use the automatic defaults ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
    export AUTO_CONFIRM=false
+   export PARALLEL_SETUP=false
 else
    export AUTO_CONFIRM=true
+   echo "This script can perform certain setup operations in parallel, doing so will speed"
+   echo "the overall process up but you won't see the detailed output unless you look at the"
+   echo "log files (they are in $HOME/setup-logs)"
+   echo "If yuou want to follow their progress as script is running (don't interrupt it!) you'll"
+   echo "need to do something like"
+   echo 'tail -f <log name>'
+   echo "in a separate cloud shell while this script is running)"
+   read -p "Do you want to run the setup in parallel where possible ?" REPLY
+   if [[ ! $REPLY =~ ^[Yy]$ ]]
+   then
+     export PARALLEL_SETUP=false
+   else
+     export PARALLEL_SETUP=true
+   fi
 fi
 
 SAVED_PWD=`pwd`

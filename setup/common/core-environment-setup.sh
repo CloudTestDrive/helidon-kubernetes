@@ -5,6 +5,11 @@ then
   export AUTO_CONFIRM=false
 fi
 
+if [ -z "$PARALLEL_SETUP" ]
+then
+  export PARALLEL_SETUP=false
+fi
+
 echo "This script will run the required commands to setup your core environment"
 echo "It assumes you are working in a free trial tenancy exclusively used by yourself"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
@@ -63,14 +68,6 @@ RESP=$?
 if [ $RESP -ne 0 ]
 then
   echo "Failure creating the compartment, cannot continue"
-  echo "Please review the output and rerun the script"
-  exit $RESP
-fi
-bash database-setup.sh
-RESP=$?
-if [ $RESP -ne 0 ]
-then
-  echo "Failure creating the database, cannot continue"
   echo "Please review the output and rerun the script"
   exit $RESP
 fi
