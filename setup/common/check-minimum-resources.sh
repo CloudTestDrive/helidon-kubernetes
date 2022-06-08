@@ -115,6 +115,7 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   echo "Getting user info to check for available auth tokens"
+  MAX_AUTH_TOKENS=2
   # try to locate the user type
   LOCAL_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.user' | wc -l`
 
@@ -156,12 +157,14 @@ then
     then
       AUTH_TOKEN_COUNT=0
     fi
-    if [ $AUTH_TOKEN_COUNT -eq 2 ]
+    if [ $AUTH_TOKEN_COUNT -eq $MAX_AUTH_TOKENS ]
     then
       echo "You are already at the maximum number of auth tokens, in automatic mode this script trys and create one for its use"
       echo "as there are no available spaces you will have to run the script in non auto confirm mode and reuse an auth token"
       echo "by entering the value when prompted"
       RESOURCES_AVAILABLE=false
+    else
+      echo "You have $AUTH_TOKEN_COUNT tokens in use out of a maximum of $MAX_AUTH_TOKENS"
     fi
   fi
 fi
