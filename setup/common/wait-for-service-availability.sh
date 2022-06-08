@@ -19,7 +19,7 @@ fi
 
 for i in `seq 1 $WAIT_LOOP_COUNT`
 do
-  echo -n "Testing $i at " 
+  echo -n "Testing stage $i of $WAIT_LOOP_COUNT at " 
   date +'%H:%M:%S'
   SERVICES_READY=true
   # remove any previous values that may have been set
