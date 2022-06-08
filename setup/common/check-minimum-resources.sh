@@ -114,19 +114,55 @@ fi
 
 if [ "$AUTO_CONFIRM" = "true" ]
 then
-  echo "Checking for available auth token spaces"
-  AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $OCI_CS_USER_OCID --all | jq -e '.data | length'`
-  if [ -z $AUTH_TOKEN_COUNT ]
-  then
-    AUTH_TOKEN_COUNT=0
-  fi
+  echo "Checking for available auth tokens"
+  # try to locate the user type
+  LOCAL_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.user' | wc -l`
 
-  if [ $AUTH_TOKEN_COUNT -eq 2 ]
+  if [ $LOCAL_USER = 1 ]
   then
-    echo "You are already at the maximum number of auth tokens, in automatic mode this script trys and create one for its use"
-    echo "as there are no available spaces you will have to run the script in non auto confirm mode and reuse an auth token"
-    echo "by entering the value when prompted"
+      USER_OCID=$OCI_CS_USER_OCID
+  else
+    FEDERATED_USER=`echo $OCI_CS_USER_OCID | grep '^ocid1.saml' | wc -l`
+    if [ $FEDERATED_USER = 1 ]
+    then
+      echo "You are a federated user, getting information"
+      PROVIDER_OCID=`cut -d '/' -f 1 <<< $OCI_CS_USER_OCID`
+      USER_ID=`cut -d '/' -f 2 <<< $OCI_CS_USER_OCID`
+      # look through all of the proders looking for one that matches
+      # we only know about SAML2 though
+      PROVIDER_NAME=`oci iam identity-provider list --compartment-id $OCI_TENANCY --protocol SAML2 --all | jq -j ".data[] | select (.id == \"$PROVIDER_OCID\") | .name" | tr [:upper:] [:lower:] `
+      USERNAME_PROVISIONAL=$PROVIDER_NAME/$USER_ID
+      USER_OCID=`oci iam user list --name $USERNAME_PROVISIONAL | jq -j '.data[0].id'`
+      if [ -z $USER_OCID ]
+      then
+        echo "Cannot locate OCID for user named $USERNAME_PROVISIONAL"
+        echo "Can't check for the auth token slot availability"
+      RESOURCES_AVAILABLE=false
+      fi
+    else
+      echo "Unknown user type for $OCI_CS_USER_OCID"
+      echo "Can't check for the auth token slot availability"
+      RESOURCES_AVAILABLE=false
+    fi
+  fi
+  if [ -z "$USER_OCID" ]
+  then
+    echo "No USER_OCID found, cannot check"
     RESOURCES_AVAILABLE=false
+  else 
+    echo "Checking for available auth token spaces"
+    AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $OCI_CS_USER_OCID --all | jq -e '.data | length'`
+    if [ -z $AUTH_TOKEN_COUNT ]
+      AUTH_TOKEN_COUNT=0
+    then
+    fi
+    if [ $AUTH_TOKEN_COUNT -eq 2 ]
+    then
+      echo "You are already at the maximum number of auth tokens, in automatic mode this script trys and create one for its use"
+      echo "as there are no available spaces you will have to run the script in non auto confirm mode and reuse an auth token"
+      echo "by entering the value when prompted"
+      RESOURCES_AVAILABLE=false
+    fi
   fi
 fi
 
