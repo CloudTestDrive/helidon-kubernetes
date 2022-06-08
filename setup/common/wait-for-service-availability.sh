@@ -17,7 +17,7 @@ then
   WAIT_LOOP_COUNT=180
 fi
 
-for i in {1..$WAIT_LOOP_COUNT}
+for i in `seq 1 $WAIT_LOOP_COUNT`
 do
   echo -n "Testing $i at " 
   date +'%H:%M:%S'
