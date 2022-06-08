@@ -12,4 +12,4 @@ fi
 
 OKE_OCID_NAME=OKE_OCID_$CLUSTER_CONTEXT_NAME
 
-bash ./waitForServiceAvailability ATPDB_OCID $OKE_OCID_NAME, IMAGES_READY
+bash ./waitForServiceAvailability.sh ATPDB_OCID $OKE_OCID_NAME, IMAGES_READY
