@@ -29,7 +29,7 @@ do
     if [ -z "${!varName}" ]
     then
       echo "Not present"
-      CORE_SERVICES_READY=false
+      SERVICES_READY=false
     else
       echo "Found it, value is ${!varName}"
     fi
