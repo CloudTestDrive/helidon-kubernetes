@@ -48,7 +48,7 @@ then
   DB_LOG=$LOGS_DIR/dbSetupLogs.txt
   echo "Creating the database in the background, please ensure it has been created before running any service against it"
   echo "You can see the progress of the database creation in the log file at $DB_LOG"
-  bash database-setup.sh >2&1 > $DB_LOG &
+  bash database-setup.sh 2>&1 > $DB_LOG &
 else
   bash database-setup.sh
   RESP=$?
@@ -65,7 +65,7 @@ then
   OKE_LOG=$LOGS_DIR/okeSetupLogs.txt
   echo "Creating the OKE cluster in the background, please ensure it has been created before running any service against it"
   echo "You can see the progress of the OKE cluster creation in the log file at $OKE_LOG"
-  bash ./kubernetes-setup.sh >2&1 > $OKE_LOG &
+  bash ./kubernetes-setup.sh 2>&1 > $OKE_LOG &
 else
   bash ./kubernetes-setup.sh
   RESP=$?
@@ -81,7 +81,7 @@ then
   IMAGES_LOG=$LOGS_DIR/imagesSetupLogs.txt
   echo "Creating the container images in the background, please ensure they have been created before the microservices"
   echo "You can see the progress of the container image creation in the log file at $IMAGES_LOG"
-  bash ./image-environment-setup.sh >2&1 > $IMAGES_LOG &
+  bash ./image-environment-setup.sh 2>&1 > $IMAGES_LOG &
 else
   bash ./image-environment-setup.sh
   RESP=$?

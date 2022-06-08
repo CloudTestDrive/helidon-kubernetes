@@ -23,7 +23,7 @@ then
   VAULT_LOG=$LOGS_DIR/vaultSetupLogs.txt
   echo "Creating the vault and key in the background, please ensure they have been created before running any service against it"
   echo "You can see the progress of the vault creation in the log file at $VAULT_LOG"
-  bash ./vault-setup.sh >2&1 > $VAULT_LOG &
+  bash ./vault-setup.sh 2>&1 > $VAULT_LOG &
 else
   bash ./vault-setup.sh
   RESP=$?
@@ -43,7 +43,7 @@ then
   DEVOPS_SECURITY_LOG=$LOGS_DIR/devopsSecuritySetupLogs.txt
   echo "Configuring the required policies for devops in the background, please ensure they have been created before running any service against it"
   echo "You can see the progress of the devops security configuration in the log file at $DEVOPS_SECURITY_LOG"
-  bash ./security-setup.sh >2&1 > $DEVOPS_SECURITY_LOG &
+  bash ./security-setup.sh 2>&1 > $DEVOPS_SECURITY_LOG &
 else
   bash ./security-setup.sh.sh
   RESP=$?
