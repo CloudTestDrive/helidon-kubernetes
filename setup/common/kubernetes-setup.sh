@@ -286,8 +286,7 @@ then
       echo "kubectl config rename-context `kubectl config current-context` $CLUSTER_CONTEXT_NAME"
       exit 1
     fi
-    echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
-    echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=false" >> $SETTINGS
+    OKE_REUSED=false
     cd $SAVED_DIR
   else
     echo "Located existing cluster named $CLUSTER_NAME_FULL in $COMPARTMENT_NAME checking its status"
@@ -295,8 +294,8 @@ then
     if [ "$OKE_STATUS" = "ACTIVE" ]
     then
       echo "Cluster is Active, proceeding"
-      echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
-      echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
+      # record what we're going to save, but to avoid a parallel ops race condition wait for the end before saving it
+      OKE_REUSED=true
     else
       OKE_STATUS=`oci ce cluster list --name $CLUSTER_NAME_FULL --compartment-id $COMPARTMENT_OCID  | jq -j '.data[0]."lifecycle-state"'`
       echo "Cluster $CLUSTER_NAME_FULL in compartment $COMPARTMENT_NAME exists but is not active, it is in state $OKE_STATUS, it cannot be used."
@@ -317,6 +316,10 @@ then
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
   CURRENT_CONTEXT=`kubectl config current-context`
   kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
+  
+  # it's now save to save the OCID's as we've finished
+  echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
+  echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=$OKE_REUSED" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 

@@ -52,9 +52,13 @@ then
   exit 3
 fi
 
+echo "Getting home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
 # OK, let's upload the provided key
 
-RESP=`oci iam user api-key upload --user-id $USER_OCID --key-file $PUBLIC_KEY_FILE 2>&1`
+RESP=`oci iam user api-key upload --user-id $USER_OCID --key-file $PUBLIC_KEY_FILE --region $OCI_HOME_REGION 2>&1`
 
 # Look for an error
 ERROR_MESSAGE=`echo $RESP | sed -e 's/ServiceError: //' | jq -r '.message'`

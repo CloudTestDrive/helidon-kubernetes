@@ -45,8 +45,12 @@ then
   exit 0
 fi
 
+echo "Getting home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
 echo "Deleting policy $POLICY_NAME"
-oci iam policy delete --policy-id "${!POLICY_OCID_NAME}" --force
+oci iam policy delete --policy-id "${!POLICY_OCID_NAME}" --force --region $OCI_HOME_REGION
 bash ../delete-from-saved-settings.sh $POLICY_OCID_NAME
 bash ../delete-from-saved-settings.sh $POLICY_REUSED_NAME
 

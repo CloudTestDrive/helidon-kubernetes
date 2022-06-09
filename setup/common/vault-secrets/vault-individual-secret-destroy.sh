@@ -25,7 +25,7 @@ SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
 
 if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
-  echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, , perhaps it's already been removed ? Cannot continue"
+  echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, , perhaps it's already been removed ? Nothing to delete"
   exit 0
 fi
 

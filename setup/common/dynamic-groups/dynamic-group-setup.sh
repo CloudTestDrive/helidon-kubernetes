@@ -45,16 +45,19 @@ else
 fi
 
 # see if we can find the existing group
-
-GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME | jq -r '.data[0].id'`
+# it must be active to be usable
+GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME  --lifecycle-state ACTIVE | jq -r '.data[0].id'`
 
 GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
 
 echo "Checking for existing dynamic group named $GROUP_NAME"
 if [ -z "$GROUP_OCID" ]
 then
-  echo "No existing dynamic group found, creating"
-  GROUP_OCID=`oci iam dynamic-group create --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "$GROUP_RULE" --wait-for-state ACTIVE | jq -r '.data.id'`
+  echo "Getting home region"
+  OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+  OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+  echo "No existing dynamic group found, creating"  
+  GROUP_OCID=`oci iam dynamic-group create --region $OCI_HOME_REGION --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "$GROUP_RULE" --wait-for-state ACTIVE | jq -r '.data.id'`
   if [ -z "$GROUP_OCID" ]
   then
     GROUP_OCID=null
@@ -64,9 +67,29 @@ then
     echo "Unable to create dynamic group $GROUP_NAME, cannot continue"
     exit 4
   fi
-  echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
-  echo $GROUP_REUSED_NAME=false >> $SETTINGS
-  exit 0
+  echo "Waiting for dynamic group to propogate"
+  DG_FOUND=false
+  for i in `seq 1 10`
+  do
+    echo "Propogate test $i for dynamic group $GROUP_NAME"
+    COUNT=`oci iam dynamic-group list --name $GROUP_NAME --lifecycle-state ACTIVE | jq -r 'length'`
+    if [ "$COUNT" = "1" ]
+    then
+      echo "Dynamic group has propogated"
+      DG_FOUND=true
+      break ;
+    fi
+    sleep 10
+  done
+  if [ "$DG_FOUND" = "true" ]
+  then
+    echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
+    echo $GROUP_REUSED_NAME=false >> $SETTINGS
+    exit 0
+  else
+    echo "Dynamic group has not propogated in time, stopping"
+    exit 1
+  fi
 else
   echo "Group named $GROUP_NAME already exists, please manually add the following rule to it " 
   echo $GROUP_RULE

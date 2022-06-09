@@ -42,7 +42,6 @@ then
   echo "bash initials-setup.sh"
   echo "bash user-identity-setup.sh"
   echo "bash compartment-setup.sh"
-  echo "bash database-setup.sh"
   exit 1
 else
   echo "Thank you for confirming you are in a free trial, let's set your basic environment up"

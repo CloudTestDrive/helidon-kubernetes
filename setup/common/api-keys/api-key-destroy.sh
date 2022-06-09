@@ -41,9 +41,12 @@ else
   echo "Found API Key fingerprint"
 fi
 
+echo "Getting home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 echo "Deleting API key"
 
-oci iam user api-key delete --user-id $USER_OCID --fingerprint $API_KEY_FINGERPRINT --force
+oci iam user api-key delete --user-id $USER_OCID --fingerprint $API_KEY_FINGERPRINT --force --region $OCI_HOME_REGION
 
 bash ../delete-from-saved-settings.sh API_KEY_FINGERPRINT
 bash ../delete-from-saved-settings.sh API_KEY_REUSED
