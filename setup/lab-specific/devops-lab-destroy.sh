@@ -9,19 +9,6 @@ else
 fi
 
 echo "Welcome to the DevOps specific lab destroy script."
-echo "Checking region"
-OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
-OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
-if [ $OCI_REGION = $OCI_HOME_REGION ]
-then
-  echo "You are in your home region and this script will continue"
-else
-  echo "You need to run this script in your home region of $OCI_HOME_REGION, you "
-  echo "are running it in $OCI_REGION"
-  echo "Please switch to your OCI home region in your browser (you will need to"
-  echo "restart the cloud shell) and re-run this script"
-  exit 1
-fi
 read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
