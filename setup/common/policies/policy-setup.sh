@@ -62,19 +62,42 @@ else
 fi
 
 # see if we can find the existing group
-
-POLICY_OCID=`oci iam policy list --name $POLICY_NAME --compartment-id $COMPARTMENT_PARENT_OCID | jq -r '.data[0].id'`
+# it needs to be active
+POLICY_OCID=`oci iam policy list --name $POLICY_NAME --compartment-id $COMPARTMENT_PARENT_OCID  --lifecycle-state ACTIVE | jq -r '.data[0].id'`
 
 POLICY_RULE="[ \"ALLOW $POLICY_TYPE $POLICY_SUBJECT to manage all-resources in compartment $COMPARTMENT_NAME \"]" 
 
 echo "Checking for existing policy named $POLICY_NAME in compartment $COMPARTMENT_PARENT_NAME"
 if [ -z "$POLICY_OCID" ]
 then
+  echo "Getting home region"
+  OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+  OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
   echo "No existing policy found, creating"
-  POLICY_OCID=`oci iam policy create --name "$POLICY_NAME" --description "$POLICY_DESCRIPTION"  --statements "$POLICY_RULE" --compartment-id $COMPARTMENT_PARENT_OCID --wait-for-state ACTIVE | jq -r '.data.id'`
-  echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
-  echo "$POLICY_REUSED_NAME=false" >> $SETTINGS
-  exit 0
+  POLICY_OCID=`oci iam policy create --region $OCI_HOME_REGION --name "$POLICY_NAME" --description "$POLICY_DESCRIPTION"  --statements "$POLICY_RULE" --compartment-id $COMPARTMENT_PARENT_OCID --wait-for-state ACTIVE | jq -r '.data.id'`
+  echo "Waiting for policy to propogate"
+  POLICY_FOUND=false
+  for i in `seq 1 10`
+  do
+    echo "Propogate test $i for dynamic group $POLICY_NAME"
+    COUNT=`oci iam policy list --name $POLICY_NAME --compartment-id $COMPARTMENT_PARENT_OCID  --lifecycle-state ACTIVE | jq -r 'length'`
+    if [ "$COUNT" = "1" ]
+    then
+      echo "Policy has propogated"
+      POLICY_FOUND=true
+      break ;
+    fi
+    sleep 10
+  done
+  if [ "$POLICY_FOUND" = "true" ]
+  then
+    echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
+    echo "$POLICY_REUSED_NAME=false" >> $SETTINGS
+    exit 0
+  else
+    echo "Policy has not propogated in time, stopping"
+    exit 1
+  fi
 else
   echo "Policy named $POLICY_NAME already exists, please manually add the following statement to it " 
   echo "$POLICY_RULE"
