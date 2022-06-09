@@ -45,7 +45,7 @@ then
   echo "You can see the progress of the devops security configuration in the log file at $DEVOPS_SECURITY_LOG"
   bash ./security-setup.sh 2>&1 > $DEVOPS_SECURITY_LOG &
 else
-  bash ./security-setup.sh.sh
+  bash ./security-setup.sh
   RESP=$?
   if [ $RESP -ne 0 ]
   then
