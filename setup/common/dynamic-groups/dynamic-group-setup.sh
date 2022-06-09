@@ -81,7 +81,7 @@ then
     fi
     sleep 10
   done
-  if [ "$FOUND" = "true" ]
+  if [ "$DG_FOUND" = "true" ]
   then
     echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
     echo $GROUP_REUSED_NAME=false >> $SETTINGS
