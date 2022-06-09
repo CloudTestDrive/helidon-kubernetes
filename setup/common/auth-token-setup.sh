@@ -18,8 +18,9 @@ then
 fi
 
 if [ -z $USER_OCID ]
-  then
-    echo 'No user ocid, unable to continue - have you run the user-identity-setup.sh script ?'
+then
+  echo 'No user ocid, unable to continue - have you run the user-identity-setup.sh script ?'
+  exit 1
 fi
 
 if [ -z $AUTH_TOKEN_REUSED ]
@@ -38,19 +39,10 @@ else
   exit 0
 fi
 
-echo "Checking region"
+echo "Getting home region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
-
-if [ $OCI_REGION = $OCI_HOME_REGION ]
-then
-  echo "You are in your home region and this script will continue"
-else
-  echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
-  echo "Please switch to your OCI home region and re-run this script"
-#  exit 1
-fi
 
 AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $USER_OCID --all | jq -e '.data | length'`
 
@@ -134,7 +126,7 @@ then
 else
   echo 'Creating a new auth token for you'
   # need to do the create in the home region
-  AUTH_TOKEN_JSON=`oci iam auth-token create --region $OCI_HOME REGION --description 'Labs' --user-id $USER_OCID`
+  AUTH_TOKEN_JSON=`oci iam auth-token create --region $OCI_HOME_REGION --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
   # wait untiol the token is actove
