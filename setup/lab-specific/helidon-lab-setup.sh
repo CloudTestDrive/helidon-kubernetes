@@ -8,7 +8,7 @@ else
   exit -1
 fi
 
-echo "Welcome to the helidon development specific lab setup script."
+echo "Welcome to the Helidon development specific lab setup script."
 echo "Checking region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
@@ -16,11 +16,29 @@ if [ $OCI_REGION = $OCI_HOME_REGION ]
 then
   echo "You are in your home region and this script will continue"
 else
-  echo "You need to run this script in your home region of $OCI_HOME_REGION, you "
-  echo "are running it in $OCI_REGION"
-  echo "Please switch to your OCI home region in your browser (you will need to"
-  echo "restart the cloud shell) and re-run this script"
-  exit 1
+  if [ -z "$IGNORE_HOME_REGION_ERROR" ]
+  then
+    echo "You need to run this script in your home region of $OCI_HOME_REGION, you "
+    echo "are running it in $OCI_REGION"
+    echo "Please switch to your OCI home region in your browser (you will need to"
+    echo "restart the cloud shell) and re-run this script"
+    exit 1
+  else
+    echo "This script is designed to run in your home region of $OCI_HOME_REGION, you "
+    echo "are running it in $OCI_REGION"
+    echo "If you have already setup the home region specific items of compartment and auth"
+    echo "token then the script may run provided you confirm you are in a free trial and"
+    echo "also use the auto confirm option, you are advised not to use the parallel operation"
+    echo "so any problems will be discovered as soon as possible"
+    read -p "Do you want to continue on this basis ?" REPLY
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, existing"
+      exit 1
+    else
+      echo "OK, attempting to proceed, success is not certain"
+    fi
+  fi
 fi
 read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]

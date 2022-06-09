@@ -8,7 +8,7 @@ else
   exit -1
 fi
 
-echo "Welcome to the core kubernetes specific lab setup script."
+echo "Welcome to the core Kubernetes specific lab setup script."
 
 echo "Checking region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
@@ -17,11 +17,29 @@ if [ $OCI_REGION = $OCI_HOME_REGION ]
 then
   echo "You are in your home region and this script will continue"
 else
-  echo "You need to run this script in your home region of $OCI_HOME_REGION, you "
-  echo "are running it in $OCI_REGION"
-  echo "Please switch to your OCI home region in your browser (you will need to"
-  echo "restart the cloud shell) and re-run this script"
-  exit 1
+  if [ -z "$IGNORE_HOME_REGION_ERROR" ]
+  then
+    echo "You need to run this script in your home region of $OCI_HOME_REGION, you "
+    echo "are running it in $OCI_REGION"
+    echo "Please switch to your OCI home region in your browser (you will need to"
+    echo "restart the cloud shell) and re-run this script"
+    exit 1
+  else
+    echo "This script is designed to run in your home region of $OCI_HOME_REGION, you "
+    echo "are running it in $OCI_REGION"
+    echo "If you have already setup the home region specific items of compartment and auth"
+    echo "token then the script may run provided you confirm you are in a free trial and"
+    echo "also use the auto confirm option, you are advised not to use the parallel operation"
+    echo "so any problems will be discovered as soon as possible"
+    read -p "Do you want to continue on this basis ?" REPLY
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, existing"
+      exit 1
+    else
+      echo "OK, attempting to proceed, success is not certain"
+    fi
+  fi
 fi
     
 read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
@@ -53,8 +71,23 @@ read -p "Do you want to use the automatic defaults ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
    export AUTO_CONFIRM=false
+   export PARALLEL_SETUP=false
 else
    export AUTO_CONFIRM=true
+   echo "This script can perform certain setup operations in parallel, doing so will speed"
+   echo "the overall process up but you won't see the detailed output unless you look at the"
+   echo "log files (they are in $HOME/setup-logs)"
+   echo "If you want to follow their progress as script is running (don't interrupt it!) you'll"
+   echo "need to do something like"
+   echo 'tail -f $HOME/setup-logs/<log name>'
+   echo "in a separate cloud shell while this script is running"
+   read -p "Do you want to run the setup in parallel where possible ?" REPLY
+   if [[ ! $REPLY =~ ^[Yy]$ ]]
+   then
+     export PARALLEL_SETUP=false
+   else
+     export PARALLEL_SETUP=true
+   fi
 fi
 
 SAVED_PWD=`pwd`

@@ -10,6 +10,14 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$SSH_API_KEY_CONFIGURED" ]
+then
+  echo "SSH key not configured"
+  exit 0
+else
+  echo "Removing SSH Key"
+fi
+
 SSH_DIR_NAME=ssh
 SSH_DIR=$HOME/$SSH_DIR_NAME
 SSH_KEY_FILE_BASE=id_rsa_devops
@@ -47,4 +55,4 @@ bash ./ssh-key-destroy.sh $SSH_DIR $SSH_KEY_FILE_BASE
 
 cd $SAVED_PWD
 
-bash ../common/delete-from-saved-settings.sh DEVOPS_SSH_API_KEY_CONFIGURED
+bash ../common/delete-from-saved-settings.sh SSH_API_KEY_CONFIGURED

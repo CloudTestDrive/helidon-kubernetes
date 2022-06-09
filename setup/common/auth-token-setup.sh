@@ -35,7 +35,7 @@ then
   echo "No existing auth token OCID."
 else
   echo "Your auth token has already been set, to remove it run the auth-token-destroy.sh script"
-  exit 1
+  exit 0
 fi
 
 echo "Checking region"

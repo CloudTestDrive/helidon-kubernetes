@@ -13,6 +13,14 @@ fi
 
 source $SETTINGS
 
+if [ -z "$POLICIES_CONFIGURED" ]
+then
+  echo "Policies not configured, setting up"
+else
+  echo "Policies already configured"
+  exit 0
+fi
+
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -50,4 +58,12 @@ then
   echo "Problem setting up policy "$USER_INITIALS"DevOpsDeployPolicy response is $RESP"
   FINAL_RESP=$RESP
 fi
-exit $FINAL_RESP
+if [ "$FINAL_RESP" -ne 0 ]
+then
+  exit $FINAL_RESP
+else 
+  # delete script is in common, we are in common/policies
+  bash ../delete-from-saved-settings.sh POLICIES_CONFIGURED
+  echo POLICIES_CONFIGURED=true >> $SETTINGS
+  exit $FINAL_RESP
+fi
