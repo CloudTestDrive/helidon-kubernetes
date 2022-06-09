@@ -30,7 +30,7 @@ OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
   echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
-  exit 1
+  exit 0
 fi
 
 
