@@ -49,7 +49,7 @@ then
 else
   echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
   echo "Please switch to your OCI home region and re-run this script"
-  exit 1
+#  exit 1
 fi
 
 AUTH_TOKEN_COUNT=`oci iam auth-token list --user-id $USER_OCID --all | jq -e '.data | length'`
@@ -133,14 +133,16 @@ then
   fi
 else
   echo 'Creating a new auth token for you'
-  AUTH_TOKEN_JSON=`oci iam auth-token create --description 'Labs' --user-id $USER_OCID`
+  # need to do the create in the home region
+  AUTH_TOKEN_JSON=`oci iam auth-token create --region $OCI_HOME REGION --description 'Labs' --user-id $USER_OCID`
   AUTH_TOKEN=`echo $AUTH_TOKEN_JSON | jq -j '.data.token'`
   AUTH_TOKEN_OCID=`echo $AUTH_TOKEN_JSON | jq -j '.data.id'`
-  # wait ubntiol the token is actove
+  # wait untiol the token is actove
   AUTH_TOKEN_STATE="INACTIVE"
   echo "Checking for active token with OCID $AUTH_TOKEN_OCID"
   while [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
   do
+    # check the local region for the token to propogate, not the home region
     AUTH_TOKEN_STATE=`oci iam auth-token list  --user-id $USER_OCID --all | jq -j ".data[] | select (.id==\"$AUTH_TOKEN_OCID\") | .\"lifecycle-state\""`
     echo "Auth token state is $AUTH_TOKEN_STATE"
     if [ "$AUTH_TOKEN_STATE" != "ACTIVE" ]
