@@ -53,8 +53,11 @@ GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id
 echo "Checking for existing dynamic group named $GROUP_NAME"
 if [ -z "$GROUP_OCID" ]
 then
-  echo "No existing dynamic group found, creating"
-  GROUP_OCID=`oci iam dynamic-group create --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "$GROUP_RULE" --wait-for-state ACTIVE | jq -r '.data.id'`
+  echo "Getting home region"
+  OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+  OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+  echo "No existing dynamic group found, creating"  
+  GROUP_OCID=`oci iam dynamic-group create --region $OCI_HOME_REGION --name "$GROUP_NAME" --description "$GROUP_DESCRIPTION"  --matching-rule "$GROUP_RULE" --wait-for-state ACTIVE | jq -r '.data.id'`
   if [ -z "$GROUP_OCID" ]
   then
     GROUP_OCID=null
