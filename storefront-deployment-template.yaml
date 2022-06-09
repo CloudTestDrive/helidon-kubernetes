@@ -79,10 +79,10 @@ spec:
 #          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
         volumeMounts:
         - name: sf-conf-secure-vol
-          mountPath: /confsecure
+          mountPath: /app/confsecure
           readOnly: true
         - name: sf-config-map-vol
-          mountPath: /conf
+          mountPath: /app/conf
           readOnly: true
       volumes:
       - name: sf-conf-secure-vol

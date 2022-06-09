@@ -110,13 +110,13 @@ spec:
 #          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
         volumeMounts:
         - name: sm-config-map-vol
-          mountPath: /conf
+          mountPath: /app/conf
           readOnly: true
         - name: sm-conf-secure-vol
-          mountPath: /confsecure
+          mountPath: /app/confsecure
           readOnly: true
         - name: sm-wallet-atp
-          mountPath: /Wallet_ATP
+          mountPath: /app/Wallet_ATP
           readOnly: true
       volumes:
       - name: sm-config-map-vol
