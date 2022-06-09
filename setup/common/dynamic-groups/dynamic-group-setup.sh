@@ -67,9 +67,29 @@ then
     echo "Unable to create dynamic group $GROUP_NAME, cannot continue"
     exit 4
   fi
-  echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
-  echo $GROUP_REUSED_NAME=false >> $SETTINGS
-  exit 0
+  echo "Waiting for dynamic group to propogate"
+  DG_FOUND=false
+  for i in `seq 1 10`
+  do
+    echo "Test $i for dynamic group $GROUP_NAME"
+    COUNT=`oci iam dynamic-group list --name $GROUP_NAME --lifecycle-state ACTIVEED | jq -r 'length'`
+    if [ "$COUNT" = "1" ]
+    then
+      echo "Dynamic group has propogated"
+      DG_FOUND=true
+      break ;
+    fi
+    sleep 10
+  done
+  if [ "$FOUND" = "true" ]
+  then
+    echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
+    echo $GROUP_REUSED_NAME=false >> $SETTINGS
+    exit 0
+  else
+    echo "Dynamic group has not propogated in time, stopping"
+    exit 1
+  fi
 else
   echo "Group named $GROUP_NAME already exists, please manually add the following rule to it " 
   echo $GROUP_RULE
