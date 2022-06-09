@@ -41,13 +41,33 @@ else
   PARENT_NAME="$COMPARTMENT_PARENT_NAME sub compartment"
 fi
 
+if [ -z $"AUTO_CONFIRM" ]
+then
+  AUTO_CONFIRM=false
+fi
+
+
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, Destroy compartment $COMPARTMENT_NAME in $COMPARTMENT_PARENT_NAME  defaulting to $REPLY"
+else
+  read -p "Destroy compartment $COMPARTMENT_NAME in $COMPARTMENT_PARENT_NAME (y/n) ?" REPLY
+fi 
+if [[ ! "$REPLY" =~ ^[Yy]$ ]]
+then
+  echo "OK, compartment $COMPARTMENT_NAME in $COMPARTMENT_PARENT_NAME not destroyed"
+  exit 0
+else
+  echo "OK, proceeding with comparment deletion"
+fi
 
 echo "Getting home region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
 echo "Destroying compartment $COMPARTMENT_NAME in $COMPARTMENT_PARENT_NAME This will fail if the compartment is not empty and you will then need to remove any respurce in it and delete it manually"
-oci iam compartment delete  --compartment-id $COMPARTMENT_OCID --region $OCI_HOME_REGION
+oci iam compartment delete  --compartment-id $COMPARTMENT_OCID --region $OCI_HOME_REGION --force
 
 
 bash ./delete-from-saved-settings.sh COMPARTMENT_OCID
