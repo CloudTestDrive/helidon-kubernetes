@@ -41,22 +41,13 @@ then
 fi
 
 
-echo "Checking region"
+echo "Getting home region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
-if [ $OCI_REGION = $OCI_HOME_REGION ]
-then
-  echo "You are in your home region and this script will continue"
-else
-  echo "You need to run this script in your home region of $OCI_HOME_REGION, you are running it in $OCI_REGION"
-  echo "Please switch to your OCI home region and re-run this script"
-  exit 1
-fi
-
 echo "Destroying auth token with id $AUTH_TOKEN_OCID "
-oci iam auth-token delete --force --user-id $USER_OCID --auth-token-id $AUTH_TOKEN_OCID
+oci iam auth-token delete --force --user-id $USER_OCID --auth-token-id $AUTH_TOKEN_OCID --region $OCI_HOME_REGION
 
 bash ./delete-from-saved-settings.sh AUTH_TOKEN_OCID
 bash ./delete-from-saved-settings.sh AUTH_TOKEN_REUSED

@@ -42,8 +42,12 @@ else
 fi
 
 
+echo "Getting home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
 echo "Destroying compartment $COMPARTMENT_NAME in $COMPARTMENT_PARENT_NAME This will fail if the compartment is not empty and you will then need to remove any respurce in it and delete it manually"
-oci iam compartment delete  --compartment-id $COMPARTMENT_OCID
+oci iam compartment delete  --compartment-id $COMPARTMENT_OCID --region $OCI_HOME_REGION
 
 
 bash ./delete-from-saved-settings.sh COMPARTMENT_OCID
