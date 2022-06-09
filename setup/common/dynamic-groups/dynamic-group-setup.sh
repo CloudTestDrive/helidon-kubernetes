@@ -71,7 +71,7 @@ then
   DG_FOUND=false
   for i in `seq 1 10`
   do
-    echo "Test $i for dynamic group $GROUP_NAME"
+    echo "Propogate test $i for dynamic group $GROUP_NAME"
     COUNT=`oci iam dynamic-group list --name $GROUP_NAME --lifecycle-state ACTIVE | jq -r 'length'`
     if [ "$COUNT" = "1" ]
     then
