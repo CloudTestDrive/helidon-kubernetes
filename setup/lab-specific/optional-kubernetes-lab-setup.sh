@@ -65,7 +65,7 @@ else
    echo "log files (they are in $HOME/setup-logs)"
    echo "If yuou want to follow their progress as script is running (don't interrupt it!) you'll"
    echo "need to do something like"
-   echo 'tail -f <log name>'
+   echo 'tail -f $HOME/setup-logs/<log name>'
    echo "in a separate cloud shell while this script is running)"
    read -p "Do you want to run the setup in parallel where possible ?" REPLY
    if [[ ! $REPLY =~ ^[Yy]$ ]]
