@@ -55,7 +55,7 @@ GRAFANA_PASSWORD=`kubectl get secret --namespace monitoring grafana -o jsonpath=
 echo "Access prometheus at https://prometheus.monitoring.$EXTERNAL_IP.nip.io with username admin and password $PROMETHEUS_PASSWORD"
 echo "Remember to enable the monitoring annotations in the pods"
 
-echo "Access Grafana at https://grafana.monitoring.$EXTERNAL_IP.nip.io using password"
+echo "Access Grafana at https://grafana.monitoring.$EXTERNAL_IP.nip.io using username admin and password"
 echo $GRAFANA_PASSWORD
 
 echo "Remember to set the data source as prometheus on http://prometheus-server.monitoring.svc.cluster.local"
