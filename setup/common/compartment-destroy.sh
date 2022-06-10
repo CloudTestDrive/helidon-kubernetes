@@ -18,8 +18,11 @@ fi
 
 if [ $COMPARTMENT_REUSED = true ]
 then
-  echo "You have been using a comparment that was not created by these scripts, you will need to destroy the compartment by hand"
-  echo "and then remove COMPARTMENT_REUSED and COMPARTMENT_OCID from $SETTINGS" 
+  echo "You have been using a comparment that was not created by these scripts, you will need to destroy"
+  echo "the compartment by hand (assuming it's empty)"
+  echo "Going to remove thwe compartment settings so you can easily recreate things if you want"
+  bash ./delete-from-saved-settings.sh COMPARTMENT_OCID
+  bash ./delete-from-saved-settings.sh COMPARTMENT_REUSED
   exit 0
 fi
 
