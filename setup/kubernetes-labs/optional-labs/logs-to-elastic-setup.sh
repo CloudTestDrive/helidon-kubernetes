@@ -30,10 +30,10 @@ kubectl create namespace logging
 echo "Creating Elastic auth details"
 htpasswd -c -b auth admin $PASSWORD
 
-echo "Creating Prometheus auth secret"
-kubectl create secret generic web-ingress-auth -n monitoring --from-file=auth
+echo "Creating Elastic auth secret"
+kubectl create secret generic web-ingress-auth -n logging --from-file=auth
 
-echo "Creating search certificate"
+echo "Creating Elastic search certificate"
 $HOME/keys/step certificate create search.logging.$EXTERNAL_LP.nip.io tls-search-$EXTERNAL_IP.crt tls-search-$EXTERNAL_IP.key  --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
 
 echo "Create search certificate secret"
