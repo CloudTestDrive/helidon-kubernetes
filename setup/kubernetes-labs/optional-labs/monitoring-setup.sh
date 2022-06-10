@@ -12,7 +12,7 @@ else
 fi
 
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
-source helmChartVersions.sh
+source ../helmChartVersions.sh
 PROMETHEUS_PASSWORD=ZaphodBeeblebrox
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
