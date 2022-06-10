@@ -41,7 +41,9 @@ then
 else
   echo "Operating in compartment $COMPARTMENT_NAME"
 fi
-
+# assume that the vault and key are not undeleted
+VAULT_UNDELETED=false
+VAULT_KEY_UNDELETED=false
 if [ -z "$VAULT_REUSED" ]
 then
   echo "No reuse information for vault"
@@ -92,7 +94,6 @@ then
     then
       VAULT_PENDING_OCID=null
     fi
-    VAULT_UNDELETED=false
     if [ "$VAULT_PENDING_OCID" = "null" ]
     then
       echo "No vault named $VAULT_NAME pending deletion, continuing"
@@ -201,7 +202,6 @@ if [ -z "$VAULT_KEY_REUSED" ]
 then
   echo "No resuse information for the key, setting up for Vault master key"
   VAULT_KEY_NAME="$USER_INITIALS"Key
-
   
   if [ "$AUTO_CONFIRM" = true ]
   then
@@ -276,7 +276,13 @@ then
     echo "VAULT_KEY_REUSED=false" >> $SETTINGS
   else
     echo "Found existing key with name $VAULT_KEY_NAME, reusing it"
-    # if we undeleted the key then the delete scriprt can undelete it as well
+    # if the vault itself was undeleted then in practical terms the key will have been as well
+    # so allow it to be deleted anyway
+    if [ "$VAULT_UNDELETED" = "true" ]
+    then
+      VAULT_KEY_UNDELETED=true
+    fi
+    # if we undeleted the key then the delete script can undelete it as well
     if [ "$VAULT_KEY_UNDELETED" = "true" ]
     then
       echo "VAULT_KEY_REUSED=false" >> $SETTINGS
