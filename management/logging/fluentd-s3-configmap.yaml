@@ -4,9 +4,9 @@ metadata:
   name: fluentd-s3-config
   namespace: logging
 data:
-  ACCESS_KEY: "<your value>"
-  ACCESS_SECRET: "<your value>"
-  BUCKET_NAME: "<your value>"
-  REGION: "<your value>"
-  STORAGE_END_POINT: "<your value>"
+  ACCESS_KEY: "YOUR_ACCESS_KEY"
+  ACCESS_SECRET: "YOUR_ACCESS_SECRET"
+  BUCKET_NAME: "YOUR_BUCKET_NAME"
+  REGION: "YOUR_REGION"
+  STORAGE_END_POINT: "YOUR_STORAGE_ENDPOINT"
   SWITCH_LOG_FILE_INTERVAL: "60"
