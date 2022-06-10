@@ -10,3 +10,6 @@ touch tls-deleteme.key
 # delete them
 rm tls-*.crt
 rm tls-*.key
+
+echo "Removing auth file"
+rm auth
