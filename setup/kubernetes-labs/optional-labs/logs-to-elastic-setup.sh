@@ -40,7 +40,8 @@ echo "Create search certificate secret"
 kubectl create secret tls tls-search --key tls-search-$EXTERNAL_IP.key --cert tls-search-$EXTERNAL_IP.crt -n logging
 
 echo "Installing elastic search with helm"
-helm install elasticsearch elastic/elasticsearch --namespace logging --version $elasticSearchHelmChartVersion --set ingress.enabled=true --set ingress.tls[0].hosts[0]="search.logging.$EXTERNAL_IP.nip.io" --set ingress.tls[0].secretName=tls-search --set ingress.hosts[0].host="search.logging.$EXTERNAL_IP.nip.io" --set ingress.hosts[0].paths[0].path='/' --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-type"=basic --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-secret"=web-ingress-auth --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-realm"="Authentication Required" --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx
+helm install elasticsearch elastic/elasticsearch --namespace logging --version $elasticSearchHelmChartVersion --set ingress.enabled=true --set ingress.tls[0].hosts[0]="search.logging.$EXTERNAL_IP.nip.io" --set ingress.tls[0].secretName=tls-search --set ingress.hosts[0].host="search.logging.$EXTERNAL_IP.nip.io" --set ingress.hosts[0].paths[0].path='/' --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-type"=basic --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-secret"=web-ingress-auth --set ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-realm"="Authentication Required" 
+#--set ingress.annotations."kubernetes\.io/ingress\.class"=nginx
 
 echo "Installing fluentd daemon set"
 kubectl apply -f fluentd-daemonset-elasticsearch-rbac.yaml
