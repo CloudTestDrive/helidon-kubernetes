@@ -46,10 +46,10 @@ helm install elasticsearch elastic/elasticsearch --namespace logging --version $
 echo "Installing fluentd daemon set"
 kubectl apply -f fluentd-daemonset-elasticsearch-rbac.yaml
 
-TODAYS_DATE=`date +'%Y-%m-%d'`
+TODAYS_DATE=`date +'%Y.%m.%d'`
 echo "Access elastic records for today at :"
 echo "https://search.logging."$EXTERNAL_IP".nip.io/logstash-"$TODAYS_DATE"/_search"
 echo "Access elastic records for storefront today at :"
 echo "at https://search.logging."$EXTERNAL_IP".nip.io/logstash-"$TODAYS_DATE"/_search?q=kubernetes.container_name:storefront"
 echo "auth user admin and password $PASSWORD"
-
+echo "\nIt can take a while for the elastic stack to fully install and be running"
