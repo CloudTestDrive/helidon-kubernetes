@@ -92,6 +92,7 @@ then
     then
       VAULT_PENDING_OCID=null
     fi
+    VAULT_UNDELETED=false
     if [ "$VAULT_PENDING_OCID" = "null" ]
     then
       echo "No vault named $VAULT_NAME pending deletion, continuing"
@@ -109,6 +110,7 @@ then
       else
         echo "OK, trying to cancel vault deletion"
         oci kms management vault cancel-deletion --vault-id $VAULT_PENDING_OCID --wait-for-state ACTIVE
+        VAULT_UNDELETED=true
       fi
     fi
     VAULT_OCID=`oci kms management vault list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$VAULT_NAME\"))] | first | .id" `
@@ -138,7 +140,13 @@ then
     else
       echo "Found existing vault names $VAULT_NAME, reusing it"
       echo "VAULT_OCID=$VAULT_OCID" >> $SETTINGS
-      echo "VAULT_REUSED=true" >> $SETTINGS
+      # if we undeleted the vault then the delete script can undelete it as well
+      if [ "$VAULT_UNDELETED" = "true" ]
+      then
+        echo "VAULT_REUSED=false" >> $SETTINGS
+      else
+        echo "VAULT_REUSED=true" >> $SETTINGS
+      fi
     fi
   else
     # We've been given an VAULT_OCID, let's check if it's there, if so assume it's been configured already
@@ -161,7 +169,6 @@ then
         echo "Vault $VAULT_NAME is not active, cannot use it"
       else
         echo "Vault $VAULT_NAME is active, reusing it"
-        # Flag this as reused and refuse to destroy it
         echo "VAULT_REUSED=true" >> $SETTINGS
       fi
     fi
@@ -236,6 +243,7 @@ then
   then
     VAULT_PENDING_KEY_OCID=null
   fi
+  VAULT_KEY_UNDELETED=false
   if [ "$VAULT_PENDING_KEY_OCID" = "null" ]
   then
     echo "No key named $VAULT_KEY_NAME pending deletion"
@@ -253,6 +261,7 @@ then
     else
       echo "OK, trying to cancel key deletion"
       oci kms management key cancel-deletion --key-id $VAULT_PENDING_KEY_OCID --endpoint $VAULT_ENDPOINT  --wait-for-state  ENABLED
+      VAULT_KEY_UNDELETED=true
     fi
   fi
   VAULT_KEY_OCID=`oci kms management key list --compartment-id $COMPARTMENT_OCID --endpoint $VAULT_ENDPOINT --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ENABLED\") and (.\"display-name\"==\"$VAULT_KEY_NAME\"))] | first | .id" `
@@ -267,7 +276,13 @@ then
     echo "VAULT_KEY_REUSED=false" >> $SETTINGS
   else
     echo "Found existing key with name $VAULT_KEY_NAME, reusing it"
-    echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+    # if we undeleted the key then the delete scriprt can undelete it as well
+    if [ "$VAULT_KEY_UNDELETED" = "true" ]
+    then
+      echo "VAULT_KEY_REUSED=false" >> $SETTINGS
+    else
+      echo "VAULT_KEY_REUSED=true" >> $SETTINGS
+    fi
   fi
   echo "VAULT_KEY_OCID=$VAULT_KEY_OCID" >> $SETTINGS
   echo "Vault master key created with OCID $VAULT_KEY_OCID"
