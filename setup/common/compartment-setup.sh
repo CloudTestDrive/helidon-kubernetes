@@ -45,8 +45,10 @@ then
 
   if [ -z "$COMPARTMENT_PARENT_NAME" ]
   then
-    echo "Unable to locate details for specified parent compoartment with OCID $COMPARTMENT_PARENT_OCID cannot contiue"
-    echo "Please edit the settings file $SETTINGS and ensure that the COMPARTMENT_PARENT_OCID variable contains a valid compartment OCID for this tenancy"
+    echo "Unable to locate details for specified parent compartment with OCID"
+    echo "$COMPARTMENT_PARENT_OCID cannot contiue"
+    echo "Please edit the settings file $SETTINGS and ensure that the COMPARTMENT_PARENT_OCID"
+    echo "variable contains a valid compartment OCID for this tenancy"
     exit 99
   fi
 
@@ -57,8 +59,13 @@ then
     PARENT_NAME="$COMPARTMENT_PARENT_NAME compartment"
   fi
 
-  echo "This script will create a sub compartment called $COMPARTMENT_NAME for you if it doesn't exist, this will be in the $PARENT_NAME. If a sub compartment with the same name already exists in $PARENT_NAME you can re-use change the name to create or re-use a different compartment."
-  echo "If you want to use somewhere different from $PARENT_NAME as the parent of the sub compartment you are about to create (or re-use) then enter n, if you want to use $PARENT_NAME for your parent then enter y"
+  echo "This script will create a sub compartment called $COMPARTMENT_NAME for you if it doesn't"
+  echo "exist, this will be in the $PARENT_NAME. If a sub compartment with the same name already"
+  echo "exists in $PARENT_NAME you can re-use change the name to create or re-use a different"
+  echo "compartment."
+  echo "If you want to use somewhere different from $PARENT_NAME as the parent of the sub compartment"
+  echo "you are about to create (or re-use) then enter n, if you want to use $PARENT_NAME for your"
+  echo "parent then enter y"
   
   if [ "$AUTO_CONFIRM" = true ]
   then
@@ -72,14 +79,17 @@ then
   then
     echo "You need to edit the $SETTINGS file and add a line of the form"
     echo 'COMPARTMENT_PARENT_OCID=<OCID>'
-    echo 'replacing <OCID> with the OCID of the parent compartment to be used when creating the compartment'
-    echo 'Then re-run this script'
+    echo 'replacing <OCID> with the OCID of the parent compartment to be used when creating'
+    echo 'the compartment, then re-run this script'
     exit 1
   fi
 
-  echo "We are going to create or if it already exists reuse use a sub compartment called $COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the sub compartment name from $COMPARTMENT_NAME - this is not recommended and you will need to remember to use a different name in the lab." 
+  echo "We are going to create or if it already exists reuse use a sub compartment called"
+  echo "$COMPARTMENT_NAME in $PARENT_NAME, if you want you can change the sub compartment"
+  echo "name from $COMPARTMENT_NAME - this is not recommended and you will need to remember"
+  echo "to use a different name in the lab." 
   
-  
+  F
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
@@ -89,7 +99,8 @@ then
   fi
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then
-    echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it must be a single word, and cannot be the same as the parent name ($PARENT_NAME)"
+    echo "OK, this isn't the best of ideas, please enter the new name for your sub compartment, it"
+    echo "must be a single word, and cannot be the same as the parent name ($PARENT_NAME)"
     read COMPARTMENT_NAME
     if [ -z "$COMPARTMENT_NAME" ]
     then

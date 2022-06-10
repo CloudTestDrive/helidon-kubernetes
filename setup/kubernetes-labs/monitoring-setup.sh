@@ -40,8 +40,6 @@ kubectl create secret tls tls-prometheus --key tls-prometheus-$EXTERNAL_IP.key -
 echo "Installing Prometheus using helm"
 helm install prometheus prometheus-community/prometheus --namespace monitoring --version $prometheusHelmChartVersion --set server.ingress.enabled=true --set server.ingress.hosts="{prometheus.monitoring.$EXTERNAL_IP.nip.io}" --set server.ingress.tls[0].secretName=tls-prometheus --set server.ingress.annotations."kubernetes\.io/ingress\.class"=nginx --set server.ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-type"=basic --set server.ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-secret"=web-ingress-auth --set server.ingress.annotations."nginx\.ingress\.kubernetes\.io/auth-realm"="Authentication Required" --set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false --set pushgateway.persistentVolume.enabled=false
 
-echo "Access prometheus at https://prometheus.monitoring.$EXTERNAL_IP.nip.io wiuth username admin and password $PROMETHEUS_PASSWORD"
-echo "Remember to enable the monitoring"
 
 echo "Creating Helm certificate"
 $HOME/keys/step certificate create grafana.monitoring.$EXTERNAL_IP.nip.io tls-grafana-$EXTERNAL_IP.crt tls-grafana-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
@@ -54,6 +52,9 @@ helm install grafana grafana/grafana --version $grafanaHelmChartVerion --namespa
 
 echo "Retrieving Grafana login password"
 GRAFANA_PASSWORD=`kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
+
+echo "Access prometheus at https://prometheus.monitoring.$EXTERNAL_IP.nip.io with username admin and password $PROMETHEUS_PASSWORD"
+echo "Remember to enable the monitoring annotations in the pods"
 
 echo "Access Grafana at https://grafana.monitoring.$EXTERNAL_IP.nip.io using password"
 echo $GRAFANA_PASSWORD

@@ -33,7 +33,7 @@ then
   echo "Then you will need to find the OCID of the PARENT of the compartment you want to use (if the compartment"
   echo "you want to use already exists within that parent you can specify it when running the compartment-setup.sh script)"
   echo "Once you have identified the OCID of the PARENT then add a line to $HOME/hk8sLabsSettings of the form "
-  echo "PARENT_COMPARETMENT_OCID=<parents ocid>"
+  echo "COMPARTMENT_PARENT_OCID=<parents ocid>"
   echo "replacing <parents ocid> with the OCID of the Parent compartment you foind"
   echo "You may need to create the $HOME/hk8sLabsSettings file."
   echo "Having done this the compartment-setup.sh script will look for (or create) compartments within that parent"
