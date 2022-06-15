@@ -39,13 +39,14 @@ else
 fi
 
 echo "Creating labs secret key"
+SAVE_DIR=`pwd`
 cd $HOME/helidon-kubernetes/setup/common/secret-keys
 KEY_NAME="LoggingLabsTestKey"
 KEY_NAME_CAPS=`bash ../settings/to-valid-name.sh $KEY_NAME`
 KEY_ID_NAME=SECRET_KEY_"$KEY_NAME_CAPS"_ID
 KEY_VALUE_NAME=SECRET_KEY_"$KEY_NAME_CAPS"
 
-bash ./secret-key-create.sh $KEY_NAME
+bash ./secret-key-setup.sh $KEY_NAME
 
 cd $HOME/helidon-kubernetes/management/logging
 
