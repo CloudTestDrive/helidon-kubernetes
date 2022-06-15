@@ -50,6 +50,8 @@ if [ -z "$LOGGING_OOSS_BUCKET_NAME" ]
 then
   echo "No name info for the storage bucket, cannot proceed"
   exit 0
+else
+  echo "Deleting bucker $LOGGING_OOSS_BUCKET_NAME"
 fi
 
 oci os bucket delete --bucket-name $LOGGING_OOSS_BUCKET_NAME --empty --force
