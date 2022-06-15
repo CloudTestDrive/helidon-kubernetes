@@ -34,6 +34,7 @@ read -p "Procees on this basis ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping"
+  exit 0
 else
   echo "OK, continuing"
 fi
