@@ -45,5 +45,5 @@ then
 fi
 
 oci os bucket delete --bucket-name $LOGGING_OOSS_BUCKET_NAME --empty --force
-cd $SAVE_DIR
+cd $HOME/helidon-kubernetes/setup/common
 bash ../delete-from-settings.sh LOGGING_OOSS_BUCKET_NAME
