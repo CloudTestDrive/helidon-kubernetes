@@ -103,7 +103,7 @@ echo "Configuring yaml file $S3_CONFIGURED_YAML"
 cp $LOGGING_MODULE_DIR/fluentd-s3-configmap.yaml $S3_CONFIGURED_YAML
 
 echo "Secret key value"
-bash update-file.sh $S3_CONFIGURED_YAML YOUR_ACCESS_SECRET $YOUR_ACCESS_SECRET
+bash update-file.sh $S3_CONFIGURED_YAML YOUR_ACCESS_SECRET $KEY_VALUE
 echo "Secret key id"
 bash update-file.sh $S3_CONFIGURED_YAML YOUR_ACCESS_KEY $KEY_ACCESS_ID
 echo "Storage bucket"
