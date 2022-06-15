@@ -9,7 +9,14 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
-
+if [ -f $SETTINGS ]
+  then
+    echo "Loading existing settings information"
+    source $SETTINGS
+  else 
+    echo "No existing settings cannot continue"
+    exit 10
+fi
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 
 echo "Destroying logging namespace"
@@ -30,6 +37,7 @@ touch fluentd-s3-configmap-configured.yaml
 rm fluentd-s3-configmap-configured.yaml
 
 echo "Removing auth file"
+touch auth
 rm auth
 
 SAVED_DIR=`pwd`
