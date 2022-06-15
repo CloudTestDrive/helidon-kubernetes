@@ -9,6 +9,9 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+
+export SETTINGS=$HOME/hk8sLabsSettings
+
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings information"
@@ -46,12 +49,13 @@ cd $HOME/helidon-kubernetes/setup/common/secret-keys
 KEY_NAME="LoggingLabsTestKey"
 bash ./secret-key-destroy.sh $KEY_NAME
 
+
 if [ -z "$LOGGING_OOSS_BUCKET_NAME" ]
 then
   echo "No name info for the storage bucket, cannot proceed"
   exit 0
 else
-  echo "Deleting bucker $LOGGING_OOSS_BUCKET_NAME"
+  echo "Deleting bucket $LOGGING_OOSS_BUCKET_NAME"
 fi
 
 oci os bucket delete --bucket-name $LOGGING_OOSS_BUCKET_NAME --empty --force
