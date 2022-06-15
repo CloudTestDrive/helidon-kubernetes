@@ -47,7 +47,7 @@ if [ "$STATUS_FIELD" = "null" ]
 then
   echo "Key delete request sucesfully submitted"
 else
-  echo "Failure status code of $STATUS_FIELD deleting secret key names $KEY_NAME"
+  echo "Failure status code of $STATUS_FIELD deleting secret key named $KEY_NAME"
 fi
 
 bash ../delete-from-saved-settings.sh $KEY_ID_NAME
