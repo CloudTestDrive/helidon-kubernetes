@@ -30,6 +30,11 @@ then
   exit 2
 fi
 
+# can set DB_TYPE to DW if you want a data warehouse
+if [ -z "$DB_TYPE" ]
+then
+  export DB_TYPE=OLTP
+fi
 
 if [ -z $DATABASE_REUSED ]
 then
@@ -75,18 +80,18 @@ else
 fi
 
 #allow for re-using an existing database
-if [ -z $ATPDB_OCID ]
+if [ -z $DB_OCID ]
   then
-  # No existing ATPDB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
+  # No existing DB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo "Checking for database $DBNAME in compartment $COMPARTMENT_NAME"
-  ATPDB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
+  DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
 
-  if [ -z "$ATPDB_OCID" ]
+  if [ -z "$DB_OCID" ]
   then
      echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
      DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
-     ATPDB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload OLTP --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
-     echo "ATPDB_OCID=$ATPDB_OCID" >> $SETTINGS
+     DB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload $DB_TYPE --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
+     echo "DB_OCID=$DB_OCID" >> $SETTINGS
      echo "DATABASE_REUSED=false" >> $SETTINGS
      if [ "$AUTO_CONFIRM" = true ]
      then
@@ -108,7 +113,7 @@ if [ -z $ATPDB_OCID ]
      echo "Database named $DBNAME already exists"
      echo "To use this database please enter the database admin password (this will only be used to confiure the database labs used and will not be saved)"
      read DB_ADMIN_PW
-     if [ -z "$ATPDB_OCID" ]
+     if [ -z "$DB_OCID" ]
      then
        echo "You must enter the database ADMIN password for database $DBNAME cannot progress without that, please re-run this script and enter the password"
        exit 4
@@ -128,7 +133,7 @@ if [ -z $ATPDB_OCID ]
     mv $DB_WALLET_LOCATION Orig-$DB_WALLET_LOCATION
   fi
   echo "About to download Database wallet to $DB_WALLET_LOCATION"
-  oci db autonomous-database generate-wallet --file $DB_WALLET_LOCATION --password 'Pa$$w0rd' --autonomous-database-id $ATPDB_OCID
+  oci db autonomous-database generate-wallet --file $DB_WALLET_LOCATION --password 'Pa$$w0rd' --autonomous-database-id $DB_OCID
   echo "Downloaded database Wallet file"
 
   echo "DB_WALLET_LOCATION=$DB_WALLET_LOCATION" >> $SETTINGS
@@ -163,7 +168,7 @@ if [ -z $ATPDB_OCID ]
   rm -rf $TMPWALLET
   
   # save the ADB ID away
-  echo "ATPDB_OCID=$ATPDB_OCID" >> $SETTINGS
+  echo "DB_OCID=$DB_OCID" >> $SETTINGS
   if [ -z $DB_ADMIN_PW ]
   then
     echo "No saved DB password"
@@ -172,14 +177,14 @@ if [ -z $ATPDB_OCID ]
   fi
 else
   # We'de been given an ATB OCID, let's check if it's there, if so assume it's been configured already
-  DBNAME=`oci db autonomous-database get --autonomous-database-id $ATPDB_OCID | jq -j '.data."display-name"'`
+  DBNAME=`oci db autonomous-database get --autonomous-database-id $DB_OCID | jq -j '.data."display-name"'`
   if [ -z $DBNAME ]
   then
-    echo "Unable to locate databse for OCID $ATPDB_OCID "
-    echo "Please check that the value of ATPDB_OCID in $SETTINGS is correct if nor remove or replace it"
+    echo "Unable to locate databse for OCID $DB_OCID "
+    echo "Please check that the value of DB_OCID in $SETTINGS is correct if nor remove or replace it"
     exit 5
   else
-    echo "Located database named $DBNAME with pre-specified OCID of $ATPDB_OCID, will use this database"
+    echo "Located database named $DBNAME with pre-specified OCID of $DB_OCID, will use this database"
     if [ -f "$DB_WALLET_LOCATION" ]
     then
       echo "There is no database wallet file at $DB_WALLET_LOCATION, you will need to download the database wallet to this location"

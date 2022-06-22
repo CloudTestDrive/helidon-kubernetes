@@ -28,13 +28,13 @@ then
   exit 0
 fi
 
-if [ -z $ATPDB_OCID ]
+if [ -z $DB_OCID ]
 then 
   echo "No Database OCID information found, cannot destroy something that cannot be identifed"
   exit 3
 fi
 
-DBNAME=`oci db autonomous-database get --autonomous-database-id $ATPDB_OCID | jq -j '.data."display-name"'`
+DBNAME=`oci db autonomous-database get --autonomous-database-id $DB_OCID | jq -j '.data."display-name"'`
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
@@ -48,9 +48,9 @@ then
   echo "OK, not detroying database"
 else
   echo "Terminating database $DBNAME this may take a while"
-  oci db autonomous-database delete --autonomous-database-id $ATPDB_OCID --force
+  oci db autonomous-database delete --autonomous-database-id $DB_OCID --force
 
-  bash ./delete-from-saved-settings.sh ATPDB_OCID
+  bash ./delete-from-saved-settings.sh DB_OCID
   bash ./delete-from-saved-settings.sh DATABASE_REUSED
   bash ./delete-from-saved-settings.sh DATABASE_ADMIN_PASSWORD
   
