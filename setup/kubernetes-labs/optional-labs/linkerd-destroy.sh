@@ -24,6 +24,9 @@ fi
 
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 
+echo "Updating path for script"
+export PATH=$PATH:$HOME/.linkerd2/bin
+
 echo "Uninjecting linkerd from namespace ingress-nginx"
 kubectl get namespace ingress-nginx -o yaml | linkerd uninject - | kubectl replace -f -
 
@@ -49,4 +52,4 @@ touch auth tls-ld.crt tls-ld.key
 rm auth tls-*.crt tls-*.key
 
 echo "Removing the modified ingress-rule file"
-bash ./reset-ingress-ip.sh
+bash ./reset-ingress-ip.sh autoconfirm

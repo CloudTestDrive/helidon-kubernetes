@@ -75,7 +75,7 @@ echo "Creating linkerd UI password secret"
 kubectl create secret generic web-ingress-auth -n linkerd-viz --from-file=auth
 
 echo "Configuring linkerd ingress rule"
-bash set-ingress-ip.sh $EXTERNAL_IP
+bash set-ingress-ip.sh $EXTERNAL_IP autoconfirm
 
 echo "Installing linkerd ingress rule"
 kubectl apply -f ingressLinkerdRules-`kubectl config current-context`.yaml
