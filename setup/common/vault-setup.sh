@@ -54,7 +54,7 @@ then
     REPLY="y"
     echo "Auto confirm is enabled,  use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME defaulting to $REPLY"
   else
-    read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME?" REPLY
+    read -p "Do you want to use $VAULT_NAME as the name of the vault to create or re-use in $COMPARTMENT_NAME (y/n) ?" REPLY
   fi
   
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
@@ -103,7 +103,7 @@ then
         REPLY="y"
         echo "Auto confirm is enabled,  found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it defaulting to $REPLY"
       else
-        read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it ?" REPLY
+        read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it (y/n) ?" REPLY
       fi
       if [[ ! $REPLY =~ ^[Yy]$ ]]
       then
@@ -208,7 +208,7 @@ then
     REPLY="y"
     echo "Auto confirm is enabled, Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME defaulting to $REPLY"
   else
-    read -p "Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME?" REPLY
+    read -p "Do you want to use $VAULT_KEY_NAME as the name of the key to create or re-use in vault $VAULT_NAME (y/n) ?" REPLY
   fi
   
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
@@ -253,7 +253,7 @@ then
       REPLY="y"
       echo "Auto confirm is enabled, Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it defaulting to $REPLY"
     else
-      read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it ?" REPLY
+      read -p "Found an existing master key named $VAULT_KEY_NAME which is pending deletion, cancel the deletion and reuse it (y/n) ?" REPLY
     fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then

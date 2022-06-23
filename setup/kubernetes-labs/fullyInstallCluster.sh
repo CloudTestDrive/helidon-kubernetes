@@ -10,7 +10,7 @@ department=$1
 if [ $# -eq 1 ]
   then
     echo setting up config in downloaded git repo using $department as the department name $currentContext is the kubernetes current context name and $HOME/Wallet.zip as the DB wallet file.
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

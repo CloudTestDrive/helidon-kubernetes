@@ -10,7 +10,7 @@ currentcontext=`kubectl config current-context`
 if [ $# -eq 1 ]
   then
     echo Removing the ingress rules yaml for context $currentcontext in $ingressdir
-    read -p "Proceed ? " 
+    read -p "Proceed (y/n) ?" 
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

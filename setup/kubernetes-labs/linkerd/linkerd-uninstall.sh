@@ -9,7 +9,7 @@ if [ $# -eq 1 ]
   then
     echo About to try to remove linkerd from namespace $NAMESPACE the ingress namespace and the cluster
     
-    read -p "Proceed ? " 
+    read -p "Proceed (y/n) ?" 
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

@@ -7,7 +7,7 @@ fi
 if [ $# -eq 1 ]
   then
     echo Setting up using $1 as the database wallet download location.
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

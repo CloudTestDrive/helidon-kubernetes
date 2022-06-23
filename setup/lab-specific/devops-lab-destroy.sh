@@ -9,7 +9,9 @@ else
 fi
 
 echo "Welcome to the DevOps specific lab destroy script."
-read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
+echo "For the questions where you are asked for y/n input only enter lower case y or n (yes or no are not understood)"
+
+read -p "Are you running in a free trial account, or in an account where you have full administrator rights (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "Unfortunately if you are not an administrator or in a free trial account this script cannot automatically"
@@ -37,7 +39,7 @@ echo "  Remove the downloaded step certificate manager and certificats it's gene
 echo "At completion this will have removed the resources created by the setup scripts, however any resources that"
 echo "you configured outside the devops-lab-setup.sh script (for example your devops project will remain."
 
-read -p "Do you want to proceed ?" REPLY
+read -p "Do you want to proceed (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, exiting this script"
@@ -50,7 +52,7 @@ echo "chose customise names and locations."
 echo "Note that for some inputs (e.g. entering your initials) it is not possible to make an automatic guess, in those cases"
 echo "you will still be prompted for input."
 
-read -p "Do you want to use the automatic defaults ?" REPLY
+read -p "Do you want to use the automatic defaults (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
    export AUTO_CONFIRM=false

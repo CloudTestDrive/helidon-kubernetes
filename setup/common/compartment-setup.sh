@@ -94,7 +94,7 @@ then
     REPLY="y"
     echo "Auto confirm is enabled, use $COMPARTMENT_NAME defaulting to $REPLY"
   else
-    read -p "Do you want to use $COMPARTMENT_NAME as the compartment name  (y/n) ? " REPLY
+    read -p "Do you want to use $COMPARTMENT_NAME as the compartment name (y/n) ? " REPLY
   fi
   if [[ ! "$REPLY" =~ ^[Yy]$ ]]
   then

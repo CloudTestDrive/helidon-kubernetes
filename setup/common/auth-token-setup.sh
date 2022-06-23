@@ -108,7 +108,7 @@ then
     REPLY="y"
     echo "Auto confirm is enabled, save token defaulting to $REPLY"
   else
-    read -p 'Save the auth token ?' REPLY 
+    read -p 'Save the auth token (y/n) ?' REPLY 
   fi
   if [[ ! $REPLY =~ ^[Nn]$ ]]
   then

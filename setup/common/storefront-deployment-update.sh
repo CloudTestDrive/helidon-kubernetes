@@ -18,7 +18,7 @@ HK_DIR=$HOME/helidon-kubernetes
 
 if [ $CMD = set ] || [ $CMD = reset ]
 then
-  echo "rocessing storefront deployment templates"
+  echo "Processing storefront deployment templates"
   for TEMPLATE_YAML in $HK_DIR/storefront-deployment-template.yaml
   do
     bash deployments-update.sh $CMD $TEMPLATE_YAML $OCIR_LOCATION $OCIR_STORAGE_NAMESPACE $OCIR_REPO

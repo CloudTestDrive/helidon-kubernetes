@@ -30,7 +30,7 @@ source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 echo "This script is currently in place to support testing purposes, it will not do"
 echo "much if any error checking / handling, and assumes that you dont have anything"
 echo "already in place"
-read -p "Procees on this basis ?" REPLY
+read -p "Proceed on this basis (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping"

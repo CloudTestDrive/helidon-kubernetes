@@ -36,7 +36,7 @@ then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
   exit 0
 else
-  echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
+  echo "This script has already un-configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
 fi
 
 #check for trying to re-use the context name

@@ -117,7 +117,7 @@ else
   echo "Located ssh access details for OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
 fi
 
-read -p "Ready to start demo project code transfer, proceed ?"
+read -p "Ready to start demo project code transfer, proceed (y/n) ?"
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping"

@@ -9,7 +9,8 @@ else
 fi
 
 echo "Welcome to the Helidon development specific lab destroy script."
-read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
+echo "For the questions where you are asked for y/n input only enter lower case y or n (yes or no are not understood)"
+read -p "Are you running in a free trial account, or in an account where you have full administrator rights (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "Unfortunately if you are not an administrator or in a free trial account this script cannot automatically"
@@ -24,7 +25,7 @@ echo "At completion this will have removed the resources created by the setup sc
 echo "you configured manually will remain"
 echo "You will still need to destroy your virtual machine manually first"
 
-read -p "Do you want to proceed ?" REPLY
+read -p "Do you want to proceed (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, exiting this script"
@@ -34,7 +35,7 @@ fi
 echo "This script can in most cases automatically apply a sensible default answer to questions in line with the intent."
 echo "to destroy the setup."
 
-read -p "Do you want to use the automatic defaults ?" REPLY
+read -p "Do you want to use the automatic defaults (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   export AUTO_CONFIRM=false

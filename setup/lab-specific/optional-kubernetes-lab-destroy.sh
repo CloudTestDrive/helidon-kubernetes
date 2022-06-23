@@ -9,6 +9,7 @@ else
 fi
 
 echo "Welcome to the Optional Kubernetes specific lab destroy script."
+echo "For the questions where you are asked for y/n input only enter lower case y or n (yes or no are not understood)"
 echo "This script will destroy the Kubernetes services environment:"
 echo "  It will attempt to delete any namespaces setup in the optional labs (monitoring, logging and linkerd)"
 echo "  Delete the microservices images and repos in OCIR"
@@ -23,13 +24,13 @@ echo "  Remove the downloaded step certificate manager and certificates it's gen
 echo "At completion this will have removed the resources created by the setup scripts, however any resources that"
 echo "you configured manually (for example your devops project) will remain"
 
-read -p "Do you want to proceed ?" REPLY
+read -p "Do you want to proceed (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, exiting this script"
   exit 0 
 fi
-read -p "Do you want to use the automatic defaults ?" REPLY
+read -p "Do you want to use the automatic defaults (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
    export AUTO_CONFIRM=false

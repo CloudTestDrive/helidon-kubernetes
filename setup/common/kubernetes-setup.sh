@@ -90,7 +90,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, using $CLUSTER_NAME_FULL question for cluster name defaulting to $REPLY"
 else
-  read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME?" REPLY
+  read -p "Do you want to use $CLUSTER_NAME_FULL as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME (y/n) " REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]

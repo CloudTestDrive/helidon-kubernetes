@@ -8,7 +8,7 @@ EXTERNAL_IP=$1
 if [ $# -eq 1 ]
   then
     echo 'About to remove all tls*$EXTERNAL_IP.crt and tls*$EXTERNAL_IP.key files'
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

@@ -12,7 +12,7 @@ EXTERNAL_IP=$2
 if [ $# -eq 2 ]
   then
     echo "setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as ther ingress controller IP address $currentContext is the current kubernetes context name"
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

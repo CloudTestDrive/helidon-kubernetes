@@ -7,8 +7,8 @@ fi
 dbname=$1
 if [ $# -eq 1 ]
   then
-    echo Updating the database connection secret config to set $dbname as the database connection.
-    read -p "Proceed ? "
+    echo "Updating the database connection secret config to set $dbname as the database connection."
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

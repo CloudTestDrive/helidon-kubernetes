@@ -3,8 +3,8 @@
 
 if [ $# -eq 0 ]
   then
-    echo Delete ingress controller and dashboard ?
-    read -p "Proceed ? "
+    echo "Delete ingress controller and dashboard ?"
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

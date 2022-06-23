@@ -38,7 +38,7 @@ curl -sL https://run.linkerd.io/install | sh
 
 echo "Updating path for script"
 export PATH=$PATH:$HOME/.linkerd2/bin
-echo "To make this permenand you'll need to edit youir .bashrc and add the following line"
+echo "To make this permenant you'll need to edit your .bashrc and add the following line"
 echo 'export PATH=$PATH:$HOME/.linkerd2/bin'
 
 

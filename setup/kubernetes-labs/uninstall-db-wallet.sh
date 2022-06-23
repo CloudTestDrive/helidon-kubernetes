@@ -2,7 +2,7 @@
 if [ $# -eq 0 ]
   then
     echo "Uninstalling wallet"
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

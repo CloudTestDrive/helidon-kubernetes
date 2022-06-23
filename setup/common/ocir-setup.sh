@@ -48,7 +48,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, use $OCIR_BASE_NAME as the base for naming your repo defaulting to $REPLY"
 else
-  read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo ? " REPLY
+  read -p "Do you want to use $OCIR_BASE_NAME as the base for naming your repo (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -111,7 +111,7 @@ then
       REPLY="y"
       echo "Auto confirm is enabled, reuse repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME for stockmanager defaulting to $REPLY"
     else
-      read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it ?" REPLY
+      read -p "There is an existing repo called $OCIR_STOCKMANAGER_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it (y/n) ?" REPLY
     fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
@@ -156,7 +156,7 @@ then
       REPLY="y"
       echo "Auto confirm is enabled, reuse repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME for storefront defaulting to $REPLY"
     else
-      read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront ?" REPLY
+      read -p "There is an existing repo called $OCIR_STOREFRONT_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the storefront (y/n) ?" REPLY
     fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then

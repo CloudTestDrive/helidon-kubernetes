@@ -63,7 +63,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, using $DBNAME for database defaulting to $REPLY"
 else
-  read -p "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME?" REPLY
+  read -p "Do you want to use $DBNAME as the name of the databse to create or re-use in $COMPARTMENT_NAME (y/n) ?" REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]

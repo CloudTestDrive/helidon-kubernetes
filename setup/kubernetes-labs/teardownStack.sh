@@ -4,9 +4,9 @@ settingsFile=$HOME/clusterSettings.$currentContext
 source $settingsFile
 if [ $# -eq 1 ]
   then
-    echo About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $settingsFile Kuberetes context is $currentContext
+    echo "About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $settingsFile Kuberetes context is $currentContext"
     
-    read -p "Proceed ? "
+    read -p "Proceed (y/n) ?"
     echo    # (optional) move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
       then

@@ -9,8 +9,9 @@ else
 fi
 
 echo "Welcome to the core Kubernetes specific lab setup script."
+echo "For the questions where you are asked for y/n input only enter lower case y or n (yes or no are not understood)"
     
-read -p "Are you running in a free trial account, or in an account where you have full administrator rights ?" REPLY
+read -p "Are you running in a free trial account, or in an account where you have full administrator rights (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "Unfortunately if you are not an administrator or in a free trial account this script cannot automatically"
@@ -35,7 +36,7 @@ echo "chose customise names and locations."
 echo "Note that for some inputs (e.g. entering your initials) it is not possible to make an automatic guess, in those cases"
 echo "you will still be prompted for input."
 
-read -p "Do you want to use the automatic defaults ?" REPLY
+read -p "Do you want to use the automatic defaults (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
    export AUTO_CONFIRM=false
@@ -49,7 +50,7 @@ else
    echo "need to do something like"
    echo 'tail -f $HOME/setup-logs/<log name>'
    echo "in a separate cloud shell while this script is running"
-   read -p "Do you want to run the setup in parallel where possible ?" REPLY
+   read -p "Do you want to run the setup in parallel where possible (y/n) ?" REPLY
    if [[ ! $REPLY =~ ^[Yy]$ ]]
    then
      export PARALLEL_SETUP=false
