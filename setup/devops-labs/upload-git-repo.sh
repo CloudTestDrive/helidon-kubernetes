@@ -136,9 +136,11 @@ git clone https://github.com/oracle-devrel/$REPO_NAME.git
 
 cd $REPO_NAME
 
-echo "Configuring git user info"
-git config user.email "$USER_INITIAL@email.com"
-git config user.name "$USER_INITIALS"
+GIT_EMAIL="$USER_INITIAL@email.com"
+GIT_USER=$USER_INITIALS
+echo "Configuring git user info - email to $GIT_EMAIL user to $GIT_USER"
+git config user.email "$GIT_EMAIL"
+git config user.name "$GIT_USER"
 
 echo "Switching git remote repo"
 git remote add devops  $REPO_SSH

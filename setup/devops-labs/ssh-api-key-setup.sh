@@ -10,14 +10,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z "$SSH_API_KEY_CONFIGURED" ]
-then
-  echo "SSH key not configured, setting up"
-else
-  echo "SSH Key already configured"
-  exit 0
-fi
-
 SSH_DIR_NAME=ssh
 SSH_DIR=$HOME/$SSH_DIR_NAME
 SSH_KEY_FILE_BASE=id_rsa_devops
