@@ -89,8 +89,7 @@ then
   echo "name from $COMPARTMENT_NAME - this is not recommended and you will need to remember"
   echo "to use a different name in the lab." 
   
-  F
-  if [ "$AUTO_CONFIRM" = true ]
+ if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
     echo "Auto confirm is enabled, use $COMPARTMENT_NAME defaulting to $REPLY"
