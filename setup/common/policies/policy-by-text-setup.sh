@@ -66,6 +66,7 @@ POLICY_OCID=`oci iam policy list --name $POLICY_NAME --compartment-id $COMPARTME
 echo "Checking for existing policy named $POLICY_NAME in compartment $COMPARTMENT_PARENT_NAME"
 if [ -z "$POLICY_OCID" ]
 then
+  echo "No existing policy found with name $POLICY_NAME in compartment $COMPARTMENT_PARENT_NAME, creating policy with rule $POLICY_RULE"
   echo "Getting home region"
   OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
   OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
