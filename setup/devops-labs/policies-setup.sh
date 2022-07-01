@@ -15,9 +15,9 @@ source $SETTINGS
 
 if [ -z "$DEVOPS_POLICIES_CONFIGURED" ]
 then
-  echo "Policies not configured, setting up"
+  echo "DevOps policies not configured, setting up"
 else
-  echo "Policies already configured"
+  echo "DevOps policies already configured"
   exit 0
 fi
 

@@ -15,10 +15,10 @@ source $SETTINGS
 
 if [ -z "$DEVOPS_POLICIES_CONFIGURED" ]
 then
-  echo "Policies not configured"
+  echo "DevOps policies not configured"
   exit 0
 else
-  echo "Removing configured policies"
+  echo "Removing configured DevOps policies"
 fi
 
 cd ../common/policies
