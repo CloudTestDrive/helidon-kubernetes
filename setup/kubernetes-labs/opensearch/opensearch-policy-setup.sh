@@ -37,39 +37,13 @@ cd ../common/policies
 
 
 FINAL_RESP="0"
-bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchVNICPolicy "Allow service opensearch to manage vnics in compartment $COMPARTMENT_NAME" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
+bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchPolicy "[\"Allow service opensearch to manage vnics in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to use subnets in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to use network-security-groups in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to manage vcns in compartment $COMPARTMENT_NAME\"]" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Problem setting up policy "$USER_INITIALS"OpenSearchVNICPolicy response is $RESP"
+  echo "Problem setting up policy "$USER_INITIALS"OpenSearchPolicy response is $RESP"
   FINAL_RESP=$RESP
 fi
-FINAL_RESP="0"
-
-bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchSubnetsPolicy "Allow service opensearch to use subnets in compartment $COMPARTMENT_NAME" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Problem setting up policy "$USER_INITIALS"OpenSearchSubnetsPolicy response is $RESP"
-  FINAL_RESP=$RESP
-fi
-
-bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchNSGPolicy "Allow service opensearch to use network-security-groups in compartment $COMPARTMENT_NAME" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Problem setting up policy "$USER_INITIALS"OpenSearchNSGPolicy response is $RESP"
-  FINAL_RESP=$RESP
-fi
-
-bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchSVCNSPolicy "Allow service opensearch to manage vcns in compartment $COMPARTMENT_NAME" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Problem setting up policy "$USER_INITIALS"OpenSearchVCNSPolicy response is $RESP"
-  FINAL_RESP=$RESP
-fi
-
 if [ "$FINAL_RESP" -ne 0 ]
 then
   exit $FINAL_RESP
