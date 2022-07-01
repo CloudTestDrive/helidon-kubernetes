@@ -15,7 +15,7 @@ source $SETTINGS
 
 if [ -z "$OPENSEARCH_POLICIES_CONFIGURED" ]
 then
-  echo "OpenSearch plicies not configured, setting up"
+  echo "OpenSearch policies not configured, setting up"
 else
   echo "OpenSearch policies already configured"
   exit 0
