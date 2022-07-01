@@ -63,7 +63,7 @@ then
   exit $FINAL_RESP
 else 
   # delete script is in common, we are in common/policies
-  bash ../delete-from-saved-settings.sh POLICIES_CONFIGURED
+  bash ../delete-from-saved-settings.sh DEVOPS_POLICIES_CONFIGURED
   echo DEVOPS_POLICIES_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
