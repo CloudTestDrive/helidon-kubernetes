@@ -21,7 +21,7 @@ else
   echo "Removing configured OpenSearch policies"
 fi
 
-cd ../common/policies
+cd ../../common/policies
 
 bash ./policy-destroy.sh "$USER_INITIALS"OpenSearchVNICPolicy
 bash ./policy-destroy.sh "$USER_INITIALS"OpenSearchSubnetsPolicy
