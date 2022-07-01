@@ -33,8 +33,11 @@ then
   exit 2
 fi
 
-cd ../common/policies
+cd ../../common/policies
 
+
+# Get the comparment name
+COMPARTMENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | jq -r '.data.name'`
 
 FINAL_RESP="0"
 bash ./policy-by-text-setup.sh "$USER_INITIALS"OpenSearchPolicy "[\"Allow service opensearch to manage vnics in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to use subnets in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to use network-security-groups in compartment $COMPARTMENT_NAME\", \"Allow service opensearch to manage vcns in compartment $COMPARTMENT_NAME\"]" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
