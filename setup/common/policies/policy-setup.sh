@@ -49,6 +49,6 @@ COMPARTMENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | j
 
 POLICY_RULE="[ \"ALLOW $POLICY_TYPE $POLICY_SUBJECT to manage all-resources in compartment $COMPARTMENT_NAME \"]" 
 
-bash ./policy-by-text-setup.sh $POLICY_NAME $POLICY_RULE $POLICY_DESCRIPTION
+bash ./policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTION"
 RESP=$?
 exit $RESP
