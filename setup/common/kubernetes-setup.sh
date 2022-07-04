@@ -135,6 +135,19 @@ then
       echo "Cannot locate directory $TF_SOURCE_CONFIG_DIR, cannot continue"
       exit 10
     fi
+    
+    echo "Checking for teraform module generic settings file"
+    GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
+    if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
+    then
+      echo "Located general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS"
+    else
+      echo "Cannot locate general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS, cannot continue"
+      exit 12
+    fi
+    echo "Loading generic OKE terraform settings"
+    source $GENERIC_OKE_TERRAFORM_SETTINGS
+    
     echo "Checking for cluster specific settings file"
     CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.sh
     if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
@@ -146,6 +159,7 @@ then
     fi
     echo "Loading cluster specific settings"
     source $CLUSTER_SPECIFIC_SETTINGS
+    
     # Check for the VCN Network address being set
     if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
     then
@@ -155,18 +169,6 @@ then
     else
       echo "Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START"
     fi
-    
-    echo "Checking for teraform module specific settings file"
-    GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
-    if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
-    then
-      echo "Located general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS"
-    else
-      echo "Cannot locate general OKE terraform specific settings file at $GENERIC_OKE_TERRAFORM_SETTINGS, cannot continue"
-      exit 12
-    fi
-    echo "Loading generic OKE terraform settings"
-    source $GENERIC_OKE_TERRAFORM_SETTINGS
     # Check for the TF OKE module version
     if [ -z $TERRAFORM_OKE_MODULE_VERSION ]
     then
