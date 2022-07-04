@@ -71,5 +71,5 @@ echo "  IdentityFile $SSH_DIR/$SSH_KEY_FILE_BASE" >> $SSH_CONFIG_FILE
 echo "# End of script added lines" >> $SSH_CONFIG_FILE
 
 # remove any existing info on the API key
-bash ../common/delete-from-saved-settings.sh SSH_API_KEY_CONFIGURED
-echo SSH_API_KEY_CONFIGURED=true >> $SETTINGS
+bash ../common/delete-from-saved-settings.sh DEVOPS_SSH_API_KEY_CONFIGURED
+echo DEVOPS_SSH_API_KEY_CONFIGURED=true >> $SETTINGS

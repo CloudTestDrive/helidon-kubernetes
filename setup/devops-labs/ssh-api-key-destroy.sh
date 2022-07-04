@@ -10,7 +10,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z "$SSH_API_KEY_CONFIGURED" ]
+if [ -z "$DEVOPS_SSH_API_KEY_CONFIGURED" ]
 then
   echo "SSH key not configured"
   exit 0
