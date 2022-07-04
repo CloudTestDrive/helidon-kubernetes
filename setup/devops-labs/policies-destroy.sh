@@ -13,12 +13,12 @@ fi
 
 source $SETTINGS
 
-if [ -z "$POLICIES_CONFIGURED" ]
+if [ -z "$DEVOPS_POLICIES_CONFIGURED" ]
 then
-  echo "Policies not configured"
+  echo "DevOps policies not configured"
   exit 0
 else
-  echo "Removing configured policies"
+  echo "Removing configured DevOps policies"
 fi
 
 cd ../common/policies
@@ -29,4 +29,4 @@ bash ./policy-destroy.sh "$USER_INITIALS"DevOpsDeployPolicy
 
 
 # delete script is in common, we are in common/policies
-bash ../delete-from-saved-settings.sh POLICIES_CONFIGURED
+bash ../delete-from-saved-settings.sh DEVOPS_POLICIES_CONFIGURED

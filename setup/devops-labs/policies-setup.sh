@@ -13,11 +13,11 @@ fi
 
 source $SETTINGS
 
-if [ -z "$POLICIES_CONFIGURED" ]
+if [ -z "$DEVOPS_POLICIES_CONFIGURED" ]
 then
-  echo "Policies not configured, setting up"
+  echo "DevOps policies not configured, setting up"
 else
-  echo "Policies already configured"
+  echo "DevOps policies already configured"
   exit 0
 fi
 
@@ -63,7 +63,7 @@ then
   exit $FINAL_RESP
 else 
   # delete script is in common, we are in common/policies
-  bash ../delete-from-saved-settings.sh POLICIES_CONFIGURED
-  echo POLICIES_CONFIGURED=true >> $SETTINGS
+  bash ../delete-from-saved-settings.sh DEVOPS_POLICIES_CONFIGURED
+  echo DEVOPS_POLICIES_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
