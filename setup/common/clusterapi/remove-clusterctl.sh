@@ -42,7 +42,7 @@ then
 fi
 
 # makes sure that the directory exists no matter what
-mkdir -p $CLUSTERAPI_DIR
+mkdir -p $CLUSTERCTL_DIR
 # make sure that the command file exists
 touch $CLUSTERCTL_PATH
 # do we delete the entire directory or just the file ?
