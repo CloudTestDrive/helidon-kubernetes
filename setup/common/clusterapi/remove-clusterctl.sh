@@ -37,7 +37,7 @@ fi
 
 if [ "$CLUSTERCTL_REUSED" = "true" ]
 then
-  echo "$CLUSTERCTL_CMD was not inst7alled by this script, will not remove"
+  echo "$CLUSTERCTL_CMD was not installed by this script, will not remove"
   exit 0
 fi
 
@@ -50,7 +50,7 @@ touch $CLUSTERCTL_PATH
 OTHER_ENTRIES=`ls -1 $CLUSTERCTL_DIR | grep -v $CLUSTERCTL_CMD | wc -l`
 
 # test for an existing clusterctl command, if it's there then assume all is OK
-if [ "$OTHER_ENTRIES" = 0 ]]
+if [ "$OTHER_ENTRIES" = 0 ]
 then
   echo "$CLUSTERCTL_DIR only contains $CLUSTERCTL_CMD"
   if [ "$AUTO_CONFIRM" = true ]
