@@ -35,7 +35,7 @@ else
 fi
 
 # makes sure that the directory exists no matter what
-mkdir -p $CLUSTERAPI_DIR
+mkdir -p $CLUSTERCAPI_DIR
 
 # test for an existing clusterctl command, if it's there then assume all is OK
 if [[ -x $CLUSTERCTL_PATH ]]
@@ -46,10 +46,10 @@ then
 else
   if [ -f "$CLUSTERCTL_PATH" ]
   then
-    echo "$CLUSTERCTL_CMD does not exist in $CLUSTERCTL_DIR will download"
-  else
     echo "$CLUSTERCTL_CMD exists in $CLUSTERCTL_DIR but is not executable, will remove and then re-download"
     rm -rf $CLUSTERCTL_PATH
+  else
+    echo "$CLUSTERCTL_CMD does not exist in $CLUSTERCTL_DIR will download"
   fi
 fi
 
@@ -66,7 +66,7 @@ then
   echo "OK, not downloading"
 else
   echo "Downloading clusterctl version $CLUSTERCTL_CMD to $CLUSTERCTL_DIR"
-  curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v$CLUSTERCTL_VERSION/clusterctl-linux-amd64 -o $CLUSTERCTL_PATH
+  curl -s -S -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v$CLUSTERCTL_VERSION/clusterctl-linux-amd64 -o $CLUSTERCTL_PATH
   echo "Making $CLUSTERCTL_CMD executable"
   chmod +x $CLUSTERCTL_PATH
 
