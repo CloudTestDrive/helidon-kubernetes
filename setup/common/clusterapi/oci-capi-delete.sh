@@ -69,6 +69,7 @@ ORIG_K8S_CONTEXT=`bash ../get-current-context.sh`
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 if [ $? = 0 ]
 then
+  echo "Switch so context $CLUSTER_CONTEXT_NAME"
 else
   echo "Unable to find kubernetes context $CURRENT_CONTEXT_NAME, cannot continue"
   exit 1
@@ -99,7 +100,9 @@ else
   fi
 fi
 
-bash ../../common/delete-from-saved-settings.sh CAPI_PROVISIONER_REUSED
-
 # revert to the origional context
 kubectl config use-context $ORIG_K8S_CONTEXT
+
+echo "Reverted to context $ORIG_K8S_CONTEXT"
+
+bash ../../common/delete-from-saved-settings.sh CAPI_PROVISIONER_REUSED
