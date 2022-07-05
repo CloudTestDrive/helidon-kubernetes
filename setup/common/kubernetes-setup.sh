@@ -149,7 +149,7 @@ then
     source $GENERIC_OKE_TERRAFORM_SETTINGS
     
     echo "Checking for cluster specific settings file"
-    CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-settings-$CLUSTER_CONTEXT_NAME.sh
+    CLUSTER_SPECIFIC_SETTINGS=$TF_SOURCE_CONFIG_DIR/cluster-specific-oke-terraform-settings-$CLUSTER_CONTEXT_NAME.sh
     if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
     then
       echo "Located cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS"
