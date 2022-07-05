@@ -68,6 +68,13 @@ else
   echo "Using default capi context name of $CAPI_CONTEXT_NAME"
 fi
 
+# we need an ssh key
+SAVED_DIR=`pwd`
+cd ../ssh-keys
+bash ./ssh-key-setup.sh $HOME/ssh id_rsa_capi_$CAPI_CONTEXT_NAME
+# the resulting keys will be  $HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME (.pub and .pem)
+cd $SAVED_DIR
+
 
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
@@ -114,8 +121,9 @@ fi
 
 OCI_COMPARTMENT_ID=COMPARTMENT_OCID
 NAMESPACE=capi-$CAPI_CONTEXT_NAME
-CONTROL_PLANE_MACHINE_COUNT=1
-WORKER_MACHINE_COUNT=1
+NODE_MACHINE_COUNT=1
+#ßOCI_IMAGE_ID
+OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
 
 CAPI_CONFIG_DIR=`pwd`/capi-config
 echo "Checking for capi generic settings file"
@@ -158,5 +166,5 @@ fi
 echo CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 echo "Generating cluster yaml into $CAPI_YAML"
-clusterctl generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
+$CLUSTERCTL_PATH/ generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
 #echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
