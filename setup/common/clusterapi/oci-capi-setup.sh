@@ -89,9 +89,24 @@ else
   echo "Unable to find kubernetes context $CURRENT_CONTEXT_NAME, cannot continue"
   exit 1
 fi
+
+echo "Setting up namespace for capi"
+kubectl get namespace $CAPI_NAMESPACE
+if [ $? = 0 ]
+then
+  echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
+  CAPI_NAMESPACE_REUSED=true
+else
+  echo "Creating cluster api namespace of $CAPI_NAMESPACE"
+  kubectl create namespace $CAPI_NAMESPACE
+  CAPI_NAMESPACE_REUSED=false
+fi
+
+echo "CAPI_NAMESPACE_REUSED=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
+
 echo "Installing cluster API provisioner into cluster $CLUSTER_CONTEXT_NAME"
 
-clusterctl init --infrastructure oci
+clusterctl init --infrastructure oci --target-namespace $CAPI_NAMESPACE
 
 # revert to the origional context
 kubectl config use-context $ORIG_K8S_CONTEXT

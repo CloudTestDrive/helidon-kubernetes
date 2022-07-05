@@ -10,3 +10,6 @@ CAPI_PATH=$CAPI_DIR/$CAPI_YAML
 CLUSTERCTL_DIR=$HOME/capi
 CLUSTERCTL_CMD=clusterctl
 CLUSTERCTL_PATH=$CLUSTERCTL_DIR/$CLUSTERCTL_CMD
+
+# where to install the capi stuff in the management cluster
+CAPI_NAMESPACE=capi

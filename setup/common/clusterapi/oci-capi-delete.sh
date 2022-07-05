@@ -99,10 +99,26 @@ else
     rm -rf $CAPI_DIR
   fi
 fi
+# do we need to relete the namespace ?
+if [ -z "$CAPI_NAMESPACE_REUSED" ]
+then
+  echo "No resuse information on namespace $CAPI_NAMESPACE, dennot determine if it shoudl be deleted"
+else
+  echo "Located namepace $CAPI_NAMESPACE resuse information"
+  if [ "$CAPI_NAMESPACE_REUSED" = "true" ]
+  then
+    echo "Capi namespace $CAPI_NAMESPACE was reused, not deleting it"
+  else
+    echo "Capi namespace $CAPI_NAMESPACE was not reused, deleting it"
+    kubectl delete namespace $CAPI_NAMESPACE --ignore-not-found=true
+  fi
+fi
+=true
 
 # revert to the origional context
 kubectl config use-context $ORIG_K8S_CONTEXT
 
 echo "Reverted to context $ORIG_K8S_CONTEXT"
 
+bash ../../common/delete-from-saved-settings.sh CAPI_NAMESPACE_REUSED
 bash ../../common/delete-from-saved-settings.sh CAPI_PROVISIONER_REUSED
