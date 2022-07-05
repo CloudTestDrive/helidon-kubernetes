@@ -153,12 +153,11 @@ then
     if [ -f $CLUSTER_SPECIFIC_SETTINGS ]
     then
       echo "Located cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS"
+      echo "Loading cluster specific settings"
+      source $CLUSTER_SPECIFIC_SETTINGS
     else
-      echo "Cannot locate cluster specific settings file at $CLUSTER_SPECIFIC_SETTINGS, cannot continue"
-      exit 10
+      echo "Cannot locate cluster specific settings file $CLUSTER_SPECIFIC_SETTINGS, no cluster specific overide settings will be applied"
     fi
-    echo "Loading cluster specific settings"
-    source $CLUSTER_SPECIFIC_SETTINGS
     
     # Check for the VCN Network address being set
     if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
