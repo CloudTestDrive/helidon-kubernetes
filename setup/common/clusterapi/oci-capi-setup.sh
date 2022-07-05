@@ -91,15 +91,15 @@ else
 fi
 
 echo "Setting up namespace for capi"
-kubectl get namespace $CAPI_NAMESPACE > /dev/null
-if [ $? = 0 ]
+NS_COUNT=`kubectl get ns c --ignore-not-found=true | grep -v NAME | wc -l`
+if [ $NS_COUNT = 0 ]
 then
-  echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
-  CAPI_NAMESPACE_REUSED=true
-else
   echo "Creating cluster api namespace of $CAPI_NAMESPACE"
   kubectl create namespace $CAPI_NAMESPACE
   CAPI_NAMESPACE_REUSED=false
+else
+  echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
+  CAPI_NAMESPACE_REUSED=true
 fi
 
 echo "CAPI_NAMESPACE_REUSED=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
