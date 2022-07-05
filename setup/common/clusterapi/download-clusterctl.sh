@@ -64,6 +64,7 @@ fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, not downloading"
+  exit 0
 else
   echo "Downloading clusterctl version $CLUSTERCTL_CMD to $CLUSTERCTL_DIR"
   curl -s -S -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v$CLUSTERCTL_VERSION/clusterctl-linux-amd64 -o $CLUSTERCTL_PATH
