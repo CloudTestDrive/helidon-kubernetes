@@ -79,7 +79,7 @@ then
   echo "OK, not installing"
   exit 1
 fi
-ORIG_K8S_CONTEXT=`bash ../get-current-context.sh`
+ORIG_K8S_CONTEXT=`kubectl config current-context`
 # switch to our specified context
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 if [ $? = 0 ]
@@ -91,7 +91,7 @@ else
 fi
 
 echo "Setting up namespace for capi"
-kubectl get namespace $CAPI_NAMESPACE
+kubectl get namespace $CAPI_NAMESPACE > /dev/null
 if [ $? = 0 ]
 then
   echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"

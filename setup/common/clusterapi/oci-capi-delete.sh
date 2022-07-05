@@ -64,7 +64,7 @@ then
   echo "OK, not deleting"
   exit 1
 fi
-ORIG_K8S_CONTEXT=`bash ../get-current-context.sh`
+ORIG_K8S_CONTEXT=`kubectl config current-context`
 # switch to our specified context
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 if [ $? = 0 ]
