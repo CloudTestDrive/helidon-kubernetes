@@ -119,11 +119,11 @@ fi
 
 # setup the core CAPI settings that we will always need, these can be overidden, but at least there will be a value for them
 
-OCI_COMPARTMENT_ID=COMPARTMENT_OCID
-NAMESPACE=capi-$CAPI_CONTEXT_NAME
-NODE_MACHINE_COUNT=1
-#OCI_IMAGE_ID
-OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
+export OCI_COMPARTMENT_ID=COMPARTMENT_OCID
+export NAMESPACE=capi-$CAPI_CONTEXT_NAME
+export NODE_MACHINE_COUNT=1
+#export OCI_IMAGE_ID
+export OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
 
 CAPI_CONFIG_DIR=`pwd`/capi-config
 echo "Checking for capi generic settings file"
