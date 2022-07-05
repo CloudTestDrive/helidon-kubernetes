@@ -38,7 +38,7 @@ fi
 mkdir -p $CLUSTERCTL_DIR
 
 # test for an existing clusterctl command, if it's there then assume all is OK
-if [[ -x $CLUSTERCTL_DIR ]]
+if [[ -x $CLUSTERCTL_PATH ]]
 then
   echo "$CLUSTERCTL_CMD already exists and is executable in $CLUSTERCTL_DIR, this script is assuming this is the real clusterctl command and is the latest version, reusing"
   echo "CLUSTERCTL_REUSED=true" >> $SETTINGS
