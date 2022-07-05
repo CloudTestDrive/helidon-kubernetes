@@ -76,7 +76,7 @@ else
 fi
 echo "Deleting cluster API provisioner from cluster $CLUSTER_CONTEXT_NAME"
 
-clusterctl delete --infrastructure oci --include-namespace --include-crd
+$CLUSTERCTL_PATH delete --infrastructure oci --include-namespace --include-crd
 
 if [ "$CAPI_PROVISIONER_REUSED" = "true" ]
 then

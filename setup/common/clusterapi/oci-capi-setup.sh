@@ -106,7 +106,7 @@ echo "CAPI_NAMESPACE_REUSED=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
 
 echo "Installing cluster API provisioner into cluster $CLUSTER_CONTEXT_NAME"
 
-clusterctl init --infrastructure oci --target-namespace $CAPI_NAMESPACE
+$CLUSTERCTL_PATH init --infrastructure oci --target-namespace $CAPI_NAMESPACE
 
 # revert to the origional context
 kubectl config use-context $ORIG_K8S_CONTEXT
