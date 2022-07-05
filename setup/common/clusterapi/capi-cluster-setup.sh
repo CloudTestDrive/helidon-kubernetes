@@ -122,7 +122,7 @@ fi
 OCI_COMPARTMENT_ID=COMPARTMENT_OCID
 NAMESPACE=capi-$CAPI_CONTEXT_NAME
 NODE_MACHINE_COUNT=1
-#ßOCI_IMAGE_ID
+#OCI_IMAGE_ID
 OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
 
 CAPI_CONFIG_DIR=`pwd`/capi-config
@@ -166,5 +166,5 @@ fi
 echo CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 echo "Generating cluster yaml into $CAPI_YAML"
-$CLUSTERCTL_PATH/ generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
+$CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
 #echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
