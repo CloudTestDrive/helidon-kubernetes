@@ -35,7 +35,7 @@ else
 fi
 
 # makes sure that the directory exists no matter what
-mkdir -p $CLUSTERCAPI_DIR
+mkdir -p $CLUSTERCTL_DIR
 
 # test for an existing clusterctl command, if it's there then assume all is OK
 if [[ -x $CLUSTERCTL_DIR ]]
