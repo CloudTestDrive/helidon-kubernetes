@@ -163,7 +163,7 @@ then
   exit 1
 fi
 
-echo CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
+CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 echo "Generating cluster yaml into $CAPI_YAML"
 $CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
