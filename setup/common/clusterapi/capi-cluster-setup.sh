@@ -58,7 +58,7 @@ else
   exit 2
 fi
 
-CAPI_CONTEXT_NAME=capi
+CAPI_CONTEXT_NAME="$USER_INITIALS"-capi
 
 if [ $# -gt 0 ]
 then
@@ -98,10 +98,10 @@ fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-CAPI_REUSED_NAME=CAPI_REUSED_$CAPI_CONTEXT_NAME
+CAPI_CLUSTER_REUSED_NAME=`bash ../settings/to-valid-name.sh CAPI_REUSED_$CAPI_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-CAPI_REUSED="${!CAPI_REUSED_NAME}"
-if [ -z $CAPI_REUSED ]
+CAPI_CLUSTER_REUSED="${!CAPI_CLUSTER_REUSED_NAME}"
+if [ -z $CAPI_CLUSTER_REUSED ]
 then
   echo "No reuse information for CAPI cluster $CAPI_CONTEXT_NAME"
 else
@@ -133,7 +133,8 @@ export CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
 export NAMESPACE=$CAPI_CLUSTER_NAMESPACE
 export NODE_MACHINE_COUNT=1
 #export OCI_IMAGE_ID
-export OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
+SSH_PUB_FILE="$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub
+export OCI_SSH_KEY=$(cat $SSH_PUB_FILE)
 
 CAPI_CONFIG_DIR=`pwd`/capi-config
 echo "Checking for capi generic settings file"
@@ -178,9 +179,19 @@ then
   exit 1
 fi
 
-
-echo "Creating target namespace"
-kubectl --context $KUBE_CONTEXT create namespace $CAPI_CLUSTER_NAMESPACE
+echo "Setting up namespace for capi cluster"
+NS_COUNT=`kubectl get ns $CAPI_CLUSTER_NAMESPACE --ignore-not-found=true | grep -v NAME | wc -l`
+if [ $NS_COUNT = 0 ]
+then
+  echo "Creating cluster api namespace of $CAPI_CLUSTER_NAMESPACE"
+  kubectl create namespace $CAPI_CLUSTER_NAMESPACE
+  CAPI_CLUSTER_NAMESPACE_REUSED=false
+else
+  echo "Cluster cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
+  CAPI_CLUSTER_NAMESPACE_REUSED=true
+fi
+CAPI_CLUSTER_NAMESPACE_REUSED_NAME="CAPI_CLUSTER_NAMESPACE_"$CAPI_CLUSTER_NAMESPACE"_REUSED"
+echo "$CAPI_CLUSTER_NAMESPACE_REUSED_NAME=$CAPI_CLUSTER_NAMESPACE_REUSED" >> $SETTINGS
 
 echo "Applying the generated YAML"
 
@@ -188,4 +199,4 @@ kubectl --context $KUBE_CONTEXT apply -f $CAPI_YAML
 
 echo "Applied the YAML to generate cluster $CAPI_CONTEXT_NAME"
 
-echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
+echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
