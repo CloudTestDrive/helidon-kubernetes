@@ -66,7 +66,7 @@ then
 else
   echo "Using default capi context name of $CAPI_CONTEXT"
 fi
-CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
+CAPI_CONTEXT_NAME="$USER_INITIALS"_"$CAPI_CONTEXT"
 
 
 KUBE_CONTEXT=one
