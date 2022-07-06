@@ -161,7 +161,9 @@ else
   echo "Cannot locate capi cluster specific settings file $CLUSTER_SPECIFIC_CAPI_SETTINGS, no capi cluster specific overide settings will be applied"
 fi
 
-CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
+mkdir -p $CLUSTERAPI_YAML_DIR
+
+CAPI_YAML=$CLUSTERAPI_YAML_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 echo "Generating cluster yaml into $CAPI_YAML"
 $CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME --infrastructure oci  --kubeconfig-context $KUBE_CONTEXT --target-namespace $CAPI_CLUSTER_NAMESPACE > $CAPI_YAML

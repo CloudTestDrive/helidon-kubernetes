@@ -11,5 +11,7 @@ CLUSTERCTL_DIR=$HOME/capi
 CLUSTERCTL_CMD=clusterctl
 CLUSTERCTL_PATH=$CLUSTERCTL_DIR/$CLUSTERCTL_CMD
 
+CLUSTERAPI_YAML_DIR=$HOME/clusterapi_yaml
+
 # where to install the capi stuff in the management cluster
 CAPI_NAMESPACE=capi
