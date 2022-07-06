@@ -15,7 +15,8 @@
 #export CONTROL_PLANE_MACHINE_COUNT=1
 # the version of kubernrtes to install in the cluster, probabaly this will need updating
 # over time
-export KUBERNETES_VERSION=v1.23.4
+export KUBERNETES_VERSION=v1.22.5
+export OCI_IMAGE_ID=ocid1.image.oc1.uk-london-1.aaaaaaaa47douc3hrwoia2sdi64uwjac5gdgjhvksydvu372fwjrxxzvchma
 # this is the namespace in the OKE management cluster and the resources will be created in, it will be created if needs be
 #export NAMESPACE=default
 # number of workers maybe - this is a little unclear
