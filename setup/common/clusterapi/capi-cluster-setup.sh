@@ -68,6 +68,15 @@ else
   echo "Using default capi context name of $CAPI_CONTEXT_NAME"
 fi
 
+KUBE_CONTEXT=one
+if [ $# -gt 1 ]
+then
+  KUBE_CONTEXT=$1
+  echo "Operating on kubeconfig context name $KUBE_CONTEXT"
+else
+  echo "Using default kubeconfig context name of $KUBE_CONTEXT"
+fi
+
 # we need an ssh key
 SAVED_DIR=`pwd`
 cd ../ssh-keys
@@ -120,7 +129,8 @@ fi
 # setup the core CAPI settings that we will always need, these can be overidden, but at least there will be a value for them
 
 export OCI_COMPARTMENT_ID=COMPARTMENT_OCID
-export NAMESPACE=capi-$CAPI_CONTEXT_NAME
+export CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
+export NAMESPACE=$CAPI_CLUSTER_NAMESPACE
 export NODE_MACHINE_COUNT=1
 #export OCI_IMAGE_ID
 export OCI_SSH_KEY=`cat "$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub`
@@ -149,12 +159,17 @@ else
   echo "Cannot locate capi cluster specific settings file $CLUSTER_SPECIFIC_CAPI_SETTINGS, no capi cluster specific overide settings will be applied"
 fi
 
+CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
+
+echo "Generating cluster yaml into $CAPI_YAML"
+$CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME --infrastructure oci --from cluster-template.yaml --kubeconfig-context $KUBE_CONTEXT --target-namespace $CAPI_CLUSTER_NAMESPACE > $CAPI_YAML
+
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
-  echo "Auto confirm is enabled, Do you want to generate and apply the yaml for the cluster API cluster named $CAPI_CONTEXT_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME defaulting to $REPLY"
+  echo "Auto confirm is enabled, Do you want to apply the generated yaml for the cluster API cluster named $CAPI_CONTEXT_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME defaulting to $REPLY"
 else
-  read -p "Do you want to generate and apply the yaml for the cluster API cluster named $CAPI_CONTEXT_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME (y/n) " REPLY
+  read -p "Do you want to apply the generated yaml for the cluster API cluster named $CAPI_CONTEXT_NAME as the name of the Kubernetes cluster to create or re-use in $COMPARTMENT_NAME (y/n) " REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -163,8 +178,14 @@ then
   exit 1
 fi
 
-CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
-echo "Generating cluster yaml into $CAPI_YAML"
-$CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME > $CAPI_YAML
-#echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
+echo "Creating target namespace"
+kubectl --context $KUBE_CONTEXT create namespace $CAPI_CLUSTER_NAMESPACE
+
+echo "Applying the generated YAML"
+
+kubectl --context $KUBE_CONTEXT apply -f $CAPI_YAML
+
+echo "Applied the YAML to generate cluster $CAPI_CONTEXT_NAME"
+
+echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
