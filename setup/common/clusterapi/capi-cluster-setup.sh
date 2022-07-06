@@ -129,7 +129,7 @@ fi
 
 # setup the core CAPI settings that we will always need, these can be overidden, but at least there will be a value for them
 
-export OCI_COMPARTMENT_ID=COMPARTMENT_OCID
+export OCI_COMPARTMENT_ID=$COMPARTMENT_OCID
 export CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
 export NAMESPACE=$CAPI_CLUSTER_NAMESPACE
 export NODE_MACHINE_COUNT=1
