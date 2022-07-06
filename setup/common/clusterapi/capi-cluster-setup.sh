@@ -58,15 +58,16 @@ else
   exit 2
 fi
 
-CAPI_CONTEXT_NAME="$USER_INITIALS"-capi
-
+CAPI_CONTEXT=capi
 if [ $# -gt 0 ]
 then
-  CAPI_CONTEXT_NAME=$1
-  echo "Operating on capi context name $CAPI_CONTEXT_NAME"
+  CAPI_CONTEXT=$1
+  echo "Operating on capi context name $CAPI_CONTEXT"
 else
-  echo "Using default capi context name of $CAPI_CONTEXT_NAME"
+  echo "Using default capi context name of $CAPI_CONTEXT"
 fi
+CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
+
 
 KUBE_CONTEXT=one
 if [ $# -gt 1 ]
@@ -150,7 +151,7 @@ echo "Loading generic capi settings"
 source $GENERIC_CAPI_SETTINGS
  
 echo "Checking for capi cluster specific settings file"
-CLUSTER_SPECIFIC_CAPI_SETTINGS=$CAPI_CONFIG_DIR/cluster-specific-capi-settings-$CAPI_CONTEXT_NAME.sh
+CLUSTER_SPECIFIC_CAPI_SETTINGS=$CAPI_CONFIG_DIR/cluster-specific-capi-settings-$CAPI_CONTEXT.sh
 if [ -f $CLUSTER_SPECIFIC_CAPI_SETTINGS ]
 then
   echo "Located capi cluster specific settings file at $CLUSTER_SPECIFIC_CAPI_SETTINGS"
