@@ -162,7 +162,7 @@ fi
 CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 echo "Generating cluster yaml into $CAPI_YAML"
-$CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME --infrastructure oci --from cluster-template.yaml --kubeconfig-context $KUBE_CONTEXT --target-namespace $CAPI_CLUSTER_NAMESPACE > $CAPI_YAML
+$CLUSTERCTL_PATH generate cluster $CAPI_CONTEXT_NAME --infrastructure oci  --kubeconfig-context $KUBE_CONTEXT --target-namespace $CAPI_CLUSTER_NAMESPACE > $CAPI_YAML
 
 if [ "$AUTO_CONFIRM" = true ]
 then
