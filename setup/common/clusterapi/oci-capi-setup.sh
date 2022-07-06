@@ -91,7 +91,7 @@ else
 fi
 
 echo "Setting up namespace for capi"
-NS_COUNT=`kubectl get ns c --ignore-not-found=true | grep -v NAME | wc -l`
+NS_COUNT=`kubectl get ns $CAPI_NAMESPACE --ignore-not-found=true | grep -v NAME | wc -l`
 if [ $NS_COUNT = 0 ]
 then
   echo "Creating cluster api namespace of $CAPI_NAMESPACE"
