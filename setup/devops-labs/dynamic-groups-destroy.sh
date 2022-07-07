@@ -28,4 +28,4 @@ bash ./dynamic-group-destroy.sh "$USER_INITIALS"CodeReposDynamicGroup
 bash ./dynamic-group-destroy.sh "$USER_INITIALS"DeployDynamicGroup
 
 # delete script is in common, we are in common/dynamic-groups
-bash ../delete-from-saved-settings.sh DYNAMIC_GROUPS_CONFIGURED
+bash ../delete-from-saved-settings.sh DEVOPS_DYNAMIC_GROUPS_CONFIGURED

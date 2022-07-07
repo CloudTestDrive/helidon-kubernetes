@@ -3,14 +3,14 @@
 if [ $# -lt 3 ]
 then
   echo "The dynamic setup script requires three arguments:"
-  echo "the name of the dynamic group to create"
-  echo "the resource typoe of the dynamic group e.g. devopsbuildpipeline"
+  echo "the rule of the dynamic group to create"
+  echo "the resource type of the dynamic group e.g. devopsbuildpipeline"
   echo "the description of the dynamic group (which needs to be quoted)"
   exit 1
 fi
 
 GROUP_NAME=$1
-GROUP_RESOURCE_TYPE=$2
+GROUP_RULE=$2
 GROUP_DESCRIPTION=$3
 GROUP_NAME_CAPS=`bash ../settings/to-valid-name.sh $GROUP_NAME`
 GROUP_OCID_NAME=DYNAMIC_GROUP_"$GROUP_NAME_CAPS"_OCID
@@ -47,8 +47,6 @@ fi
 # see if we can find the existing group
 # it must be active to be usable
 GROUP_OCID=`oci iam dynamic-group list --name $GROUP_NAME  --lifecycle-state ACTIVE | jq -r '.data[0].id'`
-
-GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
 
 echo "Checking for existing dynamic group named $GROUP_NAME"
 if [ -z "$GROUP_OCID" ]

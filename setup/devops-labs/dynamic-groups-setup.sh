@@ -35,7 +35,7 @@ then
   exit 2
 fi
 
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
+if [ -z "$DEVOPS_DYNAMIC_GROUPS_CONFIGURED" ]
 then
   echo "Dynamic groups not yet configured"
 else
@@ -46,7 +46,7 @@ fi
 cd ../common/dynamic-groups
 
 FINAL_RESP="0"
-bash ./dynamic-group-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -54,14 +54,14 @@ then
   FINAL_RESP=$RESP
 fi
 
-bash ./dynamic-group-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
   echo "Problem setting up dynamic group "$USER_INITIALS"CodeReposDynamicGroup response is $RESP"
   FINAL_RESP=$RESP
 fi
-bash ./dynamic-group-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -74,7 +74,7 @@ then
   exit $FINAL_RESP
 else 
   # delete script is in common, we are in common/dynamic-groups
-  bash ../delete-from-saved-settings.sh DYNAMIC_GROUPS_CONFIGURED
-  echo DYNAMIC_GROUPS_CONFIGURED=true >> $SETTINGS
+  bash ../delete-from-saved-settings.sh DEVOPS_DYNAMIC_GROUPS_CONFIGURED
+  echo DEVOPS_DYNAMIC_GROUPS_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
