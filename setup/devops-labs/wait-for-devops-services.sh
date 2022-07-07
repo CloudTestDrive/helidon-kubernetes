@@ -6,7 +6,7 @@ echo "Waiting for devops services and configuration to be available."
 
 export WAIT_LOOP_COUNT=60
 
-bash ./wait-for-service-availability.sh VAULT_REUSED VAULT_KEY_REUSED SSH_API_KEY_CONFIGURED DYNAMIC_GROUPS_CONFIGURED POLICIES_CONFIGURED
+bash ./wait-for-service-availability.sh VAULT_REUSED VAULT_KEY_REUSED DEVOPS_SSH_API_KEY_CONFIGURED DEVOPS_DYNAMIC_GROUPS_CONFIGURED DEVOPS_POLICIES_CONFIGURED
 
 
 RESP=$?
