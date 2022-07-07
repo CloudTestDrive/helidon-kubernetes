@@ -14,7 +14,7 @@ fi
 source $SETTINGS
 
 
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
+if [ -z "$DEVOPS_DYNAMIC_GROUPS_CONFIGURED" ]
 then
   echo "Dynamic groups not configured, setting up"
 else
