@@ -36,7 +36,7 @@ fi
 cd ../common/dynamic-groups
 
 FINAL_RESP="0"
-bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -44,14 +44,14 @@ then
   FINAL_RESP=$RESP
 fi
 
-bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
   echo "Problem setting up dynamic group "$USER_INITIALS"CodeReposDynamicGroup response is $RESP"
   FINAL_RESP=$RESP
 fi
-bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
