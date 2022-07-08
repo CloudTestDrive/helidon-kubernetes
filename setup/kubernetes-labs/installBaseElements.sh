@@ -62,6 +62,9 @@ echo Dashboard Token >> $infoFile
 echo $dashboardUserToken >> $infoFile
 echo >> $infoFile
 
+echo "Installing metrics-server"
+helm upgrade --install metrics-server metrics-server/metrics-server --namespace kube-system --version $metricsServerHelmChartVersion
+
 BASE_URL=https://store.$EXTERNAL_IP.nip.io
 
 echo "saving External IP for later use"
