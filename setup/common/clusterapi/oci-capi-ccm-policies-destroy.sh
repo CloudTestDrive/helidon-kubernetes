@@ -27,7 +27,7 @@ then
 fi
 SAVED_DIR=`pwd`
 
-cd ../common/policies
+cd ../policies
 FINAL_RESP="0"
 bash ./policy-destroy.sh "$USER_INITIALS"ClusterAPICCMRepoPolicy
 RESP=$?

@@ -34,7 +34,7 @@ then
 fi
 SAVED_DIR=`pwd`
 
-cd ../common/policies
+cd ../policies
 
 DG_NAME="$USER_INITIALS"ClusterAPIDynamicGroup
 
