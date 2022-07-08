@@ -11,6 +11,8 @@ if [ -f $SETTINGS ]
     echo "No existing settings cannot continue"
     exit 10
 fi
+SAVED_DIR=`pwd`
+
 
 cd ../common/vault-secrets
 FINAL_RESP=0
@@ -32,4 +34,5 @@ then
   FINAL_RESP=$RESP
 fi 
 
+cd $SAVED_DIR
 exit $FINAL_RESP

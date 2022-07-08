@@ -32,7 +32,7 @@ else
   echo "Dynamic groups have already been configured"
   exit 0
 fi
-
+SAVED_DIR=`pwd`
 cd ../common/dynamic-groups
 
 FINAL_RESP="0"
@@ -68,3 +68,4 @@ else
   echo DEVOPS_DYNAMIC_GROUPS_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
+cd $SAVED_DIR

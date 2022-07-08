@@ -20,6 +20,7 @@ then
 else
   echo "Removing configured DevOps policies"
 fi
+SAVED_DIR=`pwd`
 
 cd ../common/policies
 
@@ -30,3 +31,4 @@ bash ./policy-destroy.sh "$USER_INITIALS"DevOpsDeployPolicy
 
 # delete script is in common, we are in common/policies
 bash ../delete-from-saved-settings.sh DEVOPS_POLICIES_CONFIGURED
+cd $SAVED_DIR

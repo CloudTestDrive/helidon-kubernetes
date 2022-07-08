@@ -20,6 +20,8 @@ then
 else
   echo "Removing configured dynamic groups"
 fi
+SAVED_DIR=`pwd`
+
 
 cd ../common/dynamic-groups
 
@@ -29,3 +31,4 @@ bash ./dynamic-group-destroy.sh "$USER_INITIALS"DeployDynamicGroup
 
 # delete script is in common, we are in common/dynamic-groups
 bash ../delete-from-saved-settings.sh DEVOPS_DYNAMIC_GROUPS_CONFIGURED
+cd $SAVED_DIR

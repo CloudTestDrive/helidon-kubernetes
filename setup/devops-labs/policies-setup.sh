@@ -33,6 +33,7 @@ then
   exit 2
 fi
 
+SAVED_DIR=`pwd`
 cd ../common/policies
 
 
@@ -67,3 +68,5 @@ else
   echo DEVOPS_POLICIES_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
+
+cd $SAVED_DIR
