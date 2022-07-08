@@ -84,7 +84,7 @@ else
   echo "This script has configured a capi cluster for context $CAPI_CONTEXT_NAME, continuing"
 fi
 
-CAPI_YAML=$CAPI_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
+CAPI_YAML=$CLUSTERAPI_YAML_DIR/capi-cluster-$CAPI_CONTEXT_NAME.yaml
 
 if [ -f "$CAPI_YAML" ]
 then
