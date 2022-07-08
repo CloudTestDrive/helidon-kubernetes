@@ -41,7 +41,7 @@ DG_NAME="$USER_INITIALS"ClusterAPIDynamicGroup
 POLICY_RULE="[ \"Allow dynamic-group $DG_NAME to manage virtual-network-family in compartment name $COMPARTMENT_NAME \",  \"Allow dynamic-group $DG_NAME to manage load-balancers in compartment name $COMPARTMENT_NAME \", \"Allow dynamic-group $DG_NAME to manage instance-family in compartment name $COMPARTMENT_NAME \", \"Allow dynamic-group $DG_NAME to manage tags in compartment name $COMPARTMENT_NAME \"]" 
 
 FINAL_RESP="0"
-bash ./policy-setup.sh "$USER_INITIALS"ClusterAPICCMRepoPolicy "$POLICY_RULE" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
+bash ./policy-by-text-setup.sh "$USER_INITIALS"ClusterAPICCMRepoPolicy "$POLICY_RULE" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
