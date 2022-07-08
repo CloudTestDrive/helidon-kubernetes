@@ -40,7 +40,7 @@ fi
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
 SAVED_DIR=`pwd`
 
-cd ../common/dynamic-groups
+cd ../dynamic-groups
 
 FINAL_RESP="0"
 bash ./dynamic-group-instances-in-compartment-setup.sh "$USER_INITIALS"ClusterAPIDynamicGroup "This dynamic group identifies the resource in compartment $COMPARTMENT_NAME for user $USER_INITIALS"
