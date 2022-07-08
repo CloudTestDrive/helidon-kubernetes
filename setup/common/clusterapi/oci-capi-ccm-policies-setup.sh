@@ -37,6 +37,8 @@ SAVED_DIR=`pwd`
 cd ../policies
 
 DG_NAME="$USER_INITIALS"ClusterAPIDynamicGroup
+# We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
+COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
 
 POLICY_RULE="[ \"Allow dynamic-group $DG_NAME to manage virtual-network-family in compartment name $COMPARTMENT_NAME \",  \"Allow dynamic-group $DG_NAME to manage load-balancers in compartment name $COMPARTMENT_NAME \", \"Allow dynamic-group $DG_NAME to manage instance-family in compartment name $COMPARTMENT_NAME \", \"Allow dynamic-group $DG_NAME to manage tags in compartment name $COMPARTMENT_NAME \"]" 
 
