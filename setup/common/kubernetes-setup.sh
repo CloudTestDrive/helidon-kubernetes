@@ -136,6 +136,12 @@ then
       exit 10
     fi
     
+    # set some defaults so we can ensure that there will be some data for these
+    POOL_NAME=pool1
+    WORKER_OCPUS=1
+    WORKER_MEMORY=16
+    WORKER_COUNT=3
+    WORKER_BOOT_SIZE=50
     echo "Checking for teraform module generic settings file"
     GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
     if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
@@ -189,22 +195,27 @@ then
       echo "This script cannot continue"
       exit 50
     fi
-    echo "Checking for E4 or E3 processor core availability for Kubernetes workers"
-    # for now to get this done quickly just hard code the checks, at some point make this config driven
-    bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" 3
-    AVAIL_E4_CORES=$?
-    bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" 3
-    AVAIL_E3_CORES=$?
-    if [ $AVAIL_E4_CORES -eq 0 ]
+    if [ -z "$WORKER_SHAPE" ]
     then
-      WORKER_SHAPE=VM.Standard.E4.Flex
-    elif [ $AVAIL_E3_CORES -eq 0 ]
-    then
-      WORKER_SHAPE=VM.Standard.E3.Flex
+      echo "Checking for E4 or E3 processor core availability for Kubernetes workers"
+      # for now to get this done quickly just hard code the checks, at some point make this config driven
+      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" $WORKER_COUNT
+      AVAIL_E4_CORES=$?
+      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" $WORKER_COUNT
+      AVAIL_E3_CORES=$?
+      if [ $AVAIL_E4_CORES -eq 0 ]
+      then
+        WORKER_SHAPE=VM.Standard.E4.Flex
+      elif [ $AVAIL_E3_CORES -eq 0 ]
+      then
+        WORKER_SHAPE=VM.Standard.E3.Flex
+      else
+        echo "Sorry, but there are no available cores available to create the Kubernetes cluster, this script cannot continue."
+        echo "You will need to get some E3 or E4 cores to be able to create a Kubernetes cluster, if you are in a non free trial maybe switch to a different region"
+        exit 50
+      fi
     else
-      echo "Sorry, but there are no available cores available to create the Kubernetes cluster, this script cannot continue."
-      echo "You will need to get some E3 or E4 cores to be able to create a Kubernetes cluster, if you are in a non free trial maybe switch to a different region"
-      exit 50
+      echo "Using override worker shape of $WORKER_SHAPE, will not resource check"
     fi
     echo "Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
     echo "Preparing terraform directory"
@@ -230,8 +241,18 @@ then
     bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
     bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
+    echo "Update $TF_MODULE_FILE set POOL_NAME"
+    bash $SAVED_DIR/update-file.sh $TFM POOL_NAME $POOL_NAME
     echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
     bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
+    echo "Update $TF_MODULE_FILE set WORKER_OCPUS"
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_OCPUS $WORKER_OCPUS
+    echo "Update $TF_MODULE_FILE set WORKER_MEMORY"
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_MEMORY $WORKER_MEMORY
+    echo "Update $TF_MODULE_FILE set WORKER_COUNT"
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_COUNT $WORKER_COUNT
+    echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
+    bash $SAVED_DIR/update-file.sh $TFM WORKER_BOOT_SIZE $WORKER_BOOT_SIZE
     echo "Update $TF_MODULE_FILE to set compartment OCID"
     bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo "Update $TF_MODULE_FILE to set tenancy OCID"
