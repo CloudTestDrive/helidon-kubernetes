@@ -153,6 +153,18 @@ else
   kubectl --context $KUBE_CONTEXT delete namespace $CAPI_CLUSTER_NAMESPACE
 fi
 
+
+CAPI_YAML_FILE=capi-cluster-$CAPI_CONTEXT_NAME.yaml
+OTHER_ENTRIES=`ls -1 $CLUSTERAPI_YAML_DIR | grep -v $CAPI_YAML_FILE | wc -l`
+
+if [ "$OTHER_ENTRIES" = 0 ]
+then
+  echo "$CLUSTERAPI_YAML_DIR only contains $CAPI_YAML_FILE, Removing the directory $CLUSTERAPI_YAML_DIR"
+  rm -rf $CLUSTERAPI_YAML_DIR
+else
+  echo "$CLUSTERAPI_YAML_DIR contains additional files, only removing $CAPI_YAML_FILE"
+  rm $CLUSTERAPI_YAML_DIR
+fi
 echo "Removing $CAPI_YAML"
 rm $CAPI_YAML
 
