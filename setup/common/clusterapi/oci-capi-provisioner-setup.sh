@@ -59,14 +59,6 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
-# create the cluster api directory
-mkdir -p $CAPI_DIR
-#cat <<EOF > $HOME/.cluster-api/clusterctl.yaml
-#providers:
-#  - name: oci
-#    url: https://github.com/oracle/cluster-api-provider-oci/releases/v$ORACLE_CAPI_VERSION/infrastructure-components.yaml
-#    type: InfrastructureProvider
-#EOF
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
@@ -105,6 +97,19 @@ fi
 echo "CAPI_NAMESPACE_REUSED=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
 
 echo "Installing cluster API provisioner into cluster $CLUSTER_CONTEXT_NAME"
+
+# create the cluster api directory
+mkdir -p $CAPI_DIR
+cat <<EOF > $HOME/.cluster-api/clusterctl.yaml
+providers:
+  - name: oci
+    url: https://github.com/oracle/cluster-api-provider-oci/releases/v$ORACLE_CAPI_VERSION/infrastructure-components.yaml
+    type: InfrastructureProvider
+EOF
+
+# setup to use instance principle credentials as we're workiong within OCI
+export USE_INSTANCE_PRINCIPAL="true"
+export USE_INSTANCE_PRINCIPAL_B64="$(echo -n "$USE_INSTANCE_PRINCIPAL" | base64 | tr -d '\n')"
 
 $CLUSTERCTL_PATH init --infrastructure oci --target-namespace $CAPI_NAMESPACE
 
