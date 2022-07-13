@@ -12,7 +12,7 @@ fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-if [ -f $SETTINGS ]
+if [ -f "$SETTINGS" ]
   then
     echo "Loading existing settings information"
     source $SETTINGS
@@ -24,10 +24,11 @@ fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
+echo "Checking for $OKE_REUSED_NAME reuse"
 OKE_REUSED="${!OKE_REUSED_NAME}"
-if [ -z $OKE_REUSED ]
+if [ -z "$OKE_REUSED" ]
   echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
   exit 0
 fi
@@ -37,6 +38,7 @@ fi
 # Create a name using the variable
 OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
+echo "Checking for $OKE_OCID_NAME ocid"
 OKE_OCID="${!OKE_OCID_NAME}"
 
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
@@ -52,7 +54,7 @@ fi
 
 TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
 
-if [ $OKE_REUSED = true ]
+if [ "$OKE_REUSED" = true ]
 then
   echo "You have been using a cluster that was not created by these scripts, as it may"
   echo "contain other resources this script cannot delete it, you will need to destroy the"
@@ -61,7 +63,7 @@ then
   exit 0
 fi
 
-if [ -z $OKE_OCID ]
+if [ -z "$OKE_OCID" ]
 then 
   echo "No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue"
   exit 3
