@@ -21,6 +21,15 @@ then
   exit $RESP
 fi
 
+
+bash ./database-destroy.sh
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure destroying the database cannot continue"
+  exit $RESP
+fi
+
 bash ./core-environment-destroy.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
