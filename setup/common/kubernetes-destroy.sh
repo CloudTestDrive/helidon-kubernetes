@@ -26,9 +26,10 @@ fi
 # Create a name using the variable
 OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-echo "Checking for $OKE_REUSED_NAME reuse"
 OKE_REUSED="${!OKE_REUSED_NAME}"
+#echo "Checking for $OKE_REUSED_NAME var value is $OKE_REUSED"
 if [ -z "$OKE_REUSED" ]
+then
   echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
   exit 0
 fi
@@ -38,9 +39,8 @@ fi
 # Create a name using the variable
 OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
-echo "Checking for $OKE_OCID_NAME ocid"
 OKE_OCID="${!OKE_OCID_NAME}"
-
+#echo "Checking for $OKE_OCID_NAME var value is $OKE_OCID"
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
 TF_GIT_BASE=$HOME/oke-labs-terraform
 
