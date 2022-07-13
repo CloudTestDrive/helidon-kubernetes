@@ -13,4 +13,4 @@ fi
 echo "Running setup of user credentials based core capi service"
 bash ./oci-capi-api-key-setup.sh
 bash ./download-clusterctl.sh
-bash ./oci-capi-provisioner-setup.sh  $CLUSTER_CONTEXT_NAME
+bash ./oci-capi-provisioner-user-credentials-setup.sh  $CLUSTER_CONTEXT_NAME

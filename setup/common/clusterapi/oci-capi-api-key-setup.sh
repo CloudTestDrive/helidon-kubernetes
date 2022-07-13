@@ -19,7 +19,7 @@ then
   echo "SSH API Key for $KEY_NAME not previously configured, setting up"
 else
   echo "These scripts have previously setup the SSH API Key for $KEY_NAME, that configuration"
-  echo "will be reused. To remove it please run the capi-api-key-destroy.sh script"
+  echo "will be reused. To remove it please run the oci-capi-api-key-destroy.sh script"
   exit 0
 fi
 

@@ -14,4 +14,4 @@ echo "Running setup of instance credentials based core capi service"
 bash ./oci-capi-dynamic-group-setup.sh
 bash ./oci-capi-ccm-policies-setup.sh
 bash ./download-clusterctl.sh
-bash ./oci-capi-provisioner-setup.sh  $CLUSTER_CONTEXT_NAME
+bash ./oci-capi-provisioner-instance-credentials-setup.sh  $CLUSTER_CONTEXT_NAME
