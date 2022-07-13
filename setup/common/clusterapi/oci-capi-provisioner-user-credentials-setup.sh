@@ -58,7 +58,7 @@ else
   echo "the oci-capi-api-key-setup.sh script been run ?"
   exit 3
 fi
-API_KEY_FINGERPRINT_NAME=`bash ../api-key/get-key-fingerprint-var-name.sh "$KEY_NAME" "$USER_INITIALS"`
+API_KEY_FINGERPRINT_NAME=`bash ../api-keys/get-key-fingerprint-var-name.sh "$KEY_NAME" "$USER_INITIALS"`
 API_KEY_FINGERPRINT="${!API_KEY_FINGERPRINT_NAME}"
 if [ -z "$API_KEY_FINGERPRINT" ]
 then
