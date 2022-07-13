@@ -197,11 +197,12 @@ then
     fi
     if [ -z "$WORKER_SHAPE" ]
     then
-      echo "Checking for E4 or E3 processor core availability for Kubernetes workers"
+      let OCPU_COUNT="$WORKER_OCPUS*$WORKER_COUNT"
+      echo "Checking for E4 or E3 $OCPU_COUNT processor availability for Kubernetes workers"
       # for now to get this done quickly just hard code the checks, at some point make this config driven
-      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" $WORKER_COUNT
+      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" $OCPU_COUNT
       AVAIL_E4_CORES=$?
-      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" $WORKER_COUNT
+      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" $OCPU_COUNT
       AVAIL_E3_CORES=$?
       if [ $AVAIL_E4_CORES -eq 0 ]
       then
