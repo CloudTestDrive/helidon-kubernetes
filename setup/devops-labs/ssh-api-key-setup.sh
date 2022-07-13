@@ -43,7 +43,7 @@ cd $SAVED_PWD
 
 cd ../common/api-keys
 
-bash ./api-key-setup.sh "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
+bash ./api-key-setup.sh devops "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
 RESP=$?
 if [ $RESP -ne 0 ]
 then
