@@ -168,5 +168,5 @@ fi
 echo "Removing $CAPI_YAML"
 rm $CAPI_YAML
 
-bash ../delete-from-saved-settings.sh CAPI_NAMESPACE_REUSED
-echo "$CAPI_REUSED_NAME=false" >> $SETTINGS
+bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_REUSED_NAME
+bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_NAMESPACE_REUSED_NAME
