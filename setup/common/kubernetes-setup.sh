@@ -42,7 +42,7 @@ fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
+OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
@@ -109,8 +109,8 @@ fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=OKE_OCID_$CLUSTER_CONTEXT_NAME
-# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
+OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
+# Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
@@ -341,8 +341,8 @@ then
   kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
   
   # it's now save to save the OCID's as we've finished
-  echo "OKE_OCID_$CLUSTER_CONTEXT_NAME=$OKE_OCID" >> $SETTINGS
-  echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=$OKE_REUSED" >> $SETTINGS
+  echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
+  echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
@@ -356,6 +356,6 @@ else
     echo "You are assumed to have updated the kubernetes configuration to set this cluster as the default either by hand or using this script"
     echo "You are assumed to have set the name for this clusters context in the config to be \"one\" either by hand or using this script"
     # Flag this as reused and refuse to destroy it
-    echo "OKE_REUSED_$CLUSTER_CONTEXT_NAME=true" >> $SETTINGS
+    echo "$OKE_REUSED_NAME=true" >> $SETTINGS
   fi
 fi
