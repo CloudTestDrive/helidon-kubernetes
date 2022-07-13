@@ -139,7 +139,7 @@ EOF
 
 # setup to use user credentials - ideally instance ones woudl be best, but for now ...
 export OCI_TENANCY_ID=$OCI_TENANCY
-export OCI_USER_ID=USER_OCID
+export OCI_USER_ID=$USER_OCID
 export OCI_CREDENTIALS_FINGERPRINT=$API_KEY_FINGERPRINT
 # OK this is redundant, and may not even work
 #export OCI_REGION=$OCI_REGION
