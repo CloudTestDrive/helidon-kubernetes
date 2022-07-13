@@ -38,9 +38,11 @@ then
   exit $RESP
 fi
 
-if [ -d $HOME/keys ]
-then
-  rm -rf $HOME/keys
-fi
+# until I figure out a way to determine if we've used the last of the keys (they can be manually and 
+# script created) leave the step command and root stuff there for now
+#if [ -d $HOME/keys ]
+#then
+#  rm -rf $HOME/keys
+#fi
 
 exit 0
