@@ -178,7 +178,7 @@ fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK stopping capi cluster creation"
+  echo "OK stopping capi cluster creation process"
   exit 1
 fi
 
@@ -201,5 +201,13 @@ echo "Applying the generated YAML"
 kubectl --context $KUBE_CONTEXT apply -f $CAPI_YAML
 
 echo "Applied the YAML to generate cluster $CAPI_CONTEXT_NAME"
+
+echo "Locating kubeconfig"
+
+CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
+
+$HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" > $CAPI_KUBECONFIG
+
+
 
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS

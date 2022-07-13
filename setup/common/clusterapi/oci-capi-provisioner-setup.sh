@@ -54,10 +54,8 @@ CLUSTER_CONTEXT_NAME=one
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
-else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+echo "Management cluster context is $CLUSTER_CONTEXT_NAME"
 
 if [ "$AUTO_CONFIRM" = true ]
 then
