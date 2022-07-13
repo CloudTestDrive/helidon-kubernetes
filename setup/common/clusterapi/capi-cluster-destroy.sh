@@ -93,8 +93,7 @@ else
   echo "Cannot locate cluster api yaml file $CAPI_YAML which created the cluster, cannot delete it"
   exit 0
 fi
-
-CAPI_CLUSTER_NAMESPACE_REUSED_NAME==`bash ../settings/to-valid-name.sh "CAPI_CLUSTER_NAMESPACE_"$CAPI_CLUSTER_NAMESPACE"_REUSED"`
+CAPI_CLUSTER_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CLUSTER_NAMESPACE_"$CAPI_CLUSTER_NAMESPACE"_REUSED"`
 CAPI_CLUSTER_NAMESPACE_REUSED="${!CAPI_CLUSTER_NAMESPACE_REUSED_NAME}"
 if [ -z "$CAPI_CLUSTER_NAMESPACE_REUSED" ]
 then
@@ -167,6 +166,12 @@ else
 fi
 echo "Removing $CAPI_YAML"
 rm $CAPI_YAML
+
+# we need an ssh key
+SAVED_DIR=`pwd`
+cd ../ssh-keys
+bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CAPI_CONTEXT_NAME
+cd $SAVED_DIR
 
 bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_REUSED_NAME
 bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_NAMESPACE_REUSED_NAME
