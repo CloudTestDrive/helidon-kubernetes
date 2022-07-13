@@ -64,7 +64,7 @@ else
   echo "Public key file in PEM format could not be located"
 fi
 
-OTHER_ENTRIES=`ls -1 $SSH_DIR | grep -v $CAPI_YAML_FILE | wc -l`
+OTHER_ENTRIES=`ls -1 $SSH_DIR | grep -v $SSH_KEY_FILE_BASE | wc -l`
 
 if [ "$OTHER_ENTRIES" = 0 ]
 then
