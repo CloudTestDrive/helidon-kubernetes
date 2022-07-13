@@ -55,7 +55,7 @@ then
   echo "Located ssh private key for $KEY_NAME"
 else
   echo "Cannot locate the ssh key file for $KEY_NAME, this should be $SSH_PRIVATE_KEY_FILE, has"
-  echo "the capi-api-key-setup.sh script been run ?"
+  echo "the oci-capi-api-key-setup.sh script been run ?"
   exit 3
 fi
 API_KEY_FINGERPRINT_NAME=`bash ../api-key/get-key-fingerprint-var-name.sh "$KEY_NAME" "$USER_INITIALS"`
@@ -63,7 +63,7 @@ API_KEY_FINGERPRINT="${!API_KEY_FINGERPRINT_NAME}"
 if [ -z "$API_KEY_FINGERPRINT" ]
 then
   echo "Cannot locate API fingerprint, this should be in variable $API_KEY_FINGERPRINT_NAME, set"
-  echo "in file $SETTINGS, has the capi-api-key-setup.sh script been run ?"
+  echo "in file $SETTINGS, has the oci-capi-api-key-setup.sh script been run ?"
   exit 2
 fi
 
