@@ -13,12 +13,12 @@ fi
 
 source $SETTINGS
 
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
+if [ -z "$DEVOPS_DYNAMIC_GROUPS_CONFIGURED" ]
 then
-  echo "Dynamic groups not configured"
+  echo "Dynamic groups for devops not configured"
   exit 0
 else
-  echo "Removing configured dynamic groups"
+  echo "Removing configured dynamic groups for devops"
 fi
 SAVED_DIR=`pwd`
 
