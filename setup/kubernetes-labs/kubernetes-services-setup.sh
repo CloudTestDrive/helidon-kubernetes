@@ -29,7 +29,7 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
-OKE_SERVICES_CONFIGURED_SETTING_NAME=`bash ../../common/settings/to-valid-name.sh OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
+OKE_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
 
 if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
@@ -58,7 +58,7 @@ else
 fi
 
 
-OKE_REUSED_NAME=`bash ../../common/settings/to-valid-name.sh OKE_REUSED_$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ../common/settings/to-valid-name.sh OKE_REUSED_$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
