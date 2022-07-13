@@ -63,6 +63,8 @@ fi
 
 # if we are doing things in parallel we need to wait for them to finish before proceeding
 
+cd $KUBEFLOW_LABS
+
 if [ "$PARALLEL_SETUP" = "true" ]
 then
   bash ./wait-for-kubeflow-services.sh $KUBEFLOW_CLUSTER_NAME
@@ -73,5 +75,7 @@ then
     exit $RESP
   fi
 fi
+
+
 
 exit 0
