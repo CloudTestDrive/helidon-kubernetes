@@ -95,6 +95,7 @@ else
 fi
 CAPI_CLUSTER_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CLUSTER_NAMESPACE_"$CAPI_CLUSTER_NAMESPACE"_REUSED"`
 CAPI_CLUSTER_NAMESPACE_REUSED="${!CAPI_CLUSTER_NAMESPACE_REUSED_NAME}"
+echo "Checking for reused namespace in var $CAPI_CLUSTER_NAMESPACE_REUSED_NAME which has value $CAPI_CLUSTER_NAMESPACE_REUSED"
 if [ -z "$CAPI_CLUSTER_NAMESPACE_REUSED" ]
 then
   echo "No reuse information for CAPI cluster namespace $CAPI_CLUSTER_NAMESPACE, cannot proceed"
