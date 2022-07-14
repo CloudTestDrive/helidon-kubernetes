@@ -142,7 +142,7 @@ else
 fi
 
 echo "Deleting cluster api objects defined in $CAPI_YAML"
-kubectl --context $KUBE_CONTEXT delete -f $CAPI_YAML
+kubectl --context $KUBE_CONTEXT delete cluster $CAPI_CONTEXT_NAME --namespace $CAPI_CLUSTER_NAMESPACE
 
 echo "Removing target namespace"
 if ["$CAPI_CLUSTER_NAMESPACE_REUSED" = "true" ]
