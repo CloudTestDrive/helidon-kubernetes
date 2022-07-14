@@ -11,6 +11,8 @@ else
 fi
 
 echo "Running setup of user credentials based core capi service"
+bash ./oci-capi-dynamic-group-setup.sh
+bash ./oci-capi-ccm-policies-setup.sh
 bash ./oci-capi-api-key-setup.sh
 bash ./download-clusterctl.sh
 bash ./oci-capi-provisioner-user-credentials-setup.sh  $CLUSTER_CONTEXT_NAME

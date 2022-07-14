@@ -15,3 +15,5 @@ echo "Running destroy of user credentials based core capi service"
 bash ./oci-capi-provisioner-destroy.sh  $CLUSTER_CONTEXT_NAME
 bash ./remove-clusterctl.sh
 bash ./oci-capi-api-key-destroy.sh
+bash ./oci-capi-ccm-policies-destroy.sh
+bash ./oci-capi-dynamic-group-destroy.sh
