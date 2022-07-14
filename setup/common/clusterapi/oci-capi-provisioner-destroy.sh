@@ -50,7 +50,23 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+CAPI_PROVISIONER_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_"$CLUSTER_CONTEXT_NAME"_REUSED"`
+CAPI_PROVISIONER_REUSED="${!CAPI_PROVISIONER_REUSED_NAME}"
+if [ -z "$CAPI_PROVISIONER_REUSED" ]
+then
+  echo "No reuse information for CAPI in cluster $CLUSTER_CONTEXT_NAME cannot continue"
+  exit 1
+else
+  echo "Located CAPI rwuse information for cluster $CLUSTER_CONTEXT_NAME"
+fi
 
+if [ "$CAPI_PROVISIONER_REUSED" = "true" ]
+then
+  echo "Capi config for cluster $CLUSTER_CONTEXT_NAME was reused, not going to delete it."
+  exit 0
+else
+  echo "Capi config for cluster $CLUSTER_CONTEXT_NAME was create by these scripts, proceding with removal."
+fi
 
 if [ "$AUTO_CONFIRM" = true ]
 then
@@ -99,10 +115,12 @@ else
     rm -rf $CAPI_DIR
   fi
 fi
+CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_NAMESPACE_"$CLUSTER_CONTEXT_NAME"_REUSED`
+CAPI_NAMESPACE_REUSED="${!CAPI_NAMESPACE_REUSED_NAME}"
 # do we need to delete the namespace ?
 if [ -z "$CAPI_NAMESPACE_REUSED" ]
 then
-  echo "No resuse information on namespace $CAPI_NAMESPACE, dennot determine if it should be deleted"
+  echo "No resuse information on namespace $CAPI_NAMESPACE, cannot determine if it should be deleted"
 else
   echo "Located namepace $CAPI_NAMESPACE resuse information"
   if [ "$CAPI_NAMESPACE_REUSED" = "true" ]
@@ -135,5 +153,5 @@ kubectl config use-context $ORIG_K8S_CONTEXT
 
 echo "Reverted to context $ORIG_K8S_CONTEXT"
 
-bash ../delete-from-saved-settings.sh CAPI_NAMESPACE_REUSED
-bash ../delete-from-saved-settings.sh CAPI_PROVISIONER_REUSED
+bash ../delete-from-saved-settings.sh $CAPI_NAMESPACE_REUSED_NAME
+bash ../delete-from-saved-settings.sh $CAPI_PROVISIONER_REUSED_NAME

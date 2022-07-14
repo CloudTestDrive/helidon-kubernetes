@@ -43,6 +43,15 @@ else
   exit 2
 fi
 
+CAPI_PROVISIONER_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_"$CLUSTER_CONTEXT_NAME"_REUSED"`
+CAPI_PROVISIONER_REUSED="${!CAPI_PROVISIONER_REUSED_NAME}"
+if [ -z "$CAPI_PROVISIONER_REUSED" ]
+then
+  echo "No reuse information for CAPI in cluster $CLUSTER_CONTEXT_NAME proceeding"
+else
+  echo "Located CAPI reuse information for cluster $CLUSTER_CONTEXT_NAME, reusing existing deployment"
+  exit 1
+fi
 
 # do we have a fingerprint and key location ?
 KEY_NAME=capi
@@ -172,4 +181,6 @@ kubectl config use-context $ORIG_K8S_CONTEXT
 
 echo "Reverted to context $ORIG_K8S_CONTEXT"
 
-echo "CAPI_PROVISIONER_REUSED"=$CAPI_PROVISIONER_REUSED >> $SETTINGS
+CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_NAMESPACE_"$CLUSTER_CONTEXT_NAME"_REUSED`
+echo "$CAPI_NAMESPACE_REUSED_NAME=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
+echo "$CAPI_PROVISIONER_REUSED_NAME=$CAPI_PROVISIONER_REUSED" >> $SETTINGS
