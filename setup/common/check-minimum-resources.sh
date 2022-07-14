@@ -61,7 +61,7 @@ fi
 
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=OKE_REUSED_$context_name
+OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh OKE_REUSED_$context_name`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
@@ -100,17 +100,29 @@ else
   echo "You already have an OKE cluster for context $context_name, not need to check resources"
 fi
 
-bash ./resources/resource-minimum-check-region.sh load-balancer lb-10mbps-count 1
-AVAIL_LB=$?
-if [ $AVAIL_LB -eq 0 ]
+bash ./resources/resource-minimum-check-region.sh load-balancer lb-flexible-count 1
+AVAIL_LB_COUNT=$?
+if [ $AVAIL_LB_COUNT -eq 0 ]
 then
-  echo 'You have enough load balancers available to setup your core cluster services'
+  echo 'You have enough flexible load balancers available to setup your core cluster services'
 else
-  echo "Sorry, but you will a 10MBPS Load balancer to run the core cluster services."
-  echo "If you have other load balancer shapes available (e.g. a flexible load balancer) you can adjust the"
+  echo "Sorry, but you will a flexible Load balancer to run the core cluster services."
+  echo "If you have other load balancer shapes available (e.g. a fixed bandwidth load balancer) you can adjust the"
   echo "helm commands used in the lab or the Kubernetes services setup scripts to use that instead"
   RESOURCES_AVAILABLE=false
 fi
+bash ./resources/resource-minimum-check-region.sh load-balancer lb-flexible-bandwidth-sum 20
+AVAIL_LB_THROUGHPUT=$?
+if [ $AVAIL_LB_THROUGHPUT -eq 0 ]
+then
+  echo 'You have enough flexible load balancer throughput available to setup your core cluster services'
+else
+  echo "Sorry, but you will a 20MBPS of availabpe flex Load balancer throughput to run the core cluster services."
+  echo "If you have other load balancer shapes available (e.g. a fixed bandwidth load balancer) you can adjust the"
+  echo "helm commands used in the lab or the Kubernetes services setup scripts to use that instead"
+  RESOURCES_AVAILABLE=false
+fi
+
 
 if [ "$AUTO_CONFIRM" = "true" ]
 then
