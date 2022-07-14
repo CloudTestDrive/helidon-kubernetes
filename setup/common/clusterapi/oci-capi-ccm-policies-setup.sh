@@ -40,7 +40,7 @@ DG_NAME="$USER_INITIALS"ClusterAPIDynamicGroup
 # We've been given an COMPARTMENT_OCID, let's check if it's there, if so assume it's been configured already
 COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | jq -j '.data.name'`
 
-POLICY_RULE="[ \"ALLOW dynamic-group $DG_NAME to manage virtual-network-family in compartment $COMPARTMENT_NAME \",  \"ALLOW dynamic-group $DG_NAME to manage load-balancers in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage instance-family in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage tags in compartment $COMPARTMENT_NAME \"]" 
+POLICY_RULE="[ \"ALLOW dynamic-group $DG_NAME to manage drgs in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage virtual-network-family in compartment $COMPARTMENT_NAME \",  \"ALLOW dynamic-group $DG_NAME to manage load-balancers in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage instance-family in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage tags in compartment $COMPARTMENT_NAME \", \"ALLOW dynamic-group $DG_NAME to manage volume-family in compartment $COMPARTMENT_NAME\"]" 
 
 FINAL_RESP="0"
 bash ./policy-by-text-setup.sh "$USER_INITIALS"ClusterAPICCMRepoPolicy "$POLICY_RULE" "This policy allows the dynamic group of code repo resources resources to create trigger the build process"
