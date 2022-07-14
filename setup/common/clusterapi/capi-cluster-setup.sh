@@ -202,12 +202,112 @@ kubectl --context $KUBE_CONTEXT apply -f $CAPI_YAML
 
 echo "Applied the YAML to generate cluster $CAPI_CONTEXT_NAME"
 
+echo "Waiting for capi cluster to be created"
+CLUSTER_FOUND=false
+LOOP_COUNT=24
+LOOP_SLEEP=5
+for i in `seq 1 $LOOP_COUNT`
+do
+  echo "Capi available test $i for capi cluster CAPI_CONTEXT_NAME"
+  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | wc -l`  
+  if [ "$CAPI_CLUSTER_COUNT" = "1" ]
+  then
+    echo "Cluster created"
+    CLUSTER_FOUND=true
+    break ;
+  fi
+  sleep $LOOP_SLEEP
+done
+
+if [ "$CLUSTER_FOUND" = "false" ]
+then
+  let DELAY="$LOOP_COUNT*$LOOP_SLEEP"
+  echo "Cluster was not created within $DELAY seconds, sorry, cannot continue"
+  exit 10
+fi
+echo "Waiting for capi cluster to be provisioned"
+CLUSTER_PROVISIONED=false
+LOOP_COUNT=30
+LOOP_SLEEP=30
+for i in `seq 1 $LOOP_COUNT`
+do
+  echo "Capi available test $i for capi cluster CAPI_CONTEXT_NAME"
+  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | grep Provisioned | wc -l`  
+  if [ "$CAPI_CLUSTER_COUNT" = "1" ]
+  then
+    echo "Cluster provisioned"
+    CLUSTER_PROVISIONED=true
+    break ;
+  fi
+  sleep $LOOP_SLEEP
+done
+
+if [ "$CLUSTER_PROVISIONED" = "false" ]
+then
+  let DELAY="$LOOP_COUNT*$LOOP_SLEEP"
+  echo "Cluster was not provisioned within $DELAY seconds, sorry, cannot continue"
+  exit 11
+fi
+
 echo "Locating kubeconfig"
 
 CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
 
 $HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" > $CAPI_KUBECONFIG
 
+echo "Listing nodes returns"
+kubectl --kubeconfig=$CAPI_KUBECONFIG get nodes
 
+echo "Applying the Calico networking stack using Calico version $CALICO_VERSION"
+
+kubectl --kubeconfig $CAPI_KUBECONFIG apply -f https://docs.projectcalico.org/v$CALICO_VERSION/manifests/calico.yaml
+
+echo "Locating OCI specific cloud provider settings"
+
+CAPI_OCI_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" -o json`
+
+CAPI_OCI_VCN_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r ".spec.networkSpec.vcn.id"`
+CAPI_OCI_LB_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="service-lb") | .id'`
+CAPI_OCI_LB_NSG_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.networkSecurityGroups[] | select (.name=="service-lb") | .id'`
+
+echo "Setting up cloud provider using version $ORACLE_CCM_VERSION"
+#use a pre-specified version for now, makes subs easier
+CLOUD_PROVIDER_YAML_TEMPLATE="./capi-config/cloud-provider-template-"$ORACLE_CCM_VERSION".yaml"
+CLOUD_PROVIDER_YAML="./cloud-provider-"$CAPI_CONTEXT_NAME".yaml"
+
+cp $CLOUD_PROVIDER_YAML_TEMPLATE $CLOUD_PROVIDER_YAML
+# this is the origional file download
+#curl -L https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/master/manifests/provider-config-instance-principals-example.yaml -o cloud-provider-example.yaml
+
+#modify provider based on outputs
+echo "Settting COMPARTMENT_OCID to $COMPARTMENT_OCID"
+../update-file.sh $CLOUD_PROVIDER_YAML COMPARTMENT_OCID $COMPARTMENT_OCID
+echo "Settting CAPI_OCI_VCN_OCID to $CAPI_OCI_VCN_OCID"
+../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_VCN_OCID $CAPI_OCI_VCN_OCID
+echo "Settting CAPI_OCI_LB_SUBNET_OCID to $CAPI_OCI_LB_SUBNET_OCID"
+../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_LB_SUBNET_OCID $CAPI_OCI_LB_SUBNET_OCID
+
+echo "Creating secret for cloud controller config"
+kubectl --kubeconfig=$CAPI_KUBECONFIG create secret generic oci-cloud-controller-manager -n kube-system --from-file=cloud-provider.yaml=$CLOUD_PROVIDER_YAML
+
+echo "Applying the cloud controller manager"
+kubectl --kubeconfig=$CAPI_KUBECONFIG apply -f https://github.com/oracle/oci-cloud-controller-manager/releases/download/v$ORACLE_CCM_VERSION/oci-cloud-controller-manager.yaml
+echo "Applying the cloud controller manager RBAC"
+kubectl --kubeconfig=$CAPI_KUBECONFIG apply -f https://github.com/oracle/oci-cloud-controller-manager/releases/download/v$ORACLE_CCM_VERSION/oci-cloud-controller-manager-rbac.yaml
+
+echo "Updating capi cluster kubeconfig"
+kubectl --kubeconfig=$CAPI_KUBECONFIG config rename-context $CAPI_CONTEXT_NAME
+
+echo "Merging capi cluster kube config with main kubeconfig"
+# Make a copy of your existing config 
+cp $HOME/.kube/config $HOME/.kube/config.bak 
+# Merge the two config files together into a new config file 
+$ KUBECONFIG=$HOME/.kube/config:$CAPI_KUBECONFIG kubectl config view --flatten > merged.config 
+rm $HOME/.kube/config
+# Replace your old config with the new merged config 
+$ mv merged.config $HOME/.kube/config 
+
+CAPI_OCI_LB_NSG_OCID_NAME=`../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
+echo "$CAPI_OCI_LB_NSG_OCID_NAME=$CAPI_OCI_LB_NSG_OCID" >> $SETTINGS
