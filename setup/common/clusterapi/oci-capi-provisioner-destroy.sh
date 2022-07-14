@@ -114,6 +114,22 @@ else
   fi
 fi
 
+CERT_MGR_NS=cert-manager
+CERT_MGR_NS_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CERT_MANAGER_NS_"$CLUSTER_CONTEXT_NAME"_REUSED"`
+CERT_MGR_NS_REUSED="${!CERT_MGR_NS_REUSED_NAME}"
+if [ -z "$CERT_MGR_NS_REUSED" ]
+then
+  echo "Can't fine any reuse info for the $CERT_MGR_NS namespace, this is OK"
+else 
+  if [ "$CERT_MGR_NS_REUSED" = "false" ]
+  then
+    echo "The namespace $CERT_MGR_NS didn't exist before the CAPI provisioner was installed, attempting to delete it"
+    kubectl delete ns $CERT_MGR_NS --ignore-not-found=true
+  else
+    echo "The namespace $CERT_MGR_NS existed before the CAPI provisioner was installed, retaining it"
+  fi
+fi
+
 # revert to the origional context
 kubectl config use-context $ORIG_K8S_CONTEXT
 

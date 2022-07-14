@@ -104,7 +104,20 @@ providers:
     url: https://github.com/oracle/cluster-api-provider-oci/releases/v$ORACLE_CAPI_VERSION/infrastructure-components.yaml
     type: InfrastructureProvider
 EOF
-
+# record the status of the setr manager ns
+CERT_MGR_NS=cert-manager
+echo "Checking for pre-existing $CERT_MGR_NS namespace"
+CERT_MGR_NS_COUNT=`kubectl get ns | grep "$CERT_MGR_NS" | wc -l`
+if [ "$CERT_MGR_NS_COUNT" = 0 ]
+then
+  echo "Located pre-existing namespace $CERT_MGR_NS"
+  CERT_MGR_NS_REUSED=false
+else
+  echo "No pre-existing namespace $CERT_MGR_NS"
+  CERT_MGR_NS_REUSED=true
+fi
+CERT_MGR_NS_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CERT_MANAGER_NS_"$CLUSTER_CONTEXT_NAME"_REUSED"`
+echo "$CERT_MGR_NS_REUSED_NAME=$CERT_MGR_NS_REUSED" >> $SETTINGS
 # setup to use instance principle credentials as we're workiong within OCI
 export USE_INSTANCE_PRINCIPAL="true"
 export USE_INSTANCE_PRINCIPAL_B64="$(echo -n "$USE_INSTANCE_PRINCIPAL" | base64 | tr -d '\n')"

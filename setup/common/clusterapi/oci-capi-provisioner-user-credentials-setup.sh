@@ -137,6 +137,21 @@ providers:
     type: InfrastructureProvider
 EOF
 
+# record the status of the setr manager ns
+CERT_MGR_NS=cert-manager
+echo "Checking for pre-existing $CERT_MGR_NS namespace"
+CERT_MGR_NS_COUNT=`kubectl get ns | grep "$CERT_MGR_NS" | wc -l`
+if [ "$CERT_MGR_NS_COUNT" = 0 ]
+then
+  echo "Located pre-existing namespace $CERT_MGR_NS"
+  CERT_MGR_NS_REUSED=false
+else
+  echo "No pre-existing namespace $CERT_MGR_NS"
+  CERT_MGR_NS_REUSED=true
+fi
+CERT_MGR_NS_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CERT_MANAGER_NS_"$CLUSTER_CONTEXT_NAME"_REUSED"`
+echo "$CERT_MGR_NS_REUSED_NAME=$CERT_MGR_NS_REUSED" >> $SETTINGS
+
 # setup to use user credentials - ideally instance ones woudl be best, but for now ...
 export OCI_TENANCY_ID=$OCI_TENANCY
 export OCI_USER_ID=$USER_OCID
