@@ -214,7 +214,7 @@ LOOP_COUNT=24
 LOOP_SLEEP=5
 for i in `seq 1 $LOOP_COUNT`
 do
-  echo "Capi available test $i for capi cluster CAPI_CONTEXT_NAME"
+  echo "Capi available test $i for capi cluster $CAPI_CONTEXT_NAME"
   CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | wc -l`  
   if [ "$CAPI_CLUSTER_COUNT" = "1" ]
   then
@@ -237,7 +237,7 @@ LOOP_COUNT=30
 LOOP_SLEEP=30
 for i in `seq 1 $LOOP_COUNT`
 do
-  echo "Capi available test $i for capi cluster CAPI_CONTEXT_NAME"
+  echo "Capi provisioned test $i for capi cluster $CAPI_CONTEXT_NAME"
   CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | grep Provisioned | wc -l`  
   if [ "$CAPI_CLUSTER_COUNT" = "1" ]
   then
@@ -255,7 +255,7 @@ then
   exit 11
 fi
 
-echo "Locating kubeconfig"
+echo "Getting kubeconfig (this may take a while)"
 
 CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
 
@@ -267,7 +267,7 @@ LOOP_COUNT=15
 LOOP_SLEEP=30
 for i in `seq 1 $LOOP_COUNT`
 do
-  echo "Capi worker test $i for capi cluster CAPI_CONTEXT_NAME"
+  echo "Capi worker test $i for capi cluster $CAPI_CONTEXT_NAME"
   CAPI_WORKER_CLUSTER_COUNT=`kubectl --kubeconfig=$CAPI_KUBECONFIG get nodes | grep -v control-plane | grep -v ROLES | wc -l`  
   if [ "$CAPI_WORKER_CLUSTER_COUNT" = "$NODE_MACHINE_COUNT" ]
   then

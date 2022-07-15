@@ -126,6 +126,7 @@ then
   exit 1
 fi
 
+KUBE_CONTEXT_AT_START=`kubectl config current-context`
 # we'll need this later
 CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 CAPI_OCI_LB_NSG_OCID="${!CAPI_OCI_LB_NSG_OCID_NAME}"
@@ -146,7 +147,15 @@ else
   kubectl config delete-user $CAPI_USER_INFO
   kubectl config delete-cluster $CAPI_CLUSTER_INFO
   kubectl config delete-context $CAPI_CONTEXT_NAME
-  echo "The kubernetes context $CAPI_CONTEXT_NAME has been removed, if it was the defailt and you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
+  
+  echo "The kubernetes context $CAPI_CONTEXT_NAME has been removed"
+  if [ "$KUBE_CONTEXT_AT_START" = "$CAPI_CONTEXT_NAME" ]
+  then
+    echo "This was the default context, switching to the context $KUBE_CONTEXT so you have a default set"
+    kubectl config use-context $KUBE_CONTEXT
+  else
+    echo "Capi context $CAPI_CONTEXT_NAME was not the default which remains $KUBE_CONTEXT_AT_START" 
+  fi
 fi
 
 echo "Deleting CAPI cluster $CAPI_CONTEXT_NAME in namespace $CAPI_CLUSTER_NAMESPACE"
