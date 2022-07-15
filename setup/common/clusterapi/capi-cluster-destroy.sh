@@ -191,7 +191,7 @@ cd ../ssh-keys
 bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CAPI_CONTEXT_NAME
 cd $SAVED_DIR
 
-CAPI_OCI_LB_NSG_OCID_NAME=`../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
+CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 
 bash ../delete-from-saved-settings.sh $CAPI_OCI_LB_NSG_OCID_NAME
 bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_REUSED_NAME
