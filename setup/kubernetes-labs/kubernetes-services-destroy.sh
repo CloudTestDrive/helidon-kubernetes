@@ -50,19 +50,6 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
-OKE_REUSED_NAME=`bash ../common/settings/to-valid-name.sh OKE_REUSED_$CLUSTER_CONTEXT_NAME`
-
-# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-OKE_REUSED="${!OKE_REUSED_NAME}"
-if [ -z $OKE_REUSED ]
-then
-  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME cannot continue. Has this cluster"
-  echo "been setup using the kubernetes-setup.sh script ?"
-  exit 0
-else
-  echo "Located details of Kubernetes cluster $CLUSTER_CONTEXT_NAME, continuing"
-fi
-
 # run the pre-existing script
 bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME skip
 RESP=$?
