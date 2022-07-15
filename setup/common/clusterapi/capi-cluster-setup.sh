@@ -40,11 +40,12 @@ CAPI_CONTEXT=capi
 if [ $# -gt 0 ]
 then
   CAPI_CONTEXT=$1
-  echo "Operating on capi context name $CAPI_CONTEXT"
+  CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
+  echo "Operating on capi context name $CAPI_CONTEXT_NAME"
 else
-  echo "Using default capi context name of $CAPI_CONTEXT"
+  CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
+  echo "Using default capi context name of $CAPI_CONTEXT_NAME"
 fi
-CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
 
 
 KUBE_CONTEXT=one

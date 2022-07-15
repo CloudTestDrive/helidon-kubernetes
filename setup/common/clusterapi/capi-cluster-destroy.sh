@@ -12,29 +12,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -d $CAPI_DIR ]
-then
-  echo "Will use $CAPI_DIR as the working directory"
-else
-  echo "Can't locate the directory $CAPI_DIR have you run the oci-capi-setup.sh script ?"
-  exit 4
-fi
-
-if [ -z "$CAPI_PROVISIONER_REUSED" ]
-then
-  echo "no capi provisioner reuse information, has the oci-capi-setup.sh script been run ? cannot continue."
-  exit 1
-else
-  echo "capi provisioner setup, continuing"
-fi
-
-if [ -z "$USER_INITIALS" ]
-then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
-  exit 1
-fi
-
-
 if [ -f $CAPI_SETTINGS_FILE ]
   then
     echo "Loading capi settings"
@@ -44,24 +21,27 @@ if [ -f $CAPI_SETTINGS_FILE ]
     exit 11
 fi
 
-if [ -x "$CLUSTERCTL_PATH" ]
+if [ -d $CAPI_DIR ]
 then
-  echo "Located clusterctl command"
+  echo "Will use $CAPI_DIR as the working directory"
 else
-  echo "clusterctl command should be $CLUSTERCTL_PATH but it's not found or not executable, have you run the downloaded-clusterctl.sh script ?"
-  exit 2
+  echo "Can't locate the directory $CAPI_DIR have you run the oci-capi-setup.sh script ?"
+  exit 4
 fi
 
 
-CAPI_CONTEXT_NAME="$USER_INITIALS"-capi
 
+CAPI_CONTEXT=capi
 if [ $# -gt 0 ]
 then
-  CAPI_CONTEXT_NAME=$1
+  CAPI_CONTEXT=$1
+  CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
   echo "Operating on capi context name $CAPI_CONTEXT_NAME"
 else
+  CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
   echo "Using default capi context name of $CAPI_CONTEXT_NAME"
 fi
+
 
 KUBE_CONTEXT=one
 if [ $# -gt 1 ]
@@ -71,10 +51,36 @@ then
 else
   echo "Using default kubeconfig context name of $KUBE_CONTEXT"
 fi
-# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
-# Create a name using the variable
+
+CAPI_PROVISIONER_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_"$KUBE_CONTEXT"_REUSED"`
+CAPI_PROVISIONER_REUSED="${!CAPI_PROVISIONER_REUSED_NAME}"
+if [ -z "$CAPI_PROVISIONER_REUSED" ]
+then
+  echo "no capi provisioner reuse information, has the oci-capi-setup.sh script been run ? cannot continue."
+  exit 1
+else
+  echo "capi provisioner setup, continuing"
+fi
+
+
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  exit 1
+fi
+
+
+
+if [ -x "$CLUSTERCTL_PATH" ]
+then
+  echo "Located clusterctl command"
+else
+  echo "clusterctl command should be $CLUSTERCTL_PATH but it's not found or not executable, have you run the downloaded-clusterctl.sh script ?"
+  exit 2
+fi
+
 CAPI_CLUSTER_REUSED_NAME=`bash ../settings/to-valid-name.sh CAPI_REUSED_$CAPI_CONTEXT_NAME`
-# Now locate the value of the variable who's name is in OCAPI_REUSED_NAME and save it
+# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 CAPI_CLUSTER_REUSED="${!CAPI_CLUSTER_REUSED_NAME}"
 if [ -z $CAPI_CLUSTER_REUSED ]
 then
@@ -93,6 +99,8 @@ else
   echo "Cannot locate cluster api yaml file $CAPI_YAML which created the cluster, cannot delete it"
   exit 0
 fi
+
+CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
 CAPI_CLUSTER_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CLUSTER_NAMESPACE_"$CAPI_CLUSTER_NAMESPACE"_REUSED"`
 CAPI_CLUSTER_NAMESPACE_REUSED="${!CAPI_CLUSTER_NAMESPACE_REUSED_NAME}"
 echo "Checking for reused namespace in var $CAPI_CLUSTER_NAMESPACE_REUSED_NAME which has value $CAPI_CLUSTER_NAMESPACE_REUSED"
@@ -118,18 +126,19 @@ then
   exit 1
 fi
 
-# delete the ssh key
-SAVED_DIR=`pwd`
-cd ../ssh-keys
-bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CAPI_CONTEXT_NAME
-cd $SAVED_DIR
+# we'll need this later
+CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
+CAPI_OCI_LB_NSG_OCID="${!CAPI_OCI_LB_NSG_OCID_NAME}"
+# get the VCN, that should be the last thing deleted in the tear down, so once it's gone we know the cluster is gone
+CAPI_CLUSTER_VCN_OCID=`oci network nsg get --nsg-id $CAPI_OCI_LB_NSG_OCID_TG_CAPI | jq -r '.data."vcn-id"'`
 
-# is there already a context with that name ?
+
+# is there a context with that name ?
 CAPI_CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CAPI_CONTEXT_NAME`
 
 if [ -z $CAPI_CONTEXT_NAME_EXISTS ]
 then
-  echo "No kube contaxt name $CAPI_CONTEXT_NAME exists, skipping context removal"
+  echo "No kube context name $CAPI_CONTEXT_NAME exists, skipping context removal"
 else
   echo "Removing context $CAPI_CONTEXT_NAME from the local kubernetes configuration"
   CAPI_CLUSTER_INFO=`kubectl config get-contexts $CAPI_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $2}'`
@@ -138,10 +147,9 @@ else
   kubectl config delete-cluster $CAPI_CLUSTER_INFO
   kubectl config delete-context $CAPI_CONTEXT_NAME
   echo "The kubernetes context $CAPI_CONTEXT_NAME has been removed, if it was the defailt and you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
-    
 fi
 
-echo "Deleting cluster api objects defined in $CAPI_YAML"
+echo "Deleting CAPI cluster $CAPI_CONTEXT_NAME in namespace $CAPI_CLUSTER_NAMESPACE"
 kubectl --context $KUBE_CONTEXT delete cluster $CAPI_CONTEXT_NAME --namespace $CAPI_CLUSTER_NAMESPACE
 
 echo "Removing target namespace"
