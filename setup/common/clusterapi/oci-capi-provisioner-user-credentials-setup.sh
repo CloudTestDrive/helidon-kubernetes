@@ -132,8 +132,9 @@ else
   echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
   CAPI_NAMESPACE_REUSED=true
 fi
+CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_NAMESPACE_REUSED_"$CLUSTER_CONTEXT_NAME"_REUSED"`
 
-echo "CAPI_NAMESPACE_REUSED=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
+echo "$CAPI_NAMESPACE_REUSED_NAME=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
 
 echo "Installing cluster API provisioner into cluster $CLUSTER_CONTEXT_NAME"
 
@@ -152,10 +153,10 @@ echo "Checking for pre-existing $CERT_MGR_NS namespace"
 CERT_MGR_NS_COUNT=`kubectl get ns | grep "$CERT_MGR_NS" | wc -l`
 if [ "$CERT_MGR_NS_COUNT" = 0 ]
 then
-  echo "Located pre-existing namespace $CERT_MGR_NS"
+  echo "No pre-existing namespace $CERT_MGR_NS"
   CERT_MGR_NS_REUSED=false
 else
-  echo "No pre-existing namespace $CERT_MGR_NS"
+  echo "Located pre-existing namespace $CERT_MGR_NS"
   CERT_MGR_NS_REUSED=true
 fi
 CERT_MGR_NS_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_CERT_MANAGER_NS_"$CLUSTER_CONTEXT_NAME"_REUSED"`
@@ -181,6 +182,6 @@ kubectl config use-context $ORIG_K8S_CONTEXT
 
 echo "Reverted to context $ORIG_K8S_CONTEXT"
 
-CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_NAMESPACE_"$CLUSTER_CONTEXT_NAME"_REUSED`
+CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_NAMESPACE_"$CLUSTER_CONTEXT_NAME"_REUSED"`
 echo "$CAPI_NAMESPACE_REUSED_NAME=$CAPI_NAMESPACE_REUSED" >> $SETTINGS
 echo "$CAPI_PROVISIONER_REUSED_NAME=$CAPI_PROVISIONER_REUSED" >> $SETTINGS

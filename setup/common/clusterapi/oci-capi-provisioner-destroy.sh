@@ -115,7 +115,7 @@ else
     rm -rf $CAPI_DIR
   fi
 fi
-CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_NAMESPACE_"$CLUSTER_CONTEXT_NAME"_REUSED`
+CAPI_NAMESPACE_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_NAMESPACE_REUSED_"$CLUSTER_CONTEXT_NAME"_REUSED"`
 CAPI_NAMESPACE_REUSED="${!CAPI_NAMESPACE_REUSED_NAME}"
 # do we need to delete the namespace ?
 if [ -z "$CAPI_NAMESPACE_REUSED" ]
