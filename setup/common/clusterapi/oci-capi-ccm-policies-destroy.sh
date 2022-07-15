@@ -43,6 +43,5 @@ then
 else 
   # delete script is in common, we are in common/policies
   bash ../delete-from-saved-settings.sh CLUSTER_API_CCM_POLICIES_CONFIGURED
-  echo CLUSTER_API_CCM_POLICIES_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi

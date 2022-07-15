@@ -15,7 +15,7 @@ source $SETTINGS
 
 if [ -z "$CLUSTER_API_CCM_POLICIES_CONFIGURED" ]
 then
-  echo "CLuster API ccm policies not configured, setting up"
+  echo "Cluster API ccm policies not configured, setting up"
 else
   echo "Cluster API ccm policies already configured"
   exit 0
