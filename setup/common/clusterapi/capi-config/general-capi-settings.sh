@@ -12,8 +12,9 @@
 # but I guess someone might want to use a single key for it all
 #export OCI_SSH_KEY=<ssh-key>
 # how many conrteol planes vm's do you want ?
-export CONTROL_PLANE_MACHINE_COUNT=1
-export WORKER_MACHINE_COUNT=2
+#export CONTROL_PLANE_MACHINE_COUNT=1
+# this may not be the right setting, might be NODE_MACHINE_COUNT
+#export WORKER_MACHINE_COUNT=2
 # the version of kubernetes to install in the cluster, probabaly this will need updating
 # over time
 export KUBERNETES_VERSION=v1.22.5
