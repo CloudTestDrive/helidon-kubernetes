@@ -137,7 +137,7 @@ fi
 export OCI_COMPARTMENT_ID=$COMPARTMENT_OCID
 export CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
 export NAMESPACE=$CAPI_CLUSTER_NAMESPACE
-export NODE_MACHINE_COUNT=1
+export NODE_MACHINE_COUNT=3
 export CONTROL_PLANE_MACHINE_COUNT=1
 #export OCI_IMAGE_ID
 SSH_PUB_FILE="$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub
@@ -255,9 +255,9 @@ then
   exit 11
 fi
 
-echo "Getting kubeconfig (this may take a while)"
 
 CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
+echo "Getting kubeconfig to $CAPI_KUBECONFIG"
 
 $HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" > $CAPI_KUBECONFIG
 
@@ -358,6 +358,8 @@ KUBECONFIG=$HOME/.kube/config:$CAPI_KUBECONFIG kubectl config view --flatten > m
 rm $HOME/.kube/config
 # Replace your old config with the new merged config 
 mv merged.config $HOME/.kube/config 
+# remove temp version
+rm $CAPI_KUBECONFIG
 
 CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
