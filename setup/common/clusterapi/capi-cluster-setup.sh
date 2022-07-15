@@ -12,34 +12,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -d $CAPI_DIR ]
-then
-  echo "Will use $CAPI_DIR as the working directory"
-else
-  echo "Can't locate the directory $CAPI_DIR have you run the oci-capi-setup.sh script ?"
-  exit 4
-fi
-
-if [ -z "$CAPI_PROVISIONER_REUSED" ]
-then
-  echo "no capi provisioner reuse information, has the oci-capi-setup.sh script been run ? cannot continue."
-  exit 1
-else
-  echo "capi provisioner setup, continuing"
-fi
-
-if [ -z "$COMPARTMENT_OCID" ]
-then
-  echo "No COMPARTMENT_OCID set, have you run the compartment-setup.sh script ? Cannot continue"
-  exit 2
-fi
-
-if [ -z "$USER_INITIALS" ]
-then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
-  exit 1
-fi
-
 
 if [ -f $CAPI_SETTINGS_FILE ]
   then
@@ -50,12 +22,18 @@ if [ -f $CAPI_SETTINGS_FILE ]
     exit 11
 fi
 
-if [ -x "$CLUSTERCTL_PATH" ]
+if [ -d $CAPI_DIR ]
 then
-  echo "Located clusterctl command"
+  echo "Will use $CAPI_DIR as the working directory"
 else
-  echo "clusterctl command should be $CLUSTERCTL_PATH but it's not found or not executable, have you run the downloaded-clusterctl.sh script ?"
-  exit 2
+  echo "Can't locate the directory $CAPI_DIR have you run the oci-capi-setup.sh script ?"
+  exit 4
+fi
+
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  exit 1
 fi
 
 CAPI_CONTEXT=capi
@@ -77,6 +55,32 @@ then
 else
   echo "Using default kubeconfig context name of $KUBE_CONTEXT"
 fi
+
+CAPI_PROVISIONER_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_"$KUBE_CONTEXT"_REUSED"`
+CAPI_PROVISIONER_REUSED="${!CAPI_PROVISIONER_REUSED_NAME}"
+if [ -z "$CAPI_PROVISIONER_REUSED" ]
+then
+  echo "no capi provisioner reuse information, has the oci-capi-setup.sh script been run ? cannot continue."
+  exit 1
+else
+  echo "capi provisioner setup, continuing"
+fi
+
+if [ -z "$COMPARTMENT_OCID" ]
+then
+  echo "No COMPARTMENT_OCID set, have you run the compartment-setup.sh script ? Cannot continue"
+  exit 2
+fi
+
+
+if [ -x "$CLUSTERCTL_PATH" ]
+then
+  echo "Located clusterctl command"
+else
+  echo "clusterctl command should be $CLUSTERCTL_PATH but it's not found or not executable, have you run the downloaded-clusterctl.sh script ?"
+  exit 2
+fi
+
 
 # we need an ssh key
 SAVED_DIR=`pwd`
@@ -133,6 +137,7 @@ export OCI_COMPARTMENT_ID=$COMPARTMENT_OCID
 export CAPI_CLUSTER_NAMESPACE=capi-$CAPI_CONTEXT_NAME
 export NAMESPACE=$CAPI_CLUSTER_NAMESPACE
 export NODE_MACHINE_COUNT=1
+export CONTROL_PLANE_MACHINE_COUNT=1
 #export OCI_IMAGE_ID
 SSH_PUB_FILE="$HOME/ssh/id_rsa_capi_$CAPI_CONTEXT_NAME".pub
 export OCI_SSH_KEY=$(cat $SSH_PUB_FILE)
@@ -255,16 +260,61 @@ CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
 
 $HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" > $CAPI_KUBECONFIG
 
-echo "Listing nodes returns"
-kubectl --kubeconfig=$CAPI_KUBECONFIG get nodes
+echo "Waiting for worker node(s) to be provisioned"
+WORKERS_PROVISIONED=false
+LOOP_COUNT=15
+LOOP_SLEEP=30
+for i in `seq 1 $LOOP_COUNT`
+do
+  echo "Capi worker test $i for capi cluster CAPI_CONTEXT_NAME"
+  CAPI_WORKER_CLUSTER_COUNT=`kubectl --kubeconfig=$CAPI_KUBECONFIG get nodes | grep -v control-plane | grep -v ROLES | wc -l`  
+  if [ "$CAPI_WORKER_CLUSTER_COUNT" = "$NODE_MACHINE_COUNT" ]
+  then
+    echo "Cluster worker(s) provisioned"
+    WORKERS_PROVISIONED=true
+    break ;
+  fi
+  sleep $LOOP_SLEEP
+done
+
+if [ "$WORKERS_PROVISIONED" = "false" ]
+then
+  let DELAY="$LOOP_COUNT*$LOOP_SLEEP"
+  echo "Cluster workers were not provisioned within $DELAY seconds, sorry, cannot continue"
+  exit 11
+fi
 
 echo "Applying the Calico networking stack using Calico version $CALICO_VERSION"
 
 kubectl --kubeconfig $CAPI_KUBECONFIG apply -f https://docs.projectcalico.org/v$CALICO_VERSION/manifests/calico.yaml
 
+echo "Waiting for control plane and node(s) to be ready"
+WORKERS_PROVISIONED=false
+LOOP_COUNT=15
+LOOP_SLEEP=30
+let MACHINE_COUNT="$NODE_MACHINE_COUNT+$CONTROL_PLANE_MACHINE_COUNT"
+for i in `seq 1 $LOOP_COUNT`
+do
+  echo "Capi worker test $i for capi cluster CAPI_CONTEXT_NAME"
+  CAPI_WORKER_CLUSTER_COUNT=`kubectl --kubeconfig=$CAPI_KUBECONFIG get nodes | grep -v ROLES | grep Ready | wc -l`  
+  if [ "$CAPI_WORKER_CLUSTER_COUNT" = "$MACHINE_COUNT" ]
+  then
+    echo "Cluster conteol plane and worker(s) in ready state"
+    WORKERS_PROVISIONED=true
+    break ;
+  fi
+  sleep $LOOP_SLEEP
+done
+
+if [ "$WORKERS_PROVISIONED" = "false" ]
+then
+  let DELAY="$LOOP_COUNT*$LOOP_SLEEP"
+  echo "Cluster workers were not provisioned within $DELAY seconds, sorry, cannot continue"
+  exit 11
+fi
 echo "Locating OCI specific cloud provider settings"
 
-CAPI_OCI_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" -o json`
+CAPI_OCI_CLUSTER_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" -o json`
 
 CAPI_OCI_VCN_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r ".spec.networkSpec.vcn.id"`
 CAPI_OCI_LB_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="service-lb") | .id'`
@@ -281,11 +331,11 @@ cp $CLOUD_PROVIDER_YAML_TEMPLATE $CLOUD_PROVIDER_YAML
 
 #modify provider based on outputs
 echo "Settting COMPARTMENT_OCID to $COMPARTMENT_OCID"
-../update-file.sh $CLOUD_PROVIDER_YAML COMPARTMENT_OCID $COMPARTMENT_OCID
+bash ../update-file.sh $CLOUD_PROVIDER_YAML COMPARTMENT_OCID $COMPARTMENT_OCID
 echo "Settting CAPI_OCI_VCN_OCID to $CAPI_OCI_VCN_OCID"
-../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_VCN_OCID $CAPI_OCI_VCN_OCID
+bash ../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_VCN_OCID $CAPI_OCI_VCN_OCID
 echo "Settting CAPI_OCI_LB_SUBNET_OCID to $CAPI_OCI_LB_SUBNET_OCID"
-../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_LB_SUBNET_OCID $CAPI_OCI_LB_SUBNET_OCID
+bash ../update-file.sh $CLOUD_PROVIDER_YAML CAPI_OCI_LB_SUBNET_OCID $CAPI_OCI_LB_SUBNET_OCID
 
 echo "Creating secret for cloud controller config"
 kubectl --kubeconfig=$CAPI_KUBECONFIG create secret generic oci-cloud-controller-manager -n kube-system --from-file=cloud-provider.yaml=$CLOUD_PROVIDER_YAML
@@ -296,18 +346,18 @@ echo "Applying the cloud controller manager RBAC"
 kubectl --kubeconfig=$CAPI_KUBECONFIG apply -f https://github.com/oracle/oci-cloud-controller-manager/releases/download/v$ORACLE_CCM_VERSION/oci-cloud-controller-manager-rbac.yaml
 
 echo "Updating capi cluster kubeconfig"
-kubectl --kubeconfig=$CAPI_KUBECONFIG config rename-context $CAPI_CONTEXT_NAME
+CURRENT_CAPI_CONTEXT=`kubectl --kubeconfig=$CAPI_KUBECONFIG config current-context`
+kubectl --kubeconfig=$CAPI_KUBECONFIG config rename-context $CURRENT_CAPI_CONTEXT $CAPI_CONTEXT_NAME
 
 echo "Merging capi cluster kube config with main kubeconfig"
 # Make a copy of your existing config 
 cp $HOME/.kube/config $HOME/.kube/config.bak 
 # Merge the two config files together into a new config file 
-$ KUBECONFIG=$HOME/.kube/config:$CAPI_KUBECONFIG kubectl config view --flatten > merged.config 
+KUBECONFIG=$HOME/.kube/config:$CAPI_KUBECONFIG kubectl config view --flatten > merged.config 
 rm $HOME/.kube/config
 # Replace your old config with the new merged config 
-$ mv merged.config $HOME/.kube/config 
+mv merged.config $HOME/.kube/config 
 
-CAPI_OCI_LB_NSG_OCID_NAME=`../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
-
+CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
 echo "$CAPI_OCI_LB_NSG_OCID_NAME=$CAPI_OCI_LB_NSG_OCID" >> $SETTINGS
