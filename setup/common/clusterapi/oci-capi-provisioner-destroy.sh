@@ -145,6 +145,6 @@ fi
 kubectl config use-context $ORIG_K8S_CONTEXT
 
 echo "Reverted to context $ORIG_K8S_CONTEXT"
-
+bash ../delete-from-saved-settings.sh $CERT_MGR_NS_REUSED_NAME
 bash ../delete-from-saved-settings.sh $CAPI_NAMESPACE_REUSED_NAME
 bash ../delete-from-saved-settings.sh $CAPI_PROVISIONER_REUSED_NAME
