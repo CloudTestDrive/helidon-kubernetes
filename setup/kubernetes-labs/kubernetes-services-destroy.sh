@@ -28,9 +28,9 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
-OKE_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
+KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh KUBERNETES_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
 
-if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
+if [ -z "${!KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
   exit 0
@@ -72,4 +72,4 @@ then
   exit $RESP
 fi
 
-bash ../common/delete-from-saved-settings.sh $OKE_SERVICES_CONFIGURED_SETTING_NAME
+bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME
