@@ -11,13 +11,6 @@ if [ -f $SETTINGS ]
     echo "No existing settings, cannot continue"
     exit 10
 fi
-if [ -z "$CAPI_PROVISIONER_REUSED" ]
-then
-  echo "capi provisioner reuse information not found, cannot continue"
-  exit 0
-else
-  echo "capi provisioner reuse info found, continuing"
-fi
 
 if [ -f $CAPI_SETTINGS_FILE ]
   then

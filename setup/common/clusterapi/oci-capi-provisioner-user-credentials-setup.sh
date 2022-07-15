@@ -18,14 +18,6 @@ then
   exit 1
 fi
 
-if [ -z "$CAPI_PROVISIONER_REUSED" ]
-then
-  echo "no capi provisioner reuse information, proceeding"
-else
-  echo "capi provisioner already setup, exiting"
-  exit 0
-fi
-
 if [ -f $CAPI_SETTINGS_FILE ]
   then
     echo "Loading capi settings"
@@ -42,6 +34,14 @@ else
   echo "clusterctl command should be $CLUSTERCTL_PATH but it's not found or not executable, have you run the downloaded-clusterctl.sh script ?"
   exit 2
 fi
+
+CLUSTER_CONTEXT_NAME=one
+
+if [ $# -gt 0 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+fi
+echo "Management cluster context is $CLUSTER_CONTEXT_NAME"
 
 CAPI_PROVISIONER_REUSED_NAME=`bash ../settings/to-valid-name.sh "CAPI_PROVISIONER_"$CLUSTER_CONTEXT_NAME"_REUSED"`
 CAPI_PROVISIONER_REUSED="${!CAPI_PROVISIONER_REUSED_NAME}"
@@ -89,14 +89,6 @@ if [ -z "$AUTO_CONFIRM" ]
 then
   AUTO_CONFIRM=n
 fi
-
-CLUSTER_CONTEXT_NAME=one
-
-if [ $# -gt 0 ]
-then
-  CLUSTER_CONTEXT_NAME=$1
-fi
-echo "Management cluster context is $CLUSTER_CONTEXT_NAME"
 
 if [ "$AUTO_CONFIRM" = true ]
 then
