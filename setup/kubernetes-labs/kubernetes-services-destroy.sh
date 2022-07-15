@@ -39,7 +39,7 @@ else
 fi
 
 #check for trying to re-use the context name
-CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CLUSTER_CONTEXT_NAME`
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
