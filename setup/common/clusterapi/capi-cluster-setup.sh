@@ -355,10 +355,10 @@ echo "Merging capi cluster kube config with main kubeconfig"
 cp $HOME/.kube/config $HOME/.kube/config.bak 
 # Merge the two config files together into a new config file 
 KUBECONFIG=$HOME/.kube/config:$CAPI_KUBECONFIG kubectl config view --flatten > merged.config 
-chmod 600 merged.config
 rm $HOME/.kube/config
 # Replace your old config with the new merged config 
 mv merged.config $HOME/.kube/config 
+chmod 600 $HOME/.kube/config
 # remove temp version
 rm $CAPI_KUBECONFIG
 
