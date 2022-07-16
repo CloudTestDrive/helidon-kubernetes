@@ -210,7 +210,7 @@ echo "Applied the YAML to generate cluster $CAPI_CONTEXT_NAME"
 
 echo "Waiting for capi cluster to be created"
 CLUSTER_FOUND=false
-LOOP_COUNT=24
+LOOP_COUNT=36
 LOOP_SLEEP=5
 for i in `seq 1 $LOOP_COUNT`
 do
@@ -233,7 +233,7 @@ then
 fi
 echo "Waiting for capi cluster to be provisioned"
 CLUSTER_PROVISIONED=false
-LOOP_COUNT=30
+LOOP_COUNT=60
 LOOP_SLEEP=30
 for i in `seq 1 $LOOP_COUNT`
 do
@@ -263,7 +263,7 @@ $HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLU
 
 echo "Waiting for worker node(s) to be provisioned"
 WORKERS_PROVISIONED=false
-LOOP_COUNT=15
+LOOP_COUNT=60
 LOOP_SLEEP=30
 for i in `seq 1 $LOOP_COUNT`
 do
