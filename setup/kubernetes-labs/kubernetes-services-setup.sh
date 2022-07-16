@@ -17,6 +17,8 @@ if [ -z "$IMAGES_READY" ]
 then
   echo "The container images have not been built, have you run the image-environment-setup.sh script ?"
   exit 20
+else 
+  echo "The images have been built and uploaded to the repo"
 fi
 
 if [ -z "$AUTO_CONFIRM" ]
