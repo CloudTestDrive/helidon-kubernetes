@@ -11,6 +11,14 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+
+
+if [ -z "$IMAGES_READY" ]
+then
+  echo "The container images have not been built, have you run the image-environment-setup.sh script ?"
+  exit 20
+fi
+
 if [ -z "$AUTO_CONFIRM" ]
 then
   AUTO_CONFIRM=n
