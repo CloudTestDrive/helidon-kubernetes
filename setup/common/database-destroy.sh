@@ -40,7 +40,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, destroy database $DBNAME defaulting to $REPLY"
 else
-  read -p "Are you sure you want to destroy the database $DBNAMe and data it contains (y/n) ? " REPLY
+  read -p "Are you sure you want to destroy the database $DBNAME and data it contains (y/n) ? " REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
