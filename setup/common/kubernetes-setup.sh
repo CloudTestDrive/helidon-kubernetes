@@ -55,7 +55,7 @@ fi
 
 
 #check for trying to re-use the context name
-CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name 2>/dev/null`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
