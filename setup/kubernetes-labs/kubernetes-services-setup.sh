@@ -2,9 +2,6 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-
-COMPARTMENT_NAME=CTDOKE
-
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings"
@@ -12,6 +9,16 @@ if [ -f $SETTINGS ]
   else 
     echo "No existing settings, cannot continue"
     exit 10
+fi
+
+
+
+if [ -z "$IMAGES_READY" ]
+then
+  echo "The container images have not been built, have you run the image-environment-setup.sh script ?"
+  exit 20
+else 
+  echo "The images have been built and uploaded to the repo"
 fi
 
 if [ -z "$AUTO_CONFIRM" ]
@@ -29,9 +36,9 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
-OKE_SERVICES_CONFIGURED_SETTING_NAME=OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME
+KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh KUBERNETES_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
 
-if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
+if [ -z "${!KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, continuing"
 else
@@ -46,7 +53,7 @@ then
 fi
 
 #check for trying to re-use the context name
-CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CLUSTER_CONTEXT_NAME`
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
@@ -57,17 +64,9 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
-
-OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
-# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-OKE_REUSED="${!OKE_REUSED_NAME}"
-if [ -z $OKE_REUSED ]
+if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
 then
-  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME cannot continue. Has this cluster"
-  echo "been setup using the kubernrtes-setup.sh script ?"
-  exit 3
-else
-  echo "Located details of Kubernetes cluster $CLUSTER_CONTEXT_NAME, continuing"
+  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=0
 fi
 
 # run the pre-existing script
@@ -80,4 +79,9 @@ then
   exit $RESP
 fi
 
-echo "$OKE_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
+echo "$KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
+
+# update the count of installed clusters with services - used for tracking if the config files need resetting
+let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES+1"
+bash ../common/delete-from-saved-settings.sh KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES
+echo "KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" >> $SETTINGS

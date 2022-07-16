@@ -21,13 +21,6 @@ then
   exit 0
 else
   echo "OK destroying resources"
-  bash database-destroy.sh
-  RESP=$?
-  if [ $RESP -ne 0 ]
-  then
-    echo "Failure destroying the database cannot continue"
-    exit $RESP
-  fi
   bash user-identity-destroy.sh
   RESP=$?
   if [ $RESP -ne 0 ]

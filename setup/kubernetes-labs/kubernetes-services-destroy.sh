@@ -2,9 +2,6 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-
-COMPARTMENT_NAME=CTDOKE
-
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings"
@@ -28,10 +25,9 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh KUBERNETES_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
 
-OKE_SERVICES_CONFIGURED_SETTING_NAME=OKE_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME
-
-if [ -z "${!OKE_SERVICES_CONFIGURED_SETTING_NAME}" ]
+if [ -z "${!KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME}" ]
 then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
   exit 0
@@ -40,7 +36,7 @@ else
 fi
 
 #check for trying to re-use the context name
-CONTEXT_NAME_EXISTS=`kubectl config get-contexts -o name | grep -w $CLUSTER_CONTEXT_NAME`
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
@@ -51,17 +47,22 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
-
-OKE_REUSED_NAME=OKE_REUSED_$CLUSTER_CONTEXT_NAME
-# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-OKE_REUSED="${!OKE_REUSED_NAME}"
-if [ -z $OKE_REUSED ]
+if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
 then
-  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME cannot continue. Has this cluster"
-  echo "been setup using the kubernetes-setup.sh script ?"
-  exit 0
+  echo "WARNING, cannot identify the number of clusters with installed services. This script will"
+  echo "reset the database configurations. If you have more than one cluster this may cause problems"
+  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=1
+fi
+
+
+let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES-1"
+bash ../common/delete-from-saved-settings.sh KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES
+if [ "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" = 0 ]
+then
+  echo "This is the last cluster, the scripts will reset the database configuration"
 else
-  echo "Located details of Kubernetes cluster $CLUSTER_CONTEXT_NAME, continuing"
+  echo "There are remaining clusters with services installed, the scripts will not touch the common db configuration"
+  echo "KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" >> $SETTINGS
 fi
 
 # run the pre-existing script
@@ -73,4 +74,4 @@ then
   exit $RESP
 fi
 
-bash ../common/delete-from-saved-settings.sh $OKE_SERVICES_CONFIGURED_SETTING_NAME
+bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME

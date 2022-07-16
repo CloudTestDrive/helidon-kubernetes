@@ -1,12 +1,13 @@
 #!/bin/bash -f
 export SETTINGS=$HOME/hk8sLabsSettings
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
-  echo "The upload-api-key.sh script requires one argument, the file name of the public key to upload, this must be in PEM format"
+  echo "The upload-api-key.sh script requires two arguments, the tracking name for the key (e.g. devops or"
+  echo "capi) and then file name of the public key to upload, this must be in PEM format."
   exit 1
 fi
-
-PUBLIC_KEY_FILE=$1
+KEY_NAME=$1
+PUBLIC_KEY_FILE=$2
 
 if [ -f $PUBLIC_KEY_FILE ]
 then
@@ -31,11 +32,21 @@ then
   exit 1
 fi
 
+if [ -z $USER_INITIALS ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  exit 1
+fi
+
+API_KEY_REUSED_NAME=`bash ./get-key-reused-var-name.sh "$KEY_NAME" "$USER_INITIALS"`
+API_KEY_FINGERPRINT_NAME=`bash ./get-key-fingerprint-var-name.sh "$KEY_NAME" "$USER_INITIALS"`
+# do the redirect trick
+API_KEY_REUSED="${!API_KEY_REUSED_NAME}"
 if [ -z $API_KEY_REUSED ]
 then
-  echo "No saved API key information, continuing."
+  echo "No saved API key information for $KEY_NAME, continuing."
 else
-  echo "Your API key has already been set using these scripts"
+  echo "Your API key for $KEY_NAME has already been set using these scripts"
   exit 0
 fi
 
@@ -66,8 +77,8 @@ ERROR_MESSAGE=`echo $RESP | sed -e 's/ServiceError: //' | jq -r '.message'`
 if [ "$ERROR_MESSAGE" = "null" ]
 then
   API_KEY_FINGERPRINT=`echo $RESP | jq -r '.data.fingerprint'`
-  echo "API_KEY_FINGERPRINT=$API_KEY_FINGERPRINT" >> $SETTINGS
-  echo "API_KEY_REUSED=false" >> $SETTINGS
+  echo "$API_KEY_FINGERPRINT_NAME=$API_KEY_FINGERPRINT" >> $SETTINGS
+  echo "$API_KEY_REUSED_NAME=false" >> $SETTINGS
   echo "Uploaded key with fingerprint $API_KEY_FINGERPRINT"
   exit 0
 else

@@ -5,6 +5,30 @@ if [ $# -eq 0 ]
     exit -1 
 fi
 department=$1
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f $SETTINGS ]
+  then
+    echo "Loading existing settings"
+    source $SETTINGS
+  else 
+    echo "No existing settings, cannot continue"
+    exit 10
+fi
+
+if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
+then
+  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=0
+fi
+
+if [ "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" = 0 ]
+then
+  echo "No other clusters with shared services currently installed, will setup the department config file"
+else
+  echo "There are other clusters with the shared services already in place, no need to update the department config file"
+  exit 0
+fi
+
 if [ $# -eq 1 ]
   then
     echo "Updating the stockmanager config to set $department as the department name."

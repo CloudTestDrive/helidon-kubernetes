@@ -1,6 +1,8 @@
 # Version info to use with the cluster api
 CLUSTERCTL_VERSION=1.1.5
 ORACLE_CAPI_VERSION=0.3.0
+CALICO_VERSION=3.21
+ORACLE_CCM_VERSION=1.22.1
 
 # locations and things
 CAPI_DIR=$HOME/.cluster-api

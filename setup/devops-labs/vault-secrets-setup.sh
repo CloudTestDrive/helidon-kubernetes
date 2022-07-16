@@ -38,6 +38,7 @@ fi
 
 # now actually create the host ane nameslace secrets
 
+SAVED_DIR=`pwd`
 
 cd ../common/vault-secrets
 
@@ -68,5 +69,7 @@ then
   echo "Please review the output and rerun the script"
   FINAL_RESP=$RESP
 fi 
+
+cd $SAVED_DIR
 
 exit $FINAL_RESP

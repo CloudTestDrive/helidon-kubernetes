@@ -13,13 +13,15 @@ fi
 
 source $SETTINGS
 
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
+if [ -z "$DEVOPS_DYNAMIC_GROUPS_CONFIGURED" ]
 then
-  echo "Dynamic groups not configured"
+  echo "Dynamic groups for devops not configured"
   exit 0
 else
-  echo "Removing configured dynamic groups"
+  echo "Removing configured dynamic groups for devops"
 fi
+SAVED_DIR=`pwd`
+
 
 cd ../common/dynamic-groups
 
@@ -28,4 +30,5 @@ bash ./dynamic-group-destroy.sh "$USER_INITIALS"CodeReposDynamicGroup
 bash ./dynamic-group-destroy.sh "$USER_INITIALS"DeployDynamicGroup
 
 # delete script is in common, we are in common/dynamic-groups
-bash ../delete-from-saved-settings.sh DYNAMIC_GROUPS_CONFIGURED
+bash ../delete-from-saved-settings.sh DEVOPS_DYNAMIC_GROUPS_CONFIGURED
+cd $SAVED_DIR

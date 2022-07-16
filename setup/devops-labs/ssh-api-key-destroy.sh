@@ -35,7 +35,7 @@ echo "You need to edit the $SSH_CONFIG_FILE file and remove the entries between 
 
 cd ../common/api-keys
 
-bash ./api-key-destroy.sh 
+bash ./api-key-destroy.sh devops
 
 
 # delete the ssh key files

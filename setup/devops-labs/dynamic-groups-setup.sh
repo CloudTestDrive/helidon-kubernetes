@@ -13,16 +13,6 @@ fi
 
 source $SETTINGS
 
-
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
-then
-  echo "Dynamic groups not configured, setting up"
-else
-  echo "Dynamic groups already configured"
-  exit 0
-fi
-
-
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -35,18 +25,18 @@ then
   exit 2
 fi
 
-if [ -z "$DYNAMIC_GROUPS_CONFIGURED" ]
+if [ -z "$DEVOPS_DYNAMIC_GROUPS_CONFIGURED" ]
 then
-  echo "Dynamic groups not yet configured"
+  echo "Dynamic groups not yet configured, setting up"
 else
   echo "Dynamic groups have already been configured"
   exit 0
 fi
-
+SAVED_DIR=`pwd`
 cd ../common/dynamic-groups
 
 FINAL_RESP="0"
-bash ./dynamic-group-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"BuildDynamicGroup devopsbuildpipeline "This dynamic group identifies the DevOps Build Pipelines for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -54,14 +44,14 @@ then
   FINAL_RESP=$RESP
 fi
 
-bash ./dynamic-group-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"CodeReposDynamicGroup devopsrepository "This dynamic group identifies the OCI code repositories resources for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
   echo "Problem setting up dynamic group "$USER_INITIALS"CodeReposDynamicGroup response is $RESP"
   FINAL_RESP=$RESP
 fi
-bash ./dynamic-group-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources"
+bash ./dynamic-group-by-resource-type-setup.sh "$USER_INITIALS"DeployDynamicGroup devopsdeploypipeline "This dynamic group identifies the deployment tools resources for user $USER_INITIALS"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -74,7 +64,8 @@ then
   exit $FINAL_RESP
 else 
   # delete script is in common, we are in common/dynamic-groups
-  bash ../delete-from-saved-settings.sh DYNAMIC_GROUPS_CONFIGURED
-  echo DYNAMIC_GROUPS_CONFIGURED=true >> $SETTINGS
+  bash ../delete-from-saved-settings.sh DEVOPS_DYNAMIC_GROUPS_CONFIGURED
+  echo DEVOPS_DYNAMIC_GROUPS_CONFIGURED=true >> $SETTINGS
   exit $FINAL_RESP
 fi
+cd $SAVED_DIR

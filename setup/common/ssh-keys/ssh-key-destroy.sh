@@ -23,6 +23,7 @@ SSH_KEY_FILE_BASE=$2
 
 SSH_KEY_REUSED_NAME=`bash ../settings/to-valid-name.sh "$SSH_DIR/$SSH_KEY_FILE_BASE"_REUSED`
 
+
 if [ -z "${!SSH_KEY_REUSED_NAME}" ]
 then
   echo "No reuse information, perhaps it's already been removed ? unsafe to proceed"
@@ -61,6 +62,14 @@ then
   rm  "$SSH_DIR/$SSH_KEY_FILE_BASE".pub.pem
 else 
   echo "Public key file in PEM format could not be located"
+fi
+
+OTHER_ENTRIES=`ls -1 $SSH_DIR | grep -v $SSH_KEY_FILE_BASE | wc -l`
+
+if [ "$OTHER_ENTRIES" = 0 ]
+then
+  echo "$SSH_DIR is now empty, removing it"
+  rmdir $SSH_DIR
 fi
 
 bash ../delete-from-saved-settings.sh $SSH_KEY_REUSED_NAME

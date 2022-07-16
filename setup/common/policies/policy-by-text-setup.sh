@@ -76,7 +76,7 @@ then
   POLICY_FOUND=false
   for i in `seq 1 10`
   do
-    echo "Propogate test $i for dynamic group $POLICY_NAME"
+    echo "Propogate test $i for policy $POLICY_NAME"
     COUNT=`oci iam policy list --name $POLICY_NAME --compartment-id $COMPARTMENT_PARENT_OCID  --lifecycle-state ACTIVE | jq -r 'length'`
     if [ "$COUNT" = "1" ]
     then

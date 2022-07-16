@@ -10,7 +10,7 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
-OKE_OCID_NAME=OKE_OCID_$CLUSTER_CONTEXT_NAME
+OKE_OCID_NAME=`bash ./settings/to-valid-name.sh OKE_OCID_$CLUSTER_CONTEXT_NAME`
 
 echo "Waiting for core services to be available." 
 export WAIT_LOOP_COUNT=180
