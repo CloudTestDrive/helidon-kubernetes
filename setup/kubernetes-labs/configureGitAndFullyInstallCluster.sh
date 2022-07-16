@@ -29,6 +29,7 @@ if [ $# -eq 1 ]
           exit 1
       fi
     else
+      contextname=$2
       echo "Skipping confirmation, will use $department as the department name, $contextname as the cluster context name"
     fi
 fi
