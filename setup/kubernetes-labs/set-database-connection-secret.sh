@@ -6,6 +6,16 @@ if [ $# -eq 0 ]
     exit -1 
 fi
 dbname=$1
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f $SETTINGS ]
+  then
+    echo "Loading existing settings"
+    source $SETTINGS
+  else 
+    echo "No existing settings, cannot continue"
+    exit 10
+fi
 
 if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
 then
