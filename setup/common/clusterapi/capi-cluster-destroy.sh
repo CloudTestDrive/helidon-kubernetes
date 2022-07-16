@@ -142,8 +142,8 @@ then
   echo "No kube context name $CAPI_CONTEXT_NAME exists, skipping context removal"
 else
   echo "Removing context $CAPI_CONTEXT_NAME from the local kubernetes configuration"
-  CAPI_CLUSTER_INFO=`kubectl config get-contexts $CAPI_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $2}'`
-  CAPI_USER_INFO=`kubectl config get-contexts $CAPI_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $3}'`
+  CAPI_CLUSTER_INFO=`kubectl config get-contexts $CAPI_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $2}'`
+  CAPI_USER_INFO=`kubectl config get-contexts $CAPI_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`
   kubectl config delete-user $CAPI_USER_INFO
   kubectl config delete-cluster $CAPI_CLUSTER_INFO
   kubectl config delete-context $CAPI_CONTEXT_NAME

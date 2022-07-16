@@ -86,8 +86,8 @@ then
     bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
     bash ./delete-from-saved-settings.sh $OKE_REUSED_NAME
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
-    CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $2}'`
-    USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME | grep -v NAMESPACE | sed -e 's/*//' | awk '{print $3}'`
+    CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME  --no-headers=true | sed -e 's/*//' | awk '{print $2}'`
+    USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`
     kubectl config delete-user $USER_INFO
     kubectl config delete-cluster $CLUSTER_INFO
     kubectl config delete-context $CLUSTER_CONTEXT_NAME
