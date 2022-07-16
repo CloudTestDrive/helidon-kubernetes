@@ -319,7 +319,9 @@ CAPI_OCI_CLUSTER_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "
 
 CAPI_OCI_VCN_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r ".spec.networkSpec.vcn.id"`
 CAPI_OCI_LB_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="service-lb") | .id'`
+CAPI_OCI_WORKER_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="worker) | .id'`
 CAPI_OCI_LB_NSG_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.networkSecurityGroups[] | select (.name=="service-lb") | .id'`
+CAPI_OCI_WORKER_NSG_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.networkSecurityGroups[] | select (.name=="worker") | .id'`
 
 echo "Setting up cloud provider using version $ORACLE_CCM_VERSION"
 #use a pre-specified version for now, makes subs easier
@@ -362,6 +364,14 @@ chmod 600 $HOME/.kube/config
 # remove temp version
 rm $CAPI_KUBECONFIG
 
-CAPI_OCI_LB_NSG_OCID_NAME=`bash ../settings/to-valid-name.sh CAPI_OCI_LB_NSG_OCID_"$CAPI_CONTEXT_NAME"`
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
-echo "$CAPI_OCI_LB_NSG_OCID_NAME=$CAPI_OCI_LB_NSG_OCID" >> $SETTINGS
+
+# record some core networking info
+CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+echo "Network information for cluster $CAPI_CONTEXT_NAME" > $CLUSTER_NETWORK_FILE
+echo "VCN_OCID=$CAPI_OCI_VCN_OCID" >> $CLUSTER_NETWORK_FILE
+echo "LB_SUBNET_OCID=$CAPI_OCI_LB_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "WORKER_SUBNET_OCID=$CAPI_OCI_WORKER_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "LB_NSG_OCID=$CAPI_OCI_LB_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "WORKER_NSG_OCID=$CAPI_OCI_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+
