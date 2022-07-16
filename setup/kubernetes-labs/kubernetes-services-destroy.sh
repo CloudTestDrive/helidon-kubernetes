@@ -2,9 +2,6 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-
-COMPARTMENT_NAME=CTDOKE
-
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings"
