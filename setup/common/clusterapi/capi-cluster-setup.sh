@@ -319,7 +319,7 @@ CAPI_OCI_CLUSTER_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "
 
 CAPI_OCI_VCN_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r ".spec.networkSpec.vcn.id"`
 CAPI_OCI_LB_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="service-lb") | .id'`
-CAPI_OCI_WORKER_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="worker) | .id'`
+CAPI_OCI_WORKER_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="worker") | .id'`
 CAPI_OCI_LB_NSG_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.networkSecurityGroups[] | select (.name=="service-lb") | .id'`
 CAPI_OCI_WORKER_NSG_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.networkSecurityGroups[] | select (.name=="worker") | .id'`
 
