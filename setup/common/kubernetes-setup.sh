@@ -310,9 +310,12 @@ then
       exit 1
     fi
     OKE_REUSED=false
-    echo "Getting cluster netowkring info from terraform"
-    OKE_VCN=`terraform output | grep vcn_id | awk '{print $3}' | sed -e 's/"//g'`
-    OKE_LB_NSG=`terraform output | grep pub_lb_nsg | awk '{print $3}' | sed -e 's/"//g'`
+    echo "Getting cluster netwoking info from terraform"
+    OKE_VCN=`terraform output vcn_id |  sed -e 's/"//g'`
+    OKE_LB_SUBNET_OCID=`terraform output subnet_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
+    OKE_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep workers | awk '{print $3}' | sed -e 's/"//g'`
+    OKE_LB_NSG_OCID=`terraform output pub_lb_nsg | sed -e 's/"//g'`
+    OKE_WORKER_NSG_OCID=""
     cd $SAVED_DIR
   else
     echo "Located existing cluster named $CLUSTER_NAME_FULL in $COMPARTMENT_NAME checking its status"
@@ -367,7 +370,7 @@ fi
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 echo "Network information for cluster $CAPI_CONTEXT_NAME" > $CLUSTER_NETWORK_FILE
 echo "VCN_OCID=$OKE_VCN" >> $CLUSTER_NETWORK_FILE
-echo "LB_SUBNET_OCID=$CAPI_OCI_LB_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
-echo "WORKER_SUBNET_OCID=$CAPI_OCI_WORKER_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
-echo "LB_NSG_OCID=$CAPI_OCI_LB_NSG_OCID" >> $CLUSTER_NETWORK_FILE
-echo "WORKER_NSG_OCID=$CAPI_OCI_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "LB_SUBNET_OCID=$OKE_LB_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "WORKER_SUBNET_OCID=$OKE_WORKER_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "LB_NSG_OCID=$OKE_LB_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "WORKER_NSG_OCID=$OKE_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
