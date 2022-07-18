@@ -12,11 +12,11 @@ output "subnet_ids" {
 }
 output "int_lb_nsg" {
   description = "id of default NSG that can be associated with the internal load balancer"
-  value       = module.oke.int_lb
+  value       = module.oke.int_lb_nsg
 }
 output "pub_lb_nsg" {
   description = "id of default NSG that can be associated with the internal load balancer"
-  value       = module.oke.pub_lb
+  value       = module.oke.pub_lb_nsg
 }
 output "kubeconfig" {
   description = "convenient command to set KUBECONFIG environment variable before running kubectl locally"
