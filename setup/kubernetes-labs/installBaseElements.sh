@@ -20,12 +20,12 @@ CLUSTER_NETWORK=$HOME/clusterNetwork.$currentContext
 if [ -f $CLUSTER_NETWORK ]
 then
   source $CLUSTER_NETWORK
-  echo "Located cluster networking config info file $CLUSTER_NETWORK"
+  echo "Located cluster networking config info file $currentContext"
 else
-  echo "Cannot locate cluster networking config info file $CLUSTER_NETWORK, this may be problematic if installing into a non OKE cluster"
+  echo "Cannot locate cluster networking config info file $currentContext, this may be problematic if installing into a non OKE cluster"
 fi
 
-if [ -z $"LB_NSG_OCID" ]
+if [ -z "$LB_NSG_OCID" ]
 then
   echo "Cannot locate the Load Balancer network security group, for non OKE clusters this may mean that services of type LoadBalancer (e.g. the ingress controller) cannot be contacted"
 else
