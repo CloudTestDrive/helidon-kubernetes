@@ -364,10 +364,13 @@ chmod 600 $HOME/.kube/config
 # remove temp version
 rm $CAPI_KUBECONFIG
 
+KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CAPI_CONTEXT_NAME`
+
 echo "$CAPI_CLUSTER_REUSED_NAME=false" >> $SETTINGS
+echo "$KUBERNETES_CLUSTER_TYPE_NAME=CAPI" >> $SETTINGS
 
 # record some core networking info
-CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CAPI_CONTEXT_NAME
 echo "Saving network information for cluster $CAPI_CONTEXT_NAME to $CLUSTER_NETWORK_FILE"
 echo "# Network information for cluster $CAPI_CONTEXT_NAME" > $CLUSTER_NETWORK_FILE
 echo "export VCN_OCID=$CAPI_OCI_VCN_OCID" >> $CLUSTER_NETWORK_FILE
