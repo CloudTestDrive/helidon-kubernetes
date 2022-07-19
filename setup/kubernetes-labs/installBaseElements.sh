@@ -14,6 +14,24 @@ if [ $# -eq 0 ]
     echo "Skipping fully install cluster confirmation $currentContext is the kubernetes cluster name"
 fi
 
+
+CLUSTER_NETWORK=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+
+if [ -f $CLUSTER_NETWORK ]
+then
+  source $CLUSTER_NETWORK
+  echo "Located cluster networking config info file $CLUSTER_NETWORK"
+else
+  echo "Cannot locate cluster networking config info file $CLUSTER_NETWORK, this may be problematic if installing into a non OKE cluster"
+fi
+
+if [ -z $"LB_NSG_OCID" ]
+then
+  echo "Cannot locate the Load Balancer network security group, for non OKE clusters this may mean that services of type LoadBalancer (e.g. the ingress controller) cannot be contacted"
+else
+  echo "Located the load balancer network security group, this will be used when setting up the ingress controller"
+fi
+
 infoFile=$HOME/clusterInfo.$currentContext
 echo reseting cluster info file
 echo > $infoFile
@@ -28,7 +46,8 @@ source helmChartVersions.sh
 echo Create ingress namespace
 kubectl create namespace ingress-nginx
 echo install Ingress using helm
-helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20
+LB_NSG_OPTION='--set controller.service.annotations."oci\.oraclecloud\.com/oci-network-security-groups"='"$LB_NSG_OCID"
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20 $LB_NSG_OPTION
 echo Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancer
 EXTERNAL_IP=""
 while [ -z "$EXTERNAL_IP" ]; do
