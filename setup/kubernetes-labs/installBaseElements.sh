@@ -15,7 +15,7 @@ if [ $# -eq 0 ]
 fi
 
 
-CLUSTER_NETWORK=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+CLUSTER_NETWORK=$HOME/clusterNetwork.$currentContext
 
 if [ -f $CLUSTER_NETWORK ]
 then
