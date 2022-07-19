@@ -83,6 +83,8 @@ then
     echo "Removing terraform scripts"
     rm -rf $TF_DIR
     cd $SAVED_DIR
+    KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+    bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
     bash ./delete-from-saved-settings.sh $OKE_REUSED_NAME
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
@@ -95,8 +97,17 @@ then
   else
     echo "no state file, nothing to destroy"
     echo "cannot proceed"
-    exist 4
+    exit 4
   fi
 else
   echo "$TF_DIR not found, nothing we can plan a destruction around"
+fi
+
+CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+if [ -f $CLUSTER_NETWORK_FILE ]
+then
+  echo "Removing cluster networking file in $CLUSTER_NETWORK_FILE"
+  rm  $CLUSTER_NETWORK_FILE
+else
+  echo "Cannot locate cluster network file $CLUSTER_NETWORK_FILE unable to clean it up"
 fi

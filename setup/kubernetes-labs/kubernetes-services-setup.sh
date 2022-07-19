@@ -21,9 +21,10 @@ else
   echo "The images have been built and uploaded to the repo"
 fi
 
+
 if [ -z "$AUTO_CONFIRM" ]
 then
-  AUTO_CONFIRM=n
+  export AUTO_CONFIRM=false
 fi
 
 CLUSTER_CONTEXT_NAME=one
@@ -35,6 +36,28 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+CLUSTER_NETWORK=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+
+if [ -f $CLUSTER_NETWORK ]
+then
+  echo "Located cluster networking config info file $CLUSTER_NETWORK"
+else
+  echo "Cannot locate cluster networking config info file $CLUSTER_NETWORK, this may be problematic if installing into a non OKE cluster"
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Auto confirm is enabled, continue even with missing $CLUSTER_NETWORK defaulting to $REPLY"
+  else
+    read -p "Do you want to continue even with missing $CLUSTER_NETWORK (y/n) " REPLY
+  fi
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, will stop the lubernrtes services setup"
+    exit 30
+  else     
+    echo "Continuing, if this is a non OKE cluster then you may have problems"
+  fi
+fi
 
 KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=`bash ../common/settings/to-valid-name.sh KUBERNETES_SERVICES_CONFIGURED_$CLUSTER_CONTEXT_NAME`
 
@@ -45,6 +68,9 @@ else
   echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME, to reset it run the kubernetes-services-destroy.sh script, stopping."
   exit 0
 fi
+
+
+CLUSTER_NATEOWK=$HOME/clusterNet
 
 if [ -z $USER_INITIALS ]
 then

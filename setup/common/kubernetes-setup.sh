@@ -310,6 +310,12 @@ then
       exit 1
     fi
     OKE_REUSED=false
+    echo "Getting cluster netwoking info from terraform"
+    OKE_VCN=`terraform output vcn_id |  sed -e 's/"//g'`
+    OKE_LB_SUBNET_OCID=`terraform output subnet_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
+    OKE_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep workers | awk '{print $3}' | sed -e 's/"//g'`
+    OKE_LB_NSG_OCID=`terraform output pub_lb_nsg | sed -e 's/"//g'`
+    OKE_WORKER_NSG_OCID=""
     cd $SAVED_DIR
   else
     echo "Located existing cluster named $CLUSTER_NAME_FULL in $COMPARTMENT_NAME checking its status"
@@ -343,6 +349,8 @@ then
   # it's now save to save the OCID's as we've finished
   echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
   echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
+  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+  echo "$KUBERNETES_CLUSTER_TYPE_NAME=OKE" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`
   if [ -z $CLUSTER_NAME ] 
@@ -359,3 +367,13 @@ else
     echo "$OKE_REUSED_NAME=true" >> $SETTINGS
   fi
 fi
+
+# record some core networking info
+CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
+echo "Saving network information for cluster $CLUSTER_CONTEXT_NAME to $CLUSTER_NETWORK_FILE"
+echo "#Network information for cluster $CAPI_CONTEXT_NAME" > $CLUSTER_NETWORK_FILE
+echo "export VCN_OCID=$OKE_VCN" >> $CLUSTER_NETWORK_FILE
+echo "export LB_SUBNET_OCID=$OKE_LB_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "export WORKER_SUBNET_OCID=$OKE_WORKER_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
+echo "export LB_NSG_OCID=$OKE_LB_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "export WORKER_NSG_OCID=$OKE_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
