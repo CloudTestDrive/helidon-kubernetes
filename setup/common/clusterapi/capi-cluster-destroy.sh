@@ -32,7 +32,7 @@ fi
 
 
 CAPI_CONTEXT=capi
-if [ $# -gt 0 ]
+if [ $# -ge 1 ]
 then
   CAPI_CONTEXT=$1
   CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
@@ -44,9 +44,9 @@ fi
 
 
 KUBE_CONTEXT=one
-if [ $# -gt 1 ]
+if [ $# -ge 2 ]
 then
-  KUBE_CONTEXT=$1
+  KUBE_CONTEXT=$2
   echo "Operating on kubeconfig context name $KUBE_CONTEXT"
 else
   echo "Using default kubeconfig context name of $KUBE_CONTEXT"
