@@ -83,6 +83,13 @@ then
     echo "Removing terraform scripts"
     rm -rf $TF_DIR
     cd $SAVED_DIR
+    # can we remove the directory
+    REMAINING_TF_CONFIGS=`ls -1 $TF_GIT_BASE | wc -l`
+    if [ "$REMAINING_TF_CONFIGS" = 0 ]
+    then
+      echo "No remaining saved tf configs for OKE, removing the directory"
+      rmdir $TF_GIT_BASE
+    fi
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
     bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
