@@ -9,25 +9,32 @@ if [ $# -lt 2 ]
 fi
 NAMESPACE=$1
 EXTERNAL_IP=$2
-if [ $# -eq 2 ]
-  then
-    echo "setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as ther ingress controller IP address $currentContext is the current kubernetes context name"
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping entire stack confirmation, setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as the ingress controller IP address $currentContext is the current kubernetes context name"
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as ther ingress controller IP address $currentContext is the current kubernetes context name default to $REPLY"
+else
+  echo "setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as ther ingress controller IP address $currentContext is the current kubernetes context name"
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
+  echo "Setting up config in downloaded git repo using $NAMESPACE as the department name $EXTERNAL_IP as the ingress controller IP address $currentContext is the current kubernetes context name"
 fi
 cd $HOME/helidon-kubernetes/base-kubernetes
-echo Setup namespace
+echo "Setup namespace"
 bash ./create-namespace.sh $NAMESPACE
 echo export NAMESPACE=$NAMESPACE >> $settingFile
 echo 'echo NAMESPACE is set to $NAMESPACE'  >> $settingFile
-echo Creating tls store secret
+echo "Creating tls store secret"
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/create-store-cert.sh $EXTERNAL_IP
 bash ./create-services.sh
 bash ./create-ingress-rules.sh

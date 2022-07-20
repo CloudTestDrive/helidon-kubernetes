@@ -8,6 +8,11 @@ fi
 
 context=$1
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
 contextMatch=`kubectl config get-contexts --output=name  | grep -w $context `
 
 if [ -z $contextMatch ]
@@ -21,26 +26,28 @@ fi
 settingsFile=$HOME/clusterSettings.$context
 
 if [ -f $settingsFile ]
-  then
-    source $settingsFile
-    echo "Located setings, using namespace $NAMESPACE"
-  else 
-    echo "Unable to locate settings file $settingsFile cannot continue"
-    exit 1
+then
+  source $settingsFile
+  echo "Located setings, using namespace $NAMESPACE"
+else 
+  echo "Unable to locate settings file $settingsFile cannot continue"
+  exit 1
 fi
 
-if [ $# -eq 1 ]
-  then
-    echo "Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else 
-    echo "Skipping confirmation, Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard defaults to $REPLY"
+else
+  echo "Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else 
+  echo "Using context $context About to destroy existing instalation in $NAMESPACE, and remove the ingress controller and dashboard"
 fi
 
 echo "Configuring base location variables"

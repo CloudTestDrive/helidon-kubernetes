@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
 fi
 
 
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  exit 1
+fi
 
 if [ -z "$IMAGES_READY" ]
 then
@@ -52,7 +57,7 @@ else
   fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK, will stop the lubernrtes services setup"
+    echo "OK, will stop the kubernetes services setup"
     exit 30
   else     
     echo "Continuing, if this is a non OKE cluster then you may have problems"
@@ -72,11 +77,6 @@ fi
 
 CLUSTER_NATEOWK=$HOME/clusterNet
 
-if [ -z $USER_INITIALS ]
-then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
-  exit 1
-fi
 
 #check for trying to re-use the context name
 CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`

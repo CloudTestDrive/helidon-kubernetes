@@ -6,45 +6,44 @@ if [ $# -eq 0 ]
 fi
 contextname=one
 department=$1
-if [ $# -eq 1 ]
-  then
-    echo setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file.
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    if [ $# -eq 2 ]
-    then
-      contextname=$2
-      echo "Setting up config in downloaded git repo using $department as the department name, $contextname as the cluster context name (which must exist in the kubeconf) and $HOME/Wallet.zip as the DB wallet file."
-      read -p "Proceed (y/n) ?" 
-      echo    # (optional) move to a new line
-      if [[ ! $REPLY =~ ^[Yy]$ ]]
-        then
-          echo OK, exiting
-          exit 1
-      fi
-    else
-      contextname=$2
-      echo "Skipping confirmation, will use $department as the department name, $contextname as the cluster context name"
-    fi
+
+if [ $# -eq 2 ]
+then
+  contextname=$2
+fi
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY=y
+  echo "Auto confirm enabled, setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file. defaults to $REPLY"
+else
+  echo "setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file."
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
+  echo "OK, setting up config in downloaded git repo using $department as the department and namespace name $contextname as the kubernetes context and $HOME/Wallet.zip as the DB wallet file."
 fi
 
 contextMatch=`kubectl config get-contexts --output=name | grep -w $contextname`
 
 if [ -z $contextMatch ]
-  then
-    echo context $contextname not found, unable to continue
-    exit 2
-  else
-    echo Context $contextname found
+then
+  echo "context $contextname not found, unable to continue"
+  exit 2
+else
+  echo "Context $contextname found"
 fi
 
-echo Configuring base location variables
+echo "Configuring base location variables"
 export LAB_LOCATION=$HOME/helidon-kubernetes
 export LAB_SETUP_LOCATION=$LAB_LOCATION/setup
 export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
@@ -52,7 +51,7 @@ echo Configuring helm
 bash $KUBERNETES_SETUP_LOCATION/setupHelm.sh
 
 startContext=`bash get-current-context.sh`
-echo Saving current context of $startContext and switching to $contextname
+echo "Saving current context of $startContext and switching to $contextname"
 
 bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $contextname skip
 bash $KUBERNETES_SETUP_LOCATION/configure-downloaded-git-repo.sh $department skip
@@ -60,9 +59,9 @@ bash $KUBERNETES_SETUP_LOCATION/configure-downloaded-git-repo.sh $department ski
 bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $department skip
 
 
-echo Creating test data
+echo "Creating test data"
 source $HOME/clusterSettings.$contextname
 bash $LAB_LOCATION/create-test-data.sh $EXTERNAL_IP
 
-echo returning to previous context of $startContext
+echo "returning to previous context of $startContext"
 bash $KUBERNETES_SETUP_LOCATION/switch-context.sh $startContext skip

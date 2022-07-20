@@ -11,6 +11,10 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 source ../helmChartVersions.sh
 PROMETHEUS_PASSWORD=ZaphodBeeblebrox

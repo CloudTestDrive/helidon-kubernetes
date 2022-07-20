@@ -4,6 +4,11 @@ if [ $# -ne 2 ]
     echo "Missing arguments, you must provide the name of the namespace to use and the External IP address of the ingress controller service in that order"
     exit -1
 fi
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 read -p "Have you downloaded the DB wallet, updated the database connection, and updated the stockmager-config.yaml with the name of your store (y/n) ? " 
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]

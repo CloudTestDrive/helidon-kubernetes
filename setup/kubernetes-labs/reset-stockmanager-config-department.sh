@@ -6,6 +6,11 @@ if [ $# -eq 0 ]
     exit -1 
 fi
 department=$1
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -30,18 +35,20 @@ else
   exit 0
 fi
 
-if [ $# -eq 1 ]
-  then
-    echo "Updating the stockmanager config to reset $department as the department name."
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping stockmanager department reset confirmation using $department as the department name"
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, Updating the stockmanager config to reset $department as the department name defaults to $REPLY"
+else
+  echo "Updating the stockmanager config to reset $department as the department name."
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
+    echo "Department reset using $department as the department name"
 fi
 config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
 temp="$config".tmp

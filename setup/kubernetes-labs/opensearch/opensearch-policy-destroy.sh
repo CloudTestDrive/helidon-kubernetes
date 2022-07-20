@@ -13,6 +13,10 @@ fi
 
 source $SETTINGS
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 if [ -z "$OPENSEARCH_POLICIES_CONFIGURED" ]
 then
   echo "OpenSearch policies not configured"

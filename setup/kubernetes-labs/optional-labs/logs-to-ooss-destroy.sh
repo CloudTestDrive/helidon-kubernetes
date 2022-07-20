@@ -1,7 +1,6 @@
 #!/bin/bash -f
 
 CLUSTER_CONTEXT_NAME=one
-
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
@@ -19,6 +18,11 @@ if [ -f $SETTINGS ]
   else 
     echo "No existing settings cannot continue"
     exit 10
+fi
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
 fi
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 

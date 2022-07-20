@@ -11,6 +11,10 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 echo "Destroying logging namespace"
 kubectl delete namespace logging  --ignore-not-found=true

@@ -6,25 +6,31 @@ if [ $# -eq 0 ]
 fi
 
 ingressdir=$1
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 currentcontext=`kubectl config current-context`
-if [ $# -eq 1 ]
-  then
-    echo Removing the ingress rules yaml for context $currentcontext in $ingressdir
-    read -p "Proceed (y/n) ?" 
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping ingress rule remove confirmation"
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confiorm set - Removing the ingress rules yaml for context $currentcontext in $ingressdir defaulting to $REPLY"
+else
+  echo "Removing the ingress rules yaml for context $currentcontext in $ingressdir"
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+   echo "OK, exiting"
+   exit 1
+else
+    echo "OK, about to remove the customised ingress rules"
 fi
 
-echo Removing the ingress rules yaml for context $currentcontext in $ingressdir
+echo "Removing the ingress rules yaml for context $currentcontext in $ingressdir"
 for ingressrulesfile in $ingressdir/ingress*Rules-$currentcontext.yaml 
 do
-  echo Removing ingress rules yaml $ingressrulesfile
+  echo "Removing ingress rules yaml $ingressrulesfile"
   rm $ingressrulesfile
 done
-#bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/update-ingress.sh  $ingressdir $oldip '${EXTERNAL_IP}'

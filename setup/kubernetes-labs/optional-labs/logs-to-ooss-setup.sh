@@ -25,6 +25,10 @@ if [ -f $SETTINGS ]
 fi
 
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 
 echo "This script is currently in place to support testing purposes, it will not do"

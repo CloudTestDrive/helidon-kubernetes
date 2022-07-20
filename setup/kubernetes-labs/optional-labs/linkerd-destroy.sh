@@ -21,6 +21,10 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 

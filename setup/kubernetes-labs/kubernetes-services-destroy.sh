@@ -11,9 +11,10 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+
 if [ -z "$AUTO_CONFIRM" ]
 then
-  AUTO_CONFIRM=n
+  export AUTO_CONFIRM=false
 fi
 
 CLUSTER_CONTEXT_NAME=one

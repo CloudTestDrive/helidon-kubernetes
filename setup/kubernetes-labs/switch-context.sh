@@ -5,22 +5,28 @@ if [ $# -eq 0 ]
     exit -1
     
 fi
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 newcontext=$1
-if [ $# -eq 1 ]
-  then
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, Switching the kubernetes context to $newcontext - this will apply across all calls unless you overrite using --context=<name> or switch to a new default context defaults t' $REPLY"
+else
+  echo "Switching the kubernetes context to $newcontext - this will apply across all calls unless you overrite using --context=<name> or switch to a new default context"
+  read -p "Proceed (y/n) ?" REPLY
+fi
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
     echo "Switching the kubernetes context to $newcontext - this will apply across all calls unless you overrite using --context=<name> or switch to a new default context"
-    read -p "Proceed (y/n) ?" 
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping confirmation, switching the kubernetes context to $newcontext - this will apply across all calls unless you overrite using --context=<name> or switch to a new default context"
 fi
 
 kubectl config use-context $newcontext
 
-echo Switched, new default context is is
+echo "Switched, new default context is is"
 kubectl config current-context
