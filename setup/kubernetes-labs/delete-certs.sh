@@ -1,7 +1,8 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "You must provide the IP address used to create the certificate files"
+    echo "$SCRIPT_NAME, You must provide the IP address used to create the certificate files"
     exist 1
 fi
 EXTERNAL_IP=$1

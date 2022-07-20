@@ -1,7 +1,15 @@
 #!/bin/bash -f
-currentcontext=`kubectl config current-context`
-for ingressfile in $HOME/helidon-kubernetes/base-kubernetes/ingress*Rules-$currentcontext.yaml 
+SCRIPT_NAME=`basename $0`
+CLUSTER_CONTEXT_NAME=one
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+for INGRESS_FILE in $HOME/helidon-kubernetes/base-kubernetes/ingress*Rules-$CLUSTER_CONTEXT_NAME.yaml 
 do
-   echo Applying $ingressfile
-   kubectl apply -f $ingressfile
+   echo "Applying $INGRESS_FILE"
+   kubectl apply -f $INGRESS_FILE  --context $CLUSTER_CONTEXT_NAME
 done

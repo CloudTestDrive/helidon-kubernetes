@@ -1,7 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the location of your wallet file e.g. $HOME/Wallet.zip"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "   1st arg the location of your wallet file e.g. $HOME/Wallet.zip"
     exit -1 
 fi
 WALLET_LOCATION=$1

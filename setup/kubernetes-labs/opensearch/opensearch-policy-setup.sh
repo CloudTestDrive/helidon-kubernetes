@@ -1,7 +1,7 @@
 #!/bin/bash -f
 
 export SETTINGS=$HOME/hk8sLabsSettings
-
+SCRIPT_NAME=`basename $0`
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings information"

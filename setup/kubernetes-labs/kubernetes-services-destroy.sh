@@ -1,5 +1,5 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -19,7 +19,7 @@ fi
 
 CLUSTER_CONTEXT_NAME=one
 
-if [ $# -gt 0 ]
+if [ $# -ge 1 ]
 then
   CLUSTER_CONTEXT_NAME=$1
   echo "Operating on context name $CLUSTER_CONTEXT_NAME"
@@ -67,7 +67,7 @@ else
 fi
 
 # run the pre-existing script
-bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME skip
+bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ $RESP -ne 0 ]
 then

@@ -1,5 +1,5 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -74,10 +74,6 @@ else
   exit 0
 fi
 
-
-CLUSTER_NATEOWK=$HOME/clusterNet
-
-
 #check for trying to re-use the context name
 CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
 
@@ -96,7 +92,7 @@ then
 fi
 
 # run the pre-existing script
-bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME skip
+bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 RESP=$?
 if [ $RESP -ne 0 ]

@@ -1,4 +1,5 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
     echo "Missing arguments, you must provide the name of the kubernetes context to switch to"

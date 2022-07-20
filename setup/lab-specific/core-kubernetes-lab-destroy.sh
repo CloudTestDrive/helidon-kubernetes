@@ -1,5 +1,14 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+CLUSTER_CONTEXT_NAME=one
 
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 if [ -f ./script-locations.sh ]
 then
   source ./script-locations.sh
@@ -63,11 +72,11 @@ SAVED_PWD=`pwd`
 cd $MODULES_DIR
 
 # Try and tidy things up in the cluster
-# fortunately everything uses the same ingress so only one LB which is created when the ingrss controller is creted
+# fortunately everything uses the same ingress so only one LB which is created when the ingress controller is creted
 # so just delete the controller namespoace which will delete the LB, everything else is inside OKE so will be destroyed 
 # with the cluster
 
-kubectl delete namespace ingress-nginx --ignore-not-found=true
+kubectl delete namespace ingress-nginx --ignore-not-found=true  --context $CLUSTER_CONTEXT_NAME
 
 cd $MODULES_DIR
 

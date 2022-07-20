@@ -1,8 +1,25 @@
 #!/bin/bash
+SCRIPT_NAME=`basename $0`
 if [ $# -ne 2 ]
   then
-    echo "Missing arguments, you must provide the name of the namespace to use and the External IP address of the ingress controller service in that order"
-    exit -1
+    echo "$SCRIPT_NAME Missing arguments, you must provide :"
+    echo "  1st arg the name of the namespace to use"
+    echo "  2nd arg External IP address of the ingress controller service"
+    echo "Optional"
+    echo "  3rd arg the name of your cluster context (if not provided one will be used by default)"
+    exit -1 
+fi
+NAMESPACE=$1
+EXTERNAL_IP=$2
+
+CLUSTER_CONTEXT_NAME=one
+
+if [ $# -ge 3 ]
+then
+  CLUSTER_CONTEXT_NAME=$3
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 if [ -z "$AUTO_CONFIRM" ]
@@ -20,25 +37,23 @@ read -p "Have you created the root CA  (y/n) ?"
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-    echo OK, exiting, please create the root CA
+    echo "OK, exiting, please create the root CA"
     exit 1
 fi
 
-echo Please check the output to make sure that the right context is selected as the default below
-kubectl config get-contexts
-read -p "Is the right cluster selected (y/n) ?" 
+read -p "You are sure you want to use cluster context $CLUSTER_CONTEXT_NAME (y/n) ?" 
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-    echo OK, exiting
+    echo "OK, exiting"
     exit 1
 fi
-read -p "Ready to delete any existing namespace $1 and setup the new stack using $2 as the external IP (y/n) ?" 
+read -p "Ready to delete any existing namespace $NAMESPACE and setup the new stack using ingress controller load balancer $EXTERNAL_IP in cluster context $CLUSTER_CONTEXT_NAME as the external IP (y/n) ?" 
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-    echo OK, exiting
+    echo "OK, exiting"
     exit 1
 fi
 
-bash ./executeRunStack.sh $1 $2
+bash ./executeRunStack.sh $NAMESPACE $EXTERNAL_IP $CLUSTER_CONTEXT_NAME

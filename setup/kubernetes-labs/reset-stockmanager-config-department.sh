@@ -1,11 +1,12 @@
 #!/bin/bash
-
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the name of your department, e.g. Tims"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "  1st the name of your DEPARTMENT, e.g. tg"
     exit -1 
 fi
-department=$1
+DEPARTMENT=$1
 
 if [ -z "$AUTO_CONFIRM" ]
 then
@@ -15,10 +16,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings"
+    echo "$SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
-    echo "No existing settings, cannot continue"
+    echo "$SCRIPT_NAME No existing settings, cannot continue"
     exit 10
 fi
 
@@ -38,9 +39,9 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY="y"
-  echo "Auto confirm enabled, Updating the stockmanager config to reset $department as the department name defaults to $REPLY"
+  echo "Auto confirm enabled, Updating the stockmanager config to reset $DEPARTMENT as the department name defaults to $REPLY"
 else
-  echo "Updating the stockmanager config to reset $department as the department name."
+  echo "Updating the stockmanager config to reset $DEPARTMENT as the department name."
   read -p "Proceed (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -48,12 +49,12 @@ then
   echo "OK, exiting"
   exit 1
 else
-    echo "Department reset using $department as the department name"
+    echo "Department reset using $DEPARTMENT as the department name"
 fi
-config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
-temp="$config".tmp
-echo "Updating the stockmanager config in $config to reset $department as the department name"
-# echo command is "s/  department: \"$department Shop\"/#  department: \"My Shop\"/"
-cat $config | sed -e "s/  department: \"$department Shop\"/#  department: \"My Shop\"/" > $temp
-rm $config
-mv $temp $config
+STOCKMANAGER_CONFIG=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
+TEMP="$STOCKMANAGER_CONFIG".tmp
+echo "Updating the stockmanager config in $STOCKMANAGER_CONFIG to reset $DEPARTMENT as the department name"
+# echo command is "s/  department: \"$DEPARTMENT Shop\"/#  department: \"My Shop\"/"
+cat $STOCKMANAGER_CONFIG | sed -e "s/  department: \"$DEPARTMENT Shop\"/#  department: \"My Shop\"/" > $TEMP
+rm $STOCKMANAGER_CONFIG
+mv $TEMP $STOCKMANAGER_CONFIG

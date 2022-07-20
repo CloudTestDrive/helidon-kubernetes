@@ -1,7 +1,15 @@
 #!/bin/bash -f
-currentContext=`bash get-current-context.sh`
-settingsFile=$HOME/clusterSettings.$currentContext
-source $settingsFile
+SCRIPT_NAME=`basename $0`CLUSTER_CONTEXT_NAME=one
+
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+SETTINGS_FILE=$HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
+source $SETTINGS_FILE
 
 if [ -z "$AUTO_CONFIRM" ]
 then
@@ -10,9 +18,9 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY="y"
-  echo "Autpo confirm enabled, About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $settingsFile Kuberetes context is $currentContext defaults to $REPLY"
+  echo "Autpo confirm enabled, About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME defaults to $REPLY"
 else
-  echo "About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $settingsFile Kuberetes context is $currentContext"
+  echo "About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME"
   read -p "Proceed (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -20,19 +28,19 @@ then
   echo "OK, exiting"
   exit 1
 else
-    echo "About to remove existing stack in $NAMESPACE cluster settings file $settingsFile Kuberetes context is $currentContext"
+    echo "About to remove existing stack in $NAMESPACE cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME"
 fi
 echo "Attempting to run linker removal script"
-bash linkerd/linkerd-uninstall.sh $NAMESPACE skip
+bash linkerd/linkerd-uninstall.sh $NAMESPACE $CLUSTER_CONTEXT_NAME
 echo "deleting monitoring namespace - if present"
-kubectl delete namespace monitoring --ignore-not-found=true
+kubectl delete namespace monitoring --ignore-not-found=true  --context $CLUSTER_CONTEXT_NAME
 echo "deleting logging namespace - if present"
-kubectl delete namespace logging --ignore-not-found=true
+kubectl delete namespace logging --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
 echo "deleting your existing deployments in $NAMESPACE"
-kubectl delete namespace $NAMESPACE  --ignore-not-found=true
+kubectl delete namespace $NAMESPACE  --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
 echo "reseting to default namespace"
-kubectl config set-context --current --namespace=default
+kubectl config set-context $CLUSTER_CONTEXT_NAME --namespace=default
 echo "Blanking saved namespace"
-echo NAMESPACE= >> $settingsFile
+echo NAMESPACE= >> $SETTINGS_FILE
 echo "Tidying up security certificates and keys specific to $EXTERNAL_IP"
-bash delete-certs.sh $EXTERNAL_IP skip
+bash delete-certs.sh $EXTERNAL_IP 
