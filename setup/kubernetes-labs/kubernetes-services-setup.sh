@@ -119,6 +119,8 @@ then
 fi
 
 echo "$KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
+# reload the settings file, some of the counters may have changed if other loads were happening
+source $SETTINGS
 
 # update the count of installed clusters with services - used for tracking if the config files need resetting
 let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES+1"
