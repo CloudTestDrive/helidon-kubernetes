@@ -34,10 +34,10 @@ else
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-    echo "OK, about to remove the customised ingress rules"
+  echo "OK, exiting"
+  exit 1
 else
-   echo "OK, exiting"
-   exit 1
+  echo "OK, about to remove the customised ingress rules"
 fi
 
 echo "Removing the ingress rules yaml for context $CLUSTER_CONTEXT_NAME in $INGRESS_DIR"

@@ -34,10 +34,10 @@ else
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "Templating the ingress rules"
-else
   echo "OK, Won't template the ingress rules"
   exit 1
+else
+  echo "Templating the ingress rules"
 fi
 echo "Templating ingress rules - updating the template ingress rules yaml in $INGRESS_DIR setting $EXTERNAL_IP as the external IP address"
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/template-ingress.sh  $INGRESS_DIR '${EXTERNAL_IP}' $EXTERNAL_IP
