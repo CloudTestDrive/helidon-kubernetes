@@ -11,12 +11,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-
-if [ -z "$AUTO_CONFIRM" ]
-then
-  export AUTO_CONFIRM=false
-fi
-
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -ge 1 ]
@@ -48,6 +42,18 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+   read -p "Do you want to auto confirm this script tearing down $CLUSTER_NETWORK (y/n) " REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then  
+    echo "OK, will prompt you"
+    export AUTO_CONFIRM=false
+  else     
+  echo "OK, will take the default answer where possible"
+    export AUTO_CONFIRM=true
+  fi
+fi
 if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
 then
   echo "WARNING, cannot identify the number of clusters with installed services. This script will"

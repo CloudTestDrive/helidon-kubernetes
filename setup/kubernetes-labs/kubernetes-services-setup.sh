@@ -27,11 +27,6 @@ else
 fi
 
 
-if [ -z "$AUTO_CONFIRM" ]
-then
-  export AUTO_CONFIRM=false
-fi
-
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
@@ -42,6 +37,19 @@ else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+   read -p "Do you want to auto confirm this script setting up $CLUSTER_NETWORK (y/n) " REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then  
+    echo "OK, will prompt you"
+    export AUTO_CONFIRM=false
+  else     
+  echo "OK, will take the default answer where possible"
+    export AUTO_CONFIRM=true
+  fi
+fi
 
 if [ -z $CONTEXT_MATCH ]
 then
