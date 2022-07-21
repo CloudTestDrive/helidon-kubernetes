@@ -41,6 +41,15 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+
+if [ -z $CONTEXT_MATCH ]
+then
+  echo "context $CLUSTER_CONTEXT_NAME not found, unable to continue"
+  exit 2
+else
+  echo "Context $CLUSTER_CONTEXT_NAME found"
+fi
 CLUSTER_NETWORK=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 
 if [ -f $CLUSTER_NETWORK ]

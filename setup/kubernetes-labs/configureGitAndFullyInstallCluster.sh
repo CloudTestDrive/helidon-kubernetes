@@ -52,9 +52,9 @@ else
   echo "OK, setting up config in downloaded git repo using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context and $HOME/Wallet.zip as the DB wallet file."
 fi
 
-contextMatch=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
 
-if [ -z $contextMatch ]
+if [ -z $CONTEXT_MATCH ]
 then
   echo "context $CLUSTER_CONTEXT_NAME not found, unable to continue"
   exit 2
