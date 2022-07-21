@@ -102,23 +102,22 @@ then
   echo "OK, not installing"
   exit 1
 fi
-ORIG_K8S_CONTEXT=`kubectl config current-context`
-# switch to our specified context
-kubectl config use-context $CLUSTER_CONTEXT_NAME
-if [ $? = 0 ]
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+
+if [ -z $CONTEXT_MATCH ]
 then
-  echo "Switch so context $CLUSTER_CONTEXT_NAME"
+  echo "context $CLUSTER_CONTEXT_NAME not found, unable to continue"
+  exit 2
 else
-  echo "Unable to find kubernetes context $CURRENT_CONTEXT_NAME, cannot continue"
-  exit 1
+  echo "Context $CLUSTER_CONTEXT_NAME found"
 fi
 
 echo "Setting up namespace for capi"
-NS_COUNT=`kubectl get ns $CAPI_NAMESPACE --ignore-not-found=true | grep -v NAME | wc -l`
+NS_COUNT=`kubectl get ns $CAPI_NAMESPACE --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME | grep -v NAME | wc -l`
 if [ $NS_COUNT = 0 ]
 then
   echo "Creating cluster api namespace of $CAPI_NAMESPACE"
-  kubectl create namespace $CAPI_NAMESPACE
+  kubectl create namespace $CAPI_NAMESPACE --context $CLUSTER_CONTEXT_NAME
   CAPI_NAMESPACE_REUSED=false
 else
   echo "Cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
@@ -142,7 +141,7 @@ EOF
 # record the status of the setr manager ns
 CERT_MGR_NS=cert-manager
 echo "Checking for pre-existing $CERT_MGR_NS namespace"
-CERT_MGR_NS_COUNT=`kubectl get ns | grep "$CERT_MGR_NS" | wc -l`
+CERT_MGR_NS_COUNT=`kubectl get ns  --context $CLUSTER_CONTEXT_NAME | grep "$CERT_MGR_NS" | wc -l`
 if [ "$CERT_MGR_NS_COUNT" = 0 ]
 then
   echo "No pre-existing namespace $CERT_MGR_NS"
@@ -167,11 +166,6 @@ export OCI_REGION_B64="$(echo -n "$OCI_REGION" | base64 | tr -d '\n')"
 export OCI_CREDENTIALS_KEY_B64=$(base64 < $SSH_PRIVATE_KEY_FILE | tr -d '\n')
    
 
-$CLUSTERCTL_PATH init --infrastructure oci --target-namespace $CAPI_NAMESPACE
-
-# revert to the origional context
-kubectl config use-context $ORIG_K8S_CONTEXT
-
-echo "Reverted to context $ORIG_K8S_CONTEXT"
+$CLUSTERCTL_PATH init --infrastructure oci --target-namespace $CAPI_NAMESPACE   --kubeconfig-context $CLUSTER_CONTEXT_NAME
 
 echo "$CAPI_PROVISIONER_REUSED_NAME=$CAPI_PROVISIONER_REUSED" >> $SETTINGS
