@@ -57,9 +57,13 @@ export LAB_LOCATION=$HOME/helidon-kubernetes
 export LAB_SETUP_LOCATION=$LAB_LOCATION/setup
 export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
 
-bash $KUBERNETES_SETUP_LOCATION/teardownStack.sh $NAMESPACE $CLUSTER_CONTEXT_NAME
-bash $KUBERNETES_SETUP_LOCATION/removeBaseElements.sh $CLUSTER_CONTEXT_NAME
+SAVED_DIR=`pwd`
+cd $KUBERNETES_SETUP_LOCATION
+
+bash teardownStack.sh $NAMESPACE $CLUSTER_CONTEXT_NAME
+bash removeBaseElements.sh $CLUSTER_CONTEXT_NAME
 
 
-bash $KUBERNETES_SETUP_LOCATION/unconfigure-downloaded-git-repo.sh $NAMESPACE skip
+bash unconfigure-downloaded-git-repo.sh $NAMESPACE 
+cd $SAVED_DIR
 
