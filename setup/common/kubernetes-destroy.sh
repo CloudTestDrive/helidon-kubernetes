@@ -90,8 +90,8 @@ then
       echo "No remaining saved tf configs for OKE, removing the directory"
       rmdir $TF_GIT_BASE
     fi
-    KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
-    bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
+    KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+    bash ./delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
     bash ./delete-from-saved-settings.sh $OKE_REUSED_NAME
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
