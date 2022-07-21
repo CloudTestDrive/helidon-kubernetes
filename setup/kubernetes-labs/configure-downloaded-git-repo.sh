@@ -41,7 +41,7 @@ else
     echo "Using $DEPARTMENT as the deparment name and $HOME/Wallet.zip as the DB wallet file"
 fi
 # run the config setup - note that the skips tell the sub scripts not to ask for confirmation
-bash ./set-stockmanager-config-DEPARTMENT.sh $DEPARTMENT
+bash ./set-stockmanager-config-department.sh $DEPARTMENT
 bash ./install-db-wallet.sh $HOME/Wallet.zip 
 DB_CONNECTION_NAME=`bash ./get-database-connection-name.sh`
 bash ./set-database-connection-secret.sh $DB_CONNECTION_NAME
