@@ -118,7 +118,7 @@ OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.dat
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
-TF_GIT_BASE=$HOME/oke-labs-terraform
+TF_GIT_BASE=$HOME/oke-terraform
 
 if [ -z $OKE_OCID ]
 then

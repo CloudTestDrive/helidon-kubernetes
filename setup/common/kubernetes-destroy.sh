@@ -42,7 +42,7 @@ OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME
 OKE_OCID="${!OKE_OCID_NAME}"
 #echo "Checking for $OKE_OCID_NAME var value is $OKE_OCID"
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
-TF_GIT_BASE=$HOME/oke-labs-terraform
+TF_GIT_BASE=$HOME/oke-terraform
 
 if [ -d $TF_GIT_BASE ]
 then
