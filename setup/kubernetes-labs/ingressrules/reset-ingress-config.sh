@@ -41,7 +41,7 @@ else
 fi
 
 echo "Removing the ingress rules yaml for context $CLUSTER_CONTEXT_NAME in $INGRESS_DIR"
-for INGRESS_RULES_FILE in $ingressdir/ingress*Rules-$CLUSTER_CONTEXT_NAME.yaml 
+for INGRESS_RULES_FILE in $INGRESS_DIR/ingress*Rules-$CLUSTER_CONTEXT_NAME.yaml 
 do
   echo "Removing ingress rules yaml $INGRESS_RULES_FILE"
   rm $INGRESS_RULES_FILE
