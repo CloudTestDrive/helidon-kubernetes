@@ -2,10 +2,11 @@
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the name of your department, e.g. tg"
+    echo "No arguments supplied, you must provide :"
+    echo "  1st arg the name of your department, e.g. tg"
     exit -1 
 fi
-department=$1
+DEPARTMENT=$1
 
 if [ -z "$AUTO_CONFIRM" ]
 then
