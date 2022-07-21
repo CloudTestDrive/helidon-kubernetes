@@ -1,9 +1,17 @@
 #!/bin/bash -f
-SCRIPT_NAME=`basename $0`CLUSTER_CONTEXT_NAME=one
-
-if [ $# -ge 1 ]
+SCRIPT_NAME=`basename $0`
+if [ $# -eq 0 ]
+  then
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "  1st arg the name of your namespace - e.g. tg"
+    echo "Optional"
+    echo "  2nd arg the name of the cluser context - defaults to one"
+    exit -1 
+fi
+NAMESPACE=$1
+if [ $# -ge 2 ]
 then
-  CLUSTER_CONTEXT_NAME=$1
+  CLUSTER_CONTEXT_NAME=$2
   echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
 else
   echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
@@ -18,7 +26,7 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY="y"
-  echo "Autpo confirm enabled, About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME defaults to $REPLY"
+  echo "Auto confirm enabled, About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME defaults to $REPLY"
 else
   echo "About to remove existing stack in $NAMESPACE and reset ingress config and update cluster settings file $SETTINGS_FILE Kuberetes context is $CLUSTER_CONTEXT_NAME"
   read -p "Proceed (y/n) ?" REPLY
