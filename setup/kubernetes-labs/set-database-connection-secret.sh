@@ -2,7 +2,7 @@
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the \"_high\" name of your database - e.g. tgdemo_high"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide the \"_high\" name of your database - e.g. tgdemo_high"
     exit -1 
 fi
 
