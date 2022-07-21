@@ -25,9 +25,9 @@ else
 fi 
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
-  echo "Updating the service mesh ingress config to remove templated files."
-else
   echo "OK, exiting"
   exit 1
+else
+  echo "Updating the service mesh ingress config to remove templated files."
 fi
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $CLUSTER_CONTEXT_NAME
