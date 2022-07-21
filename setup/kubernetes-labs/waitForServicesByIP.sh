@@ -9,14 +9,16 @@ EXTERNAL_IP=$1
 
 echo "checking https://store.$EXTERNAL_IP.nip.io/store/stocklevel for a 200 response"
 
-RESP=""
+OK_RESP=""
 WAIT_LOOP_LIMIT=60
 CHECK_COUNTER=0
-while [ -z "$RESP" ] ; do
+while [ -z "$OK_RESP" ] ; do
   let CHECK_COUNTER="$CHECK_COUNTER+1"
-  echo "Waiting for services to start, test $CHECK_COUNTER"
-  resp=$(curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "200 OK")
-  if [ -z "$RESP" ] 
+  echo -n "Waiting for services to start on $EXTERNAL_IP, test $CHECK_COUNTER"
+  RESP=`curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "HTTP/1.1"`
+  echo "response is $RESP"
+  OK_RESP=`echo $RESP | grep "200 OK"`
+  if [ -z "$OK_RESP" ] 
   then
     if [ "$CHECK_COUNTER" = "$WAIT_LOOP_LIMIT" ]
     then
