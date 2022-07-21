@@ -36,9 +36,9 @@ else
 fi 
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
-  echo "Updating the service mesh ingress config to set $EXTERNAL_IP as the External IP address.."
-else
   echo "OK, exiting"
   exit 1
+else
+  echo "Updating the service mesh ingress config to set $EXTERNAL_IP as the External IP address.."
 fi
 bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
