@@ -69,8 +69,6 @@ export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
 echo Configuring helm
 bash $KUBERNETES_SETUP_LOCATION/setupHelm.sh
 
-echo "Saving current context of $startContext and switching to $CLUSTER_CONTEXT_NAME"
-
 bash $KUBERNETES_SETUP_LOCATION/configure-downloaded-git-repo.sh $DEPARTMENT 
 
 bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $DEPARTMENT $CLUSTER_CONTEXT_NAME
