@@ -36,7 +36,6 @@ then
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
-CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
 
 if [ -z "$AUTO_CONFIRM" ]
 then
@@ -50,6 +49,7 @@ then
     export AUTO_CONFIRM=true
   fi
 fi
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
 
 if [ -z $CONTEXT_MATCH ]
 then
