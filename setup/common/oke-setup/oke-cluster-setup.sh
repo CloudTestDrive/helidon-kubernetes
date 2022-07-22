@@ -237,7 +237,7 @@ then
     echo "Configuring terraform"
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
-    cp $TF_SOURCE_CONFIG_DIR/oke-outputs.tf $TFO
+    cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
     cd $TF_DIR
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION $OCI_REGION
