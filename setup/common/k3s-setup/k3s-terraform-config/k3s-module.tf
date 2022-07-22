@@ -1,4 +1,4 @@
-module oke {
+module k3s {
 
   
   source = "K3S_GH_URL"
