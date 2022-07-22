@@ -222,7 +222,7 @@ then
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
-    TF_GIT_BASE=$HOME/oke-labs-terraform
+    TF_GIT_BASE=$HOME/oke-terraform
     mkdir -p $TF_GIT_BASE
     cd $TF_GIT_BASE
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
