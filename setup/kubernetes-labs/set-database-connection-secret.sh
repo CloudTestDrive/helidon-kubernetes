@@ -1,11 +1,16 @@
 #!/bin/bash
-
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the \"_high\" name of your database - e.g. tgdemo_high"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide the \"_high\" name of your database - e.g. tgdemo_high"
     exit -1 
 fi
-dbname=$1
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+DB_CONNECTION_NAME=$1
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -30,23 +35,25 @@ else
   exit 0
 fi
 
-if [ $# -eq 1 ]
-  then
-    echo "Updating the database connection secret config to set $dbname as the database connection."
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping database connection secret confirmation"
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, Updating the database connection secret config to set $DB_CONNECTION_NAME as the database connection defaults to $REPLY"
+else
+  echo "Updating the database connection secret config to set $DB_CONNECTION_NAME as the database connection."
+  read -p "Proceed (y/n) ?" REPLY
 fi
-config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
-temp="$config".tmp
-echo Updating the database connection secret config in $config to set $dbname as the database connection
-# echo command is "s/<database connection name>/$dbname/"
-cat $config | sed -e "s/<database connection name>/$dbname/" > $temp
-rm $config
-mv $temp $config
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
+  echo "Updating the database connection secret config to set $DB_CONNECTION_NAME as the database connection"
+fi
+DB_CONNECTION_SECRET_YAML=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
+TEMP="$DB_CONNECTION_SECRET_YAML".tmp
+echo "Updating the database connection secret config in $DB_CONNECTION_SECRET_YAML to set $DB_CONNECTION_NAME as the database connection"
+# echo command is "s/<database connection name>/$DB_CONNECTION_NAME/"
+cat $DB_CONNECTION_SECRET_YAML | sed -e "s/<database connection name>/$DB_CONNECTION_NAME/" > $TEMP
+rm $DB_CONNECTION_SECRET_YAML
+mv $TEMP $DB_CONNECTION_SECRET_YAML

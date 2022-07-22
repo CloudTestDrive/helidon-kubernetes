@@ -1,5 +1,5 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
 fi
 
 
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  exit 1
+fi
 
 if [ -z "$IMAGES_READY" ]
 then
@@ -22,11 +27,6 @@ else
 fi
 
 
-if [ -z "$AUTO_CONFIRM" ]
-then
-  export AUTO_CONFIRM=false
-fi
-
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
@@ -35,6 +35,28 @@ then
   echo "Operating on context name $CLUSTER_CONTEXT_NAME"
 else
   echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+   read -p "Do you want to auto confirm this script setting up $CLUSTER_NETWORK (y/n) " REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then  
+    echo "OK, will prompt you"
+    export AUTO_CONFIRM=false
+  else     
+  echo "OK, will take the default answer where possible"
+    export AUTO_CONFIRM=true
+  fi
+fi
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+
+if [ -z $CONTEXT_MATCH ]
+then
+  echo "context $CLUSTER_CONTEXT_NAME not found, unable to continue"
+  exit 2
+else
+  echo "Context $CLUSTER_CONTEXT_NAME found"
 fi
 CLUSTER_NETWORK=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 
@@ -52,7 +74,7 @@ else
   fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK, will stop the lubernrtes services setup"
+    echo "OK, will stop the kubernetes services setup"
     exit 30
   else     
     echo "Continuing, if this is a non OKE cluster then you may have problems"
@@ -67,15 +89,6 @@ then
 else
   echo "This script has already configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME, to reset it run the kubernetes-services-destroy.sh script, stopping."
   exit 0
-fi
-
-
-CLUSTER_NATEOWK=$HOME/clusterNet
-
-if [ -z $USER_INITIALS ]
-then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
-  exit 1
 fi
 
 #check for trying to re-use the context name
@@ -96,7 +109,7 @@ then
 fi
 
 # run the pre-existing script
-bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME skip
+bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 RESP=$?
 if [ $RESP -ne 0 ]
@@ -106,6 +119,8 @@ then
 fi
 
 echo "$KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
+# reload the settings file, some of the counters may have changed if other loads were happening
+source $SETTINGS
 
 # update the count of installed clusters with services - used for tracking if the config files need resetting
 let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES+1"

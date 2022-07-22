@@ -1,11 +1,17 @@
 #!/bin/bash
-
+SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the \"_high\" name of your database - e.g. tgdemo_high"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "  1st arg the \"_high\" name of your database - e.g. tgdemo_high"
     exit -1 
 fi
-dbname=$1
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
+DB_NAME=$1
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -30,23 +36,24 @@ else
   exit 0
 fi
 
-if [ $# -eq 1 ]
-  then
-    echo "Updating the database connection secret config to reset $dbname as the database connection."
-    read -p "Proceed (y/n) ?"
-    echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-      then
-        echo OK, exiting
-        exit 1
-    fi
-  else
-    echo "Skipping database connection secret confirmation"
+if [ "$AUTO_CONFIRM" = "true" ]
+then
+  REPLY="y"
+  echo "Auto confirm enabled, Updating the database connection secret config to reset $dbname as the database connection defaults to $REPLY"
+else
+  read -p "Proceed (y/n) ?" REPLY
 fi
-config=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
-temp="$config".tmp
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting"
+  exit 1
+else
+  echo "Resetting database connection secret"
+fi
+DB_SECRET=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
+TEMP="$DB_SECRET".tmp
 echo "Updating the database connection secret config in $config to reset $dbname as the database connection"
-# echo command is "s/$dbname/<database connection name>/"
-cat $config | sed -e "s/$dbname/<database connection name>/" > $temp
-rm $config
-mv $temp $config
+# echo command is "s/$DB_NAME/<database connection name>/"
+cat $DB_SECRET | sed -e "s/$DB_NAME/<database connection name>/" > $TEMP
+rm $DB_SECRET
+mv $TEMP $DB_SECRET

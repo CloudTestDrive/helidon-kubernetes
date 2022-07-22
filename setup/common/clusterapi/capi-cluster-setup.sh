@@ -37,7 +37,7 @@ then
 fi
 
 CAPI_CONTEXT=capi
-if [ $# -gt 0 ]
+if [ $# -ge 1 ]
 then
   CAPI_CONTEXT=$1
   CAPI_CONTEXT_NAME="$USER_INITIALS"-"$CAPI_CONTEXT"
@@ -49,9 +49,9 @@ fi
 
 
 KUBE_CONTEXT=one
-if [ $# -gt 1 ]
+if [ $# -ge 2 ]
 then
-  KUBE_CONTEXT=$1
+  KUBE_CONTEXT=$2
   echo "Operating on kubeconfig context name $KUBE_CONTEXT"
 else
   echo "Using default kubeconfig context name of $KUBE_CONTEXT"
@@ -189,11 +189,11 @@ then
 fi
 
 echo "Setting up namespace for capi cluster"
-NS_COUNT=`kubectl get ns $CAPI_CLUSTER_NAMESPACE --ignore-not-found=true | grep -v NAME | wc -l`
+NS_COUNT=`kubectl get ns $CAPI_CLUSTER_NAMESPACE --ignore-not-found=true --context $KUBE_CONTEXT | grep -v NAME | wc -l`
 if [ $NS_COUNT = 0 ]
 then
   echo "Creating cluster api namespace of $CAPI_CLUSTER_NAMESPACE"
-  kubectl create namespace $CAPI_CLUSTER_NAMESPACE
+  kubectl create namespace $CAPI_CLUSTER_NAMESPACE --context $KUBE_CONTEXT
   CAPI_CLUSTER_NAMESPACE_REUSED=false
 else
   echo "Cluster cluster namespace $CAPI_NAMESPACE already exists, will reuse it"
@@ -215,7 +215,7 @@ LOOP_SLEEP=5
 for i in `seq 1 $LOOP_COUNT`
 do
   echo "Capi available test $i for capi cluster $CAPI_CONTEXT_NAME"
-  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | wc -l`  
+  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" --context $KUBE_CONTEXT | grep -v PHASE | wc -l`  
   if [ "$CAPI_CLUSTER_COUNT" = "1" ]
   then
     echo "Cluster created"
@@ -238,7 +238,7 @@ LOOP_SLEEP=30
 for i in `seq 1 $LOOP_COUNT`
 do
   echo "Capi provisioned test $i for capi cluster $CAPI_CONTEXT_NAME"
-  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" | grep -v PHASE | grep Provisioned | wc -l`  
+  CAPI_CLUSTER_COUNT=`kubectl get cluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" --context $KUBE_CONTEXT | grep -v PHASE | grep Provisioned | wc -l`  
   if [ "$CAPI_CLUSTER_COUNT" = "1" ]
   then
     echo "Cluster provisioned"
@@ -259,7 +259,7 @@ fi
 CAPI_KUBECONFIG=kubeconfig-capi-$CAPI_CONTEXT_NAME.config
 echo "Getting kubeconfig to $CAPI_KUBECONFIG"
 
-$HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" > $CAPI_KUBECONFIG
+$HOME/capi/clusterctl get kubeconfig "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" --kubeconfig-context $KUBE_CONTEXT > $CAPI_KUBECONFIG
 
 echo "Waiting for worker node(s) to be provisioned"
 WORKERS_PROVISIONED=false
@@ -315,7 +315,7 @@ then
 fi
 echo "Locating OCI specific cloud provider settings"
 
-CAPI_OCI_CLUSTER_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" -o json`
+CAPI_OCI_CLUSTER_JSON=`kubectl get ocicluster "$CAPI_CONTEXT_NAME" --namespace "$CAPI_CLUSTER_NAMESPACE" --context $KUBE_CONTEXT -o json`
 
 CAPI_OCI_VCN_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r ".spec.networkSpec.vcn.id"`
 CAPI_OCI_LB_SUBNET_OCID=`echo $CAPI_OCI_CLUSTER_JSON | jq -r '.spec.networkSpec.vcn.subnets[] | select (.name=="service-lb") | .id'`

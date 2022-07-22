@@ -1,5 +1,5 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -11,14 +11,9 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z "$AUTO_CONFIRM" ]
-then
-  AUTO_CONFIRM=n
-fi
-
 CLUSTER_CONTEXT_NAME=one
 
-if [ $# -gt 0 ]
+if [ $# -ge 1 ]
 then
   CLUSTER_CONTEXT_NAME=$1
   echo "Operating on context name $CLUSTER_CONTEXT_NAME"
@@ -47,6 +42,18 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+   read -p "Do you want to auto confirm this script tearing down $CLUSTER_NETWORK (y/n) " REPLY
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then  
+    echo "OK, will prompt you"
+    export AUTO_CONFIRM=false
+  else     
+  echo "OK, will take the default answer where possible"
+    export AUTO_CONFIRM=true
+  fi
+fi
 if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
 then
   echo "WARNING, cannot identify the number of clusters with installed services. This script will"
@@ -66,7 +73,7 @@ else
 fi
 
 # run the pre-existing script
-bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME skip
+bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ $RESP -ne 0 ]
 then

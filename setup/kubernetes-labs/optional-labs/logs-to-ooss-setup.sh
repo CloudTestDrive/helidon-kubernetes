@@ -1,30 +1,32 @@
 #!/bin/bash -f
-
-
-
+SCRIPT_NAME=`basename $0`
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
-
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
 
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 
 echo "This script is currently in place to support testing purposes, it will not do"
@@ -94,9 +96,9 @@ LOGGING_MODULE_DIR=$HOME/helidon-kubernetes/management/logging
 
 cd $HOME/helidon-kubernetes/setup/common
 
-echo "Creating logging namespace"
+echo "Creating logging namespace in cluster $CLUSTER_CONTEXT_NAME"
 
-kubectl create namespace logging
+kubectl create namespace logging --context $CLUSTER_CONTEXT_NAME
 
 
 S3_CONFIGURED_YAML=$LOGGING_MODULE_DIR/fluentd-s3-configmap-configured.yaml
@@ -114,12 +116,12 @@ bash update-file.sh $S3_CONFIGURED_YAML YOUR_REGION $OCI_REGION ^
 echo "Storage endpoint URL"
 bash update-file.sh $S3_CONFIGURED_YAML YOUR_STORAGE_ENDPOINT $OOSS_URL ^
 
-echo "Installing OCI OOSS based S3 config map"
-kubectl apply -f $S3_CONFIGURED_YAML
+echo "Installing OCI OOSS based S3 config map in cluster $CLUSTER_CONTEXT_NAME"
+kubectl apply -f $S3_CONFIGURED_YAML --context $CLUSTER_CONTEXT_NAME
 
-echo "Installing the genmeral OSS basec config map"
-kubectl apply -f $LOGGING_MODULE_DIR/fluentd-to-ooss-configmap.yaml
+echo "Installing the genmeral OSS basec config map in cluster $CLUSTER_CONTEXT_NAME"
+kubectl apply -f $LOGGING_MODULE_DIR/fluentd-to-ooss-configmap.yaml --context $CLUSTER_CONTEXT_NAME
 
-echo "Installing fluentd daemon set"
-kubectl apply -f $LOGGING_MODULE_DIR/fluentd-daemonset-ooss-rbac.yaml
+echo "Installing fluentd daemon set in cluster $CLUSTER_CONTEXT_NAME"
+kubectl apply -f $LOGGING_MODULE_DIR/fluentd-daemonset-ooss-rbac.yaml --context $CLUSTER_CONTEXT_NAME
 

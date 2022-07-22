@@ -1,7 +1,7 @@
 #!/bin/bash -f
 
 export SETTINGS=$HOME/hk8sLabsSettings
-
+SCRIPT_NAME=`basename $0`
 if [ -f $SETTINGS ]
   then
     echo "Loading existing settings information"
@@ -12,6 +12,11 @@ if [ -f $SETTINGS ]
 fi
 
 source $SETTINGS
+
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 if [ -z "$OPENSEARCH_POLICIES_CONFIGURED" ]
 then

@@ -50,7 +50,7 @@ then
   echo "No reuse information for CAPI in cluster $CLUSTER_CONTEXT_NAME cannot continue"
   exit 1
 else
-  echo "Located CAPI rwuse information for cluster $CLUSTER_CONTEXT_NAME"
+  echo "Located CAPI reuse information for cluster $CLUSTER_CONTEXT_NAME"
 fi
 
 if [ "$CAPI_PROVISIONER_REUSED" = "true" ]
@@ -73,19 +73,19 @@ then
   echo "OK, not deleting"
   exit 1
 fi
-ORIG_K8S_CONTEXT=`kubectl config current-context`
-# switch to our specified context
-kubectl config use-context $CLUSTER_CONTEXT_NAME
-if [ $? = 0 ]
+
+CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
+
+if [ -z $CONTEXT_MATCH ]
 then
-  echo "Switch so context $CLUSTER_CONTEXT_NAME"
+  echo "context $CLUSTER_CONTEXT_NAME not found, unable to continue"
+  exit 2
 else
-  echo "Unable to find kubernetes context $CURRENT_CONTEXT_NAME, cannot continue"
-  exit 1
+  echo "Context $CLUSTER_CONTEXT_NAME found"
 fi
 echo "Deleting cluster API provisioner from cluster $CLUSTER_CONTEXT_NAME"
 
-$CLUSTERCTL_PATH delete --infrastructure oci --include-namespace --include-crd
+$CLUSTERCTL_PATH delete --infrastructure oci --include-namespace --include-crd --kubeconfig-context $CLUSTER_CONTEXT_NAME
 
 if [ "$CAPI_PROVISIONER_REUSED" = "true" ]
 then
@@ -121,7 +121,7 @@ else
     echo "Capi namespace $CAPI_NAMESPACE was reused, not deleting it"
   else
     echo "Capi namespace $CAPI_NAMESPACE was not reused, deleting it"
-    kubectl delete namespace $CAPI_NAMESPACE --ignore-not-found=true
+    kubectl delete namespace $CAPI_NAMESPACE --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
   fi
 fi
 
@@ -135,16 +135,12 @@ else
   if [ "$CERT_MGR_NS_REUSED" = "false" ]
   then
     echo "The namespace $CERT_MGR_NS didn't exist before the CAPI provisioner was installed, attempting to delete it"
-    kubectl delete ns $CERT_MGR_NS --ignore-not-found=true
+    kubectl delete ns $CERT_MGR_NS --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
   else
     echo "The namespace $CERT_MGR_NS existed before the CAPI provisioner was installed, retaining it"
   fi
 fi
 
-# revert to the origional context
-kubectl config use-context $ORIG_K8S_CONTEXT
-
-echo "Reverted to context $ORIG_K8S_CONTEXT"
 bash ../delete-from-saved-settings.sh $CERT_MGR_NS_REUSED_NAME
 bash ../delete-from-saved-settings.sh $CAPI_NAMESPACE_REUSED_NAME
 bash ../delete-from-saved-settings.sh $CAPI_PROVISIONER_REUSED_NAME

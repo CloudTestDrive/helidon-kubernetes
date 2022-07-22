@@ -1,14 +1,23 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+CLUSTER_CONTEXT_NAME=one
 
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 SAVED_PWD=`pwd`
 
 cd $KUBERNETES_LABS_DIR
 
-bash ./kubernetes-services-destroy.sh
+bash ./kubernetes-services-destroy.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Kubernetes services destroy returned an error, unable to continue"
+  echo "Kubernetes services destroy in cluster $CLUSTER_CONTEXT_NAME returned an error, unable to continue"
   exit $RESP
 fi
 

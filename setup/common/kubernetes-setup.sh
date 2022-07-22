@@ -118,7 +118,7 @@ OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.dat
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
-TF_GIT_BASE=$HOME/oke-labs-terraform
+TF_GIT_BASE=$HOME/oke-terraform
 
 if [ -z $OKE_OCID ]
 then
@@ -349,7 +349,7 @@ then
   # it's now save to save the OCID's as we've finished
   echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
   echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
-  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+  KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=OKE" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`

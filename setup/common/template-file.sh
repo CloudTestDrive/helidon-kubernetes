@@ -1,8 +1,8 @@
 #!/bin/bash -f
-sourcefile=$1
-destfile=$2
-oldtext=$3
-newtext=$4
-echo "Templating $sourcefile replacing $oldtext with $newtext to destination $destfile"
-#echo command is "s/$oldtext/$newtext/"
-cat $sourcefile | sed -e "s/$oldtext/$newtext/" > $destfile
+SOURCE_FILE=$1
+DEST_FILE=$2
+OLD_TEXT=$3
+NEW_TEXT=$4
+echo "Templating $SOURCE_FILE replacing $OLD_TEXT with $NEW_TEXT into destination $DEST_FILE"
+#echo command is "s/$OLD_TEXT/$NEW_TEXT/"
+cat $SOURCE_FILE | sed -e "s/$OLD_TEXT/$NEW_TEXT/" > $DEST_FILE
