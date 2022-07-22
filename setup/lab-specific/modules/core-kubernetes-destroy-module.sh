@@ -13,14 +13,16 @@ then
   exit $RESP
 fi
 
-bash ./kubernetes-destroy.sh
+SAVED_PRE_OKE=`pwd`
+cd $COMMON_DIR/oke-setup
+bash ./oke-cluster-destroy.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "kubernetes cluster destroy returned an error, unable to continue"
+  echo "oke-cluster-destroy returned an error, unable to continue"
   exit $RESP
 fi
-
+cd $SAVED_PRE_OKE
 
 bash ./database-destroy.sh
 RESP=$?

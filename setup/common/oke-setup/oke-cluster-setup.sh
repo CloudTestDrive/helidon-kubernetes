@@ -42,7 +42,7 @@ fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ../settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
@@ -109,7 +109,7 @@ fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
+OKE_OCID_NAME=`bash ../settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
@@ -349,7 +349,7 @@ then
   # it's now save to save the OCID's as we've finished
   echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
   echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
-  KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=OKE" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`

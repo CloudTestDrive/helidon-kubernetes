@@ -5,14 +5,16 @@ SAVED_PWD=`pwd`
 
 KUBEFLOW_CLUSTER_NAME=kubeflow
 
-cd $COMMON_DIR
-bash ./kubernetes-destroy.sh $KUBEFLOW_CLUSTER_NAME
+SAVED_PRE_OKE=`pwd`
+cd $COMMON_DIR/oke-setup
+bash ./oke-cluster-destroy.sh $KUBEFLOW_CLUSTER_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "kubernetes cluster destroy returned an error, unable to continue"
+  echo "oke-cluster-destroy returned an error, unable to continue"
   exit $RESP
 fi
+cd $SAVED_PRE_OKE
 
 bash ./core-environment-destroy.sh
 RESP=$?

@@ -24,7 +24,7 @@ fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ../settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 #echo "Checking for $OKE_REUSED_NAME var value is $OKE_REUSED"
@@ -37,7 +37,7 @@ fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
+OKE_OCID_NAME=`bash ../settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 #echo "Checking for $OKE_OCID_NAME var value is $OKE_OCID"
@@ -90,10 +90,10 @@ then
       echo "No remaining saved tf configs for OKE, removing the directory"
       rmdir $TF_GIT_BASE
     fi
-    KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
-    bash ./delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
-    bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
-    bash ./delete-from-saved-settings.sh $OKE_REUSED_NAME
+    KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+    bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
+    bash ../delete-from-saved-settings.sh $OKE_OCID_NAME
+    bash ../delete-from-saved-settings.sh $OKE_REUSED_NAME
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
     CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME  --no-headers=true | sed -e 's/*//' | awk '{print $2}'`
     USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`

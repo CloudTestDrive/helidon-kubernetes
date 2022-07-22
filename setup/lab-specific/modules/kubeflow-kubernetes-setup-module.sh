@@ -45,21 +45,25 @@ fi
 KUBEFLOW_CLUSTER_NAME=kubeflow
 
 
+SAVED_PRE_OKE=`pwd`
+cd $COMMON_DIR/oke-setup
 if [ "$PARALLEL_SETUP" = "true" ]
 then
   OKE_LOG=$LOGS_DIR/okeSetupLogs.txt
   echo "Creating the OKE cluster in the background, please ensure it has been created before running any service against it"
   echo "You can see the progress of the OKE cluster creation in the log file at $OKE_LOG"
-  bash ./kubernetes-setup.sh 2>&1 > $OKE_LOG &
+  bash ./oke-cluster-setup.sh $KUBEFLOW_CLUSTER_NAME 2>&1 > $OKE_LOG &
 else
-  bash ./kubernetes-setup.sh $KUBEFLOW_CLUSTER_NAME
+  bash ./oke-cluster-setup.sh $KUBEFLOW_CLUSTER_NAME
   RESP=$?
   if [ "$RESP" -ne 0 ]
   then
-    echo "kubernetes cluster setup returned an error, unable to continue"
+    echo "oke cluster setup returned an error, unable to continue"
     exit $RESP
   fi
 fi
+
+cd $SAVED_PRE_OKE
 
 # if we are doing things in parallel we need to wait for them to finish before proceeding
 
