@@ -173,7 +173,6 @@ TF_GIT_BASE=$HOME/k3s-terraform
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
-    TF_GIT_BASE=$HOME/k3s-labs-terraform
     mkdir -p $TF_GIT_BASE
     cd $TF_GIT_BASE
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-k3s
@@ -198,7 +197,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION $OCI_HOME_REGION
     
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL $K3S_GH_URL
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL $K3S_GH_URL '^'
     echo "Update $TF_MODULE_FILE to set compartment OCID"
     bash $UPDATE_FILE_SCRIPT $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo "Update $TF_MODULE_FILE to set tenancy OCID"
