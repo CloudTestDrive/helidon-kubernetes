@@ -8,7 +8,7 @@ then
 else
   SED_SEP=/
 fi
-echo "Updating $updatefile replacing $oldtext with $newtext"
+echo "Updating $updatefile replacing $oldtext with $newtext usibng separator $SED_SEP"
 temp="$updatefile".tmp
 SED_CMD="s""$SED_SEP""$oldtext""$SED_SEP""$newtext""$SED_SEP"g
 echo "Sed command is :""$SED_CMD"
