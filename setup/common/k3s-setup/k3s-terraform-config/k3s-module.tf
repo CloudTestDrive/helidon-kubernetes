@@ -12,7 +12,7 @@ module k3s {
   vcn_name="k3s-vcn-CLUSTER_NAME"
   vcn_cidrs=["VCN_CLASS_B_NETWORK_CIDR_START.0.0/16"]
 
-  create_bastion_host=false
+  create_bastion_host=CREATE_BASION
   # this is a simple one, don't use if for production environments
   datastore_type="sqlite"
   server_type="public"
