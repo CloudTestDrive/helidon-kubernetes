@@ -35,6 +35,7 @@ echo "Determining settings"
 OCI_REGION_KEY=`oci iam region list --all | jq -e  ".data[]| select (.name == \"$OCI_REGION\")" | jq -j '.key' | tr [:upper:] [:lower:]`
 
 OCIR_STOCKMANAGER_LOCATION=$OCI_REGION_KEY.ocir.io
+OCIR_LOGGING_LOCATION=$OCI_REGION_KEY.ocir.io
 OCIR_STOREFRONT_LOCATION=$OCI_REGION_KEY.ocir.io
 
 OCI_USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
@@ -131,6 +132,52 @@ else
   echo "OCI Repo for stock manager has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images"
 fi
 
+# now create the logging
+if [ -z $OCIR_LOGGING_REUSED ]
+then
+  echo "Checking for existing logging repo"
+  # do we already have one 
+
+  OCIR_LOGGING_NAME=$OCIR_BASE_NAME/logging
+  OCIR_LOGGING_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_LOGGING_NAME --all | jq -j '.data.items[0].id' `
+
+  if [ $OCIR_LOGGING_OCID = 'null' ]
+  then
+  # No existing repo for logging
+    echo "Creating OCIR repo named $OCIR_LOGGING_NAME for the logging in your tenancy in compartment  $COMPARTMENT_NAME"
+    OCIR_LOGGING_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_LOGGING_NAME --is-immutable false --is-public true --wait-for-state AVAILABLE | jq -j '.data.id'`
+    echo "OCIR_LOGGING_OCID=$OCIR_LOGGING_OCID" >> $SETTINGS 
+    echo "OCIR_LOGGING_REUSED=false" >> $SETTINGS
+    # remove any existing location info and save the new one
+    bash ./delete-from-saved-settings.sh OCIR_LOGGING_LOCATION
+    echo "OCIR_LOGGING_LOCATION=$OCIR_LOGGING_LOCATION" >> $SETTINGS
+  else
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, reuse repo called $OCIR_LOGGING_NAME in compartment $COMPARTMENT_NAME for logging defaulting to $REPLY"
+    else
+      read -p "There is an existing repo called $OCIR_LOGGING_NAME in compartment $COMPARTMENT_NAME, do you want to re-use it for the logging (y/n) ?" REPLY
+    fi
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, stopping script, the logging repo has not been reused, you need to re-run this script before doing any container image pushes"
+      echo "docker has not been logged in for the logging repo"
+      exit 1
+    else     
+      echo "OK, for logging going to use reuse existing container repo called $OCIR_LOGGING_NAME in compartment $COMPARTMENT_NAME"
+      echo "OCIR_LOGGING_OCID=$OCIR_LOGGING_OCID" >> $SETTINGS 
+      echo "OCIR_LOGGING_REUSED=true" >> $SETTINGS
+      # remove any existing location info and save the new one
+      bash ./delete-from-saved-settings.sh OCIR_LOGGING_LOCATION
+      echo "OCIR_LOGGING_LOCATION=$OCIR_LOGGING_LOCATION" >> $SETTINGS
+    fi
+  fi
+else
+  echo "OCI Repo for logging has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images"
+fi
+
+
 # now create the storefront
 if [ -z $OCIR_STOREFRONT_REUSED ]
 then
@@ -193,6 +240,29 @@ do
     break ;
   else
     echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
+    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
+  fi
+  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
+  then
+    echo "Unable to complete docker login after 12 attempts, cannot continue"
+    exit 10
+  fi
+done
+
+echo "About to docker login for logging repo to $OCIR_LOGGING_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
+echo "Please ignore warnings about insecure password storage"
+echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
+for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
+do
+  echo -n $AUTH_TOKEN | docker login $OCIR_LOGGING_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  RESP=$?
+  echo "Docker Login resp is $RESP"
+  if [ $RESP = 0 ]
+  then
+    echo "docker login to $OCIR_LOGGING_LOCATION suceeded on attempt $i, continuing"
+    break ;
+  else
+    echo "docker login to $OCIR_LOGGING_LOCATION failed on attempt $i, retrying after pause"
     sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
   fi
   if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
