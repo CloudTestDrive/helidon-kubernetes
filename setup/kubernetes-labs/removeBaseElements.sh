@@ -50,9 +50,11 @@ echo "Delete ingress namespace"
 kubectl delete namespace ingress-nginx --context $CLUSTER_CONTEXT_NAME
 
 echo "resetting ingress rules files"
-# Just to be sure
+# Just to be sure 
 echo "resetting base ingress rules"
 bash $HOME/helidon-kubernetes/base-kubernetes/reset-ingress-ip.sh $CLUSTER_CONTEXT_NAME
+echo "resetting persistence ingress rules"
+bash $HOME/helidon-kubernetes/persistence/reset-ingress-ip.sh $CLUSTER_CONTEXT_NAME
 echo "resetting service mesh ingress rules"
 bash $HOME/helidon-kubernetes/service-mesh/reset-ingress-ip.sh $CLUSTER_CONTEXT_NAME
 
