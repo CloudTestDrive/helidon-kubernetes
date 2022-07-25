@@ -6,7 +6,7 @@ if [ $# -eq 0 ]
     echo "$SCRIPT_NAME No arguments supplied, you must provide :"
     echo "  1st arg the External IP address of the ingress controler service"
     echo "Optional"
-    echo "  2nd arg the name of the kubernrtes context"
+    echo "  2nd arg the name of the kubernetes context"
     exit -1 
 fi
 EXTERNAL_IP=$1
