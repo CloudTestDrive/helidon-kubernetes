@@ -29,21 +29,21 @@ else
 fi
 
 
-if [ -z $OCIR_LOGGING_REUSED ]
+if [ -z $OCIR_LOGGER_REUSED ]
 then
-  echo "No reuse information for OCIR stockmanager repo, cannot safely continue, you will have to destroy it manually"
+  echo "No reuse information for OCIR logger repo, cannot safely continue, you will have to destroy it manually"
 else
-  if [ $OCIR_LOGGING_REUSED = true ]
+  if [ $OCIR_LOGGER_REUSED = true ]
   then
-    echo "You have been using an OCIR repo for the logging that was not created by these scripts, you will need to destroy the repo by hand"
+    echo "You have been using an OCIR repo for the logger that was not created by these scripts, you will need to destroy the repo by hand"
   else 
     echo "Destroying repo"
-    oci artifacts container repository delete --repository-id $OCIR_LOGGING_OCID --force
+    oci artifacts container repository delete --repository-id $OCIR_LOGGER_OCID --force
   fi
-    echo "Removing logging repo saved values from $SETTINGS"
+    echo "Removing logger repo saved values from $SETTINGS"
     bash ./delete-from-saved-settings.sh OCIR_LOGGING_OCID
-    bash ./delete-from-saved-settings.sh OCIR_LOGGING_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_LOGGING_LOCATION
+    bash ./delete-from-saved-settings.sh OCIR_LOGGER_REUSED
+    bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
 fi
 
 if [ -z $OCIR_STOREFRONT_REUSED ]
