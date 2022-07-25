@@ -184,9 +184,9 @@ TF_GIT_BASE=$HOME/k3s-terraform
     PRE_SSH_SAVED_DIR=`pwd`
     cd ../ssh-keys
     bash ./ssh-key-setup.sh $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME
-    # the resulting keys will be  $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME (.pub and .pem)
-    K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
-    K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
+    # the resulting keys will be  $HOME/ssh/id_rsa_k3s_$CLUSTER_CONTEXT_NAME (.pub and .pem)
+    K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
+    K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
     cd $PRE_SSH_SAVED_DIR
     
     K3S_TOKEN_SECRET=K3S_Token_`date | cksum | awk -e '{print $1}'`
