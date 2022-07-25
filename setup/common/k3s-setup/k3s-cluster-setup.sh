@@ -39,6 +39,16 @@ then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
+if [ -z $VAULT_OCID ]
+then
+  echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+  exit 2
+fi
+if [ -z $VAULT_KEY_OCID ]
+then
+  echo "Your VAULT_KEY_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+  exit 2
+fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
@@ -169,6 +179,19 @@ TF_GIT_BASE=$HOME/k3s-terraform
     else
       echo "Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START"
     fi
+    
+    # we need to ssh between the control plane and workers so ...
+    PRE_SSH_SAVED_DIR=`pwd`
+    cd ../ssh-keys
+    bash ./ssh-key-setup.sh $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME
+    # the resulting keys will be  $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME (.pub and .pem)
+    K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
+    K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
+    cd $PRE_SSH_SAVED_DIR
+    
+    K3S_TOKEN_SECRET=K3S_Token_`date | cksum | awk -e '{print $1}'`
+    K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
+    
     echo "Creating  K3s cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
@@ -237,6 +260,19 @@ TF_GIT_BASE=$HOME/k3s-terraform
     
     echo "Update $TF_MODULE_FILE set CLUSTER_TZ"
     bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_TZ $CLUSTER_TZ
+   
+    echo "Update $TF_MODULE_FILE set VAULT_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM VAULT_OCID $VAULT_OCID
+    echo "Update $TF_MODULE_FILE set VAULT_KEY_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM VAULT_KEY_OCID $VAULT_KEY_OCID
+    echo "Update $TF_MODULE_FILE set K3S_SSH_PUBLIC_KEY_PATH"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PUBLIC_KEY_PATH $K3S_SSH_PUBLIC_KEY_PATH
+    echo "Update $TF_MODULE_FILE set K3S_SSH_PRIVATE_KEY_PATH"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PRIVATE_KEY_PATH $K3S_SSH_PRIVATE_KEY_PATH
+    echo "Update $TF_MODULE_FILE set K3S_TOKEN_SECRET"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_TOKEN_SECRET $K3S_TOKEN_SECRET
+    
+    
         
     echo "SHOULD BE Downloading TF versions file, using static version until repo is available"
     # curl --silent https://raw.githubusercontent.com/$K3S_GH_REPO/main/versions.tf --output $TF_DIR/versions.tf
@@ -291,6 +327,7 @@ fi
   # it's now save to save the OCID's as we've finished
   KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=K3S" >> $SETTINGS
+  echo "$K3S_TOKEN_SECRET_NAME=$K3S_TOKEN_SECRET" >> $SETTINGS
 
 # record some core networking info
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
