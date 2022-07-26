@@ -11,14 +11,14 @@ else
 fi
 CONFDIR=$HOME/helidon-kubernetes/configurations
 LOGGERDIR=$CONFDIR/logger
-echo Deleting existing logger config maps
-echo logs-config-map
+echo "Deleting existing logger config maps"
+echo "logs-config-map"
 kubectl delete configmap logs-config-mapp --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
-echo Non logger Config Maps remaining in namespace are 
+echo "Non logger Config Maps remaining in namespace are "
 kubectl get configmaps --context $CLUSTER_CONTEXT_NAME
-echo Creating logger config maps
-echo logs-config-map
+echo "Creating logger config maps"
+echo "logs-config-map"
 kubectl create configmap logs-config-map --from-file=$LOGGERDIR/conf --context $CLUSTER_CONTEXT_NAME
-echo Config maps incl logger in namespace are 
+echo "Config maps incl logger in namespace are" 
 kubectl get configmaps --context $CLUSTER_CONTEXT_NAME
 
