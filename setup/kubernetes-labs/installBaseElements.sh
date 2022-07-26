@@ -124,6 +124,9 @@ echo "status command"  >> $INFO_FILE
 echo "curl -i -X GET -k $BASE_URL/sf/status"  >> $INFO_FILE
 echo >> $INFO_FILE
 
+echo "Test reserve stock command  - Assumes that you have resources called Pins"   >> $INFO_FILE
+echo 'curl -u jack:password -i -H "Content-Type: application/json" -X POST -d "{\"requestedItem\":\"Pins\", \"requestedCount\": 5}"'" http://$BASE_URL/store/reserveStock"  >> $INFO_FILE
+echo >> $INFO_FILE
 
 # now we have the ingress we csan update the rules to fit it
 echo "updating base ingress rules"
