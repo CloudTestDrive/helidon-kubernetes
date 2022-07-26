@@ -20,6 +20,8 @@ kubectl apply --context $CLUSTER_CONTEXT_NAME -f logger-deployment.yaml
 echo "Delete logger service"
 kubectl apply --context $CLUSTER_CONTEXT_NAME -f serviceLogger.yaml
 echo "Delete logger configmaps"
-bash create-configmaps.sh $CLUSTER_CONTEXT_NAME
+bash delete-configmaps.sh $CLUSTER_CONTEXT_NAME
+echo "Delete logger secrets"
+bash delete-secrets.sh $CLUSTER_CONTEXT_NAME
 echo "Delete persistent volume for the logger"
 kubectl apply --context $CLUSTER_CONTEXT_NAME -f persistentVolumeClaim.yaml

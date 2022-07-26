@@ -13,6 +13,8 @@ fi
 # This assumes that the ingress rules and deployment have been updated
 echo "Creating persistent volume for the logger"
 kubectl apply --context $CLUSTER_CONTEXT_NAME -f persistentVolumeClaim.yaml
+echo "Creating logger secrets"
+bash create-secrets.sh $CLUSTER_CONTEXT_NAME
 echo "Creating logger configmaps"
 bash create-configmaps.sh $CLUSTER_CONTEXT_NAME
 echo "Creating logger service"

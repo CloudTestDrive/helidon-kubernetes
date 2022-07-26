@@ -16,8 +16,4 @@ kubectl delete secret log-conf-secure --ignore-not-found=true --context $CLUSTER
 echo "Deleted secrets"
 echo "Non logger Secrets remaining in namespace are "
 kubectl get secret --context $CLUSTER_CONTEXT_NAME
-echo "Creating logger secrets"
-kubectl create secret generic log-conf-secure --from-file=$LOGGERDIR/confsecure --context $CLUSTER_CONTEXT_NAME
-echo "Existing in namespace are "
-kubectl get secrets --context $CLUSTER_CONTEXT_NAME
 
