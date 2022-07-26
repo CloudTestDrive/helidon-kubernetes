@@ -6,7 +6,7 @@ if [ $# -eq 0 ]
     echo "$SCRIPT_NAME No arguments supplied, you must provide :"
     echo "  1st arg the External IP address of the ingress controler service"
     echo "Optional"
-    echo "  2nd arg the name of the kubernetes context"
+    echo "  2nd arg the name of the kubernrtes context"
     exit -1 
 fi
 EXTERNAL_IP=$1
@@ -40,4 +40,4 @@ then
 else
   echo "Updating the ingress config to set $EXTERNAL_IP as the External IP address.."
 fi
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/base-kubernetes $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/persistence $EXTERNAL_IP $CLUSTER_CONTEXT_NAME

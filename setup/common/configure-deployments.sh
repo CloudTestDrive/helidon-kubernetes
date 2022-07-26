@@ -18,6 +18,12 @@ then
   echo 'No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?'
   exit 1
 fi
+if [ -z $OCIR_LOGGER_LOCATION ]
+then
+  echo 'No OCIR location found for logger repo have you run the ocir-setup.sh script ?'
+  exit 1
+fi
+
 if [ -z $OCIR_STOREFRONT_LOCATION ]
 then
   echo 'No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?'
@@ -40,8 +46,10 @@ OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -r '.data'`
 # Get the OCIR locations
 echo "Locating repo names"
 OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCID | jq -r '.data."display-name"'`
+OCIR_LOGGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_LOGGER_OCID | jq -r '.data."display-name"'`
 OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
 bash stockmanager-deployment-update.sh set $OCIR_STOCKMANAGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOCKMANAGER_NAME
+bash logger-deployment-update.sh set $OCIR_LOGGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_LOGGER_NAME
 bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
 

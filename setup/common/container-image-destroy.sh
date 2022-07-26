@@ -56,6 +56,34 @@ else
   fi
 fi
 
+echo "Removing logger images"
+if [ -z $OCIR_LOGGER_OCID ]
+then
+  echo "No OCIR id found for logger repo, can't locate any images it may contain"
+else
+
+  echo "Located logger repo OCID"
+  # Get the OCIR location
+
+  OCIR_LOGGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_LOGGER_OCID | jq -r '.data."display-name"'`
+
+
+  bash logger-deployment-update.sh reset $OCIR_LOGGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_LOGGER_NAME
+
+  IMAGE_LOGGER_V001=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_LOGGER_NAME:0.0.1 | jq -j ".data.items[0].id"`
+  if [ -z $IMAGE_LOGGER_V001 ]
+  then
+    IMAGE_LOGGER_V001="null"
+  fi
+  if [ "$IMAGE_LOGGER_V001" = "null" ]
+  then
+    echo "Cant locate 0.0.1 logger image, skipping"
+  else
+    oci artifacts container image delete --force --image-id $IMAGE_LOGGER_V001
+    echo "Removed logger 0.0.1"
+  fi
+fi
+
 echo "Removing storefront images"
 if [ -z $OCIR_STOREFRONT_OCID ]
 then
