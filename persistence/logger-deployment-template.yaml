@@ -119,6 +119,9 @@ spec:
         - name: logs-config-map-vol
           mountPath: /app/conf
           readOnly: true
+        - name: logs-conf-secure-vol
+          mountPath: /app/confsecure
+          readOnly: true
       volumes:
       - name:  logs-vol
         persistentVolumeClaim: 
@@ -126,5 +129,8 @@ spec:
       - name: logs-config-map-vol
         configMap:
           name: logs-config-map
+      - name: logs-conf-secure-vol
+        secret:
+          secretName: logs-conf-secure
 #      imagePullSecrets:
 #      - name: my-docker-reg

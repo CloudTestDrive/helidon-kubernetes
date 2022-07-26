@@ -60,6 +60,6 @@ fi
 echo "Updating config maps"
 # kubectl seems to heva problems replacing a config map, so let's just create it form the files and then apply it
 # that will replace if needed
-kubectl create configmap sf-config-map --from-file=$FRONTDIR/conf -o yaml --dry-run | kubectl apply --context $CLUSTER_CONTEXT_NAME -f -
+kubectl create configmap sf-config-map --from-file=$FRONTDIR/conf -o yaml --dry-run=client | kubectl apply --context $CLUSTER_CONTEXT_NAME -f -
 echo "The config maps has been updated, restarting the storefront to pickup the change"
 kubectl rollout restart deployment storefront
