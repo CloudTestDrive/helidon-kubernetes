@@ -28,7 +28,7 @@ else
   MATCHING_GIT=`git branch -a --list | grep "$GIT_BRANCH_TO_COMPILE" | wc -l`
   if [ "$MATCHING_GIT" = 0 ]
   then
-    echo "Can't locate git branch $GIT_BRANCH_TO_COMPILE "
+    echo "Can't locate git branch $GIT_BRANCH_TO_COMPILE for directory $COMPILE_DIR "
     exit 100
   else
     if [ "$AUTO_CONFIRM" = true ]
