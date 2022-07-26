@@ -225,12 +225,13 @@ cd $WORK_DIR/"$LOGGER_GIT_NAME"
 cd $LOGGER_LOCATION_IN_REPO
 
 
-# update the repo location
-echo "REPO=$OCIR_LOGGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_LOGGER_NAME" > repoLoggerConfig.sh
 if [ "$IMAGE_LOGGER_V001_OCID" = "null" ]
 then
   bash $CURRENT_LOCATION/switch-git-branch.sh
 fi
+# update the repo location
+echo "REPO=$OCIR_LOGGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_LOGGER_NAME" > repoLoggerConfig.sh
+
 # build the images and push them if needed
 if [ "$IMAGE_LOGGER_V001_OCID" = "null" ]
 then
@@ -250,13 +251,13 @@ cd $WORK_DIR/"$STOREFRONT_GIT_NAME"
 
 cd $STOREFRONT_LOCATION_IN_REPO
 
-# update the repo location
-echo "REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME" > repoStorefrontConfig.sh
-
 if [ "$IMAGE_STOREFRONT_V001_OCID" = "null" ] ||  [ "$IMAGE_STOREFRONT_V002_OCID" = "null" ]
 then
   bash $CURRENT_LOCATION/switch-git-branch.sh
 fi
+
+# update the repo location
+echo "REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME" > repoStorefrontConfig.sh
 
 # build the images and push them
 if [ "$IMAGE_STOREFRONT_V001_OCID" = "null" ]
