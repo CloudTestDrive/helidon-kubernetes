@@ -107,11 +107,11 @@ spec:
           # No initial delay - it starts checking immediately
           # Let it have a 5 second timeout
           timeoutSeconds: 5
-          # allow for up to 50 failures, allows for time setting up the PV
-          failureThreshold: 50
+          # allow for up to 60 failures, allows for time setting up the PV
+          failureThreshold: 60
           # Check every 5 seconds
           periodSeconds: 10
-          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
+          # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (10 mins in this case)
         volumeMounts:
         - name: logs-vol
           mountPath: /app/logs
