@@ -120,7 +120,7 @@ spec:
           mountPath: /app/conf
           readOnly: true
       volumes:
-      - name:  mongodb-data
+      - name:  logs-vol
         persistentVolumeClaim: 
           claimName: logger-pvc
       - name: logs-config-map-vol
