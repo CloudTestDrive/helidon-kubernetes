@@ -86,7 +86,7 @@ spec:
             command:
             - /bin/bash
             - -c
-            - 'curl -s http://localhost:9080/health/ready | grep "\"outcome\":\"UP\""'
+            - 'curl -s http://localhost:9082/health/ready | grep "\"outcome\":\"UP\""'
           # No point in checking until it's been running for a while 
           # Comment this out when using a startup probe
           initialDelaySeconds: 15
@@ -99,7 +99,7 @@ spec:
         # Use this to check if the pod is started this has to pass before the liveness kicks in
         # note that this was released as beta in k8s V 1.18
         startupProbe:
-          #Simple check to see if the status call works
+          #Simple check to see if the status call wo
           # If must return a 200 - 399 http status code
           httpGet:
             path: /status
@@ -107,10 +107,10 @@ spec:
           # No initial delay - it starts checking immediately
           # Let it have a 5 second timeout
           timeoutSeconds: 5
-          # allow for up to 48 failures
-          failureThreshold: 48
+          # allow for up to 50 failures, allows for time setting up the PV
+          failureThreshold: 50
           # Check every 5 seconds
-          periodSeconds: 5
+          periodSeconds: 10
           # If after failureThreshold * periodSeconds it's not up and running then it's determined to have failed (4 mins in this case)
         volumeMounts:
         - name: logs-vol
