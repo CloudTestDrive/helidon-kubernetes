@@ -5,7 +5,7 @@ if [ -z "$GIT_BRANCH_TO_COMPILE" ]
 then
   echo "GIT_BRANCH_TO_COMPILE not set, retaining current branch of $CURRENT_GIT_BRANCH"
 else
-  MATCHING-GIT=`git branch --list "$GIT_BRANCH_TO_COMPILE" | wc -l`
+  MATCHING_GIT=`git branch -a --list | grep "$GIT_BRANCH_TO_COMPILE" | wc -l`
   if [ "$MATCHING_GIT" = 0 ]
   then
     echo "Can't locate git branch $GIT_BRANCH_TO_COMPILE "
