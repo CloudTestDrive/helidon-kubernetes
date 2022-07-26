@@ -19,9 +19,9 @@ then
   exit 1
 fi
 
-if [ -z $OCIR_LOGGING_OCID ]
+if [ -z $OCIR_LOGGER_OCID ]
 then
-  echo 'No OCIR id found for logging repo have you run the ocir-setup.sh script ?'
+  echo 'No OCIR id found for logger repo have you run the ocir-setup.sh script ?'
   exit 1
 fi
 
@@ -35,7 +35,7 @@ fi
 # Get the OCIR locations
 echo "Locating repo names"
 OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCID | jq -r '.data."display-name"'`
-OCIR_LOGGING_NAME=`oci artifacts  container repository get  --repository-id $OCIR_LOGGING_OCID | jq -r '.data."display-name"'`
+OCIR_LOGGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_LOGGER_OCID | jq -r '.data."display-name"'`
 OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
 
@@ -51,10 +51,10 @@ then
   IMAGE_STOCKMANAGER_V002_OCID="null"
 fi
 
-IMAGE_SLOGGING_V001_OCID=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_LOGGING_NAME:0.0.1 | jq -j ".data.items[0].id"`
-if [ -z $IMAGE_LOGGING_V001_OCID ]
+IMAGE_LOGGER_V001_OCID=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_LOGGER_NAME:0.0.1 | jq -j ".data.items[0].id"`
+if [ -z $IMAGE_LOGGER_V001_OCID ]
 then
-  IMAGE_LOGGING_V001_OCID="null"
+  IMAGE_LOGGER_V001_OCID="null"
 fi
 IMAGE_STOREFRONT_V001_OCID=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOREFRONT_NAME:0.0.1 | jq -j ".data.items[0].id"`
 if [ -z $IMAGE_STOREFRONT_V001_OCID ]
@@ -85,12 +85,12 @@ else
   echo "Located image for stockmanager v0.0.2 image"
 fi
 
-if [ "$IMAGE_LOGGING_V001_OCID" = "null" ]
+if [ "$IMAGE_LOGGER_V001_OCID" = "null" ]
 then
-  echo "Missing logging v0.0.1 image, build required"
+  echo "Missing logger v0.0.1 image, build required"
   DO_BUILDS="true"
 else
-  echo "Located image for logging v0.0.1 image"
+  echo "Located image for logger v0.0.1 image"
 fi
 
 if [ "$IMAGE_STOREFRONT_V001_OCID" = "null" ]
@@ -112,7 +112,7 @@ fi
 
 if [ "$DO_BUILDS" = "false" ]
 then
-  echo "Found existing images for storefront and stockmanager v0.0.1 and v0.0.2 and logging v0.0.1, no point in rebuilding"
+  echo "Found existing images for storefront and stockmanager v0.0.1 and v0.0.2 and logger v0.0.1, no point in rebuilding"
   echo "If you need to rebuild them then please destroy the existing images and re-run this script"
   exit 0
 fi
