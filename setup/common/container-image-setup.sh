@@ -183,6 +183,18 @@ cd $WORK_DIR/"$STOCKMANAGER_GIT_NAME"
 
 cd $STOCKMANAGER_LOCATION_IN_REPO
 
+bash ./switch-git-branch.sh
+
+if [ -z "$GIT_BRANCH_TO_COMPILE" ]
+then
+  echo "GIT_BRANCH_TO_COMPILE not set, retaining current branch of $CURRENT_GIT_BRANCH"
+else
+  git 
+  git checkout $
+  git pull 
+  echo "Switched from git branch $CURRENT_GIT_BRANCH to $GIT_BRANCH_TO_COMPILE"
+fi
+
 
 # update the repo location
 echo "REPO=$OCIR_STOCKMANAGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOCKMANAGER_NAME" > repoStockmanagerConfig.sh
@@ -213,6 +225,7 @@ cd $WORK_DIR/"$LOGGER_GIT_NAME"
 
 cd $LOGGER_LOCATION_IN_REPO
 
+bash ./switch-git-branch.sh
 
 # update the repo location
 echo "REPO=$OCIR_LOGGER_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_LOGGER_NAME" > repoLoggerConfig.sh
@@ -232,6 +245,8 @@ echo "Building and pushing storefront images"
 cd $WORK_DIR/"$STOREFRONT_GIT_NAME"
 
 cd $STOREFRONT_LOCATION_IN_REPO
+
+bash ./switch-git-branch.sh
 
 # update the repo location
 echo "REPO=$OCIR_STOREFRONT_LOCATION/$OBJECT_STORAGE_NAMESPACE/$OCIR_STOREFRONT_NAME" > repoStorefrontConfig.sh
