@@ -239,6 +239,9 @@ else
   echo "Located a Logger v 0.0.1 image, reusing it"
 fi
 
+
+cd $SCRIPTS_DIR
+
 bash logger-deployment-update.sh set $OCIR_LOGGER_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_LOGGER_NAME
 
 echo "Building and pushing storefront images"
