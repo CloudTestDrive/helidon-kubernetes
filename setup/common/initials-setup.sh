@@ -10,7 +10,7 @@ else
   echo "Creating new settings information"
 fi
 
-if [ -z "$USER_INITIALS" ]
+if [ -z "$USER_INITIALS_REUSED" ]
   then
   INVALID=true
   
@@ -36,8 +36,8 @@ if [ -z "$USER_INITIALS" ]
     break ;
 
   done
-
   echo USER_INITIALS=$USER_INITIALS >> $SETTINGS
+  echo USER_INITIALS_REUSED=false >> $SETTINGS
 else
   echo "Initials already set to $USER_INITIALS will re-use them"
 fi
