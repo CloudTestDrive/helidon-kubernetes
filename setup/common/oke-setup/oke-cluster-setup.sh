@@ -42,7 +42,7 @@ fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ../settings/to-valid-name.sh  "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
@@ -103,13 +103,13 @@ then
     exit 1
   fi
 else     
-  echo "OK, going to use lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME as the Kubernetes cluster name"
   CLUSTER_NAME_FULL=lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME
+  echo "OK, going to use $CLUSTER_NAME_FULL as the Kubernetes cluster name"
 fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
+OKE_OCID_NAME=`bash ../settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 
@@ -184,7 +184,7 @@ then
       echo "Located terraform-oke-module version as $TERRAFORM_OKE_MODULE_VERSION"
     fi
     echo "Checking for VCN availability"
-    bash ./resources/resource-minimum-check-region.sh vcn vcn-count 1
+    bash ../resources/resource-minimum-check-region.sh vcn vcn-count 1
     AVAIL_VCN=$?
 
     if [ $AVAIL_VCN -eq 0 ]
@@ -200,9 +200,9 @@ then
       let OCPU_COUNT="$WORKER_OCPUS*$WORKER_COUNT"
       echo "Checking for E4 or E3 $OCPU_COUNT processor availability for Kubernetes workers"
       # for now to get this done quickly just hard code the checks, at some point make this config driven
-      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" $OCPU_COUNT
+      bash ../resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e4-core-count" $OCPU_COUNT
       AVAIL_E4_CORES=$?
-      bash ./resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" $OCPU_COUNT
+      bash ../resources/resource-minimum-check-ad.sh $OCI_TENANCY "compute" "standard-e3-core-ad-count" $OCPU_COUNT
       AVAIL_E3_CORES=$?
       if [ $AVAIL_E4_CORES -eq 0 ]
       then
@@ -221,7 +221,8 @@ then
     echo "Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
-    TF_GIT_BASE=$HOME/oke-labs-terraform
+    UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
+    TF_GIT_BASE=$HOME/oke-terraform
     mkdir -p $TF_GIT_BASE
     cd $TF_GIT_BASE
     TF_DIR_BASE=$TF_GIT_BASE/terraform-oci-oke
@@ -236,42 +237,42 @@ then
     echo "Configuring terraform"
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
-    cp $TF_SOURCE_CONFIG_DIR/oke-outputs.tf $TFO
+    cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
     cd $TF_DIR
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
-    bash $SAVED_DIR/update-file.sh $TFP OCI_REGION $OCI_REGION
+    bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION $OCI_REGION
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
-    bash $SAVED_DIR/update-file.sh $TFP OCI_HOME_REGION $OCI_HOME_REGION
+    bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION $OCI_HOME_REGION
     echo "Update $TF_MODULE_FILE set POOL_NAME"
-    bash $SAVED_DIR/update-file.sh $TFM POOL_NAME $POOL_NAME
+    bash $UPDATE_FILE_SCRIPT $TFM POOL_NAME $POOL_NAME
     echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
-    bash $SAVED_DIR/update-file.sh $TFM WORKER_SHAPE $WORKER_SHAPE
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_SHAPE $WORKER_SHAPE
     echo "Update $TF_MODULE_FILE set WORKER_OCPUS"
-    bash $SAVED_DIR/update-file.sh $TFM WORKER_OCPUS $WORKER_OCPUS
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_OCPUS $WORKER_OCPUS
     echo "Update $TF_MODULE_FILE set WORKER_MEMORY"
-    bash $SAVED_DIR/update-file.sh $TFM WORKER_MEMORY $WORKER_MEMORY
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_MEMORY $WORKER_MEMORY
     echo "Update $TF_MODULE_FILE set WORKER_COUNT"
-    bash $SAVED_DIR/update-file.sh $TFM WORKER_COUNT $WORKER_COUNT
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_COUNT $WORKER_COUNT
     echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
-    bash $SAVED_DIR/update-file.sh $TFM WORKER_BOOT_SIZE $WORKER_BOOT_SIZE
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_BOOT_SIZE $WORKER_BOOT_SIZE
     echo "Update $TF_MODULE_FILE to set compartment OCID"
-    bash $SAVED_DIR/update-file.sh $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
+    bash $UPDATE_FILE_SCRIPT $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo "Update $TF_MODULE_FILE to set tenancy OCID"
-    bash $SAVED_DIR/update-file.sh $TFM OCI_TENANCY $OCI_TENANCY
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_TENANCY $OCI_TENANCY
     echo "Update $TF_MODULE_FILE to set OCI Region"
-    bash $SAVED_DIR/update-file.sh $TFM OCI_REGION $OCI_REGION
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_REGION $OCI_REGION
     echo "Update $TF_MODULE_FILE set OCI_HOME_REGION"
-    bash $SAVED_DIR/update-file.sh $TFM OCI_HOME_REGION $OCI_HOME_REGION
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_HOME_REGION $OCI_HOME_REGION
     echo "Update $TF_MODULE_FILE to set Cluster name"
-    bash $SAVED_DIR/update-file.sh $TFM CLUSTER_NAME $CLUSTER_NAME
+    bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_NAME $CLUSTER_NAME
     echo "Update $TF_MODULE_FILE to set Label prefix to context"
-    bash $SAVED_DIR/update-file.sh $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
+    bash $UPDATE_FILE_SCRIPT $TFM K8S_CONTEXT $CLUSTER_CONTEXT_NAME
     echo "Update $TF_MODULE_FILE to set VCN CIDR"
-    bash $SAVED_DIR/update-file.sh $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
+    bash $UPDATE_FILE_SCRIPT $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     echo "Update $TF_MODULE_FILE to set OKE TF Module version"
-    bash $SAVED_DIR/update-file.sh $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
+    bash $UPDATE_FILE_SCRIPT $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
     echo "Update $TF_MODULE_FILE to set OKE Kubernetes version"
-    bash $SAVED_DIR/update-file.sh $TFM OKE_KUBERNETES_VERSION $OKE_KUBERNETES_VERSION
+    bash $UPDATE_FILE_SCRIPT $TFM OKE_KUBERNETES_VERSION $OKE_KUBERNETES_VERSION
     
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf
@@ -349,7 +350,7 @@ then
   # it's now save to save the OCID's as we've finished
   echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
   echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
-  KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=OKE" >> $SETTINGS
 else
   CLUSTER_NAME=`oci ce cluster get --cluster-id $OKE_OCID | jq -j '.data.name'`

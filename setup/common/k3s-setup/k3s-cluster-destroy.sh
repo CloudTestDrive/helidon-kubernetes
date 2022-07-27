@@ -21,28 +21,35 @@ if [ -f "$SETTINGS" ]
     exit 10
 fi
 
+if [ -z $VAULT_OCID ]
+then
+  echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+  exit 2
+fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ./settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+K3S_REUSED_NAME=`bash ../settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
-OKE_REUSED="${!OKE_REUSED_NAME}"
-#echo "Checking for $OKE_REUSED_NAME var value is $OKE_REUSED"
-if [ -z "$OKE_REUSED" ]
+K3S_REUSED="${!K3S_REUSED_NAME}"
+if [ -z "$K3S_REUSED" ]
 then
   echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
   exit 0
 fi
 
 
-# Do the variable redirection trick again
-# Create a name using the variable
-OKE_OCID_NAME=`bash ./settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
-# Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
-OKE_OCID="${!OKE_OCID_NAME}"
-#echo "Checking for $OKE_OCID_NAME var value is $OKE_OCID"
+CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name 2>/dev/null`
+
+if [ -z $CONTEXT_NAME_EXISTS ]
+then
+  echo "Using context name of $CLUSTER_CONTEXT_NAME"
+else
+  echo "A kubernetes context called $CLUSTER_CONTEXT_NAME does not exist, cannot proceed"
+  exit 40
+fi
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
-TF_GIT_BASE=$HOME/oke-terraform
+TF_GIT_BASE=$HOME/k3s-terraform
 
 if [ -d $TF_GIT_BASE ]
 then
@@ -53,21 +60,6 @@ else
 fi
 
 TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
-
-if [ "$OKE_REUSED" = true ]
-then
-  echo "You have been using a cluster that was not created by these scripts, as it may"
-  echo "contain other resources this script cannot delete it, you will need to destroy the"
-  echo "cluster by hand and then remove the variables $OKE_REUSE_NAME"
-  echo "and $OKE_OCID_NAME from $SETTINGS and delete $TF_DIR"
-  exit 0
-fi
-
-if [ -z "$OKE_OCID" ]
-then 
-  echo "No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue"
-  exit 3
-fi
 
 SAVED_DIR=`pwd`
 if [ -d $TF_DIR ]
@@ -90,10 +82,9 @@ then
       echo "No remaining saved tf configs for OKE, removing the directory"
       rmdir $TF_GIT_BASE
     fi
-    KUBERNETES_CLUSTER_TYPE_NAME=`bash settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
-    bash ./delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
-    bash ./delete-from-saved-settings.sh $OKE_OCID_NAME
-    bash ./delete-from-saved-settings.sh $OKE_REUSED_NAME
+    KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+    bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
+    bash ../delete-from-saved-settings.sh $K3S_REUSED_NAME
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
     CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME  --no-headers=true | sed -e 's/*//' | awk '{print $2}'`
     USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`
@@ -108,6 +99,45 @@ then
   fi
 else
   echo "$TF_DIR not found, nothing we can plan a destruction around"
+  exit 10
+fi
+
+# we needed an ssh key, it can now be removed
+echo "Removing ssh key"
+PRE_SSH_SAVED_DIR=`pwd`
+cd ../ssh-keys
+bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CLUSTER_CONTEXT_NAME
+cd $PRE_SSH_SAVED_DIR
+
+# the scriots will have created a toke in a vault secret, this needs to be deleted. Unfrotuantely they create int themselves
+# so we have to do the work to remove it from the vault and can't use the scritps that do that already as
+# they use the OCID
+
+echo "Removing K3S Token secret|"
+K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
+K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
+if [ -z "$K3S_TOKEN_SECRET" ]
+then
+  echo "Cannot locate the name of the K3S token secret in the vault, so can't delete it"
+else
+  echo "Attempting to locate Vault secret $K3S_TOKEN_SECRET"
+  K3S_TOKEN_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $K3S_TOKEN_SECRET --vault-id $VAULT_OCID | jq -j '.data[0].id'`
+  if [ -z "$K3S_TOKEN_SECRET_OCID" ]
+  then
+    K3S_TOKEN_SECRET_OCID="null"
+  fi
+  if [ "$K3S_TOKEN_SECRET_OCID" = "null" ]
+  then
+    echo "Unable to locate an active secret named $K3S_TOKEN_SECRET in the vault"
+  else
+    echo "Located secret deleting"
+    oci vault secret schedule-secret-deletion --secret-id "$K3S_TOKEN_SECRET_OCID"
+    RESP=$?
+    if [ $RESP -ne 0 ]
+    then
+      echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP"
+    fi 
+  fi
 fi
 
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME

@@ -102,7 +102,6 @@ CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name`
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
   echo "Kubernetes context name of $CLUSTER_CONTEXT_NAME does not exist, cannot continue."
-  echo "have you run the kubernetes-setup.sh script ?"
   exit 40
 else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
