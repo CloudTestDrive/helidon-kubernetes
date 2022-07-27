@@ -22,18 +22,6 @@ if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
 fi
-if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
-then
-  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=0
-fi
-
-if [ "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" = 0 ]
-then
-  echo "No other clusters with shared services currently installed, will setup the department config file"
-else
-  echo "There are other clusters with the shared services already in place, no need to update the department config file"
-  exit 0
-fi
 
 if [ "$AUTO_CONFIRM" = "true" ]
 then

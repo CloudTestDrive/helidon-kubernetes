@@ -19,6 +19,13 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+then
+  echo "Configuring the repo for the database and other settings"
+else
+  echo "The repo has already been configured for the database and other configuration information, run the unconfigure-downloaded-git-repo.sh to reset this"
+  exit 0
+fi
 
 if [ -z "$AUTO_CONFIRM" ]
 then
@@ -45,3 +52,6 @@ bash ./set-stockmanager-config-department.sh $DEPARTMENT
 bash ./install-db-wallet.sh $HOME/Wallet.zip 
 DB_CONNECTION_NAME=`bash ./get-database-connection-name.sh`
 bash ./set-database-connection-secret.sh $DB_CONNECTION_NAME
+
+# Flag that we've configured things
+echo "REPO_CONFIGURED_FOR_SERVICES=true" >> $SETTINGS

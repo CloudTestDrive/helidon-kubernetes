@@ -4,10 +4,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings"
+    echo "$SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
-    echo "No existing settings, cannot continue"
+    echo "$SCRIPT_NAME No existing settings, cannot continue"
     exit 10
 fi
 
@@ -26,6 +26,11 @@ else
   echo "The images have been built and uploaded to the repo"
 fi
 
+if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+then
+  echo "The repo has not been configured for the database and other configuration information, cannot proceed as the YAML is not configured"
+  exit 30
+fi
 
 CLUSTER_CONTEXT_NAME=one
 
@@ -103,13 +108,8 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
-if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
-then
-  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=0
-fi
-
 # run the pre-existing script
-bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
+bash ./configureHelmAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 RESP=$?
 if [ $RESP -ne 0 ]
@@ -119,10 +119,3 @@ then
 fi
 
 echo "$KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
-# reload the settings file, some of the counters may have changed if other loads were happening
-source $SETTINGS
-
-# update the count of installed clusters with services - used for tracking if the config files need resetting
-let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES+1"
-bash ../common/delete-from-saved-settings.sh KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES
-echo "KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" >> $SETTINGS

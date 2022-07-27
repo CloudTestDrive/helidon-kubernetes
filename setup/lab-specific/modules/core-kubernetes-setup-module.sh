@@ -1,5 +1,5 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
 if [ -z "$PARALLEL_SETUP" ]
 then
   export PARALLEL_SETUP=false
@@ -104,5 +104,21 @@ then
     exit $RESP
   fi
 fi
+
+# once we have the database and other details we can configure the repo
+
+# we need the info in the settings file
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f $SETTINGS ]
+  then
+    echo "$SCRIPT_NAME Loading configured settings"
+    source $SETTINGS
+  else 
+    echo "$SCRIPT_NAME No configured settings, cannot continue"
+    exit 10
+fi
+cd $KUBERNETES_LABS_DIR
+bash ./configure-downloaded-git-repo.sh $USER_INITIALS
 
 exit 0

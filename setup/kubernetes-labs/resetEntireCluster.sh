@@ -63,7 +63,5 @@ cd $KUBERNETES_SETUP_LOCATION
 bash teardownStack.sh $NAMESPACE $CLUSTER_CONTEXT_NAME
 bash removeBaseElements.sh $CLUSTER_CONTEXT_NAME
 
-
-bash unconfigure-downloaded-git-repo.sh $NAMESPACE 
 cd $SAVED_DIR
 

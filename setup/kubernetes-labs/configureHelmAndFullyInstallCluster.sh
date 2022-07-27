@@ -30,7 +30,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -39,9 +38,9 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY=y
-  echo "Auto confirm enabled, setting up config in downloaded git repo using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context and $HOME/Wallet.zip as the DB wallet file. defaults to $REPLY"
+  echo "Auto confirm enabled, setting up helm and services using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context. defaults to $REPLY"
 else
-  echo "setting up config in downloaded git repo using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context and $HOME/Wallet.zip as the DB wallet file."
+  echo "setting up helm and services using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context."
   read -p "Proceed (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -49,7 +48,7 @@ then
   echo "OK, exiting"
   exit 1
 else
-  echo "OK, setting up config in downloaded git repo using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context and $HOME/Wallet.zip as the DB wallet file."
+  echo "OK, setting up helm and services using $DEPARTMENT as the department and namespace name $CLUSTER_CONTEXT_NAME as the kubernetes context."
 fi
 
 CONTEXT_MATCH=`kubectl config get-contexts --output=name | grep -w $CLUSTER_CONTEXT_NAME`
@@ -68,8 +67,6 @@ export LAB_SETUP_LOCATION=$LAB_LOCATION/setup
 export KUBERNETES_SETUP_LOCATION=$LAB_SETUP_LOCATION/kubernetes-labs
 echo Configuring helm
 bash $KUBERNETES_SETUP_LOCATION/setupHelm.sh
-
-bash $KUBERNETES_SETUP_LOCATION/configure-downloaded-git-repo.sh $DEPARTMENT 
 
 bash $KUBERNETES_SETUP_LOCATION/fullyInstallCluster.sh $DEPARTMENT $CLUSTER_CONTEXT_NAME
 
