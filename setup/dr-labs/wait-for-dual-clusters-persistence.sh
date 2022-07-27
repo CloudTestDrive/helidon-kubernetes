@@ -14,8 +14,8 @@ then
 else
   echo "$SCRIPT_NAME using default cluster names of $CLUSTER_CONTEXT_NAME_ONE and $CLUSTER_CONTEXT_NAME_TWO"
 fi
-K8S_LOGGING_APPLIED_NAME_ONE=`bash ../setup/common/settings/to-valid-name.sh  "K8S_LOGGING_APPLIED_"$CLUSTER_CONTEXT_NAME_ONE`
-K8S_LOGGING_APPLIED_NAME_TWO=`bash ../setup/common/settings/to-valid-name.sh  "K8S_LOGGING_APPLIED_"$CLUSTER_CONTEXT_NAME_TWO`
+K8S_LOGGING_APPLIED_NAME_ONE=`bash ../common/settings/to-valid-name.sh  "K8S_LOGGING_APPLIED_"$CLUSTER_CONTEXT_NAME_ONE`
+K8S_LOGGING_APPLIED_NAME_TWO=`bash ../common/settings/to-valid-name.sh  "K8S_LOGGING_APPLIED_"$CLUSTER_CONTEXT_NAME_TWO`
 
 
 echo "Waiting for core services and both clusters to be available." 
