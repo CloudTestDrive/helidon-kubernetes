@@ -54,23 +54,6 @@ then
     export AUTO_CONFIRM=true
   fi
 fi
-if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
-then
-  echo "WARNING, cannot identify the number of clusters with installed services. This script will"
-  echo "reset the database configurations. If you have more than one cluster this may cause problems"
-  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=1
-fi
-
-
-let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES-1"
-bash ../common/delete-from-saved-settings.sh KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES
-if [ "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" = 0 ]
-then
-  echo "This is the last cluster, the scripts will reset the database configuration"
-else
-  echo "There are remaining clusters with services installed, the scripts will not touch the common db configuration"
-  echo "KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" >> $SETTINGS
-fi
 
 # run the pre-existing script
 bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME

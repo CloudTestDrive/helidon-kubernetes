@@ -103,11 +103,6 @@ else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME exists, continuing"
 fi
 
-if [ -z "$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" ]
-then
-  export KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=0
-fi
-
 # run the pre-existing script
 bash ./configureGitAndFullyInstallCluster.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
@@ -121,8 +116,3 @@ fi
 echo "$KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME=true" >> $SETTINGS
 # reload the settings file, some of the counters may have changed if other loads were happening
 source $SETTINGS
-
-# update the count of installed clusters with services - used for tracking if the config files need resetting
-let KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES="$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES+1"
-bash ../common/delete-from-saved-settings.sh KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES
-echo "KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES=$KUBERNETES_CLUSTERS_WITH_INSTALLED_SERVICES" >> $SETTINGS
