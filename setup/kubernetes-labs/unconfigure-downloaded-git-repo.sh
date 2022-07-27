@@ -2,13 +2,23 @@
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide :"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
     echo "  1st arg the name of your department, e.g. tg"
     exit -1 
 fi
 DEPARTMENT=$1
 
 
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f $SETTINGS ]
+  then
+    echo "$SCRIPT_NAME Loading existing settings"
+    source $SETTINGS
+  else 
+    echo "$SCRIPT_NAME No existing settings, cannot continue"
+    exit 10
+fi
 
 if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
 then

@@ -4,10 +4,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings"
+    echo "SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
-    echo "No existing settings, cannot continue"
+    echo "SCRIPT_NAME No existing settings, cannot continue"
     exit 10
 fi
 
@@ -27,7 +27,7 @@ then
   echo "No record of installing in cluster $CLUSTER_CONTEXT_NAME, cannot continue"
   exit 0
 else
-  echo "This script has already un-configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
+  echo "This script has  previously configured your Kubernetes cluster $CLUSTER_CONTEXT_NAME it will attempt to remove those services."
 fi
 
 #check for trying to re-use the context name
@@ -63,5 +63,3 @@ then
   echo "Failure destroying the cluster services, cannot continue"
   exit $RESP
 fi
-
-bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME
