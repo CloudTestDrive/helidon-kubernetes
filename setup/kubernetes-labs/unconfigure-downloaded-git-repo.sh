@@ -38,7 +38,7 @@ then
   REPLY="y"
   echo "Auto confirm enabled, unconfiguring up config in downloaded git repo using $DEPARTMENT as the department name defaults to $REPLY"
 else
-  echo "unconfiguring up config in downloaded git repo using $DEPARTMENT as the department name"
+  echo "unconfiguring downloaded git repo using $DEPARTMENT as the department name"
   read -p "Proceed (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
