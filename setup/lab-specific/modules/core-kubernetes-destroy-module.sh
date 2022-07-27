@@ -1,7 +1,21 @@
 #!/bin/bash -f
-
+SCRIPT_NAME=`basename $0`
+if [ -f $SETTINGS ]
+  then
+    echo "$SCRIPT_NAME Loading existing settings information"
+    source $SETTINGS
+  else 
+    echo "$SCRIPT_NAME No existing settings cannot continue"
+    exit 10
+fi
 # the DIR based locations must have been set before calling this script
 SAVED_PWD=`pwd`
+
+# remove the DB and other configuration from the repo
+
+cd $KUBERNETES_LABS_DIR
+bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS
+
 
 cd $COMMON_DIR
 

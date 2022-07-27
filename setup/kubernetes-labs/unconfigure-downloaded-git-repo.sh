@@ -8,6 +8,17 @@ if [ $# -eq 0 ]
 fi
 DEPARTMENT=$1
 
+
+
+if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+then
+  echo "The repo has already been unconfigured for the database and other configuration information, run the configure-downloaded-git-repo.sh to set them"
+  exit 0
+else
+  echo "Unconfiguring the database and other settings from the repo"
+fi
+
+
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -34,3 +45,6 @@ DB_CONNECTION=`bash ./get-database-connection-name.sh`
 bash ./reset-database-connection-secret.sh $DB_CONNECTION 
 bash ./uninstall-db-wallet.sh $HOME/Wallet.zip 
 bash ./reset-stockmanager-config-department.sh $DEPARTMENT 
+
+# flag that we've unconfigured things
+bash ../common/delete-from-saved-settings.sh REPO_CONFIGURED_FOR_SERVICES
