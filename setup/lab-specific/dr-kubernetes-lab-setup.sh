@@ -67,7 +67,7 @@ else
 SAVED_PWD=`pwd`
 cd $MODULES_DIR
 
-bash ./dual-kubernetes-cluster-setup-module.sh one two
+bash ./dual-kubernetes-clusters-setup-module.sh one two
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -79,7 +79,7 @@ cd $SAVED_PWD
 
 cd $MODULES_DIR
 
-bash ./dual-kubernetes-clusters-services-setup-module.sh
+bash ./dual-kubernetes-clusters-services-setup-module.sh one two
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
