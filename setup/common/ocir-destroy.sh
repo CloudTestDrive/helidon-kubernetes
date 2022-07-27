@@ -41,7 +41,7 @@ else
     oci artifacts container repository delete --repository-id $OCIR_LOGGER_OCID --force
   fi
     echo "Removing logger repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_LOGGING_OCID
+    bash ./delete-from-saved-settings.sh OCIR_LOGGER_OCID
     bash ./delete-from-saved-settings.sh OCIR_LOGGER_REUSED
     bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
 fi
