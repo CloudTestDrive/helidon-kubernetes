@@ -62,3 +62,5 @@ then
   echo "Failure destroying the cluster services, cannot continue"
   exit $RESP
 fi
+
+bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME
