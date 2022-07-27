@@ -20,7 +20,7 @@ module k3s {
   
   k3s_version="K3S_KUBERNETES_VERSION"
 
-  label_prefix="lab-CLUSTER_NAME"
+  label_prefix="LABEL_PREFIX"
   
   server_shape= {shape = "CONTROL_PLANE_SHAPE", ocpus = CONTROL_PLANE_OCPUS, memory = CONTROL_PLANE_MEMORY, boot_volume_size = CONTROL_PLANE_BOOT_SIZE}
   server_size = CONTROL_PLANE_COUNT

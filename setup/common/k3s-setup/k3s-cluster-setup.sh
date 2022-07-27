@@ -94,7 +94,7 @@ else
 fi
 
 CLUSTER_NAME="$USER_INITIALS"
-CLUSTER_NAME_FULL="lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
+CLUSTER_NAME_FULL="lab-$USER_INITIALS-$CLUSTER_CONTEXT_NAME"
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
@@ -113,7 +113,7 @@ then
     exit 1
   fi
 else     
-  CLUSTER_NAME_FULL=lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME
+  CLUSTER_NAME_FULL=lab-$CLUSTER_NAME
   echo "OK, going to use $CLUSTER_NAME_FULL as the Kubernetes cluster name"
 fi
 
@@ -231,6 +231,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFM OCI_HOME_REGION $OCI_HOME_REGION
     echo "Update $TF_MODULE_FILE to set Cluster name"
     bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_NAME $CLUSTER_NAME_FULL
+    echo "Update $TF_MODULE_FILE to set Label prefix"
+    bash $UPDATE_FILE_SCRIPT $TFM LABEL_PREFIX "$CLUSTER_NAME_FULL"
     echo "Update $TF_MODULE_FILE to set VCN CIDR"
     bash $UPDATE_FILE_SCRIPT $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     echo "Update $TF_MODULE_FILE to set K3S Kubernetes version"
