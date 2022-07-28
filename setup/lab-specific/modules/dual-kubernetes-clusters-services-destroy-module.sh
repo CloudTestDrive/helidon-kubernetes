@@ -14,24 +14,24 @@ fi
 SAVED_PWD=`pwd`
 
 cd $PERSISTENCE_DIR
-bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_ONE_NAME"
-bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_TWO_NAME"
+bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_NAME_ONE"
+bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_NAME_TWO"
 
 cd $KUBERNETES_LABS_DIR
 
-bash ./kubernetes-services-destroy.sh $CLUSTER_CONTEXT_ONE_NAME
+bash ./kubernetes-services-destroy.sh $CLUSTER_CONTEXT_NAME_ONE
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Kubernetes services destroy in cluster $CLUSTER_CONTEXT_ONE_NAME returned an error, unable to continue"
+  echo "Kubernetes services destroy in cluster $CLUSTER_CONTEXT_NAME_ONE returned an error, unable to continue"
   exit $RESP
 fi
 
-bash ./kubernetes-services-destroy.sh $CLUSTER_CONTEXT_TWO_NAME
+bash ./kubernetes-services-destroy.sh $CLUSTER_CONTEXT_NAME_TWO
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Kubernetes services destroy in cluster $CLUSTER_CONTEXT_TWO_NAME returned an error, unable to continue"
+  echo "Kubernetes services destroy in cluster $CLUSTER_CONTEXT_NAME_TWO returned an error, unable to continue"
   exit $RESP
 fi
 
