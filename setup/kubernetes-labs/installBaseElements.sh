@@ -66,10 +66,18 @@ fi
 helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx  --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20 --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-security-list-management-mode"=All $LB_NSG_OPTION
 echo "Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancer"
 EXTERNAL_IP=""
+WAIT_COUNTER=1
+WAIT_MAX=30
 while [ -z "$EXTERNAL_IP" ]; do
-  echo "Waiting for ingress external IP"
+  echo "Waiting for ingress external IP, test $WAIT_COUNTER"
   EXTERNAL_IP=$(kubectl get svc ingress-nginx-controller --namespace ingress-nginx --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}" --context $CLUSTER_CONTEXT_NAME)
   [ -z "$EXTERNAL_IP" ] && sleep 10
+  if [ $WAIT_COUNTER -ge $WAIT_MAX ]
+  then
+    echo "Failed to get Ingress external LB IP within $WAIT_MAX steps, cannot continue"
+    exit 30
+  fi
+  let "WAIT_COUNTER=$WAIT_COUNTER+1"
 done
 echo "Ingress controller external IP is " $EXTERNAL_IP
 echo External IP >> $INFO_FILE
