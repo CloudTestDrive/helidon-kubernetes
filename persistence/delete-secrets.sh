@@ -11,8 +11,8 @@ fi
 CONFDIR=$HOME/helidon-kubernetes/configurations
 LOGGERDIR=$CONFDIR/logger
 echo "Deleting existing logger secrets"
-echo "log-conf-secure"
-kubectl delete secret log-conf-secure --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
+echo "logs-conf-secure"
+kubectl delete secret logs-conf-secure --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
 echo "Deleted secrets"
 echo "Non logger Secrets remaining in namespace are "
 kubectl get secret --context $CLUSTER_CONTEXT_NAME
