@@ -14,8 +14,8 @@ fi
 SAVED_PWD=`pwd`
 
 cd $PERSISTENCE_DIR
-bash ./logger-microservice-destroy.sh $CLUSTER_CONTEXT_ONE_NAME
-bash ./logger-microservice-destroy.sh $CLUSTER_CONTEXT_TWO_NAME
+bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_ONE_NAME"
+bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_TWO_NAME"
 
 cd $KUBERNETES_LABS_DIR
 
