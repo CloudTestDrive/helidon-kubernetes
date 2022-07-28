@@ -7,7 +7,7 @@ then
 fi
 
 ORIG=$1
-UPPER=`echo $ORIG | tr a-z A-Z | sed -e 's:/:_:' | sed -e 's/^_//' | sed -e 's/-/_/g'`
+UPPER=`echo $ORIG | tr a-z A-Z | sed -e 's:/:_:' | sed -e 's/^_//' | sed -e 's/-/_/g'  | sed -e 's/\./_/g`
 if [ $ORIG = $UPPER ]
 then
   exit 0
