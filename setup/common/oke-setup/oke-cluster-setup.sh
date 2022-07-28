@@ -333,20 +333,37 @@ then
       exit 20 
     fi
   fi
-  echo "Updating the kube config file"
   # ensure the context file exists
   KUBECONF_DIR=$HOME/.kube
+  OKE_KUBECONFIG=kubeconfig-oke-$CLUSTER_CONTEXT_NAME.config
   KUBECONF_FILE=$KUBECONF_DIR/config
   mkdir -p $KUBECONF_DIR
-  touch $KUBECONF_FILE
-  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF_FILE --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
+  if [ -f "$KUBECONF_FILE" ]
+  then
+    # create a backup
+    cp $KUBECONF_FILE "$KUBECONF_FILE".bak 
+  else
+    # create a new one
+    touch $KUBECONF_FILE
+  fi
+  echo "Getting the kube config file to local copy"
+  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $OKE_KUBECONFIG --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
-  chmod 600 $KUBECONF_FILE
-  echo "Renaming context to $CLUSTER_CONTEXT_NAME"
+  chmod 600 $OKE_KUBECONFIG
+  echo "Updating the kube config file - renaming context to $CLUSTER_CONTEXT_NAME"
   # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
-  CURRENT_CONTEXT=`kubectl config current-context`
-  kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
-  
+  CURRENT_CONTEXT=`kubectl config current-context --kubeconfig=$OKE_KUBECONFIG`
+  kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME  --kubeconfig=$OKE_KUBECONFIG
+  echo "Merging kube config files"
+  MERGED_CONF=merged-$CLUSTER_CONTEXT_NAME.config
+  KUBECONFIG=$KUBECONF_FILE:$OKE_KUBECONFIG kubectl config view --flatten >  $MERGED_CONF
+  echo "Moving kube config file"
+  rm $KUBECONF_FILE
+  # Replace your old config with the new merged config
+  mv $MERGED_CONF $KUBECONF_FILE 
+  chmod 600 $KUBECONF_FILE
+  # remove the local one
+  rm $OKE_KUBECONFIG
   # it's now save to save the OCID's as we've finished
   echo "$OKE_OCID_NAME=$OKE_OCID" >> $SETTINGS
   echo "$OKE_REUSED_NAME=$OKE_REUSED" >> $SETTINGS
@@ -369,6 +386,8 @@ else
   fi
 fi
 
+echo "Switching kubernetes context to the specified one"
+kubectl config use-context $CLUSTER_CONTEXT_NAME
 # record some core networking info
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 echo "Saving network information for cluster $CLUSTER_CONTEXT_NAME to $CLUSTER_NETWORK_FILE"

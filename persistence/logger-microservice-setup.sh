@@ -49,4 +49,12 @@ kubectl apply --context $CLUSTER_CONTEXT_NAME -f ingressLoggerRules-"$CLUSTER_CO
 echo "Updating the storefront context and restarting"
 bash update-storefront-configmap.sh set $CLUSTER_CONTEXT_NAME
 
+INFO_FILE=$HOME/clusterInfo.$CLUSTER_CONTEXT_NAME
+SETTTINGS_FILE=$HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
+
+source $SETTINGS > /dev/null
+
+echo "To see the billing record stats" >> $INFO
+echo "curl -i -k -u jack:password https://store.$EXTERNAL_IP.nip.io/log/billing/billinginfo" >> $INFO
+echo  >> $INFO
 echo "$K8S_LOGGING_APPLIED_NAME=true" >> $SETTINGS
