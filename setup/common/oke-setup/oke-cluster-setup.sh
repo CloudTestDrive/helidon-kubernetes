@@ -386,6 +386,8 @@ else
   fi
 fi
 
+echo "Switching kubernetes context to the specified one"
+kubectl config use-context $CLUSTER_CONTEXT_NAME
 # record some core networking info
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 echo "Saving network information for cluster $CLUSTER_CONTEXT_NAME to $CLUSTER_NETWORK_FILE"
