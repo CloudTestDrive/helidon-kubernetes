@@ -63,7 +63,7 @@ else
   LB_NSG_OPTION='--set controller.service.annotations."oci\.oraclecloud\.com/oci-network-security-groups"='"$LB_NSG_OCID"
 fi
 
-helm install ingress-nginx ingress-nginx/ingress-nginx  --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20 --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-security-list-management-mode"=All $LB_NSG_OPTION
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx  --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20 --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-security-list-management-mode"=All $LB_NSG_OPTION
 echo "Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancer"
 EXTERNAL_IP=""
 while [ -z "$EXTERNAL_IP" ]; do
@@ -78,7 +78,7 @@ echo >> $INFO_FILE
 echo "export EXTERNAL_IP=$EXTERNAL_IP" >>$INFO_FILE
 echo >> $INFO_FILE
 echo "installing dashboard using helm"
-helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard  --kube-context $CLUSTER_CONTEXT_NAME --namespace kube-system --set ingress.enabled=true --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx --set ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --version $dashboardHelmChartVersion
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard  --kube-context $CLUSTER_CONTEXT_NAME --namespace kube-system --set ingress.enabled=true --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx --set ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --version $dashboardHelmChartVersion
 echo "Helm for dashboard completed - it may take a while for the dashboard to be running"
 
 echo Dashboard URL >> $INFO_FILE
