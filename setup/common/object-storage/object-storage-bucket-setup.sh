@@ -79,6 +79,6 @@ then
   echo "$BUCKET_REUSED_NAME=false" >> $SETTINGS
 else
   echo "Bucket $BUCKET_NAME already exists, will reuse"
-  echo "$BUCKET_OCID=$BUCKET_OCID" >> $SETTINGS
+  echo "$BUCKET_OCID_NAME=$BUCKET_OCID" >> $SETTINGS
   echo "$BUCKET_REUSED_NAME=true" >> $SETTINGS
 fi
