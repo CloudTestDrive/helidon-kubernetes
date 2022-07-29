@@ -10,13 +10,18 @@ fi
 
 BUCKET_NAME=$1
 
-CLEAR_BUCKET_FLAG=--empty
+CLEAR_BUCKET_FLAG="--empty"
 if [ $# -ge 1 ]
 then
   if [ $1 = "retain" ]
   then
+    echo "Will not delete a non empty bucket"
     CLEAR_BUCKET=
+  else 
+    echo "Will delete bucket and any contents"
   fi
+else  
+  echo "Defaulting to deleting bucket and any contents"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
@@ -43,8 +48,7 @@ then
   echo "No resuse information for $BUCKET_NAME, unsafe to proceed"
   exit 0
 else
-  echo "Bucket $BUCKET_NAME reuse info cound, continuing"
-  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG --force
+  echo "Bucket $BUCKET_NAME reuse info found, continuing"
 fi
 if [ "$BUCKET_REUSED" = "true" ]
 then
