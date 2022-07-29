@@ -13,6 +13,7 @@ BUCKET_NAME=$1
 CLEAR_BUCKET_FLAG="--force --empty"
 if [ $# -ge 1 ]
 then
+  echo "Checking for the retain setting - $1"
   if [ $1 = "retain" ]
   then
     echo "Will not delete a non empty bucket"
