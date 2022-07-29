@@ -10,7 +10,7 @@ fi
 
 BUCKET_NAME=$1
 
-CLEAR_BUCKET_FLAG="--empty"
+CLEAR_BUCKET_FLAG="--force --empty"
 if [ $# -ge 1 ]
 then
   if [ $1 = "retain" ]
@@ -56,7 +56,7 @@ then
   exit 0
 else
   echo "Bucket $BUCKET_NAME created by these scripts - will delete"
-  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG --force
+  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG
 fi
 
 
