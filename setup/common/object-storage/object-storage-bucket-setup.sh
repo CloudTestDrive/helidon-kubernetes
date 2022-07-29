@@ -74,7 +74,7 @@ bash ../delete-from-saved-settings.sh $BUCKET_REUSED_NAME
 if [ "$BUCKET_OCID" = "null" ]
 then
   echo "Bucket $BUCKET_NAME not found, creating"
-  BUCKET_OCID=`oci os bucket create --compartment-id $S3_COMPAT_OCID  --name $BUCKET_NAME --storage-tier $STORAGE_TIER | jq -r '.data.id'`
+  BUCKET_OCID=`oci os bucket create --compartment-id $STORAGE_COMPARTMENT_OCID  --name $BUCKET_NAME --storage-tier $STORAGE_TIER | jq -r '.data.id'`
   echo "$BUCKET_OCID_NAME=BUCKET_OCID" >> $SETTINGS
   echo "$BUCKET_REUSED_NAME=false" >> $SETTINGS
 else
