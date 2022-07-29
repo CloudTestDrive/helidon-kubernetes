@@ -19,6 +19,8 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
+BUCKET_NAME=$1
+
 STORAGE_TIER=standard
 if [ $# -ge 2 ]
 then
