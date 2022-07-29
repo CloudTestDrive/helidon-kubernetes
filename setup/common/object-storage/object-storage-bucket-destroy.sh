@@ -11,10 +11,9 @@ fi
 BUCKET_NAME=$1
 
 CLEAR_BUCKET_FLAG="--force --empty"
-if [ $# -ge 1 ]
+if [ $# -ge 2 ]
 then
-  echo "Checking for the retain setting - $1"
-  if [ $1 = "retain" ]
+  if [ $2 = "retain" ]
   then
     echo "Will not delete a non empty bucket"
     CLEAR_BUCKET=
