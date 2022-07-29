@@ -7,6 +7,7 @@ then
   echo "Optionally"
   echo "  2nd argument - the storage tier to use - will default to standard"
   echo "  3rd argument - the OCID of the compartment to create the cluster in, if not proviced will devailt to the cluster being used by the rest of the labs"
+  exit 1
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings

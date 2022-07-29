@@ -4,6 +4,7 @@ if [ $# -eq 0 ]
 then
   echo "$SCRIPT_NAME Missing arguments you must provide:"
   echo "  1st argument - name of the bucket to destroy - this must meet the object storage bucket names restrictions"
+  exit 1
 fi
 
 BUCKET_NAME=$1

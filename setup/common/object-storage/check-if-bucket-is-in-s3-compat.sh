@@ -5,6 +5,7 @@ if [ $# -eq 0 ]
 then
   echo "$SCRIPT_NAME Missing arguments you must provide:"
   echo "  1st argument - name of the bucket to check - this must be upper case A-Z only and can only use _ to separate words"
+  exit 1
 fi
 BUCKET_NAME=$1
 
