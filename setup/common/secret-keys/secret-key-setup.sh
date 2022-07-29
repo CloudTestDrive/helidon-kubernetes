@@ -1,7 +1,7 @@
 #!/bin/bash -f
 if [ $# -lt 1 ]
 then
-  echo "The secret key setup script requires ont arguments:"
+  echo "The secret key setup script requires one arguments:"
   echo "the display name of the secret key to create"
   exit 1
 fi
