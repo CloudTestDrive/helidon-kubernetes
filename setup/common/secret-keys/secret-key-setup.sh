@@ -28,7 +28,7 @@ then
   echo "Key named $KEY_NAME not setup by these scripts, continuing"
 else
   echo "Key named $KEY_NAME already setup by these scripts, cannot continue"
-  exit 2
+  exit 0
 fi
 
 echo "Locating home region"
