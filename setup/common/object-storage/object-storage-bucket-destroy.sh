@@ -40,11 +40,19 @@ BUCKET_REUSED_NAME=`bash ../settings/to-valid-name.sh "$BUCKET_NAME"_REUSED`
 BUCKET_REUSED="${!BUCKET_REUSED_NAME}"
 if [ -z "$BUCKET_REUSED" ]
 then
-  echo "Bucket $BUCKET_NAME created by these scripts - will delete"
-  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG --force
+  echo "No resuse information for $BUCKET_NAME, unsafe to proceed"
+  exit 0
 else
+  echo "Bucket $BUCKET_NAME reuse info cound, continuing"
+  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG --force
+fi
+if [ "$BUCKET_REUSED" = "true" ]
+then
   echo "Bucket $BUCKET_NAME not created by these scripts - will exit"
   exit 0
+else
+  echo "Bucket $BUCKET_NAME created by these scripts - will delete"
+  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG --force
 fi
 
 
