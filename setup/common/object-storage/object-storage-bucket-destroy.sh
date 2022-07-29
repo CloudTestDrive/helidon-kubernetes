@@ -4,25 +4,9 @@ if [ $# -eq 0 ]
 then
   echo "$SCRIPT_NAME Missing arguments you must provide:"
   echo "  1st argument - name of the bucket to destroy - this must meet the object storage bucket names restrictions"
-  echo "Optional"
-  echo " 2nd argument - set to retain if you want to stop the delete if there are objects in the bucket - defaults to deleting bucket and contents"
 fi
 
 BUCKET_NAME=$1
-
-CLEAR_BUCKET_FLAG="--force --empty"
-if [ $# -ge 2 ]
-then
-  if [ $2 = "retain" ]
-  then
-    echo "Will not delete a non empty bucket"
-    CLEAR_BUCKET=
-  else 
-    echo "Will delete bucket and any contents"
-  fi
-else  
-  echo "Defaulting to deleting bucket and any contents"
-fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -56,7 +40,7 @@ then
   exit 0
 else
   echo "Bucket $BUCKET_NAME created by these scripts - will delete"
-  oci os bucket delete --bucket-name $BUCKET_NAME $CLEAR_BUCKET_FLAG
+  oci os bucket delete --bucket-name $BUCKET_NAME --force
 fi
 
 
