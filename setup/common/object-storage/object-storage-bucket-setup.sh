@@ -75,10 +75,10 @@ if [ "$BUCKET_OCID" = "null" ]
 then
   echo "Bucket $BUCKET_NAME not found, creating"
   BUCKET_OCID=`oci os bucket create --compartment-id $STORAGE_COMPARTMENT_OCID  --name $BUCKET_NAME --storage-tier $STORAGE_TIER | jq -r '.data.id'`
-  echo "$BUCKET_OCID_NAME=BUCKET_OCID" >> $SETTINGS
+  echo "$BUCKET_OCID_NAME=$BUCKET_OCID" >> $SETTINGS
   echo "$BUCKET_REUSED_NAME=false" >> $SETTINGS
 else
   echo "Bucket $BUCKET_NAME already exists, will reuse"
-  echo "$BUCKET_OCID=BUCKET_OCID" >> $SETTINGS
+  echo "$BUCKET_OCID=$BUCKET_OCID" >> $SETTINGS
   echo "$BUCKET_REUSED_NAME=true" >> $SETTINGS
 fi
