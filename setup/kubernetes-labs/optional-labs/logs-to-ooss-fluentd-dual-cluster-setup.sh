@@ -7,6 +7,7 @@ then
   CLUSTER_CONTEXT_NAME_TWO=two
   echo "$SCRIPT_NAME using default cluster contexts of $CLUSTER_CONTEXT_NAME_ONE and $CLUSTER_CONTEXT_NAME_TWO"
 elif [ $# -eq 1 ]
+then
   CLUSTER_CONTEXT_NAME_ONE=$1
   CLUSTER_CONTEXT_NAME_TWO=two
   echo "$SCRIPT_NAME using provided cluster contexts of $CLUSTER_CONTEXT_NAME_ONE and default cluster context of $CLUSTER_CONTEXT_NAME_TWO"
