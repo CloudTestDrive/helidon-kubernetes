@@ -33,10 +33,5 @@ touch tls-deleteme.key
 rm tls-*.crt
 rm tls-*.key
 
-if [ -f auth.$CLUSTER_CONTEXT_NAME ]
-then
-  echo "Removing auth file"
-rm auth.$CLUSTER_CONTEXT_NAME
-else
-  echo "Cannot locate the auth file to remove"
-fi
+echo "Removing auth file"
+rm auth

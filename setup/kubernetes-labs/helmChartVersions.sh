@@ -5,3 +5,4 @@ prometheusHelmChartVersion=15.10.1
 grafanaHelmChartVerion=6.30.3
 elasticSearchHelmChartVersion=7.17.3
 metricsServerHelmChartVersion=3.8.2
+prometheusStackHelmChartVersion=39.2.1
