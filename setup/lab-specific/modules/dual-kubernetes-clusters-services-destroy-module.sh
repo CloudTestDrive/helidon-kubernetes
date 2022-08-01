@@ -13,6 +13,9 @@ else
 fi
 SAVED_PWD=`pwd`
 
+cd $KUBERNETES_OPTIONAL_LABS_DIR
+bash ./logs-to-ooss-fluentd-dual-cluster-setup.sh $CLUSTER_CONTEXT_NAME_ONE $CLUSTER_CONTEXT_NAME_TWO
+
 cd $PERSISTENCE_DIR
 bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_NAME_ONE"
 bash ./logger-microservice-destroy.sh "$CLUSTER_CONTEXT_NAME_TWO"
