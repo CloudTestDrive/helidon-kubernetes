@@ -22,7 +22,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-source logs-to-ooss-single-cluster-settings.sh
+source logs-to-ooss-fluentd-settings.sh
 
 bash ./logs-to-ooss-fluentd-destroy.sh  $CLUSTER_CONTEXT_NAME
 SAVED_DIR=`pwd`

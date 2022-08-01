@@ -22,7 +22,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-source logs-to-ooss-single-cluster-settings.sh
+source logs-to-ooss-fluentd-settings.sh
 SAVED_DIR=`pwd`
 cd $HOME/helidon-kubernetes/setup/common/secret-keys
 bash ./secret-key-setup.sh "$KEY_NAME"
