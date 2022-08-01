@@ -22,6 +22,15 @@ if [ -f $SETTINGS ]
 fi
 
 
+LOGGING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "LOGGING_TO_OOSS_WITH_FLUENTD_""$CLUSTER_CONTEXT_NAME"`
+LOGGING_INSTALLED="${!LOGGING_INSTALLED_NAME}"
+if [-z "$LOGGING_INSTALLED" ]
+then
+  echo "These scripts have not installed the logging previously for cluster $CLUSTER_CONTEXT_NAME, not safe to continue"
+  exit 0
+else
+  echo "These have previously installed the logging for cluster $CLUSTER_CONTEXT_NAME continuing with removal"
+fi
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -42,3 +51,5 @@ cd $HOME/helidon-kubernetes/setup/common/object-storage
 BUCKET_NAME=`echo "LOGGING_FLUENTD_""$USER_INITIALS""_""$CLUSTER_CONTEXT_NAME" | tr [:lower:] [:upper:]`
 
 bash ./object-storage-bucket-destroy.sh $BUCKET_NAME
+# we're in the object storage directory
+bash ../delete-from-saved-settings.sh $LOGGING_INSTALLED_NAME

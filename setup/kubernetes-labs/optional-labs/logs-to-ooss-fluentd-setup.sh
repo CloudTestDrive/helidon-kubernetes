@@ -32,6 +32,15 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+LOGGING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "LOGGING_TO_OOSS_WITH_FLUENTD_""$CLUSTER_CONTEXT_NAME"`
+LOGGING_INSTALLED="${!LOGGING_INSTALLED_NAME}"
+if [-z "$LOGGING_INSTALLED" ]
+then
+  echo "These scripts have not installed the logging previously for cluster $CLUSTER_CONTEXT_NAME, continuing with install"
+else
+  echo "These have previously installed the logging for cluster $CLUSTER_CONTEXT_NAME exiting"
+  exit 0
+fi
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -123,3 +132,4 @@ kubectl apply -f $LOGGING_MODULE_DIR/fluentd-to-ooss-configmap.yaml --context $C
 echo "Installing fluentd daemon set in cluster $CLUSTER_CONTEXT_NAME"
 kubectl apply -f $LOGGING_MODULE_DIR/fluentd-daemonset-ooss-rbac.yaml --context $CLUSTER_CONTEXT_NAME
 
+echo "$LOGGING_INSTALLED_NAME=true" >> $SETTINGS
