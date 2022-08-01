@@ -26,7 +26,7 @@ then
   export AUTO_CONFIRM=false
 fi
 
-BUCKET_REUSED_NAME=`bash ../settings/to-valid-name.sh "$BUCKET_NAME"_REUSED`
+BUCKET_REUSED_NAME=`bash ../settings/to-valid-name.sh OOSS_BUCKET_"$BUCKET_NAME"_REUSED`
 BUCKET_REUSED="${!BUCKET_REUSED_NAME}"
 if [ -z "$BUCKET_REUSED" ]
 then
@@ -46,6 +46,6 @@ fi
 
 
 
-BUCKET_OCID_NAME=`bash ../settings/to-valid-name.sh "$BUCKET_NAME"_OCID`
+BUCKET_OCID_NAME=`bash ../settings/to-valid-name.sh OOSS_BUCKET_"$BUCKET_NAME"_OCID`
 bash ../delete-from-saved-settings.sh $BUCKET_OCID_NAME
 bash ../delete-from-saved-settings.sh $BUCKET_REUSED_NAME
