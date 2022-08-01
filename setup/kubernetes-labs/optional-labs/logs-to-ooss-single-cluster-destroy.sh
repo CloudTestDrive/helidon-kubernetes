@@ -24,7 +24,7 @@ fi
 
 source logs-to-ooss-single-cluster-settings.sh
 
-bash ./logs-to-oss-fluentd-destroy.sh  $CLUSTER_CONTEXT_NAME
+bash ./logs-to-ooss-fluentd-destroy.sh  $CLUSTER_CONTEXT_NAME
 SAVED_DIR=`pwd`
 cd $HOME/helidon-kubernetes/setup/common/secret-keys
 bash ./secret-key-destroy.sh "$KEY_NAME"
