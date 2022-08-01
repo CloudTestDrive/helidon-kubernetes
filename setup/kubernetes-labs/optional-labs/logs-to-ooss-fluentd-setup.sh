@@ -34,7 +34,7 @@ fi
 
 LOGGING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "LOGGING_TO_OOSS_WITH_FLUENTD_""$CLUSTER_CONTEXT_NAME"`
 LOGGING_INSTALLED="${!LOGGING_INSTALLED_NAME}"
-if [-z "$LOGGING_INSTALLED" ]
+if [ -z "$LOGGING_INSTALLED" ]
 then
   echo "These scripts have not installed the logging previously for cluster $CLUSTER_CONTEXT_NAME, continuing with install"
 else
