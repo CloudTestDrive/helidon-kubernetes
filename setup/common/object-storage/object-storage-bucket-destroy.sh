@@ -41,7 +41,7 @@ then
   exit 0
 else
   echo "Bucket $BUCKET_NAME created by these scripts - will delete"
-  oci os bucket delete --bucket-name $BUCKET_NAME --force
+  oci os bucket delete --bucket-name $BUCKET_NAME --force --empty
 fi
 
 
