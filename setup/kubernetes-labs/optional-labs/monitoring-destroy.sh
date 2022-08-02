@@ -33,10 +33,10 @@ touch tls-deleteme.key
 rm tls-*.crt
 rm tls-*.key
 
-if [ -d auth.$CLUSTER_CONTEXT_NAME ]
+if [ -f auth.$CLUSTER_CONTEXT_NAME ]
 then
-  echo "Removing direcvtory auth.$CLUSTER_CONTEXT_NAME "
-  rm -rf auth.$CLUSTER_CONTEXT_NAME
+  echo "Removing file auth.$CLUSTER_CONTEXT_NAME "
+  rm auth.$CLUSTER_CONTEXT_NAME
 else
-  echo "Cannot locate the auth.$CLUSTER_CONTEXT_NAME directory to remove"
+  echo "Cannot locate the auth.$CLUSTER_CONTEXT_NAME filr to remove"
 fi

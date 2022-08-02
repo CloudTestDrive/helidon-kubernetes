@@ -35,17 +35,14 @@ cd $HOME/helidon-kubernetes/monitoring-kubernetes
 echo "Creating namespace in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create namespace monitoring --context $CLUSTER_CONTEXT_NAME
 
-mkdir -p auth-dir-$CLUSTER_CONTEXT_NAME
-
-cd auth-dir-$CLUSTER_CONTEXT_NAME
+echo "Creating namespace in cluster $CLUSTER_CONTEXT_NAME"
+kubectl create namespace monitoring --context $CLUSTER_CONTEXT_NAME
 
 echo "Creating Prometheus auth details"
-htpasswd -c -b auth admin $PROMETHEUS_PASSWORD
+htpasswd -c -b auth.$CLUSTER_CONTEXT_NAME admin $PROMETHEUS_PASSWORD
 
 echo "Creating Prometheus auth secret in cluster $CLUSTER_CONTEXT_NAME"
-kubectl create secret generic web-ingress-auth -n monitoring --from-file=auth --context $CLUSTER_CONTEXT_NAME
-
-cd ..
+kubectl create secret generic web-ingress-auth -n monitoring --from-file=auth=auth.$CLUSTER_CONTEXT_NAME --context $CLUSTER_CONTEXT_NAME
 
 echo "Create Prometheus certificate"
 $HOME/keys/step certificate create prometheus.monitoring.$EXTERNAL_IP.nip.io tls-prometheus-$EXTERNAL_IP.crt tls-prometheus-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
