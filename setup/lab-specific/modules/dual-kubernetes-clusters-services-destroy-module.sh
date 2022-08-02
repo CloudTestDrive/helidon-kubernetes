@@ -14,6 +14,8 @@ fi
 SAVED_PWD=`pwd`
 
 cd $KUBERNETES_OPTIONAL_LABS_DIR
+bash ./monitoring-destroy.sh $CLUSTER_CONTEXT_NAME_ONE
+bash ./monitoring-destroy.sh $CLUSTER_CONTEXT_NAME_TWO
 bash ./logs-to-ooss-fluentd-dual-cluster-setup.sh $CLUSTER_CONTEXT_NAME_ONE $CLUSTER_CONTEXT_NAME_TWO
 
 cd $PERSISTENCE_DIR

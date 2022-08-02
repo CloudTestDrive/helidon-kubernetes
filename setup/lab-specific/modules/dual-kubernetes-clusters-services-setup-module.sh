@@ -114,5 +114,7 @@ fi
 
 cd $KUBERNETES_OPTIONAL_LABS_DIR
 bash ./logs-to-ooss-fluentd-dual-cluster-setup.sh $CLUSTER_CONTEXT_NAME_ONE $CLUSTER_CONTEXT_NAME_TWO
+bash ./monitoring-setup.sh $CLUSTER_CONTEXT_NAME_ONE
+bash ./monitoring-setup.sh $CLUSTER_CONTEXT_NAME_TWO
 
 exit 0
