@@ -218,7 +218,20 @@ then
     else
       echo "Using override worker shape of $WORKER_SHAPE, will not resource check"
     fi
-    echo "Creating cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? e defaulting to $REPLY"
+    else
+      read -p "Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? (y/n) " REPLY
+    fi
+
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, stopping"
+      exit 0
+    fi
+    echo "Proceeding to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
