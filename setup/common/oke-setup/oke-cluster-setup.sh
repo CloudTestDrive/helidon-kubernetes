@@ -315,8 +315,8 @@ then
     OKE_VCN=`terraform output vcn_id |  sed -e 's/"//g'`
     OKE_LB_SUBNET_OCID=`terraform output subnet_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
     OKE_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep workers | awk '{print $3}' | sed -e 's/"//g'`
-    OKE_LB_NSG_OCID=`terraform output pub_lb_nsg | sed -e 's/"//g'`
-    OKE_WORKER_NSG_OCID=""
+    OKE_LB_NSG_OCID=`terraform output nsg_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
+    OKE_WORKER_NSG_OCID=`terraform output nsg_ids | grep worker | awk '{print $3}' | sed -e 's/"//g'`
     cd $SAVED_DIR
   else
     echo "Located existing cluster named $CLUSTER_NAME_FULL in $COMPARTMENT_NAME checking its status"
