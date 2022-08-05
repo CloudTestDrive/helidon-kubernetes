@@ -52,7 +52,7 @@ OTHER_ENTRIES=`ls -1 $OPERATOR_SDK_DIR | grep -v $OPERATOR_SDK_DIR_CMD | grep -v
 # test for an existing clusterctl command, if it's there then assume all is OK
 if [ "$OTHER_ENTRIES" = 0 ]
 then
-  echo "$OPERATOR_SDK_DIR only contains $OPERATOR_SDK_DIR_CMD and operator $BUNDLES_PREFIX files"
+  echo "$OPERATOR_SDK_DIR only contains $OPERATOR_SDK_CMD and operator $BUNDLES_PREFIX files"
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
