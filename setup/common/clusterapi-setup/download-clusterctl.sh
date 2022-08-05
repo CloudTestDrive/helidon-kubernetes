@@ -57,7 +57,7 @@ fi
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
-  echo "Auto confirm is enabled, using $CLUSTER_NAME_FULL question for cluster name defaulting to $REPLY"
+  echo "Auto confirm is enabled, Do you want to download $CLUSTERCTL_CMD to $CLUSTERCTL_PATH defaulting to $REPLY"
 else
   read -p "Do you want to download $CLUSTERCTL_CMD to $CLUSTERCTL_PATH (y/n) " REPLY
 fi
