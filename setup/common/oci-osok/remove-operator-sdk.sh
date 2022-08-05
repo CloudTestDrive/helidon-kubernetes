@@ -47,7 +47,7 @@ mkdir -p $OPERATOR_SDK_DIR
 touch $OPERATOR_SDK_PATH
 # do we delete the entire directory or just the file ?
 # what else is in there
-OTHER_ENTRIES=`ls -1 $OPERATOR_SDK_DIR | grep -v $OPERATOR_SDK_DIR_CMD | grep -v "bundle-" wc -l`
+OTHER_ENTRIES=`ls -1 $OPERATOR_SDK_DIR | grep -v $OPERATOR_SDK_DIR_CMD | grep -v "bundle-" | wc -l`
 
 # test for an existing clusterctl command, if it's there then assume all is OK
 if [ "$OTHER_ENTRIES" = 0 ]
@@ -80,6 +80,7 @@ else
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "OK, not deleting"
+    exit 0
   else
     for BUNDLE in "$OPERATOR_SDK_DIR/$BUNDLES_PREFIX"*
     do
