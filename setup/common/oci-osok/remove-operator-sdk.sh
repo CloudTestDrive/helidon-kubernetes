@@ -2,7 +2,7 @@
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
-OPERATOR_SETTINGS_FILE=./capi-settings.sh
+OPERATOR_SETTINGS_FILE=./operator-settings.sh
 
 if [ -f $SETTINGS ]
   then
