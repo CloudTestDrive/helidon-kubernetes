@@ -15,10 +15,10 @@ fi
 
 if [ -f $OPERATOR_SETTINGS_FILE ]
   then
-    echo "Loading capi settings"
+    echo "Loading operator settings"
     source $OPERATOR_SETTINGS_FILE
   else 
-    echo "No capi settings file( $OPERATOR_SETTINGS_FILE ) cannot continue"
+    echo "No operator settings file( $OPERATOR_SETTINGS_FILE ) cannot continue"
     exit 11
 fi
 
@@ -47,12 +47,12 @@ mkdir -p $OPERATOR_SDK_DIR
 touch $COPERATOR_SDK_PATH
 # do we delete the entire directory or just the file ?
 # what else is in there
-OTHER_ENTRIES=`ls -1 $OPERATOR_SDK_DIR | grep -v $OPERATOR_SDK_DIR_CMD | wc -l`
+OTHER_ENTRIES=`ls -1 $OPERATOR_SDK_DIR | grep -v $OPERATOR_SDK_DIR_CMD | grep -v "bundle-" wc -l`
 
 # test for an existing clusterctl command, if it's there then assume all is OK
 if [ "$OTHER_ENTRIES" = 0 ]
 then
-  echo "$OPERATOR_SDK_DIR only contains $OPERATOR_SDK_DIR_CMD"
+  echo "$OPERATOR_SDK_DIR only contains $OPERATOR_SDK_DIR_CMD and operator $BUNDLES_PREFIX files"
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
@@ -65,23 +65,24 @@ then
     echo "OK, not deleting"
   else
     echo "OK, Removing the directory $OPERATOR_SDK_DIR"
-    rm -rf $OPERATOR_SDK_DIR
+    rm -rf "$OPERATOR_SDK_DIR"
   fi
 else
-  echo "$OPERATOR_SDK_DIR contains additional files, only removing $OPERATOR_SDK_CMD"
+  echo "$OPERATOR_SDK_DIR contains additional files, removing $OPERATOR_SDK_CMD and $BUNDLES_PREFIX files"
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
-    echo "Auto confirm is enabled, Do you want to delete $OPERATOR_SDK_CMD in $OPERATOR_SDK_DIR defaulting to $REPLY"
+    echo "Auto confirm is enabled, Do you want to delete $OPERATOR_SDK_CMD and $BUNDLES_PREFIX files in $OPERATOR_SDK_DIR defaulting to $REPLY"
   else
-    read -p "Do you want to delete $OPERATOR_SDK_CMD in $OPERATOR_SDK_DIR (y/n) " REPLY
+    read -p "Do you want to delete $OPERATOR_SDK_CMD and $BUNDLES_PREFIX files in $OPERATOR_SDK_DIR (y/n) " REPLY
   fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
     echo "OK, not deleting"
   else
-    echo "OK, Removing the file $OPERATOR_SDK_CMD in $OPERATOR_SDK_DIR"
-    rm $OPERATOR_SDK_PATH
+    echo "OK, Removing the file $OPERATOR_SDK_CMD and $BUNDLES_PREFIX files in $OPERATOR_SDK_DIR"
+    rm "$OPERATOR_SDK_PATH"
+    rm "$OPERATOR_SDK_DIR/$BUNDLES_PREFIX"*
   fi
 fi
 
