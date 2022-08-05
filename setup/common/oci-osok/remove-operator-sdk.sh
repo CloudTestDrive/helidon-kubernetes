@@ -80,9 +80,13 @@ else
   then
     echo "OK, not deleting"
   else
+    for BUNDLE in "$OPERATOR_SDK_DIR/$BUNDLES_PREFIX"*
+    do
+      echo "Deleting bundle $BUNDLE"
+      rm -rf $BUNDLE
+    done
     echo "OK, Removing the file $OPERATOR_SDK_CMD and $BUNDLES_PREFIX files in $OPERATOR_SDK_DIR"
     rm "$OPERATOR_SDK_PATH"
-    rm "$OPERATOR_SDK_DIR/$BUNDLES_PREFIX"*
   fi
 fi
 
