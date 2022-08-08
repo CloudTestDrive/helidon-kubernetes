@@ -34,6 +34,10 @@ then
 fi
 
 
+    GETKC=false
+  
+if [ "$GETKC" = "true" ]
+then
 CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name 2>/dev/null`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
@@ -42,6 +46,9 @@ then
 else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME does not exist, cannot proceed"
   exit 40
+fi
+else
+  echo "GETKC disabled, won't check for context, this needs to be fixed"
 fi
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
 TF_GIT_BASE=$HOME/k3s-terraform
@@ -80,7 +87,6 @@ then
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
     bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ../delete-from-saved-settings.sh $K3S_REUSED_NAME
-    GETKC=false
 if [ "$GETKC" = "true" ]
 then
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
