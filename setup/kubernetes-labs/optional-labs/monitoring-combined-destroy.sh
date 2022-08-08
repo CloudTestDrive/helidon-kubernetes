@@ -55,4 +55,4 @@ else
   echo "Cannot locate the auth.$CLUSTER_CONTEXT_NAME file to remove"
 fi
 cd $SAVED_DIR
-bash ../../common/delete-from-saved-settings.sh $LOGGING_INSTALLED_NAME
+bash ../../common/delete-from-saved-settings.sh $MONITORING_INSTALLED_NAME
