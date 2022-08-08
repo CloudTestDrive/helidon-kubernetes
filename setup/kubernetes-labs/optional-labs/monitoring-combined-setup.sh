@@ -85,6 +85,7 @@ echo "" >> $CLUSTER_INFO
 echo "" >> $CLUSTER_INFO
 echo "Access Grafana  at https://grafana.monitoring.$EXTERNAL_IP.nip.io using user admin and password" >> $CLUSTER_INFO
 echo $GRAFANA_PASSWORD >> $CLUSTER_INFO
+echo "Remember to set the Grafana data source as prometheus on http://prometheus-server.monitoring.svc.cluster.local" >> $CLUSTER_INFO
 echo "" >> $CLUSTER_INFO
 
 echo "Access prometheus for cluster $CLUSTER_CONTEXT_NAME at https://prometheus.monitoring.$EXTERNAL_IP.nip.io with username admin and password $PROMETHEUS_PASSWORD"
