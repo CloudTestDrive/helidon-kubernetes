@@ -310,7 +310,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     echo "Getting cluster netwoking info from terraform"
     K3S_VCN=`terraform output vcn_id |  sed -e 's/"//g'`
     K3S_LB_SUBNET_OCID=`terraform output subnet_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
-    K3S_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep agent_nsg_id | awk '{print $3}' | sed -e 's/"//g'`
+    K3S_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep agent | awk '{print $3}' | sed -e 's/"//g'`
     K3S_LB_NSG_OCID=`terraform output pub_lb_nsg_id | sed -e 's/"//g'`
     K3S_WORKER_NSG_OCID=""
     cd $SAVED_DIR
