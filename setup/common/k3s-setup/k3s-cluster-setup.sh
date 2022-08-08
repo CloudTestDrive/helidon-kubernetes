@@ -281,6 +281,19 @@ TF_GIT_BASE=$HOME/k3s-terraform
     echo "Update $TF_MODULE_FILE set K3S_TOKEN_SECRET"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_TOKEN_SECRET $K3S_TOKEN_SECRET
     
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME defaulting to $REPLY"
+else
+  read -p "Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
+fi
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK stopping K3S cluster creation process"
+  exit 1
+fi
     
         
     echo "SHOULD BE Downloading TF versions file, using static version until repo is available"
