@@ -112,7 +112,7 @@ fi
 # we needed an ssh key, it can now be removed
 echo "Removing ssh key"
 cd ../ssh-keys
-bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CLUSTER_CONTEXT_NAME
+bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME
 cd $SAVED_DIR
 
 # the scriots will have created a toke in a vault secret, this needs to be deleted. Unfrotuantely they create int themselves
