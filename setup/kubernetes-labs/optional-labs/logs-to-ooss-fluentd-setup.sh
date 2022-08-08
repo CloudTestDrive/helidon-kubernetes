@@ -1,5 +1,4 @@
 #!/bin/bash -f
-SCRIPT_NAME=`basename $0`
 
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]

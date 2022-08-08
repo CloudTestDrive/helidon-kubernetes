@@ -21,10 +21,24 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
+
+
+MONITORING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "MONITORING_INSTALLED_""$CLUSTER_CONTEXT_NAME"`
+MONITORING_INSTALLED="${!MONITORING_INSTALLED_NAME}"
+if [ -z "$MONITORING_INSTALLED" ]
+then
+  echo "These scripts have not installed the monitoring previously for cluster $CLUSTER_CONTEXT_NAME, cannot continue"
+  exit 0
+else
+  echo "These have previously installed the monitoring for cluster $CLUSTER_CONTEXT_NAME will remove"
+fi
+
 echo "Destroying monitoring namespace in cluster $CLUSTER_CONTEXT_NAME"
 kubectl delete namespace monitoring  --ignore-not-found=true  --context $CLUSTER_CONTEXT_NAME
 
 echo "Removing Certificates"
+
+SAVED_DIR=`pwd`
 cd $HOME/helidon-kubernetes/monitoring-kubernetes
 # make sure there is something to delete
 touch tls-deleteme.crt
@@ -38,5 +52,7 @@ then
   echo "Removing file auth.$CLUSTER_CONTEXT_NAME "
   rm auth.$CLUSTER_CONTEXT_NAME
 else
-  echo "Cannot locate the auth.$CLUSTER_CONTEXT_NAME filr to remove"
+  echo "Cannot locate the auth.$CLUSTER_CONTEXT_NAME file to remove"
 fi
+cd $SAVED_DIR
+bash ../../common/delete-from-saved-settings.sh $LOGGING_INSTALLED_NAME

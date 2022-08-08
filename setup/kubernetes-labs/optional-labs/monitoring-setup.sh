@@ -20,6 +20,17 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
+
+MONITORING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "MONITORING_INSTALLED_""$CLUSTER_CONTEXT_NAME"`
+MONITORING_INSTALLED="${!MONITORING_INSTALLED_NAME}"
+if [ -z "$MONITORING_INSTALLED" ]
+then
+  echo "These scripts have not installed the monitoring previously for cluster $CLUSTER_CONTEXT_NAME, continuing with install"
+else
+  echo "These have previously installed the monitoring for cluster $CLUSTER_CONTEXT_NAME exiting"
+  exit 0
+fi
+
 source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
 source ../helmChartVersions.sh
 PROMETHEUS_PASSWORD=ZaphodBeeblebrox
@@ -72,3 +83,5 @@ echo "Access Grafana for cluster $CLUSTER_CONTEXT_NAME at https://grafana.monito
 echo $GRAFANA_PASSWORD
 
 echo "Remember to set the data source as prometheus on http://prometheus-server.monitoring.svc.cluster.local"
+
+echo "$MONITORING_INSTALLED_NAME=true" >> $SETTINGS
