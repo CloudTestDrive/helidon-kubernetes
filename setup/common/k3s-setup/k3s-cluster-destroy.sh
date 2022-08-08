@@ -24,8 +24,8 @@ fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-K3S_REUSED_NAME=`bash ../settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
-# Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
+K3S_REUSED_NAME=`bash ../settings/to-valid-name.sh "K3S_REUSED_"$CLUSTER_CONTEXT_NAME`
+# Now locate the value of the variable who's name is in K3S_REUSED_NAME and save it
 K3S_REUSED="${!K3S_REUSED_NAME}"
 if [ -z "$K3S_REUSED" ]
 then
@@ -81,7 +81,7 @@ then
     REMAINING_TF_CONFIGS=`ls -1 $TF_GIT_BASE | wc -l`
     if [ "$REMAINING_TF_CONFIGS" = 0 ]
     then
-      echo "No remaining saved tf configs for OKE, removing the directory"
+      echo "No remaining saved tf configs for K3S, removing the directory"
       rmdir $TF_GIT_BASE
     fi
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
