@@ -85,6 +85,9 @@ then
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
     bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ../delete-from-saved-settings.sh $K3S_REUSED_NAME
+    GETKC=false
+if [ "$GETKC" = "true" ]
+then
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
     CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME  --no-headers=true | sed -e 's/*//' | awk '{print $2}'`
     USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`
@@ -92,6 +95,9 @@ then
     kubectl config delete-cluster $CLUSTER_INFO
     kubectl config delete-context $CLUSTER_CONTEXT_NAME
     echo "The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
+else
+  ecxho "The k3s contest was not obtained, so can't remove it, thsi will need being fixed once Ali gives us a way to get the kube cofig"
+fi
   else
     echo "no state file, nothing to destroy"
     echo "cannot proceed"
@@ -113,7 +119,7 @@ cd $PRE_SSH_SAVED_DIR
 # so we have to do the work to remove it from the vault and can't use the scritps that do that already as
 # they use the OCID
 
-echo "Removing K3S Token secret|"
+echo "Removing K3S Token secret"
 K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
 K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
 if [ -z "$K3S_TOKEN_SECRET" ]
@@ -140,6 +146,11 @@ else
   fi
 fi
 
+  echo "$K3S_REUSED_NAME=false" >> $SETTINGS
+  # it's now save to save the OCID's as we've finished
+  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+  echo "$KUBERNETES_CLUSTER_TYPE_NAME=K3S" >> $SETTINGS
+  echo "$K3S_TOKEN_SECRET_NAME=$K3S_TOKEN_SECRET" >> $SETTINGS
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 if [ -f $CLUSTER_NETWORK_FILE ]
 then

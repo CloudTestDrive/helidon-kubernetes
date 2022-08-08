@@ -331,7 +331,7 @@ then
   CURRENT_CONTEXT=`kubectl config current-context`
   kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
 fi
-  echo "$K3S_REUSED_NAME=true" >> $SETTINGS
+  echo "$K3S_REUSED_NAME=false" >> $SETTINGS
   # it's now save to save the OCID's as we've finished
   KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=K3S" >> $SETTINGS

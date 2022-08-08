@@ -1,4 +1,5 @@
 #!/bin/bash -f
+
 SCRIPT_NAME=`basename $0`
 if [ -f ./script-locations.sh ]
 then
@@ -8,7 +9,7 @@ else
   exit -1
 fi
 
-echo "Welcome to the Kubeflow in Kubernetes specific lab destroy script."
+echo "Welcome to the Chartmuseum in Kubernetes specific lab destroy script."
 echo "For the questions where you are asked for y/n input only enter lower case y or n (yes or no are not understood)"
 
 read -p "Are you running in a free trial account, or in an account where you have full administrator rights (y/n) ?" REPLY
@@ -66,12 +67,12 @@ cd $MODULES_DIR
 kubectl delete namespace ingress-nginx --ignore-not-found=true
 
 cd $MODULES_DIR
-CLUSTER_CONTEXT_NAME=kubeflow
+CLUSTER_CONTEXT_NAME=one
 bash ./core-and-single-kubernetes-cluster-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Kubeflow Kubernetes destroy module returned an error, unable to continue"
+  echo "Chartmuseum Kubernetes destroy module returned an error, unable to continue"
   exit $RESP
 fi
 

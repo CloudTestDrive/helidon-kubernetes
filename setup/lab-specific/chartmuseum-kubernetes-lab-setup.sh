@@ -57,7 +57,7 @@ fi
 SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
-CLUSTER_CONTEXT_NAME=kubeflow
+CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
@@ -66,12 +66,11 @@ then
 else
   echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
-
 bash ./core-and-single-kubernetes-cluster-setup-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Core kubernetes setup module returned an error, unable to continue"
+  echo "Chartmuseum kubernetes setup module returned an error, unable to continue"
   exit $RESP
 fi
 

@@ -1,13 +1,20 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+CLUSTER_CONTEXT_NAME=one
+
+if [ $# -gt 0 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 
 # the DIR based locations must have been set before calling this script
-SAVED_PWD=`pwd`
-
-KUBEFLOW_CLUSTER_NAME=kubeflow
 
 SAVED_PRE_OKE=`pwd`
 cd $COMMON_DIR/oke-setup
-bash ./oke-cluster-destroy.sh $KUBEFLOW_CLUSTER_NAME
+bash ./oke-cluster-destroy.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then

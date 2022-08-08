@@ -10,7 +10,15 @@ if [ "$PARALLEL_SETUP" = "true" ]
 then
   mkdir -p $LOGS_DIR
 fi
+CLUSTER_CONTEXT_NAME=one
 
+if [ $# -gt 0 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 # the DIR based locations must have been set before calling this script
 SAVED_PWD=`pwd`
 
@@ -64,12 +72,12 @@ cd $COMMON_DIR/oke-setup
 
 if [ "$PARALLEL_SETUP" = "true" ]
 then
-  OKE_LOG=$LOGS_DIR/okeSetupLogs.txt
+  OKE_LOG=$LOGS_DIR/okeSetupLogs-$CLUSTER_CONTEXT_NAME.txt
   echo "Creating the OKE cluster with default name in the background, please ensure it has been created before running any service against it"
   echo "You can see the progress of the OKE cluster creation in the log file at $OKE_LOG"
-  bash ./oke-cluster-setup.sh 2>&1 > $OKE_LOG &
+  bash ./oke-cluster-setup.sh $CLUSTER_CONTEXT_NAME 2>&1 > $OKE_LOG &
 else
-  bash ./oke-cluster-setup.sh
+  bash ./oke-cluster-setup.sh $CLUSTER_CONTEXT_NAME
   RESP=$?
   if [ "$RESP" -ne 0 ]
   then
