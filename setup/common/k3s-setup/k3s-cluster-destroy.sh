@@ -97,7 +97,7 @@ then
     kubectl config delete-context $CLUSTER_CONTEXT_NAME
     echo "The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
 else
-  ecxho "The k3s contest was not obtained, so can't remove it, thsi will need being fixed once Ali gives us a way to get the kube cofig"
+  echo "The k3s contest was not obtained, so can't remove it, thsi will need being fixed once Ali gives us a way to get the kube cofig"
 fi
   else
     echo "no state file, nothing to destroy"
