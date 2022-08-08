@@ -1,30 +1,25 @@
 #!/bin/bash -f
 
+SCRIPT_NAME=`basename $0`
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f "$SETTINGS" ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
-fi
-
-if [ -z $VAULT_OCID ]
-then
-  echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
-  exit 2
 fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
@@ -59,7 +54,7 @@ else
   exit 2
 fi
 
-TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
+TF_DIR=$TF_GIT_BASE/terraform-oci-k3s-$CLUSTER_CONTEXT_NAME
 
 SAVED_DIR=`pwd`
 if [ -d $TF_DIR ]
@@ -73,8 +68,8 @@ then
     echo "Destroying cluster"
     terraform apply -destroy $TF_DIR/destroy.plan
     echo "Removing terraform scripts"
-    rm -rf $TF_DIR
     cd $SAVED_DIR
+    rm -rf $TF_DIR
     # can we remove the directory
     REMAINING_TF_CONFIGS=`ls -1 $TF_GIT_BASE | wc -l`
     if [ "$REMAINING_TF_CONFIGS" = 0 ]
@@ -110,16 +105,15 @@ fi
 
 # we needed an ssh key, it can now be removed
 echo "Removing ssh key"
-PRE_SSH_SAVED_DIR=`pwd`
 cd ../ssh-keys
 bash ./ssh-key-destroy.sh $HOME/ssh id_rsa_capi_$CLUSTER_CONTEXT_NAME
-cd $PRE_SSH_SAVED_DIR
+cd $SAVED_DIR
 
 # the scriots will have created a toke in a vault secret, this needs to be deleted. Unfrotuantely they create int themselves
 # so we have to do the work to remove it from the vault and can't use the scritps that do that already as
 # they use the OCID
 
-echo "Removing K3S Token secret"
+echo "Scheduling deletion of K3S Token secret"
 K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
 K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
 if [ -z "$K3S_TOKEN_SECRET" ]
@@ -146,11 +140,10 @@ else
   fi
 fi
 
-  echo "$K3S_REUSED_NAME=false" >> $SETTINGS
-  # it's now save to save the OCID's as we've finished
-  KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
-  echo "$KUBERNETES_CLUSTER_TYPE_NAME=K3S" >> $SETTINGS
-  echo "$K3S_TOKEN_SECRET_NAME=$K3S_TOKEN_SECRET" >> $SETTINGS
+bash ../delete-from-saved-settings.sh "$K3S_REUSED_NAME"
+bash ../delete-from-saved-settings.sh "$KUBERNETES_CLUSTER_TYPE_NAME"
+bash ../delete-from-saved-settings.sh "$K3S_TOKEN_SECRET_NAME"
+
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 if [ -f $CLUSTER_NETWORK_FILE ]
 then
