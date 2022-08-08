@@ -14,7 +14,7 @@ module k3s {
 
   create_bastion_host=CREATE_BASION
   # this is a simple one, don't use if for production environments
-  datastore_type="sqlite"
+  datastore_type="DATASTORE_TYPE"
   server_type="public"
   server_allowed_cidrs=["0.0.0.0/0"]
   

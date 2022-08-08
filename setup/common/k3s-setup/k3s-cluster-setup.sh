@@ -147,6 +147,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     WORKER_COUNT=3
     WORKER_BOOT_SIZE=50
     CLUSTER_TZ=`basename \`readlink -f /etc/localtime\``
+    DATASTORE_TYPE="etcd"
     echo "Checking for teraform module generic settings file"
     GENERIC_K3S_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-k3s-terraform-settings.sh
     if [ -f $GENERIC_K3S_TERRAFORM_SETTINGS ]
@@ -237,6 +238,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     echo "Update $TF_MODULE_FILE to set K3S Kubernetes version"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_KUBERNETES_VERSION "$K3S_KUBERNETES_VERSION"
+    echo "Update $TF_MODULE_FILE to set datastore type version"
+    bash $UPDATE_FILE_SCRIPT $TFM DATASTORE_TYPE "$DATASTORE_TYPE"
     
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_SHAPE"
     bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_SHAPE $CONTROL_PLANE_SHAPE
