@@ -29,7 +29,7 @@ K3S_REUSED_NAME=`bash ../settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT
 K3S_REUSED="${!K3S_REUSED_NAME}"
 if [ -z "$K3S_REUSED" ]
 then
-  echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
+  echo "No reuse information for K3s cluster - setting name $K3S_REUSED_NAME cannot safely continue, you will have to destroy it manually"
   exit 0
 fi
 
