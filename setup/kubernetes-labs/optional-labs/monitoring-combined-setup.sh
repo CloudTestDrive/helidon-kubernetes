@@ -31,7 +31,9 @@ else
   echo "These have previously installed the monitoring for cluster $CLUSTER_CONTEXT_NAME exiting"
   exit 0
 fi
-source $HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
+CLUSTER_INFO=$HOME/clusterInfo$CLUSTER_CONTEXT_NAME
+CLUSTER_SETTINGS=$HOME/clusterSettings.$CLUSTER_CONTEXT_NAME
+source $CLUSTER_SETTINGS
 source ../helmChartVersions.sh
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -74,6 +76,16 @@ echo "Installing Grafana using helm in cluster $CLUSTER_CONTEXT_NAME"
 # helm install grafana grafana/grafana --version $grafanaHelmChartVerion --namespace  monitoring  --set persistence.enabled=true --set ingress.enabled=true --set ingress.hosts="{grafana.monitoring.$EXTERNAL_IP.nip.io}" --set ingress.tls[0].secretName=tls-grafana --set ingress.annotations."kubernetes\.io/ingress\.class"=nginx  --kube-context $CLUSTER_CONTEXT_NAME --set datasources."datasource\.yaml\.apiVersion"=1 --set datasources."datasource\.yaml\.datasources[0].name"=Prometheus  --set datasources."datasource\.yaml\.datasources[0].type"=Prometheus  --set datasources."datasource\.yaml\.datasources[0].url"=http://prometheus-server.monitoring.svc.cluster.local --set datasources."datasource\.yaml\.datasources[0].isDefault"=true
 echo "Retrieving Grafana login password from cluster $CLUSTER_CONTEXT_NAME"
 GRAFANA_PASSWORD=`kubectl get secret  --context $CLUSTER_CONTEXT_NAME --namespace monitoring prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
+
+echo "Saving access info"
+echo "" >> $CLUSTER_INFO
+echo "Access prometheus at https://prometheus.monitoring.$EXTERNAL_IP.nip.io with username admin and password " >> $CLUSTER_INFO
+echo "$PROMETHEUS_PASSWORD" >> $CLUSTER_INFO
+echo "" >> $CLUSTER_INFO
+echo "" >> $CLUSTER_INFO
+echo "Access Grafana  at https://grafana.monitoring.$EXTERNAL_IP.nip.io using user admin and password" >> $CLUSTER_INFO
+echo $GRAFANA_PASSWORD >> $CLUSTER_INFO
+echo "" >> $CLUSTER_INFO
 
 echo "Access prometheus for cluster $CLUSTER_CONTEXT_NAME at https://prometheus.monitoring.$EXTERNAL_IP.nip.io with username admin and password $PROMETHEUS_PASSWORD"
 echo "Remember to enable the monitoring annotations in the pods"
