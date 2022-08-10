@@ -4,12 +4,12 @@ SCRIPT_NAME=`basename $0`
 if [ $# -ne 3 ]
 then
   echo "$SCRIPT_NAME requires four arguments:"
-  echo "1st The name of the key to protect this secret E.g. AES"
+  echo "1st The name of the key to protect this secret E.g. AES (this will transparently have your initials added to it to match with the key setup / destroy scripts"
   echo "2nd is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
   echo "3rd the description to be used - note that is this is multiple words it must be in quotes"
   echo "4th the value to be used for the secret"
 fi
-VAULT_KEY_NAME=$1
+VAULT_KEY_PROVIDED_NAME=$1
 SETTINGS_NAME=$2
 VAULT_SECRET_DESCRIPTION=$3
 VAULT_SECRET_VALUE=$4
@@ -24,6 +24,13 @@ if [ -f $SETTINGS ]
     echo "No existing settings cannot continue"
     exit 10
 fi
+
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  exit 1
+fi
+VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 
 if [ -z $COMPARTMENT_OCID ]
 then
