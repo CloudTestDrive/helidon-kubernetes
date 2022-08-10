@@ -121,7 +121,12 @@ kubectl config use-context $CLUSTER_CONTEXT_NAME
 
 echo "Installing OSOK"
 $OPERATOR_SDK_PATH cleanup bundle iad.ocir.io/oracle/oci-service-operator-bundle:$OSOK_BUNDLE_VERSION -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
-
+RESP = $?
+if [ "$RESP" -ne 0 ]
+then
+  echo "$OPERATOR_SDK_CMD returned a non zero response, cannot continue"
+  exit $RESP
+fi
 
 echo "Deleting OSOK namespace"
 kubectl delete ns oci-service-operator-system --context $CLUSTER_CONTEXT_NAME
