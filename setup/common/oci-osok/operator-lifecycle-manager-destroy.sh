@@ -56,7 +56,7 @@ KCONF=$HOME/.kube/config
 TMP_KCONF="$KCONF".tmp
 cp $KCONF $TMP_KCONF
 echo "Setting temporaty config default context"
-export KUBECONFIG $TMP_KCONF
+export KUBECONFIG=$TMP_KCONF
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 
 echo "Uninstalling operator lifecycle manager in context $CLUSTER_CONTEXT_NAME"
