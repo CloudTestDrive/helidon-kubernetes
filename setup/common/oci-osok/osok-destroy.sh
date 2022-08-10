@@ -38,7 +38,7 @@ then
   exit $RESP
 fi
 
-bash ./remove-operator.sh
+bash ./remove-operator-sdk.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then

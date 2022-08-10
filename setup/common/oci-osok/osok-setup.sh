@@ -21,7 +21,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-bash ./download-operator.sh
+bash ./download-operator-sdk.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
