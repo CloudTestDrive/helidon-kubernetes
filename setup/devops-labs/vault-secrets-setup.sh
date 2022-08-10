@@ -40,7 +40,7 @@ fi
 
 SAVED_DIR=`pwd`
 
-cd ../common/vault-secrets
+cd ../common/vault
 
 FINAL_RESP=0
 if [ -z $OCIR_STOREFRONT_LOCATION ]

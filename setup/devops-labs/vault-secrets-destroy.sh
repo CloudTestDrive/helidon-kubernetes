@@ -14,7 +14,7 @@ fi
 SAVED_DIR=`pwd`
 
 
-cd ../common/vault-secrets
+cd ../common/vault
 FINAL_RESP=0
 bash ./vault-individual-secret-destroy.sh OCIR_HOST
 RESP=$?
