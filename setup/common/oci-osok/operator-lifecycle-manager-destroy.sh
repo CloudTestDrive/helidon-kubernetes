@@ -53,7 +53,7 @@ echo "Unnstalling the operator lifecycle manager"
 
 echo "Temporary fix copying kubeconfig"
 KCONF=$HOME/.kube/config
-TMP_KCONF="$KCONF".tmp
+TMP_KCONF="$KCONF"."$CLUSTER_CONTEXT_NAME".tmp
 cp $KCONF $TMP_KCONF
 echo "Setting temporaty config default context"
 export KUBECONFIG=$TMP_KCONF
