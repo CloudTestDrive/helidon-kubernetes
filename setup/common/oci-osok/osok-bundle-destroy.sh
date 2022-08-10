@@ -56,10 +56,10 @@ OSOK_REUSED_NAME=`bash ../settings/to-valid-name.sh  "OSOK_"$CLUSTER_CONTEXT_NAM
 OSOK_REUSED="${!OSOK_REUSED_NAME}"
 if [ -z $OSOK_REUSED ]
 then
-  echo "No reuse information for Oracle Service Operator for Kubernetes with context $CLUSTER_CONTEXT_NAME"
-else
-  echo "This script has already configured the Oracle Service Operator for Kubernetes with  context $CLUSTER_CONTEXT_NAME, exiting"
+  echo "No reuse information for Oracle Service Operator for Kubernetes with context $CLUSTER_CONTEXT_NAME unsafe to continue, exiting"
   exit 0
+else
+  echo "This script has already configured the Oracle Service Operator for Kubernetes with  context $CLUSTER_CONTEXT_NAME, removing"
 fi
 if [ -z "$AUTO_CONFIRM" ]
 then
