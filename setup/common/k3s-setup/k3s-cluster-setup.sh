@@ -286,7 +286,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME defaulting to $REPLY"
 else
-  read -p "Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
+  read -p "Do you want to create K3S cluster with full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
