@@ -56,21 +56,25 @@ fi
 COMPARTMENT_NAME=`oci iam compartment get --compartment-id $COMPARTMENT_OCID | jq -r '.data.name'`
 
 echo "Creating dynamic group for the certificate authority"
+SAVED_DIR=`pwd`
+cd ../dynamic-groups
 DG_NAME="$USER_INITIALS"CertAuthorityDynamicGroup
 
-bash ../dynamic-groups/dynamic-group-by-resource-type-setup.sh "$DG_NAME" certificateauthority "Identifies the certificate authority"
+bash ./dynamic-group-by-resource-type-setup.sh "$DG_NAME" certificateauthority "Identifies the certificate authority"
 
+cd $SAVED_DIR
+cd ../policies
 echo "Creating policy to allow dynamic group $DG_NAME so manage things in compartment $COMPARTMENT_NAME"
 POLICY_NAME="$USER_INITIALS"CertAuthorityPolicy
 POLICY_RULE="[\"Allow dynamic-group $DG_NAME to use keys in compartment $COMPARTMENT_NAME\", \"Allow dynamic-group $DG_NAME to manage objects in compartment $COMPARTMENT_NAME\"]"
 POLICY_DESCRIPTION="Allows the cert Dg to manage things"
-bash ../policy/policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTION"
+bash ./policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTION"
+cd $SAVED_DIR
 
-
-CA_NAME="$USER_INITIALS" 
+CA_NAME="$USER_INITIALS"LabCertAuthority
 echo "Checking for pending delete CA"
-echo "Checking for  CA $CA_NAME in compartment $COMPARTMENT_NAME"
-CA_SCHEDULING_DELETION_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+echo "Checking for CA $CA_NAME in compartment $COMPARTMENT_NAME"
+CA_SCHEDULING_DELETION_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
 if [ -z "$SCHEDULING_DELETION_OCID" ]
 then
   CA_SCHEDULING_DELETION_OCID=null
@@ -119,7 +123,7 @@ then
     then
     # No existing CERT_AUTHORITY_OCID so need to potentially create it
     echo "Checking for  CA $CA_NAME in compartment $COMPARTMENT_NAME"
-    SCHEDULING_DELETION_CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    SCHEDULING_DELETION_CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$SCHEDULING_DELETION_CERT_AUTHORITY_OCID" ]
     then
       SCHEDULING_DELETION_CERT_AUTHORITY_OCID=null
@@ -133,7 +137,7 @@ then
       echo "this script to cancel the deletion and re-use that CA"
       exit 2
     fi
-    CERT_AUTHORITY_PENDING_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    CERT_AUTHORITY_PENDING_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$CERT_AUTHORITY_PENDING_OCID" ]
     then
       CERT_AUTHORITY_PENDING_OCID=null
@@ -158,7 +162,7 @@ then
         CA_UNDELETED=true
       fi
     fi
-    CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$CERT_AUTHORITY_OCID" ]
     then
       CERT_AUTHORITY_OCID=null
