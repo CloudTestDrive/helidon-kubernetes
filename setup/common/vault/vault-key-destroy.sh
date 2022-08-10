@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 1 ]
 then
-  echo "The vault key setup script requires one arguments:"
+  echo "$SCRIPT_NAME requires one argument:"
   echo "the name of the key to destroy this will have be prefixed with your user initials in the vault"
   exit 1
 fi

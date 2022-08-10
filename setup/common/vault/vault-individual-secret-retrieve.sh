@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -ne 1 ]
 then
-  echo "This script $0 requires one argument:"
+  echo "$SCRIPT_NAME requires one argument:"
   echo "1st is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
   echo "The script will try and locate a pre-set OCID for the secret from the settings file, and will then try and get it's contents"
   exit 1

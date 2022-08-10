@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -ne 3 ]
 then
-  echo "This script $0 requires four arguments:"
+  echo "$SCRIPT_NAME requires four arguments:"
   echo "1st The name of the key to protect this secret E.g. AES"
   echo "2nd is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
   echo "3rd the description to be used - note that is this is multiple words it must be in quotes"

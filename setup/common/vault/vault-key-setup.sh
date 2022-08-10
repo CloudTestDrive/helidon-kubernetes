@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 3 ]
 then
-  echo "The vault key setup script requires three arguments:"
+  echo "$SCRIPT_NAME requires three arguments:"
   echo "the name of the key to create this will be prefixed with your user initials in the vault"
   echo "the key type e.g. AES or RSA"
   echo "the key size for AES this is maybe 32, for RAS then maybe 2048 or 4096"
