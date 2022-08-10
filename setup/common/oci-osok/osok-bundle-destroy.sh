@@ -58,7 +58,7 @@ export KUBECONFIG=$TMP_KCONF
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 
 echo "Installing OSOK"
-$OPERATOR_SDK_PATH cleanup oci-service-operator.v"$OSOK_BUNDLE_VERSION" -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
+$OPERATOR_SDK_PATH cleanup oci-service-operator -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
