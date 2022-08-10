@@ -11,7 +11,6 @@ then
 fi
 
 VAULT_KEY_PROVIDED_NAME=$1
-VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 VAULT_KEY_TYPE=$2
 VAULT_KEY_SIZE=$3
 
@@ -26,6 +25,12 @@ if [ -f "$SETTINGS" ]
     exit 10
 fi
 
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  exit 1
+fi
+VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false

@@ -8,7 +8,6 @@ then
   exit 1
 fi
 VAULT_KEY_PROVIDED_NAME=$1
-VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
@@ -20,7 +19,12 @@ if [ -f $SETTINGS ]
     echo "No existing settings cannot continue"
     exit 10
 fi
-
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  exit 1
+fi
+VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -70,8 +74,8 @@ else
       NEW_KEY_STATE=`oci kms management key schedule-deletion --key-id $VAULT_KEY_OCID --endpoint $VAULT_ENDPOINT | jq -j '.data."lifecycle-state"'`
       echo "Keys lifecycle state is $NEW_KEY_STATE" 
       echo "Removing details from the settings file"
-      bash ./delete-from-saved-settings.sh $VAULT_KEY_OCID_NAME
-      bash ./delete-from-saved-settings.sh $VAULT_KEY_REUSED_NAME
+      bash ../delete-from-saved-settings.sh $VAULT_KEY_OCID_NAME
+      bash ../delete-from-saved-settings.sh $VAULT_KEY_REUSED_NAME
     fi
   fi
 fi
