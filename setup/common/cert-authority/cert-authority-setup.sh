@@ -171,7 +171,7 @@ then
     then
       echo "CA named $CA_NAME doesn't exist, creating it, there may be a short delay"
       echo "Creating certificate authority"
-      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "CN=LabsCA"--kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
+      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "CN=LabsCA" --kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
       echo "CA being created using OCID $CERT_AUTHORITY_OCID"
       echo "CERT_AUTHORITY_OCID=$CERT_AUTHORITY_OCID" >>$SETTINGS
       echo "CERT_AUTHORITY_REUSED=false" >> $SETTINGS
