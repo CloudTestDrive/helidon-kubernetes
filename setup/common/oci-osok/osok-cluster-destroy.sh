@@ -21,28 +21,21 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-bash ./download-operator-sdk.sh
+
+bash ./osok-bundle-destroy.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Error downloading operator, cannot continue"
+  echo "Error uninstalling Oracle Service Operator for Kubernetes, cannot continue"
   exit $RESP
 fi
-
-bash ./operator-lifecycle-manager-setup.sh $CLUSTER_CONTEXT_NAME
+bash ./operator-lifecycle-manager-destroy.sh $CLUSTER_CONTEXT_NAME
 
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Error installing lifecycle manager, cannot continue"
+  echo "Error uninstalling lifecycle manager, cannot continue"
   exit $RESP
 fi
 
-bash ./osok-bundle-setup.sh $CLUSTER_CONTEXT_NAME
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Error installing Oracle Service Operator for Kubernetes, cannot continue"
-  exit $RESP
-fi
 exit 0
