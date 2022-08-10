@@ -106,15 +106,15 @@ fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with the name lab-$CLUSTER_CONTEXT_NAME-nameyouenter exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with the name lab-<your initials>-nameyouenter exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
     echo "You do actually need to enter the new name for the Kubernetes cluster, exiting"
     exit 1
   fi
+  CLUSTER_NAME_FULL="lab-$USER_INITIALS-$CLUSTER_NAME"
 else     
-  CLUSTER_NAME_FULL=lab-$CLUSTER_NAME
   echo "OK, going to use $CLUSTER_NAME_FULL as the Kubernetes cluster name"
 fi
 
