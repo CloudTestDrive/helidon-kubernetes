@@ -196,6 +196,8 @@ else
   fi
 fi
 
+echo "VAULT_UNDELETED=$VAULT_UNDELETED" >> $SETTINGS
+
 echo "Getting vault endpoint for vault OCID $VAULT_OCID"
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
 if [ -z "$VAULT_KEY_REUSED" ]

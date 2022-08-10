@@ -76,6 +76,7 @@ else
       echo "Removing details from the settings file"
       bash ./delete-from-saved-settings.sh VAULT_OCID
       bash ./delete-from-saved-settings.sh VAULT_REUSED
+      bash ./delete-from-saved-settings.sh VAULT_UNDELETED
     fi
   fi
 fi
