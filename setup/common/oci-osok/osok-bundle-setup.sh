@@ -120,25 +120,8 @@ then
   exit $RESP
 fi
 
-echo "Checking for metrics server"
-METRICS_SERVER_COUNT=`helm list --namespace kube-system --kube-context $CLUSTER_CONTEXT_NAME | grep '^metrics-server' | wc -l`
-if [ "$METRICS_SERVER_COUNT" -eq 0 ]
-then
-  echo "Metrics server not installed, setting up repo and installing"
-  # install the metrics server
-  helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
-  helm repo update
-
-  helm upgrade --install metrics-server metrics-server/metrics-server --namespace kube-system  --kube-context $CLUSTER_CONTEXT_NAME
-  METRICS_SERVER_REUSED=true
-else
-  echo "Metrics server already installed, skipping instalation"
-  METRICS_SERVER_REUSED=false
-fi
 
 rm $TMP_KCONF
 unset KUBECONFIG
-OSOK_METRICS_SERVER_REUSED_NAME=`bash ../settings/to-valid-name.sh  "OSOK_METRICS_SERVER_"$CLUSTER_CONTEXT_NAME"_REUSED"`
 
 echo "$OSOK_REUSED_NAME=false" >> $SETTINGS
-echo "$OSOK_METRICS_SERVER_REUSED_NAME=$METRICS_SERVER_REUSED" >> $SETTINGS

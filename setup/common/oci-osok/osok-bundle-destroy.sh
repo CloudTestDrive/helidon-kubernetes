@@ -57,7 +57,7 @@ echo "Setting temporaty config default context"
 export KUBECONFIG=$TMP_KCONF
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 
-echo "Installing OSOK"
+echo "Removing OSOK"
 $OPERATOR_SDK_PATH cleanup oci-service-operator -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -72,21 +72,4 @@ kubectl delete ns oci-service-operator-system --context $CLUSTER_CONTEXT_NAME
 rm $TMP_KCONF
 unset KUBECONFIG
 
-OSOK_METRICS_SERVER_REUSED_NAME=`bash ../settings/to-valid-name.sh  "OSOK_METRICS_SERVER_"$CLUSTER_CONTEXT_NAME"_REUSED"`
-
-# Now locate the value of the variable who's name is in OSOK_METRICS_SERVER_REUSED_NAME and save it
-OSOK_METRICS_SERVER_REUSED="${!OSOK_METRICS_SERVER_REUSED_NAME}"
-if [ -z $OSOK_METRICS_SERVER_REUSED ]
-then
-  echo "No reuse information for metrics Oracle Service Operator for Kubernetes with context $CLUSTER_CONTEXT_NAME, ignoring"
-else
-  if [ "$OSOK_METRICS_SERVER_REUSED" = true ]
-  then
-    echo "Metrics server was reused for Oracle Service Operator for Kubernetes with context $CLUSTER_CONTEXT_NAME, not removing"
-  else
-    echo "Metrics server w3as installed for Oracle Service Operator for Kubernetes with context $CLUSTER_CONTEXT_NAME, removing it"
-    helm uninstall metrics-server --namespace kube-system  --kube-context $CLUSTER_CONTEXT_NAME
-  fi
-fi
-bash ../delete-from-saved-settings.sh  "$OSOK_METRICS_SERVER_REUSED_NAME"
 bash ../delete-from-saved-settings.sh  "$OSOK_REUSED_NAME"
