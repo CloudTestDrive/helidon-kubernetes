@@ -27,16 +27,6 @@ then
   echo "Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script"
   exit 1
 fi
-if [ -z $VAULT_OCID ]
-then
-  echo "Your vault OCID has not been set, you need to run the vault-setup.sh script before you can run this script"
-  exit 1
-fi
-if [ -z $VAULT_KEY_OCID ]
-then
-  echo "Your vault key OCID has not been set, you need to run the vault-setup.sh script before you can run this script"
-  exit 1
-fi
 
 OPERATOR_SETTINGS_FILE=./operator-settings.sh
 

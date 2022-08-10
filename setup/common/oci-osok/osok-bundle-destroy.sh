@@ -21,23 +21,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-
-if [ -z $USER_OCID ]
-then
-  echo "Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script"
-  exit 1
-fi
-if [ -z $VAULT_OCID ]
-then
-  echo "Your vault OCID has not been set, you need to run the vault-setup.sh script before you can run this script"
-  exit 1
-fi
-if [ -z $VAULT_KEY_OCID ]
-then
-  echo "Your vault key OCID has not been set, you need to run the vault-setup.sh script before you can run this script"
-  exit 1
-fi
-
 OPERATOR_SETTINGS_FILE=./operator-settings.sh
 
 if [ -f $OPERATOR_SETTINGS_FILE ]
@@ -66,51 +49,6 @@ then
   export AUTO_CONFIRM=false
 fi
 
-
-if [ -z $AUTH_TOKEN ]
-then
-  echo "There is no saved auth token which is needed to log in to docker"
-  read -p "Please enter a valid auth token for your account" AUTH_TOKEN
-  if [ -z $AUTH_TOKEN ]
-  then
-    echo "You did not enter an auth token, this script cannot proceed without that"
-    echo "Script stopping"
-    exit 4
-  fi
-else
-  echo "Using the saved auth token for the docker login"
-fi
-
-
-OCI_USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
-
-OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
-MAX_LOGIN_ATTEMPTS=12
-DOCKER_LOGIN_FAILED_SLEEP_TIME=10
-echo "About to docker login for operator bundle repo to $OPERATOR_BUNDLE_OCIR_REGION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
-echo "Please ignore warnings about insecure password storage"
-echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
-for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
-do
-  echo -n $AUTH_TOKEN | docker login $OPERATOR_BUNDLE_OCIR_REGION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-  RESP=$?
-  echo "Docker Login resp is $RESP"
-  if [ $RESP = 0 ]
-  then
-    echo "docker login to $OPERATOR_BUNDLE_OCIR_REGION suceeded on attempt $i, continuing"
-    break ;
-  else
-    echo "docker login to $OPERATOR_BUNDLE_OCIR_REGION failed on attempt $i, retrying after pause"
-    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
-  fi
-  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
-  then
-    echo "Unable to complete docker login after 12 attempts, cannot continue"
-    exit 10
-  fi
-done
-
-
 echo "Temporary fix copying kubeconfig"
 KCONF=$HOME/.kube/config
 TMP_KCONF="$KCONF"."$CLUSTER_CONTEXT_NAME".tmp
@@ -120,7 +58,7 @@ export KUBECONFIG=$TMP_KCONF
 kubectl config use-context $CLUSTER_CONTEXT_NAME
 
 echo "Installing OSOK"
-$OPERATOR_SDK_PATH cleanup bundle oci-service-operator.v"$OSOK_BUNDLE_VERSION" -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
+$OPERATOR_SDK_PATH cleanup oci-service-operator.v"$OSOK_BUNDLE_VERSION" -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
