@@ -49,7 +49,7 @@ then
 fi
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-VAULT_KEY_REUSED_NAME=`bash ../settings/to-valid-name.sh  "VAULT_KEY_"$VAULT_KEY_NAME"_REUSED"`
+VAULT_KEY_REUSED_NAME=`bash vault-key-get-var-name-reused.sh $VAULT_KEY_NAME`
 # Now locate the value of the variable who's name is in VAULT_KEY_REUSED_NAME and save it
 VAULT_KEY_REUSED="${!VAULT_KEY_REUSED_NAME}"
 if [ -z $VAULT_KEY_REUSED ]
@@ -62,7 +62,7 @@ fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-VAULT_KEY_OCID_NAME=`bash ../settings/to-valid-name.sh  "VAULT_KEY_"$VAULT_KEY_NAME"_OCID`
+VAULT_KEY_OCID_NAME=`bash vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 
 echo "Getting vault into for vault OCID $VAULT_OCID"
 VAULT_ENDPOINT=`oci kms management vault get --vault-id $VAULT_OCID | jq -j '.data."management-endpoint"'`
