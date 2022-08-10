@@ -133,7 +133,7 @@ fi
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 helm repo update
 
-helm upgrade --install metrics-server metrics-server/metrics-server --namespace kube-system  --kubecontext $CLUSTER_CONTEXT_NAME
+helm upgrade --install metrics-server metrics-server/metrics-server --namespace kube-system  --kube-context $CLUSTER_CONTEXT_NAME
 
 rm $TMP_KCONF
 unset KUBECONFIG
