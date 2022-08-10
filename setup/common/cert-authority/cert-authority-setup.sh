@@ -20,7 +20,16 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
+export CA_SETTINGS=cert-authority-settings.sh
 
+if [ -f $CA_SETTINGS ]
+  then
+    echo "$SCRIPT_NAME Loading existing CA settings information"
+    source $CA_SETTINGS
+  else 
+    echo "$SCRIPT_NAME No existing CA settings cannot continue"
+    exit 11
+fi
 if [ -z $USER_INITIALS ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
@@ -33,9 +42,13 @@ then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
+
+VAULT_KEY_NAME="$USER_INITIALS""$CERT_VAULT_KEY_NAME"
+VAULT_KEY_OCID_NAME=`bash vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "Your VAULT_KEY_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+  echo "Your can't find the OCID for your vault key has not been set, you need to run the vault-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -171,7 +184,7 @@ then
     then
       echo "CA named $CA_NAME doesn't exist, creating it, there may be a short delay"
       echo "Creating certificate authority"
-      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "CN=LabsCA" --kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
+      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "{\"commonName\" : \"LabsCA\"}" --kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
       RESP=$?
       if [ "$RESP" -ne 0 ]
       then

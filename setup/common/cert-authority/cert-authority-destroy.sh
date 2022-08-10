@@ -43,3 +43,19 @@ else
     fi
   fi
 fi
+
+DG_NAME="$USER_INITIALS"CertAuthorityDynamicGroup
+POLICY_NAME="$USER_INITIALS"CertAuthorityPolicy
+SAVED_DIR=`pwd`
+cd ../policies
+echo "Deleting policy policy $POLICY_NAME which allows to allowed dynamic group $DG_NAME to manage things in compartment $COMPARTMENT_NAME"
+bash ./policy-destroy.sh "$POLICY_NAME"
+cd $SAVED_DIR
+
+echo "Deleting dynamic group for the certificate authority"
+cd ../dynamic-groups
+
+bash ./dynamic-group-destroy.sh "$DG_NAME" 
+
+
+cd $SAVED_DIR
