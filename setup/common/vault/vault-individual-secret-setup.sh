@@ -2,14 +2,16 @@
 
 if [ $# -ne 3 ]
 then
-  echo "This script $0 requires three arguments:"
-  echo "1st is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
-  echo "2nd the description to be used - note that is this is multiple words it must be in quotes"
-  echo "3rd the value to be used for the secret"
+  echo "This script $0 requires four arguments:"
+  echo "1st The name of the key to protect this secret E.g. AES"
+  echo "2nd is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
+  echo "3rd the description to be used - note that is this is multiple words it must be in quotes"
+  echo "4th the value to be used for the secret"
 fi
-SETTINGS_NAME=$1
-VAULT_SECRET_DESCRIPTION=$2
-VAULT_SECRET_VALUE=$3
+VAULT_KEY_NAME=$1
+SETTINGS_NAME=$2
+VAULT_SECRET_DESCRIPTION=$3
+VAULT_SECRET_VALUE=$4
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -37,13 +39,18 @@ else
   echo "Found vault information"
 fi
 
+# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
+# Create a name using the variable
+VAULT_KEY_OCID_NAME=`bash ../settings/to-valid-name.sh  "VAULT_KEY_"$VAULT_KEY_NAME"_OCID`
+# Now locate the value of the variable who's name is in VAULT_KEY_OCID_NAME and save it
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "No vault key OCID set, have you run the vault-setup.sh script ?"
+  echo "No vault key OCID set, have you run the vault-key-setup.sh script for key $VAULT_KEY_NAME?"
   echo "Cannot continue"
   exit 13
 else
-  echo "Found vault key information"
+  echo "Found OCID for vault key $VAULT_KEY_NAME"
 fi
 
 VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
