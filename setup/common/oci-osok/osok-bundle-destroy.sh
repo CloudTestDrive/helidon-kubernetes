@@ -110,16 +110,24 @@ do
   fi
 done
 
-echo "Creating OSOK namespace"
-kubectl create ns oci-service-operator-system --namespace $CLUSTER_CONTEXT_NAME
+
+echo "Temporary fix copying kubeconfig"
+KCONF=$HOME/.kube/config
+TMP_KCONF="$KCONF"."$CLUSTER_CONTEXT_NAME".tmp
+cp $KCONF $TMP_KCONF
+echo "Setting temporaty config default context"
+export KUBECONFIG=$TMP_KCONF
+kubectl config use-context $CLUSTER_CONTEXT_NAME
 
 echo "Installing OSOK"
-$HOME/operator/operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.1.1 -n oci-service-operator-system --kubecontext $CLUSTER_CONTEXT_NAME --timeout 5m
+$OPERATOR_SDK_PATH cleanup bundle iad.ocir.io/oracle/oci-service-operator-bundle:$OSOK_BUNDLE_VERSION -n oci-service-operator-system --kubeconfig $KUBECONFIG --timeout 5m
 
-# install the metrics server just in case it's not already there
-helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
-helm repo update
 
-helm upgrade --install metrics-server metrics-server/metrics-server --namespace kube-system  --kubecontext $CLUSTER_CONTEXT_NAME
+echo "Deleting OSOK namespace"
+kubectl delete ns oci-service-operator-system --context $CLUSTER_CONTEXT_NAME
+
+rm $TMP_KCONF
+unset KUBECONFIG
+
 
 bash ../delete-from-saved-settings.sh  "$OSOK_REUSED_NAME"
