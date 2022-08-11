@@ -45,15 +45,13 @@ then
   echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
   exit 2
 fi
-VAULT_KEY_NAME=AES
-# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
-# Create a name using the variable
-VAULT_KEY_OCID_NAME=`bash ../settings/to-valid-name.sh  "VAULT_KEY_"$VAULT_KEY_NAME"_OCID`
-# Now locate the value of the variable who's name is in VAULT_KEY_OCID_NAME and save it
+VAULT_KEY_NAME_BASE=AES
+VAULT_KEY_NAME=`bash ../common/vault/vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ../common/vault/vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "Your VAULT_KEY_OCID has not been set, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
+  echo "Your VAULT_KEY_OCID has not been set for key $VAULT_KEY_NAME_BASE, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
   exit 2
 fi
 

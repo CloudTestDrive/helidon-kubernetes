@@ -27,6 +27,11 @@ else
   echo Found vault
 fi
 
+VAULT_KEY_NAME_BASE=AES
+VAULT_KEY_NAME=`bash ../common/vault/vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ../common/vault/vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+
 if [ -z $VAULT_KEY_OCID ]
 then
   echo "No vault key OCID set, have you run the vault-setup.sh script ?"

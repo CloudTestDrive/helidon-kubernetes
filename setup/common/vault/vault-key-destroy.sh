@@ -7,7 +7,7 @@ then
   echo "the name of the key to destroy this will have be prefixed with your user initials in the vault"
   exit 1
 fi
-VAULT_KEY_PROVIDED_NAME=$1
+VAULT_KEY_NAME_BASE=$1
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
@@ -24,26 +24,16 @@ then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
   exit 1
 fi
-VAULT_KEY_NAME="$USER_INITIALS""$VAULT_KEY_PROVIDED_NAME"
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
-
-# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
-# Create a name using the variable
-VAULT_KEY_REUSED_NAME=`bash vault-key-get-var-name-reused.sh $VAULT_KEY_NAME`
-# Now locate the value of the variable who's name is in VAULT_KEY_REUSED_NAME and save it
-VAULT_KEY_REUSED="${!VAULT_KEY_REUSED_NAME}"
-
-# Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
-# Create a name using the variable
-VAULT_KEY_OCID_NAME=`bash vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
-
-# Now locate the value of the variable who's name is in VAULT_KEY_OCID_NAME and save it
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
-
+VAULT_KEY_REUSED_NAME=`bash vault-key-get-var-name-reused.sh $VAULT_KEY_NAME`
+VAULT_KEY_REUSED="${!VAULT_KEY_REUSED_NAME}"
 if [ -z $VAULT_OCID ]
 then
   echo "Cannot locate OCID for the vault , unable to proceed with key of vault deletion"
