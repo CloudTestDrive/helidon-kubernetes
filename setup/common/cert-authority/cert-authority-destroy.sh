@@ -38,8 +38,8 @@ else
       NEW_CERT_AUTHORITY_STATE=`oci certs-mgmt certificate-authority schedule-deletion --certificate-authority-id  $CERT_AUTHORITY_OCID | jq -j '.data."lifecycle-state"'`
       echo "CA lifecycle state is $NEW_CERT_AUTHORITY_STATE" 
       echo "Removing details from the settings file"
-      bash ./delete-from-saved-settings.sh CERT_AUTHORITY_OCID
-      bash ./delete-from-saved-settings.sh CERT_AUTHORITY_REUSED
+      bash ../delete-from-saved-settings.sh CERT_AUTHORITY_OCID
+      bash ../delete-from-saved-settings.sh CERT_AUTHORITY_REUSED
     fi
   fi
 fi
