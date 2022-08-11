@@ -45,10 +45,13 @@ then
   echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
   exit 2
 fi
+SAVED_DIR=`pwd`
+cd ../vault
 VAULT_KEY_NAME_BASE=AES
-VAULT_KEY_NAME=`bash ../common/vault/vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
-VAULT_KEY_OCID_NAME=`bash ../common/vault/vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault/vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+cd $SAVED_DIR
 if [ -z $VAULT_KEY_OCID ]
 then
   echo "Your VAULT_KEY_OCID has not been set for key $VAULT_KEY_NAME_BASE, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
