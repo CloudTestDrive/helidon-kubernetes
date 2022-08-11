@@ -37,12 +37,13 @@ else
       echo "Note, a CA that is pending deletion will prevent the compartment that contains it from being deleted"
       NEW_CERT_AUTHORITY_STATE=`oci certs-mgmt certificate-authority schedule-deletion --certificate-authority-id  $CERT_AUTHORITY_OCID | jq -j '.data."lifecycle-state"'`
       echo "CA lifecycle state is $NEW_CERT_AUTHORITY_STATE" 
-      echo "Removing details from the settings file"
-      bash ../delete-from-saved-settings.sh CERT_AUTHORITY_OCID
-      bash ../delete-from-saved-settings.sh CERT_AUTHORITY_REUSED
     fi
   fi
 fi
+
+echo "Removing CA details from the settings file"
+bash ../delete-from-saved-settings.sh CERT_AUTHORITY_OCID
+bash ../delete-from-saved-settings.sh CERT_AUTHORITY_REUSED
 
 DG_NAME="$USER_INITIALS"CertAuthorityDynamicGroup
 POLICY_NAME="$USER_INITIALS"CertAuthorityPolicy
