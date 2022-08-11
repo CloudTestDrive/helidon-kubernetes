@@ -152,7 +152,7 @@ then
         for i in `seq 1 10`
         do
           echo "Active state test $i for CA $CA_NAME"
-          TMP_CERT_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIIVE\") and (.name==\"$CA_NAME\"))] | first | .id" `
+          TMP_CERT_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.name==\"$CA_NAME\"))] | first | .id" `
           if [ -z "$TMP_CERT_OCID" ]
           then
             TMP_CERT_OCID="null"
