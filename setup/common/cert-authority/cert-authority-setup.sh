@@ -42,10 +42,12 @@ then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
-
-VAULT_KEY_NAME="$USER_INITIALS""$CERT_VAULT_KEY_NAME"
-VAULT_KEY_OCID_NAME=`bash vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+SAVED_DIR=`pwd`
+cd ../vault
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+cd $SAVED_DIR
 if [ -z $VAULT_KEY_OCID ]
 then
   echo "Your can't find the OCID for your vault key has not been set, you need to run the vault-setup.sh before you can run this script"
