@@ -146,7 +146,33 @@ then
         echo "OK will try to create a new CA for you with this name $CA_NAME"
       else
         echo "OK, trying to cancel CA deletion"
-        oci certs-mgmt certificate-authority cancel-deletion --certificate-authority-id $CERT_AUTHORITY_PENDING_OCID --wait-for-state ACTIVE
+        oci certs-mgmt certificate-authority cancel-deletion --certificate-authority-id $CERT_AUTHORITY_PENDING_OCID
+        echo "Waiting for CA to become active"
+        CA_ACTIVE=false
+        for i in `seq 1 10`
+        do
+          echo "Active state test $i for CA $CA_NAME"
+          TMP_CERT_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIIVE\") and (.name==\"$CA_NAME\"))] | first | .id" `
+          if [ -z "$TMP_CERT_OCID" ]
+          then
+            TMP_CERT_OCID="null"
+          fi
+          if [ "$TMP_CERT_OCID" = "null" ]
+          then
+            echo "CA $CA_NAME not active"
+            sleep 10
+          else
+            CA_ACTIVE=true
+            break ;
+          fi
+        done
+        if [ "$CA_ACTIVE" = "true" ]
+        then
+          echo "CA $CA_NAME is now active"
+        else
+          echo "CA $CA_NAME has not become active in time, stopping"
+          exit 1
+        fi
         CA_UNDELETED=true
       fi
     fi
