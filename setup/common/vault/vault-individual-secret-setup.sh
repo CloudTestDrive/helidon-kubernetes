@@ -1,13 +1,14 @@
 #!/bin/bash -f
 SCRIPT_NAME=`basename $0`
 
-if [ $# -ne 3 ]
+if [ $# -lt 4 ]
 then
   echo "$SCRIPT_NAME requires four arguments:"
   echo "1st The name of the key to protect this secret E.g. AES (this will transparently have your initials added to it to match with the key setup / destroy scripts"
   echo "2nd is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
   echo "3rd the description to be used - note that is this is multiple words it must be in quotes"
   echo "4th the value to be used for the secret"
+  exit -1
 fi
 VAULT_KEY_NAME_BASE=$1
 SETTINGS_NAME=$2
