@@ -33,7 +33,6 @@ VAULT_KEY_NAME_BASE=AES
 VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
 VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
-cd $SAVED_DIR
 
 if [ -z $VAULT_KEY_OCID ]
 then
