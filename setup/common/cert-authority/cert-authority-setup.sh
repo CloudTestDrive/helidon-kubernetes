@@ -78,22 +78,6 @@ bash ./policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTIO
 cd $SAVED_DIR
 
 CA_NAME="$USER_INITIALS""$CERT_AUTHORITY_BASE_NAME"
-echo "Checking for pending delete CA"
-echo "Checking for CA $CA_NAME in compartment $COMPARTMENT_NAME"
-CA_SCHEDULING_DELETION_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
-if [ -z "$SCHEDULING_DELETION_OCID" ]
-then
-  CA_SCHEDULING_DELETION_OCID=null
-fi
-if [ "$CA_SCHEDULING_DELETION_OCID" = "null" ]
-then
-  echo "No CA's named $CA_NAME in scheduling deletion state, continuing"
-else
-  echo "There is a CA named $CA_NAME that currently has a scheduling deletion activity"
-  echo "underway, please wait until that has finished (this may take a few mins) then re-run"
-  echo "this script to cancel the deletion and re-use that CA"
-  exit 2
-fi
 
 # initially defauslt to the CA is not undeleted
 CA_UNDELETED=false
@@ -127,7 +111,7 @@ then
     then
     # No existing CERT_AUTHORITY_OCID so need to potentially create it
     echo "Checking for  CA $CA_NAME in compartment $COMPARTMENT_NAME"
-    SCHEDULING_DELETION_CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    SCHEDULING_DELETION_CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.name==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$SCHEDULING_DELETION_CERT_AUTHORITY_OCID" ]
     then
       SCHEDULING_DELETION_CERT_AUTHORITY_OCID=null
@@ -141,7 +125,7 @@ then
       echo "this script to cancel the deletion and re-use that CA"
       exit 2
     fi
-    CERT_AUTHORITY_PENDING_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    CERT_AUTHORITY_PENDING_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"PENDING_DELETION\") and (.name==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$CERT_AUTHORITY_PENDING_OCID" ]
     then
       CERT_AUTHORITY_PENDING_OCID=null
@@ -166,7 +150,7 @@ then
         CA_UNDELETED=true
       fi
     fi
-    CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
+    CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"ACTIVE\") and (.name==\"$CA_NAME\"))] | first | .id" `
     if [ -z "$CERT_AUTHORITY_OCID" ]
     then
       CERT_AUTHORITY_OCID=null
@@ -175,7 +159,7 @@ then
     then
       echo "CA named $CA_NAME doesn't exist, creating it, there may be a short delay"
       echo "Creating certificate authority"
-      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "{\"commonName\" : \"LabsCA\"}" --kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
+      CERT_AUTHORITY_OCID=`oci certs-mgmt certificate-authority create-root-ca-by-generating-config-details --compartment-id $COMPARTMENT_OCID --name $CA_NAME --subject "{\"commonName\" : \"$CA_NAME\"}" --kms-key-id $VAULT_KEY_OCID | jq -j '.data.id'`
       RESP=$?
       if [ "$RESP" -ne 0 ]
       then
