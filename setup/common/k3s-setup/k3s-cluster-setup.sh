@@ -45,9 +45,16 @@ then
   echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
   exit 2
 fi
+SAVED_DIR=`pwd`
+cd ../vault
+VAULT_KEY_NAME_BASE=AES
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+cd $SAVED_DIR
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "Your VAULT_KEY_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+  echo "Your VAULT_KEY_OCID has not been set for key $VAULT_KEY_NAME_BASE, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
   exit 2
 fi
 
@@ -106,15 +113,15 @@ fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with the name lab-$CLUSTER_CONTEXT_NAME-nameyouenter exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
+  echo "OK, please enter the base name of the Kubernetes cluster to create / re-use, it must be a single word, e.g. tgemo. If a cluster with the name lab-<your initials>-nameyouenter exists it will be re-used, if not a new cluster will be created named lab-$CLUSTER_CONTEXT_NAME-<your name>"
   read CLUSTER_NAME
   if [ -z "$CLUSTER_NAME" ]
   then
     echo "You do actually need to enter the new name for the Kubernetes cluster, exiting"
     exit 1
   fi
+  CLUSTER_NAME_FULL="lab-$USER_INITIALS-$CLUSTER_NAME"
 else     
-  CLUSTER_NAME_FULL=lab-$CLUSTER_NAME
   echo "OK, going to use $CLUSTER_NAME_FULL as the Kubernetes cluster name"
 fi
 
@@ -149,6 +156,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     WORKER_BOOT_SIZE=50
     CLUSTER_TZ=`basename \`readlink -f /etc/localtime\``
     DATASTORE_TYPE="etcd"
+    PROVIDER_VERSION=">= 4.67.3"
     echo "Checking for teraform module generic settings file"
     GENERIC_K3S_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-k3s-terraform-settings.sh
     if [ -f $GENERIC_K3S_TERRAFORM_SETTINGS ]
@@ -206,20 +214,25 @@ TF_GIT_BASE=$HOME/k3s-terraform
 	TF_PROVIDER_FILE=k3s-provider.tf
 	TF_MODULE_FILE=k3s-module.tf
 	TF_OUTPUTS_FILE=k3s-outputs.tf
-	TEMP_VERSIONS=temporary-versions.tf
+	TEMP_VERSIONS=versions.tf
     TFP=$TF_DIR/$TF_PROVIDER_FILE
     TFM=$TF_DIR/$TF_MODULE_FILE
     TFO=$TF_DIR/$TF_OUTPUTS_FILE
+    TFV=$TF_DIR/$TEMP_VERSIONS
     echo "Configuring terraform"
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
-    cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TF_DIR/$TEMP_VERSIONS
+    cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
     cd $TF_DIR
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION $OCI_REGION
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION $OCI_HOME_REGION
+    
+    echo "Update $TFV set PROVIDER_VERSION"
+    bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    
     
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL $K3S_GH_URL '^'
@@ -286,7 +299,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME defaulting to $REPLY"
 else
-  read -p "Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
+  read -p "Do you want to create K3S cluster with full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
 fi
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]

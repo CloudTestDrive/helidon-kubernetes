@@ -1,15 +1,19 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
-if [ $# -ne 3 ]
+if [ $# -lt 4 ]
 then
-  echo "This script $0 requires three arguments:"
-  echo "1st is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
-  echo "2nd the description to be used - note that is this is multiple words it must be in quotes"
-  echo "3rd the value to be used for the secret"
+  echo "$SCRIPT_NAME requires four arguments:"
+  echo "1st The name of the key to protect this secret E.g. AES (this will transparently have your initials added to it to match with the key setup / destroy scripts"
+  echo "2nd is the name of the setting e.g. OCIR_HOST - the script will appaned / prepend the required strings around that value"
+  echo "3rd the description to be used - note that is this is multiple words it must be in quotes"
+  echo "4th the value to be used for the secret"
+  exit -1
 fi
-SETTINGS_NAME=$1
-VAULT_SECRET_DESCRIPTION=$2
-VAULT_SECRET_VALUE=$3
+VAULT_KEY_NAME_BASE=$1
+SETTINGS_NAME=$2
+VAULT_SECRET_DESCRIPTION=$3
+VAULT_SECRET_VALUE=$4
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -22,6 +26,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$USER_INITIALS" ]
+then
+  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  exit 1
+fi
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -37,13 +46,17 @@ else
   echo "Found vault information"
 fi
 
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "No vault key OCID set, have you run the vault-setup.sh script ?"
+  echo "No vault key OCID set, have you run the vault-key-setup.sh script for key $VAULT_KEY_NAME?"
   echo "Cannot continue"
   exit 13
 else
-  echo "Found vault key information"
+  echo "Found OCID for vault key $VAULT_KEY_NAME"
 fi
 
 VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"

@@ -24,13 +24,12 @@ then
 fi
 
 cd $SAVED_PWD
-
-cd $COMMON_DIR
+cd $DEVOPS_LABS_DIR
 bash ./vault-destroy.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Vault destroy eturned an error, unable to continue"
+  echo "Vault destroy returned an error, unable to continue"
   exit $RESP
 fi
 

@@ -16,7 +16,7 @@ MODULES_DIR=$SETUP_DIR/lab-specific/modules
 
 SAVED_PWD=`pwd`
 
-cd $COMMON_DIR
+cd $DEVOPS_LABS_DIR
 
 if [ "$PARALLEL_SETUP" = "true" ]
 then
