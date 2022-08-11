@@ -101,7 +101,7 @@ then
       if [ "$AUTO_CONFIRM" = true ]
       then
         REPLY="y"
-        echo "Auto confirm is enabled,  found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it defaulting to $REPLY"
+        echo "Auto confirm is enabled,  found an existing vault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it defaulting to $REPLY"
       else
         read -p "Found an existing fault named $VAULT_NAME but it is pending deletion, cancel the deletion and re-use it (y/n) ?" REPLY
       fi
