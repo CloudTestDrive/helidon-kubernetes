@@ -77,7 +77,7 @@ POLICY_DESCRIPTION="Allows the cert Dg to manage things"
 bash ./policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTION"
 cd $SAVED_DIR
 
-CA_NAME="$USER_INITIALS"LabCertAuthority
+CA_NAME="$USER_INITIALS""$CERT_AUTHORITY_BASE_NAME"
 echo "Checking for pending delete CA"
 echo "Checking for CA $CA_NAME in compartment $COMPARTMENT_NAME"
 CA_SCHEDULING_DELETION_OCID=`oci certs-mgmt certificate-authority list --compartment-id $COMPARTMENT_OCID --all | jq -j "[.data.items[] | select ((.\"lifecycle-state\"==\"SCHEDULING_DELETION\") and (.\"display-name\"==\"$CA_NAME\"))] | first | .id" `
@@ -101,8 +101,6 @@ CA_KEY_UNDELETED=false
 if [ -z "$CERT_AUTHORITY_REUSED" ]
 then
   echo "No reuse information for CA"
-
-  CA_NAME="$USER_INITIALS"LabsCA
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
