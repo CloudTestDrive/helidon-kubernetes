@@ -26,11 +26,14 @@ then
 else
   echo Found vault
 fi
-
+SAVED_DIR=`pwd`
+# check for the keys
+cd ../common/vault
 VAULT_KEY_NAME_BASE=AES
-VAULT_KEY_NAME=`bash ../common/vault/vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
-VAULT_KEY_OCID_NAME=`bash ../common/vault/vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+cd $SAVED_DIR
 
 if [ -z $VAULT_KEY_OCID ]
 then
@@ -43,9 +46,6 @@ fi
 
 # now actually create the host ane nameslace secrets
 
-SAVED_DIR=`pwd`
-
-cd ../common/vault
 
 FINAL_RESP=0
 if [ -z $OCIR_STOREFRONT_LOCATION ]
