@@ -53,9 +53,9 @@ else
   else
     if [ -z $VAULT_KEY_OCID ]
     then
-      echo "Cannot locate OCID for the vault key, unable to schedule it's deletion"
+      echo "Cannot locate OCID for the vault key $VAULT_KEY_NAME, unable to schedule it's deletion"
     else
-      echo "Scheduling deletion of key, this will normally take effect in a months time"
+      echo "Scheduling deletion of key $VAULT_KEY_NAME, this will normally take effect in a months time"
       echo "should you with to cancel during that time you can do so."
       echo "While deletion is pending any secretes encrypted by this key will be unavailable unless the"
       echo "key deletion is cancled, this will also require that you cancel the vault deletion"
