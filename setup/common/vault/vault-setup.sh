@@ -41,7 +41,7 @@ then
 else
   echo "Operating in compartment $COMPARTMENT_NAME"
 fi
-# assume that the vault and key are not undeleted
+# assume that the vault is not undeleted
 VAULT_UNDELETED=false
 if [ -z "$VAULT_REUSED" ]
 then
