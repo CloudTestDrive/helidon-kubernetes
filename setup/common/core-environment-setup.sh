@@ -46,6 +46,10 @@ then
 else
   echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
 fi
+
+export SETTINGS=$HOME/hk8sLabsSettings
+
+echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
 bash initials-setup.sh
 RESP=$?
 if [ $RESP -ne 0 ]
