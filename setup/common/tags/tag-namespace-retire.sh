@@ -36,6 +36,9 @@ fi
 if [ "$TAG_NS_REUSED" = "true"]
 then
   echo "The tag namespace $TAG_NS_NAME was reused, will not retire it"
+  bash ../delete-from-saved-settings.sh "$TAG_NS_OCID_NAME"
+  bash ../delete-from-saved-settings.sh "$TAG_NS_REUSED_NAME"
+  bash ../delete-from-saved-settings.sh "$TAG_NS_UNDELETED_NAME"
   exit 0
 else
   echo "The the tag namespace $TAG_NS_NAME was setup by these scripts - continuing"

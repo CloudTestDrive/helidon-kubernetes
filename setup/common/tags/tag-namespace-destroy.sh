@@ -16,19 +16,6 @@ if [ -f $SETTINGS ]
   else 
     echo "No existing settings"
 fi
-echo "Destroying the tag-namespace can take a long time, potentially up to 48 hours during"
-echo "which time you will not be able to re-create a new tag-namespace with the same name."
-echo "This means that any labs you are running which rely on the namespace cannot be run."
-echo "Unless you really, really need to destroy the tag namespace we recommend that you "
-echo "just ignore it as it doesn't use resources"
-read -p "Do you want to proceed with deleting the tag nameapace (y/n) ?" REPLY
-if [[ ! "$REPLY" =~ ^[Yy]$ ]]
-then
-  echo "Good decision, exiting"
-  exit 0
-else
-  echo "OK, Retiring and then deleting the tag namespace $TAG_NS_NAME"
-fi
 
 TAG_NS_REUSED_NAME=`bash ./tag-namespace-get-var-name-reused.sh $TAG_NS_NAME`
 TAG_NS_OCID_NAME=`bash ./tag-namespace-get-var-name-ocid.sh $TAG_NS_NAME`
@@ -49,6 +36,19 @@ else
   echo "The the tag namespace $TAG_NS_NAME was setup by these scripts - continuing"
 fi
 
+echo "Destroying the tag-namespace can take a long time, potentially up to 48 hours during"
+echo "which time you will not be able to re-create a new tag-namespace with the same name."
+echo "This means that any labs you are running which rely on the namespace cannot be run."
+echo "Unless you really, really need to destroy the tag namespace we recommend that you "
+echo "just ignore it as it doesn't use resources"
+read -p "Do you want to proceed with deleting the tag nameapace (y/n) ?" REPLY
+if [[ ! "$REPLY" =~ ^[Yy]$ ]]
+then
+  echo "Good decision, exiting"
+  exit 0
+else
+  echo "OK, Retiring and then deleting the tag namespace $TAG_NS_NAME"
+fi
 TAG_NS_OCID="${!TAG_NS_OCID_NAME}"
 if [ -z "$TAG_NS_OCID" ]
 then
