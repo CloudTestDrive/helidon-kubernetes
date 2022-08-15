@@ -93,6 +93,7 @@ else
     echo "Existing key is active, assuming it meets your needs and reusing it"
     TAG_KEY_REUSED=true
   elif [ "$TAG_KEY_STATE" = "INACTIVE" ]
+  then
     if [ "$AUTO_CONFIRM" = true ]
     then
       REPLY="y"
