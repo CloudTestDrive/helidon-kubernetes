@@ -33,7 +33,7 @@ then
 else
   echo "The script has located reuse info for the tag namespace $TAG_NS_NAME - continuing"
 fi
-if [ "$TAG_NS_REUSED" = "true"]
+if [ "$TAG_NS_REUSED" = "true" ]
 then
   echo "The tag namespace $TAG_NS_NAME was reused, will not retire it"
   bash ../delete-from-saved-settings.sh "$TAG_NS_OCID_NAME"
