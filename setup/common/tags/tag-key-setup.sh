@@ -44,7 +44,7 @@ fi
 
 TAG_NS_OCID_NAME=`bash ./tag-namespace-get-var-name-ocid.sh $TAG_NS_NAME`
 TAG_NS_OCID="${!TAG_NS_OCID_NAME}"
-if [ -z "TAG_NS_OCID" ]
+if [ -z "$TAG_NS_OCID" ]
 then
   echo "Cannot locate OCID for tag namespace $TAG_NS_NAME have you run the tag-namespace-setup.sh script for this tag namespace ? Cannot continue"
   exit 1
