@@ -78,6 +78,7 @@ OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_H
 
 TAG_KEY_JSON=`oci iam tag get --tag-namespace-id $TAG_NS_OCID --tag-name $TAG_KEY_NAME  --region $OCI_HOME_REGION 2>&1`
 TAG_KEY_OCID=`echo "$TAG_KEY_JSON" | grep -v '^ServiceError:' | jq -r '.data.id'`
+
 if [ -z "$TAG_KEY_OCID" ]
 then
   TAG_KEY_OCID="null"
@@ -89,7 +90,8 @@ then
   TAG_KEY_OCID=`oci iam tag create --name "$TAG_KEY_NAME" --description "$TAG_KEY_DESCRIPTION" --tag-namespace-id "$TAG_NS_OCID" --validator "$VALIDATOR_STRING" --wait-for-state ACTIVE --region $OCI_HOME_REGION | jq -r '.data.id'`
 else
   echo "Found existing tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME checking it's state"
-  TAG_KEY_STATE=`echo "$TAG_KEY_JSON" | jq -r '.data.id'`
+  TAG_KEY_STATE=`echo "$TAG_KEY_JSON" | jq -r '.data."lifecycle-state"'`
+  echo "State of existing tag key is $TAG_KEY_STATE"
   if [ "$TAG_KEY_STATE" = "ACTIVE" ]
   then
     echo "Existing key is active, assuming it meets your needs and reusing it"
