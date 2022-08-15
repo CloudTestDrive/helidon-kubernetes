@@ -84,7 +84,7 @@ TAG_KEY_UNDELETED=false
 if [ "$TAG_KEY_OCID" = "null" ]
 then
   echo "No existing tag key $TAG_KEY_NAME found in tag namespace $TAG_NS_NAME creating"
-  TAG_KEY_OCID=`oci iam tag create --name "$TAG_KEY_NAME" --description"$TAG_KEY_DESCRIOTION" --tag-namespace-id "$TAG_NS_OCID" --validator "$VALIDATOR_STRING" --wait-for-state ACTIVE --region $OCI_HOME_REGION | jq -r '.data.id'`
+  TAG_KEY_OCID=`oci iam tag create --name "$TAG_KEY_NAME" --description "$TAG_KEY_DESCRIPTION" --tag-namespace-id "$TAG_NS_OCID" --validator "$VALIDATOR_STRING" --wait-for-state ACTIVE --region $OCI_HOME_REGION | jq -r '.data.id'`
 else
   echo "Found existing tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME checking it's state"
   TAG_KEY_STATE=`echo "$TAG_KEY_JSON" | jq -r '.data.id'`
