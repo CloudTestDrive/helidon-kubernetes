@@ -56,7 +56,7 @@ OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.dat
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 echo "Checking for inactive TAG namespace"
 
-INACTIVE_TAG_NS_OCID=`oci iam tag-namespace list -c $OCI_TENANCY --include-subcompartments true --all --lifecycle-state INACTIVE  --region $OCI_HOME_REGION | jq -r ".data[] | select (.name == \"$TAG_NS_NAME\") | .id"`
+INACTIVE_TAG_NS_OCID=`oci iam tag-namespace list -c $OCI_TENANCY --include-subcompartments true --all --region $OCI_HOME_REGION | jq -r ".data[] | select ((.name == \"$TAG_NS_NAME\") and (.\"lifecycle-state" == \"INACTIVE" | .id"`
 if [ -z "$INACTIVE_TAG_NS_OCID" ]
 then
   echo "No inactive tag namespace called $TAG_NS_NAME found, continuing"
