@@ -24,7 +24,7 @@ fi
 
 TAG_NS_REUSED_NAME=`bash ./tag-namespace-get-var-name-reused.sh $TAG_NS_NAME`
 TAG_NS_OCID_NAME=`bash ./tag-namespace-get-var-name-ocid.sh $TAG_NS_NAME`
-TAG_NS_UNDELTED_NAME=`bash ./tag-namespace-get-var-name-undeleted.sh $TAG_NS_NAME`
+TAG_NS_UNDELETED_NAME=`bash ./tag-namespace-get-var-name-undeleted.sh $TAG_NS_NAME`
 TAG_NS_REUSED="${!TAG_NS_REUSED_NAME}"
 if [ -z "$TAG_NS_REUSED" ]
 then
