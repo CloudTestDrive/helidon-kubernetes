@@ -89,11 +89,9 @@ then
   done
   if [ "$TAG_RETIRED" = "true" ]
   then
-    echo "$POLICY_OCID_NAME=$POLICY_OCID" >> $SETTINGS
-    echo "$POLICY_REUSED_NAME=false" >> $SETTINGS
-    exit 0
+    echo "Tag namespace retirement has propogated"
   else
-    echo "Policy has not propogated in time, stopping"
+    echo "Tag namespace retirement has not propogated in time, stopping"
     exit 1
   fi
 else     
