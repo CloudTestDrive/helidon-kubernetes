@@ -24,10 +24,10 @@ echo "just ignore it as it doesn't use resources"
 read -p "Do you want to proceed with deleting the tag nameapace (y/n) ?" REPLY
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
-  echo "OK, Retireing and then deleting the tag namespace $TAG_NS_NAME"
-else
   echo "Good decision, exiting"
   exit 0
+else
+  echo "OK, Retiring and then deleting the tag namespace $TAG_NS_NAME"
 fi
 
 TAG_NS_REUSED_NAME=`bash ./tag-namespace-get-var-name-reused.sh $TAG_NS_NAME`
@@ -70,7 +70,10 @@ else
   read -p "Retire tag namespace $TAG_NS_OCID  (y/n) ?" REPLY
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
-then
+then    
+  echo "OK, exiting"
+  exit 0
+else 
   echo "OK, Retire tag namespace $TAG_NS_NAME"
   oci iam tag-namespace retire --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION 
   echo "Waiting for tag namespace to retire"
@@ -94,9 +97,6 @@ then
     echo "Tag namespace retirement has not propogated in time, stopping"
     exit 1
   fi
-else     
-  echo "OK, exiting"
-  exit 0
 fi
 
 if [ "$AUTO_CONFIRM" = true ]
@@ -108,11 +108,11 @@ else
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
+  echo "OK, not cascade deleting"
+else     
   echo "OK, Deleting tag namespace $TAG_NS_OCID and tags"
   oci iam tag-namespace cascade-delete --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION
   echo "Waiting for tag namespace cascade delete triggered, this may take a while"
-else     
-  echo "OK, not cascade deleting"
 fi
 
 
