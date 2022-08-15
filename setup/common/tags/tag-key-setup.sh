@@ -48,6 +48,8 @@ if [ -z "TAG_NS_OCID" ]
 then
   echo "Cannot locate OCID for tag namespace $TAG_NS_NAME have you run the tag-namespace-setup.sh script for this tag namespace ? Cannot continue"
   exit 1
+else
+  echo "Located tag namespace $TAG_NS_NAME setup by these scripts"
 fi
 # work out what the validation should look like
 VALUES_START_ARG=4
