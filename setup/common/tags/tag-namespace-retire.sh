@@ -66,6 +66,9 @@ else
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
+  echo "OK, exiting"
+  exit 0
+else
   echo "OK, Retiring tag namespace $TAG_NS_NAME"
   oci iam tag-namespace retire --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION 
   echo "Waiting for tag namespace to retire"
@@ -89,10 +92,7 @@ then
   else
     echo "Tag namespace retirement has not propogated in time, stopping"
     exit 1
-  fi
-else     
-  echo "OK, exiting"
-  exit 0
+  fi     
 fi
 
 bash ../delete-from-saved-settings.sh "$TAG_NS_OCID_NAME"
