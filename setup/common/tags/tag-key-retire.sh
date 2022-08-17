@@ -36,17 +36,20 @@ TAG_KEY_UNDELTED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_NS_NAME $TA
 TAG_KEY_REUSED="${!TAG_KEY_REUSED_NAME}"
 if [ -z "$TAG_KEY_REUSED" ]
 then
-  echo "The script can't find any reuse info for the tag key $TAG_KEY_NAME - unsafe to continue"
+  echo "The script can't find any reuse info for the tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME- unsafe to continue"
   exit 1
 else
-  echo "The script has located reuse info for the tag key $TAG_KEY_NAME - continuing"
+  echo "The script has located reuse info for the tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME- continuing"
 fi
-if [ "$TAG_KEY_REUSED" = "true"]
+if [ "$TAG_KEY_REUSED" = "true" ]
 then
-  echo "The tag key $TAG_KEY_NAME was reused, will not retire it"
+  echo "The tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME was reused, will not retire it"
+  bash ../delete-from-saved-settings.sh "$TAG_KEY_OCID_NAME"
+  bash ../delete-from-saved-settings.sh "$TAG_KEY_REUSED_NAME"
+  bash ../delete-from-saved-settings.sh "$TAG_KEY_UNDELETED_NAME"
   exit 0
 else
-  echo "The the tag key $TAG_KEY_NAME was setup by these scripts - continuing"
+  echo "The the tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME was setup by these scripts - continuing"
 fi
 echo "Locating home region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
