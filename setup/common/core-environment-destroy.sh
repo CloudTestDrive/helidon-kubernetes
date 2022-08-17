@@ -43,3 +43,5 @@ else
     exit $RESP
   fi
 fi
+
+bash ./delete-from-saved-settings.sh SETUP_REGION

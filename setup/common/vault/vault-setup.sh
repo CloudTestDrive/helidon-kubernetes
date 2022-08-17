@@ -41,9 +41,8 @@ then
 else
   echo "Operating in compartment $COMPARTMENT_NAME"
 fi
-# assume that the vault and key are not undeleted
+# assume that the vault is not undeleted
 VAULT_UNDELETED=false
-VAULT_KEY_UNDELETED=false
 if [ -z "$VAULT_REUSED" ]
 then
   echo "No reuse information for vault"
@@ -135,9 +134,6 @@ then
       echo "Vault being created using OCID $VAULT_OCID"
       echo "VAULT_OCID=$VAULT_OCID" >>$SETTINGS
       echo "VAULT_REUSED=false" >> $SETTINGS
-      # if we created the vault then any existing key information is invalid
-      unset VAULT_KEY_OCID
-      unset VAULT_KEY_REUSE
     else
       echo "Found existing vault names $VAULT_NAME, reusing it"
       echo "VAULT_OCID=$VAULT_OCID" >> $SETTINGS
