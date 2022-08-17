@@ -27,12 +27,12 @@ TAG_NS_OCID_NAME=`bash ./tag-namespace-get-var-name-ocid.sh $TAG_NS_NAME`
 TAG_NS_OCID="${!TAG_NS_OCID_NAME}"
 if [ -z "$TAG_NS_OCID" ]
 then
-  echo "Unable to locate OCID setup by these scripts fo t tag ns $TAG_NS_NAME, unable to continue"
+  echo "Unable to locate OCID setup by these scripts for namespace $TAG_NS_NAME, unable to continue"
   exit 1
 fi
-TAG_KEY_REUSED_NAME=`bash ./tag-key-get-var-name-reused.sh $TAG_KEY_NAME`
-TAG_KEY_OCID_NAME=`bash ./tag-key-get-var-name-ocid.sh $TAG_KEY_NAME`
-TAG_KEY_UNDELTED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_KEY_NAME`
+TAG_KEY_REUSED_NAME=`bash ./tag-key-get-var-name-reused.sh $TAG_NS_NAME $TAG_KEY_NAME`
+TAG_KEY_OCID_NAME=`bash ./tag-key-get-var-name-ocid.sh $TAG_NS_NAME $TAG_KEY_NAME`
+TAG_KEY_UNDELTED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_NS_NAME $TAG_KEY_NAME`
 TAG_KEY_REUSED="${!TAG_KEY_REUSED_NAME}"
 if [ -z "$TAG_KEY_REUSED" ]
 then
