@@ -31,7 +31,7 @@ fi
 
 # try and see if we know about this key already
 
-TAG_KEY_REUSED_NAME=`bash ./tag-key-get-var-name-ocid.sh $TAG_NS_NAME $TAG_KEY_NAME`
+TAG_KEY_REUSED_NAME=`bash ./tag-key-get-var-name-reused.sh $TAG_NS_NAME $TAG_KEY_NAME`
 TAG_KEY_REUSED="${!TAG_KEY_REUSED_NAME}"
 
 if [ -z "$TAG_KEY_REUSED" ]
@@ -85,10 +85,13 @@ then
   TAG_KEY_OCID="null"
 fi
 TAG_KEY_UNDELETED=false
+TAG_KEY_REUSED=false
 if [ "$TAG_KEY_OCID" = "null" ]
 then
   echo "No existing tag key $TAG_KEY_NAME found in tag namespace $TAG_NS_NAME creating"
-  TAG_KEY_OCID=`oci iam tag create --name "$TAG_KEY_NAME" --description "$TAG_KEY_DESCRIPTION" --tag-namespace-id "$TAG_NS_OCID" --validator "$VALIDATOR_STRING" --wait-for-state ACTIVE --region $OCI_HOME_REGION | jq -r '.data.id'`
+  TAG_KEY_OCID=`oci iam tag create --name "$TAG_KEY_NAME" --description "$TAG_KEY_DESCRIPTION" --tag-namespace-id "$TAG_NS_OCID" --validator "$VALIDATOR_STRING" --region $OCI_HOME_REGION | jq -r '.data.id'`
+  TAG_KEY_UNDELETED=false
+  TAG_KEY_REUSED=false
 else
   echo "Found existing tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME checking it's state"
   TAG_KEY_STATE=`echo "$TAG_KEY_JSON" | jq -r '.data."lifecycle-state"'`
@@ -96,6 +99,7 @@ else
   if [ "$TAG_KEY_STATE" = "ACTIVE" ]
   then
     echo "Existing key is active, assuming it meets your needs and reusing it"
+    TAG_KEY_UNDELETED=false
     TAG_KEY_REUSED=true
   elif [ "$TAG_KEY_STATE" = "INACTIVE" ]
   then
@@ -115,9 +119,41 @@ else
       UPDATED_STATE=`oci iam tag reactivate --tag-namespace-id $TAG_NS_OCID --tag-name $TAG_KEY_NAME --region $OCI_HOME_REGION | jq -r '.data."lifecycle-state"'`
       echo "Updated state is now $UPDATED_STATE"
       TAG_KEY_UNDELETED=true
+      TAG_KEY_REUSED=false  
     fi
   else
     echo "Existing key is in an intrasit state -  $TAG_KEY_STATE , this can take a long time to achieve to a stable state, script will exit, please try again later"
     exit 100
   fi
 fi
+
+# to get here the tag must have been created, or already exist and been made (or remain) active.
+# check for it to be locally active
+echo "Waiting for key to propogate"
+KEY_FOUND=false
+  for i in `seq 1 10`
+  do
+    echo "Propogate test $i for key $TAG_KEY_NAME"
+    ERROR_COUNT=`oci iam tag get --tag-namespace-id $TAG_NS_OCID --tag-name $TAG_KEY_NAME 2>&1 | grep '^ServiceError:' | wc -l `
+    if [ "$ERROR_COUNT" = "0" ]
+    then
+      echo "Key has propogated"
+      KEY_FOUND=true
+      break ;
+    fi
+    sleep 10
+  done
+  if [ "$KEY_FOUND" = "true" ]
+  then
+    echo "Tag key $TAG_KEY_NAME has propogated, continuing"
+  else
+    echo "Tag key $TAG_KEY_NAME has not propogated in time, stopping"
+    exit 1
+  fi
+
+TAG_KEY_OCID_NAME=`bash ./tag-key-get-var-name-ocid.sh $TAG_NS_NAME $TAG_KEY_NAME`
+TAG_KEY_UNDELETED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_NS_NAME $TAG_KEY_NAME`
+# save the settings away
+echo "$TAG_KEY_OCID_NAME=$TAG_KEY_OCID" >> $SETTINGS
+echo "$TAG_KEY_REUSED_NAME=$TAG_KEY_REUSED" >> $SETTINGS
+echo "$TAG_KEY_UNDELETED_NAME=$TAG_KEY_UNDELETED" >> $SETTINGS
