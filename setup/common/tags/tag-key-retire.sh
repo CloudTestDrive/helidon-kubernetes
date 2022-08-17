@@ -58,9 +58,9 @@ OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_H
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
-  echo "Auto confirm is enabled, Retire tag key $TAG_KEY_OCID  (y/n) defaulting to $REPLY"
+  echo "Auto confirm is enabled, Retire tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME  (y/n) defaulting to $REPLY"
 else
-  read -p "Retire tag key $TAG_KEY_OCID  (y/n) ?" REPLY
+  read -p "Retire tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME  (y/n) ?" REPLY
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
