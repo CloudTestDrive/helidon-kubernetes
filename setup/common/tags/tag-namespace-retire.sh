@@ -1,10 +1,10 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
-if [ $# -eq 0 ]
-  then
-    echo "$SCRIPT_NAME Missing arguments, you must provide :"
-    echo "  1st arg the name of the tag namespace to destroy"
-    exit -1
+if [ $# -le 1 ]
+then
+  echo "$SCRIPT_NAME Missing arguments, you must provide :"
+  echo "  1st arg the name of the tag namespace to destroy"
+  exit -1
 fi
 TAG_NS_NAME=$1
 export SETTINGS=$HOME/hk8sLabsSettings
