@@ -67,6 +67,14 @@ kubectl delete namespace ingress-nginx --ignore-not-found=true
 
 cd $MODULES_DIR
 CLUSTER_CONTEXT_NAME=kubeflow
+
+if [ $# -gt 0 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 bash ./core-and-single-kubernetes-cluster-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
