@@ -63,7 +63,10 @@ else
   read -p "Retire tag key $TAG_KEY_NAME in namespace $TAG_NS_NAME  (y/n) ?" REPLY
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
-then
+then    
+  echo "OK, exiting"
+  exit 0
+else 
   echo "OK, Retiring tag key $TAG_KEY_NAME"
   oci iam tag retire --tag-name $TAG_KEY_NAME --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION 
   echo "Waiting for tag key to retire"
@@ -88,9 +91,6 @@ then
     echo "Tag key retirement has not propogated in time, stopping"
     exit 1
   fi
-else     
-  echo "OK, exiting"
-  exit 0
 fi
 
 bash ../delete-from-saved-settings.sh "$TAG_KEY_OCID_NAME"
