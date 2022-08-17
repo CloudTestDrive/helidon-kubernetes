@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
-if [ $# -le 2 ]
+if [ $# -lt 2 ]
   then
     echo "$SCRIPT_NAME Missing arguments, you must provide :"
     echo "  1st arg name of the tag namespace containing the tag"
