@@ -12,7 +12,7 @@ if [ $# -lt 3 ]
 fi
 TAG_NS_NAME=$1
 TAG_KEY_NAME=$2
-TAG_DESCRIPTION=$3
+TAG_KEY_DESCRIPTION=$3
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -36,7 +36,7 @@ TAG_KEY_REUSED="${!TAG_KEY_REUSED_NAME}"
 
 if [ -z "$TAG_KEY_REUSED" ]
 then
-  echo "No reuse information for tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME continuing"
+  echo "No reuse information for tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME with description $TAG_KEY_DESCRIPTION continuing"
 else
   echo "These scripts have already setup tag key $TAG_KEY_NAME in tag namespace $TAG_NS_NAME It is assumed to have the correct settings, exiting"
   exit 0
@@ -72,6 +72,7 @@ else
   VALIDATOR_STRING="{\"validatorType\": \"DEFAULT\"}"
 fi
 
+echo "Validation is :\n$VALIDATOR_STRING"
 echo "Locating home region"
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
