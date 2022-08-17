@@ -68,8 +68,9 @@ then
   exit 0
 else 
   echo "OK, Retiring tag key $TAG_KEY_NAME"
-  oci iam tag retire --tag-name $TAG_KEY_NAME --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION 
-  echo "Waiting for tag key to retire"
+  TAG_KEY_STATE=`oci iam tag retire --tag-name $TAG_KEY_NAME --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION | jd '.date."lifecycle-state"'`
+  echo "Updated tag key state in home region is $TAG_KEY_STATE"
+  echo "Waiting for tag key retirement to propogate to local region"
   TAG_RETIRED=false
   for i in `seq 1 10`
   do
