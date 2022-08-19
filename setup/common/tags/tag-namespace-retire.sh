@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
-if [ $# -le 1 ]
+if [ $# -eq 0 ]
 then
   echo "$SCRIPT_NAME Missing arguments, you must provide :"
   echo "  1st arg the name of the tag namespace to destroy"
@@ -62,7 +62,7 @@ then
   REPLY="y"
   echo "Auto confirm is enabled, Retire tag namespace $TAG_NS_OCID  (y/n) defaulting to $REPLY"
 else
-  read -p "Retire tag namespace $TAG_NS_OCID  (y/n) ?" REPLY
+  read -p "Retire tag namespace $TAG_NS_NAME  (y/n) ?" REPLY
 fi
 if [[ ! "$REPLY" =~ ^[Yy]$ ]]
 then
@@ -70,8 +70,9 @@ then
   exit 0
 else
   echo "OK, Retiring tag namespace $TAG_NS_NAME"
-  oci iam tag-namespace retire --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION 
-  echo "Waiting for tag namespace to retire"
+  TAG_NS_STATE=`oci iam tag-namespace retire --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION | jq -r '.date."lifecycle-state"'`
+  echo "Tag namespace state in home region is $TAG_NS_STATE"
+  echo "Waiting for tag namespace retirement to propogate"
   TAG_RETIRED=false
   for i in `seq 1 10`
   do

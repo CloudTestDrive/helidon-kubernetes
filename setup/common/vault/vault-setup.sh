@@ -121,7 +121,7 @@ then
     if [ "$VAULT_OCID" = "null" ]
     then
       # check for resource availability
-      bash ./resources/resource-minimum-check-region-compartment.sh $COMPARTMENT_OCID kms virtual-vault-count 1
+      bash ../resources/resource-minimum-check-region-compartment.sh $COMPARTMENT_OCID kms virtual-vault-count 1
       if [ $? = 0 ]
       then
         echo "Vault resources are available, continuing"
