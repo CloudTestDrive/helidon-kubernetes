@@ -23,13 +23,14 @@ VAULT_KEY_REUSED_NAME=`bash ./vault-key-get-var-name-reused.sh $VAULT_KEY_NAME`
 cd $SAVED_DIR
 
 echo "Waiting for devops services and configuration to be available." 
+cd ../common
 
 export WAIT_LOOP_COUNT=60
 
 bash ./wait-for-service-availability.sh VAULT_REUSED $VAULT_KEY_REUSED_NAME DEVOPS_SSH_API_KEY_CONFIGURED DEVOPS_DYNAMIC_GROUPS_CONFIGURED DEVOPS_POLICIES_CONFIGURED
-
-
 RESP=$?
+
+cd $SAVED_DIR
 
 if [ $RESP -ne 0 ]
 then
