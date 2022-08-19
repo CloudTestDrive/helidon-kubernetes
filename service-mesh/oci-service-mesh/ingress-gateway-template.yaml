@@ -1,0 +1,59 @@
+kind: IngressGateway
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: store-ingress-gateway
+spec:
+  compartmentId: COMPARTMENT_OCID
+  mesh:
+    ref:
+      name: store
+  hosts:
+    - name: bookinfoHost
+      hostnames:
+        - bookinfo.example.com
+        - bookinfo.example.com:9080
+      listeners:
+        - port: 9080
+          protocol: HTTP
+          tls:
+            mode: DISABLED
+  accessLogging:
+    isEnabled: true
+---
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: IngressGatewayDeployment
+metadata:
+  name: store-ingress-gateway-deployment
+spec:
+  ingressGateway:
+    ref:
+      name: store-ingress-gateway
+  deployment:
+    autoscaling:
+      minPods: 1
+      maxPods: 2
+  ports:
+    - protocol: TCP
+      port: 9080
+      serviceport: 80
+  service:
+    type: LoadBalancer
+---
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: IngressGatewayRouteTable
+metadata:
+  name: bookinfo-ingress-gateway-route-table
+  namespace: bookinfo
+spec:
+  compartmentId: ocid1.compartment.oc1.aaaaaaa...
+  ingressGateway:
+    ref:
+      name: bookinfo-ingress-gateway
+  routeRules:
+    - httpRoute:
+        destinations:
+          - virtualService:
+              ref:
+                name: productpage
+        ingressGatewayHost:
+          name: bookinfoHost

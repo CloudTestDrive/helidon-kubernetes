@@ -1,0 +1,12 @@
+kind: VirtualDeploymentBinding
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: stockmanager-v1-binding
+spec:
+  virtualDeployment:
+    ref:
+      name: stockmanager-v1
+  target:
+    service:
+      ref:
+        name: stockmanager

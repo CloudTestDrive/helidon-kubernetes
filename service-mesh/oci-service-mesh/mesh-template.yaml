@@ -1,0 +1,12 @@
+---
+kind: Mesh
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: storemesh
+spec:
+  compartmentId: COMPARTMENT_OCID
+  certificateAuthorities:
+    - id: CERT_AUTHORITY_OCID
+  displayName: store-mesh
+  mtls:
+    minimum: PERMISSIVE

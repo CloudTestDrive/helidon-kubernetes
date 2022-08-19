@@ -1,0 +1,12 @@
+kind: VirtualDeploymentBinding
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: logger-v1-binding
+spec:
+  virtualDeployment:
+    ref:
+      name: logger-v1
+  target:
+    service:
+      ref:
+        name: logger

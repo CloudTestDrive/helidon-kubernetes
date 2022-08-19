@@ -1,0 +1,12 @@
+kind: VirtualDeploymentBinding
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: zipkin-v1-binding
+spec:
+  virtualDeployment:
+    ref:
+      name: zipkin-v1
+  target:
+    service:
+      ref:
+        name: zipkin
