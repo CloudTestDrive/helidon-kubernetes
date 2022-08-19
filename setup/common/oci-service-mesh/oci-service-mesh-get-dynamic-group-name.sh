@@ -7,4 +7,4 @@ then
   exit 1
 fi
 USER_INITIALS=$1
-bash ../settings/to-valid-name.sh  "$USER_INITIALS"OCIOSOKDynamicGroup
+echo  "$USER_INITIALS"OCIOSOKDynamicGroup
