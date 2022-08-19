@@ -21,6 +21,11 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$USER_INITIALS" ]
+then
+  echo "$SCRIPT_NAME Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  exit 11
+fi
 if [ -z $VAULT_OCID ]
 then
   echo "No vault OCID set, have you run the vault-setup.sh script ?"
@@ -30,15 +35,18 @@ else
   echo Found vault
 fi
 
+VAULT_KEY_NAME_BASE=RSA
 SAVED_DIR=`pwd`
 cd ../vault
-
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID}"
 cd $SAVED_DIR
 
 
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "No vault key OCID set, have you run the vault-setup.sh script ?"
+  echo "No vault key OCID for key base $VAULT_KEY_NAME_BASE (var named $VAULT_KEY_OCID_NAME in settings) , have you run the vault-setup.sh and / or vault-key-setup.sh for RSA scripts ?"
   echo "Cannot continue"
   exit 13
 else
