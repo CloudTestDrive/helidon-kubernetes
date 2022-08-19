@@ -32,7 +32,7 @@ then
 fi
 TAG_KEY_REUSED_NAME=`bash ./tag-key-get-var-name-reused.sh $TAG_NS_NAME $TAG_KEY_NAME`
 TAG_KEY_OCID_NAME=`bash ./tag-key-get-var-name-ocid.sh $TAG_NS_NAME $TAG_KEY_NAME`
-TAG_KEY_UNDELTED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_NS_NAME $TAG_KEY_NAME`
+TAG_KEY_UNDELETED_NAME=`bash ./tag-key-get-var-name-undeleted.sh $TAG_NS_NAME $TAG_KEY_NAME`
 TAG_KEY_REUSED="${!TAG_KEY_REUSED_NAME}"
 if [ -z "$TAG_KEY_REUSED" ]
 then
@@ -68,7 +68,7 @@ then
   exit 0
 else 
   echo "OK, Retiring tag key $TAG_KEY_NAME"
-  TAG_KEY_STATE=`oci iam tag retire --tag-name $TAG_KEY_NAME --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION | jd '.date."lifecycle-state"'`
+  TAG_KEY_STATE=`oci iam tag retire --tag-name $TAG_KEY_NAME --tag-namespace-id $TAG_NS_OCID  --region $OCI_HOME_REGION | jq -r '.date."lifecycle-state"'`
   echo "Updated tag key state in home region is $TAG_KEY_STATE"
   echo "Waiting for tag key retirement to propogate to local region"
   TAG_RETIRED=false
