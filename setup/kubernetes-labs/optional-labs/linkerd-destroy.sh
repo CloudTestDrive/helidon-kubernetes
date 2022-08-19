@@ -48,7 +48,7 @@ SAVD_DIR=`pwd`
 cd ../linkerd
 bash ./linkerd-uninstall.sh $NAMESPACE autoconfirm
 
-cd $HOME/helidon-kubernetes/service-mesh
+cd $HOME/helidon-kubernetes/service-mesh/linkerd
 
 echo "Removing the local files"
 touch auth tls-ld.crt tls-ld.key

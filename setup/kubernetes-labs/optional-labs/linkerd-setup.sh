@@ -61,10 +61,8 @@ linkerd check --context $CLUSTER_CONTEXT_NAME
 echo "Remember to edit the linkerd visuals deployment and clean out the enforced-hotst element"
 echo " Use 'kubectl edit deployment web -n linkerd-viz'"
 
-cd $HOME/helidon-kubernetes/service-mesh
-
 echo "Create linkerd visuals certificates"
-cd $HOME/helidon-kubernetes/service-mesh
+cd $HOME/helidon-kubernetes/service-mesh/linkerd
 $HOME/keys/step certificate create linkerd.$EXTERNAL_IP.nip.io tls-linkerd-$EXTERNAL_IP.crt tls-linkerd-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
 
 echo "Create linkerd visuals secret in cluster $CLUSTER_CONTEXT_NAME"
