@@ -41,4 +41,4 @@ then
 else
   echo "Updating the service mesh ingress config to set $EXTERNAL_IP as the External IP address.."
 fi
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/set-ingress-config.sh $HOME/helidon-kubernetes/service-mesh/linkerd $EXTERNAL_IP $CLUSTER_CONTEXT_NAME

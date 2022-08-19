@@ -15,7 +15,7 @@ OCIR_STORAGE_NAMESPACE=$3
 OCIR_REPO=$4
 
 HK_DIR=$HOME/helidon-kubernetes
-SM_DIR=$HK_DIR/service-mesh
+SM_DIR=$HK_DIR/service-mesh/linkerd
 
 if [ $CMD = set ] || [ $CMD = reset ]
 then

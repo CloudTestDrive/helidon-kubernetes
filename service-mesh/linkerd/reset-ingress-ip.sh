@@ -30,4 +30,4 @@ then
 else
   echo "Updating the service mesh ingress config to remove templated files."
 fi
-bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/service-mesh $CLUSTER_CONTEXT_NAME
+bash $HOME/helidon-kubernetes/setup/kubernetes-labs/ingressrules/reset-ingress-config.sh $HOME/helidon-kubernetes/service-mesh/linkerd $CLUSTER_CONTEXT_NAME

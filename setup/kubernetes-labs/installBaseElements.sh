@@ -141,7 +141,7 @@ echo "updating base ingress rules"
 bash $HOME/helidon-kubernetes/base-kubernetes/set-ingress-ip.sh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
 echo "updating persistence ingress rules"
 bash $HOME/helidon-kubernetes/persistence/set-ingress-ip.sh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
-echo "updating service mesh ingress rules"
-bash $HOME/helidon-kubernetes/service-mesh/set-ingress-ip.sh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
+echo "updating linkerd service mesh ingress rules"
+bash $HOME/helidon-kubernetes/service-mesh/linkerd/set-ingress-ip.sh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
 
 	
