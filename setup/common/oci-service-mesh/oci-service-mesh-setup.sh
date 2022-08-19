@@ -30,13 +30,19 @@ else
   echo Found vault
 fi
 
+SAVED_DIR=`pwd`
+cd ../vault
+
+cd $SAVED_DIR
+
+
 if [ -z $VAULT_KEY_OCID ]
 then
   echo "No vault key OCID set, have you run the vault-setup.sh script ?"
   echo "Cannot continue"
   exit 13
 else
-  echo Found vault key
+  echo "Found vault key"
 fi
 
 echo "Checking for metrics server"
