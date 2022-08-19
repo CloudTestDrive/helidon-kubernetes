@@ -72,7 +72,11 @@ cd $SAVED_DIR
 cd ../policies
 echo "Creating policy to allow dynamic group $DG_NAME so manage things in compartment $COMPARTMENT_NAME"
 POLICY_NAME="$USER_INITIALS"CertAuthorityPolicy
-POLICY_RULE="[\"Allow dynamic-group $DG_NAME to use keys in compartment $COMPARTMENT_NAME\", \"Allow dynamic-group $DG_NAME to manage objects in compartment $COMPARTMENT_NAME\"]"
+# you need to chose the rule to use
+# this is the detailed policy if you want to use least privilege
+# POLICY_RULE="[\"Allow dynamic-group $DG_NAME to use keys in compartment $COMPARTMENT_NAME\", \"Allow dynamic-group $DG_NAME to manage objects in compartment $COMPARTMENT_NAME\"]"
+# this rule is basically the simple version, less secure, but easier to understand
+POLICY_RULE="[\"Allow dynamic-group $DG_NAME to manage all-resources in compartment $COMPARTMENT_NAME\"]"
 POLICY_DESCRIPTION="Allows the cert Dg to manage things"
 bash ./policy-by-text-setup.sh "$POLICY_NAME" "$POLICY_RULE" "$POLICY_DESCRIPTION"
 cd $SAVED_DIR
