@@ -1,4 +1,6 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+
 UPDATE_FILE=$1
 OLD_TEXT=$2
 NEW_TEXT=$3

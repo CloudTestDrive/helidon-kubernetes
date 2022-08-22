@@ -13,10 +13,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -32,13 +32,13 @@ fi
 
 if [ "${!SECRET_REUSED_VAR_NAME}"  = true ] 
 then
-  echo "The secret $VAULT_SECRET_NAME was not created by this script, will not delete it"
+  echo "$SCRIPT_NAME The secret $VAULT_SECRET_NAME was not created by this script, will not delete it"
   exit 0
 fi
 
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 
 then
-  echo "The OCID of secret $VAULT_SECRET_NAME (stored in variable $VAULT_SECRET_OCID_NAME) is not in the $SETTINGS file, cannot proceed"
+  echo "$SCRIPT_NAME The OCID of secret $VAULT_SECRET_NAME (stored in variable $VAULT_SECRET_OCID_NAME) is not in the $SETTINGS file, cannot proceed"
   exit 13
 fi
 

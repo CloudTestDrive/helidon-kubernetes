@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 1 ]
 then
-  echo "The user group setup script requires one argument"
+  echo "$SCRIPT_NAME  requires one argument"
   echo "the name of the dynamic group to destroy"
   exit 1
 fi
@@ -16,10 +17,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 

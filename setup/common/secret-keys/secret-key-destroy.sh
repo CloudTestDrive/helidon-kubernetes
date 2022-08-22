@@ -1,7 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+
 if [ $# -lt 1 ]
 then
-  echo "The secret key destroy script requires one argumente:"
+  echo "$SCRIPT_NAME  requires one argument:"
   echo "the display name of the secret key to destroy"
   exit 1
 fi
@@ -15,9 +17,9 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -25,7 +27,7 @@ source $SETTINGS
 
 if [ -z "${!KEY_ID_NAME}" ]
 then
-  echo "Key named $KEY_NAME not setup by these scripts, cannot continue"
+  echo "$SCRIPT_NAME Key named $KEY_NAME not setup by these scripts, cannot continue"
   exit 0
 else
   echo "Key named $KEY_NAME setup by these scripts, deleting"

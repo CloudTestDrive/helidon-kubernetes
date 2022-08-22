@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 2 ]
 then
-  echo "The ssh-setup.sh script requires two arguments"
+  echo "$SCRIPT_NAME requires two arguments"
   echo "The directory to contain the ssh keys"
   echo "The \"base\" of the key to use e.g. id_rsa"
   exit 1
@@ -10,10 +11,10 @@ fi
 export SETTINGS=$HOME/hk8sLabsSettings
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 

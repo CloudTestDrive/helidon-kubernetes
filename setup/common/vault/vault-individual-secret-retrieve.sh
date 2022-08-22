@@ -14,10 +14,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -25,7 +25,7 @@ VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
 VAULT_SECRET_OCID_NAME="VAULT_SECRET_"$SETTINGS_NAME"_OCID"
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 
 then
-  echo "Can't locate the variable $VAULT_SECRET_OCID_NAME (or it has no value) which holds the OCID for"
+  echo "$SCRIPT_NAME Can't locate the variable $VAULT_SECRET_OCID_NAME (or it has no value) which holds the OCID for"
   echo "$VAULT_SECRET_NAME which contains the contents for setting $SETTINGS_NAME"
   exit 1
 fi
@@ -35,7 +35,7 @@ VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_O
 
 if [ -z "$VAULT_SECRET_CONTENTS" ]
 then
-  echo "Unable to retrivve contents for vault secrets $VAULT_SECRET_NAME which holds the vault for setting $SETTINGS_NAME, doce the OCID $VAULT_SECRET_OCID actually exist ?"
+  echo "$SCRIPT_NAME Unable to retrivve contents for vault secrets $VAULT_SECRET_NAME which holds the vault for setting $SETTINGS_NAME, doce the OCID $VAULT_SECRET_OCID actually exist ?"
   exit 2
 fi
 

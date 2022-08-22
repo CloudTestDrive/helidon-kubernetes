@@ -24,7 +24,7 @@ fi
 
 if [ -z $USER_OCID ]
 then
-  echo "Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script"
+  echo "$SCRIPT_NAME  Your user OCID has not been set, you need to run the user-identity-setup.sh script before you can run this script"
   exit 1
 fi
 

@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 2 ]
 then
-  echo "The dynamic setup script requires two arguments:"
+  echo "$SCRIPT_NAME requires two arguments:"
   echo "the name of the dynamic group to create"
   echo "the description of the dynamic group (which needs to be quoted)"
   echo "optionall a 3rd argument of the OCID of the compatment containing matching instance if nto COMPARTMENT_OCID will be used form the settings if present"
@@ -16,9 +17,9 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 

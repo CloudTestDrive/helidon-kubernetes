@@ -1,4 +1,4 @@
-
+#!/bin/bash -f
 SCRIPT_NAME=`basename $0`
 export CA_SETTINGS=cert-authority-settings.sh
 
@@ -17,6 +17,6 @@ bash ./vault-key-setup.sh $CERT_VAULT_KEY_NAME $CERT_VAULT_KEY_TYPE $CERT_VAULT_
 RESP=$?
 if [ $RESP -ne 0 ]
 then
-  echo "Vault-key-setup on key $CERT_VAULT_KEY_NAME returned an error, unable to continue"
+  echo "$SCRIPT_NAME Vault-key-setup on key $CERT_VAULT_KEY_NAME returned an error, unable to continue"
   exit $RESP
 fi

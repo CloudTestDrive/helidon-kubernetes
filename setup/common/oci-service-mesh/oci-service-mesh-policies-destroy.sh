@@ -1,13 +1,14 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -15,14 +16,14 @@ source $SETTINGS
 
 if [ -z "$OCI_OSOK_SERVICE_MESH_POLICIES_CONFIGURED" ]
 then
-  echo "OCI OSOK Service Mesh policies not configured, unable to proceed"
-  exit 0
+  echo "$SCRIPT_NAME OCI OSOK Service Mesh policies not configured, unable to proceed"
+  exit 1
 else
   echo "OCI OSOK Service Mesh policies configured, will remove them"
 fi
 if [ -z $USER_INITIALS ]
 then
-  echo "Your USER_INITIALS has not been set, you need to run the initials-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your USER_INITIALS has not been set, you need to run the initials-setup.sh before you can run this script"
   exit 2
 fi
 SM_POLICY_NAME=`bash oci-service-mesh-get-service-mesh-policy-name.sh $USER_INITIALS`

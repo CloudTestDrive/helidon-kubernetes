@@ -1,5 +1,7 @@
 #!/bin/bash -f
-echo "This script is a temporary fix until the OU documentation is updated, it "
+SCRIPT_NAME=`basename $0`
+
+echo "$SCRIPT_NAME is a temporary fix until the OU documentation is updated, it "
 echo "is switching to the  $HOME/helidon-kubernrtes/setup/common/oke-setup and"
 echo "Then running the oke-cluster-setup.sh script"
 

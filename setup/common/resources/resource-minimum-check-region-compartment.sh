@@ -1,4 +1,6 @@
 #!/bin/hash -f
+SCRIPT_NAME=`basename $0`
+
 # To get a list of available aervice groupings
 # oci limits service list --compartment-id $OCI_TENANCY --all
 # To get the limits for a specific servce (use the name from above)

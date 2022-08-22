@@ -1,4 +1,5 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 
 context_name=one
@@ -6,19 +7,19 @@ context_name=one
 if [ $# -gt 0 ]
 then
   context_name=$1
-  echo "Operating on context name $context_name"
+  echo "$SCRIPT_NAME Operating on context name $context_name"
 else
-  echo "Using default context name of $context_name"
+  echo "$SCRIPT_NAME Using default context name of $context_name"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings"
+    echo "$SCRIPT_NAME No existing settings"
 fi
 
 RESOURCES_AVAILABLE=true

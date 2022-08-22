@@ -13,20 +13,20 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 if [ -z "$USER_INITIALS" ]
 then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  echo "$SCRIPT_NAME Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
   exit 1
 fi
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
@@ -36,7 +36,7 @@ VAULT_KEY_REUSED_NAME=`bash vault-key-get-var-name-reused.sh $VAULT_KEY_NAME`
 VAULT_KEY_REUSED="${!VAULT_KEY_REUSED_NAME}"
 if [ -z $VAULT_OCID ]
 then
-  echo "Cannot locate OCID for the vault , unable to proceed with key of vault deletion"
+  echo "$SCRIPT_NAME Cannot locate OCID for the vault , unable to proceed with key of vault deletion"
   exit 0
 else
   echo "Locating vault endpoint" 
@@ -45,7 +45,7 @@ fi
 
 if [ -z $VAULT_KEY_REUSED ]
 then
-  echo "No reuse information for vault key, cannot safely proceed to schedule it's deletion"
+  echo "$SCRIPT_NAME No reuse information for vault key, cannot safely proceed to schedule it's deletion"
 else
   if [ $VAULT_KEY_REUSED = true ]
   then

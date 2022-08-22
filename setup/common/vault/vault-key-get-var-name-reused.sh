@@ -1,4 +1,4 @@
-#!/bin/bash -ff
+#!/bin/bash -f
 SCRIPT_NAME=`basename $0`
 if [ $# -lt 1 ]
 then

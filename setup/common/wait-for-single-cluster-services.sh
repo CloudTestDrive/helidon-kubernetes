@@ -1,13 +1,14 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 

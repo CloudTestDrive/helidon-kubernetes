@@ -11,10 +11,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings"
+    echo "$SCRIPT_NAME No existing settings"
 fi
 
 TAG_NS_REUSED_NAME=`bash ./tag-namespace-get-var-name-reused.sh $TAG_NS_NAME`

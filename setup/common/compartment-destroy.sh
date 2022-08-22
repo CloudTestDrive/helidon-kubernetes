@@ -1,12 +1,13 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -18,7 +19,7 @@ fi
 
 if [ $COMPARTMENT_REUSED = true ]
 then
-  echo "You have been using a comparment that was not created by these scripts, you will need to destroy"
+  echo "$SCRIPT_NAME You have been using a comparment that was not created by these scripts, you will need to destroy"
   echo "the compartment by hand (assuming it's empty)"
   echo "Going to remove thwe compartment settings so you can easily recreate things if you want"
   bash ./delete-from-saved-settings.sh COMPARTMENT_OCID

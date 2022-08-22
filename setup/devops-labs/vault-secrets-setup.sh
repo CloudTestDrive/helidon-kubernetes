@@ -1,26 +1,27 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 11
 fi
 
 if [ -z $VAULT_OCID ]
 then
-  echo "No vault OCID set, have you run the vault-setup.sh script ?"
+  echo "$SCRIPT_NAME No vault OCID set, have you run the vault-setup.sh script ?"
   echo "Cannot continue"
   exit 12
 else
@@ -36,7 +37,7 @@ VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
 
 if [ -z $VAULT_KEY_OCID ]
 then
-  echo "No vault key OCID set, have you run the vault-setup.sh script ?"
+  echo "$SCRIPT_NAME No vault key OCID set, have you run the vault-setup.sh script ?"
   echo "Cannot continue"
   exit 13
 else

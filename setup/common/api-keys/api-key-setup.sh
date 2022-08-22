@@ -1,8 +1,10 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+
 export SETTINGS=$HOME/hk8sLabsSettings
 if [ $# -lt 2 ]
 then
-  echo "The upload-api-key.sh script requires two arguments, the tracking name for the key (e.g. devops or"
+  echo "$SCRIPT_NAME requires two arguments, the tracking name for the key (e.g. devops or"
   echo "capi) and then file name of the public key to upload, this must be in PEM format."
   exit 1
 fi
@@ -11,30 +13,30 @@ PUBLIC_KEY_FILE=$2
 
 if [ -f $PUBLIC_KEY_FILE ]
 then
-  echo "Located public key file"
+  echo "$SCRIPT_NAME Located public key file"
 else 
-  echo "Unable to locate $PUBLIC_KEY_FILE, cannot continue"
+  echo "$SCRIPT_NAME Unable to locate $PUBLIC_KEY_FILE, cannot continue"
   exit 4
 fi
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $USER_OCID ]
 then
-  echo 'No user ocid, unable to continue - have you run the user-identity-setup.sh script ?'
+  echo "$SCRIPT_NAME No user ocid, unable to continue - have you run the user-identity-setup.sh script ?"
   exit 1
 fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  echo "$SCRIPT_NAME Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
   exit 1
 fi
 

@@ -1,14 +1,15 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -19,7 +20,7 @@ fi
 
 if [ -z $USER_OCID ]
 then
-  echo 'No user ocid, unable to continue - have you run the user-identity-setup.sh script ?'
+  echo "$SCRIPT_NAME  No user ocid, unable to continue - have you run the user-identity-setup.sh script ?"
   exit 1
 fi
 

@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 1 ]
 then
-  echo "The policy delete script requires one argument"
+  echo "$SCRIPT_NAME requires one argument"
   echo "the name of the policy to destroy"
   exit 1
 fi
@@ -16,10 +17,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -29,19 +30,19 @@ source $SETTINGS
 
 if [ -z "${!POLICY_REUSED_NAME}" ]
 then
-  echo "No reuse information, cannot safely proceed with delete of policy $POLICY_NAME"
+  echo "$SCRIPT_NAME No reuse information, cannot safely proceed with delete of policy $POLICY_NAME"
   exit 0
 fi
 
 if [ "${!POLICY_REUSED_NAME}" = true ]
 then
-  echo "Cannot delete a policy ( $POLICY_NAME ) not created by these scripts"
+  echo "$SCRIPT_NAME Cannot delete a policy ( $POLICY_NAME ) not created by these scripts"
   exit 0
 fi
 
 if [ -z "${!POLICY_OCID_NAME}" ]
 then
-  echo "No OCID information for policy namnes $POLICY_NAME, perhaps it's already been deleted ? cannot proceed"
+  echo "$SCRIPT_NAME No OCID information for policy namnes $POLICY_NAME, perhaps it's already been deleted ? cannot proceed"
   exit 0
 fi
 

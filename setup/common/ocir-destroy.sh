@@ -1,19 +1,20 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
 if [ -z $OCIR_STOCKMANAGER_REUSED ]
 then
-  echo "No reuse information for OCIR stockmanager repo, cannot safely continue, you will have to destroy it manually"
+  echo "$SCRIPT_NAME No reuse information for OCIR stockmanager repo, cannot safely continue, you will have to destroy it manually"
 else
   if [ $OCIR_STOCKMANAGER_REUSED = true ]
   then
@@ -31,7 +32,7 @@ fi
 
 if [ -z $OCIR_LOGGER_REUSED ]
 then
-  echo "No reuse information for OCIR logger repo, cannot safely continue, you will have to destroy it manually"
+  echo "$SCRIPT_NAME No reuse information for OCIR logger repo, cannot safely continue, you will have to destroy it manually"
 else
   if [ $OCIR_LOGGER_REUSED = true ]
   then
@@ -48,7 +49,7 @@ fi
 
 if [ -z $OCIR_STOREFRONT_REUSED ]
 then
-  echo "No reuse information for OCIR storefront repo, cannot safely continue, you will have to destroy it manually"
+  echo "$SCRIPT_NAME No reuse information for OCIR storefront repo, cannot safely continue, you will have to destroy it manually"
 else
   if [ $OCIR_STOREFRONT_REUSED = true ]
   then

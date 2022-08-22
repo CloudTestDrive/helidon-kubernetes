@@ -1,4 +1,6 @@
 #!/bin/hash -f
+SCRIPT_NAME=`basename $0`
+
 # To get a list of available aervice groupings
 # oci limits service list --compartment-id $OCI_TENANCY --all
 # To get the limits for a specific servce (use the name from above)
@@ -11,7 +13,7 @@
 
 if [ $# -lt 4 ]
 then
-  echo 'Missing arguments, this script requires arguments in the following order'
+  echo '$SCRIPT_NAME requires arguments in the following order'
   echo 'the OCID of the compartment (or tenancy) to do a resource check on'
   echo 'The service name (e.g. compute)'
   echo 'The limit name e.g. standard-e4-core-count'

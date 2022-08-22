@@ -26,7 +26,7 @@ bash ./operator-lifecycle-manager-setup.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Error installing lifecycle manager, cannot continue"
+  echo "$SCRIPT_NAME  Error installing lifecycle manager, cannot continue"
   exit $RESP
 fi
 

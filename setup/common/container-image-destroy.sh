@@ -1,14 +1,15 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -19,7 +20,7 @@ OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
 echo "Removing stockmanager images"
 if [ -z $OCIR_STOCKMANAGER_OCID ]
 then
-  echo "No OCIR id found for stockmanager repo, can't locate any images it may contain"
+  echo "$SCRIPT_NAME No OCIR id found for stockmanager repo, can't locate any images it may contain"
 else
 
   echo "Located stockmanager repo OCID"
@@ -59,7 +60,7 @@ fi
 echo "Removing logger images"
 if [ -z $OCIR_LOGGER_OCID ]
 then
-  echo "No OCIR id found for logger repo, can't locate any images it may contain"
+  echo "$SCRIPT_NAME No OCIR id found for logger repo, can't locate any images it may contain"
 else
 
   echo "Located logger repo OCID"
@@ -87,7 +88,7 @@ fi
 echo "Removing storefront images"
 if [ -z $OCIR_STOREFRONT_OCID ]
 then
-  echo 'No OCIR id found for storefront repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR id found for storefront repo have you run the ocir-setup.sh script ?"
 else
   echo "Located stockmanager repo OCID"
   OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`

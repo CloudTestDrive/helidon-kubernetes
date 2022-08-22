@@ -2,7 +2,7 @@
 SCRIPT_NAME=`basename $0`
 if [ $# -lt 4 ]
 then
-  echo "SCRIPT_NAME missing required arguments"
+  echo "$CRIPT_NAME missing required arguments"
   echo "  1st arg Name of the source file to modify - can be relative to the current directory or absolute"
   echo "  2nd ard Name of the destination file - can be relative to the current directory or absolute"
   echo "  3rd arg origional text to substitute"

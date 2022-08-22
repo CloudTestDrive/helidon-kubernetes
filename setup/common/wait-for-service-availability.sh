@@ -1,12 +1,13 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Settings file $SETTINGS located"
+    echo "$SCRIPT_NAME Settings file $SETTINGS located"
   else 
-    echo "No settings file cannot continue"
+    echo "$SCRIPT_NAME No settings file cannot continue"
     exit 10
 fi
 

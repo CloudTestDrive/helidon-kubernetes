@@ -28,7 +28,7 @@ if [ -f $OPERATOR_SETTINGS_FILE ]
     echo "Loading operator settings"
     source $OPERATOR_SETTINGS_FILE
   else 
-    echo "No operator settings file( $OPERATOR_SETTINGS_FILE) cannot continue"
+    echo "$SCRIPT_NAME  No operator settings file( $OPERATOR_SETTINGS_FILE) cannot continue"
     exit 11
 fi
 

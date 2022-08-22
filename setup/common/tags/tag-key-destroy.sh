@@ -13,10 +13,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings"
+    echo "$SCRIPT_NAME No existing settings"
 fi
 echo "Destroying the tag-key can take a long time, potentially up to 48 hours during"
 echo "which time you will not be able to re-create a new tag-key with the same name."

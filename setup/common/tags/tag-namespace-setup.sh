@@ -13,10 +13,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings"
+    echo "$SCRIPT_NAME No existing settings"
 fi
 
 if [ $# -ge 2 ]
@@ -26,7 +26,7 @@ then
 else
   if [ -z "$COMPARTMENT_OCID" ]
   then
-    echo "You need to provide a compartment to create the tag namespace in, COMPARTMENT_OCID is not set, have you run the compartment-setup script ?"
+    echo "$SCRIPT_NAME You need to provide a compartment to create the tag namespace in, COMPARTMENT_OCID is not set, have you run the compartment-setup script ?"
     exit 1 ;
   else
     TAG_NS_COMPARTMENT_OCID="$COMPARTMENT_OCID"

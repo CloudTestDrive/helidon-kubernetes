@@ -23,19 +23,19 @@ fi
 
 if [ -z $OCIR_STOCKMANAGER_OCID ]
 then
-  echo 'No OCIR id found for stockmanager repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR id found for stockmanager repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 
 if [ -z $OCIR_LOGGER_OCID ]
 then
-  echo 'No OCIR id found for logger repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR id found for logger repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 
 if [ -z $OCIR_STOREFRONT_OCID ]
 then
-  echo 'No OCIR id found for storefront repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR id found for storefront repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 

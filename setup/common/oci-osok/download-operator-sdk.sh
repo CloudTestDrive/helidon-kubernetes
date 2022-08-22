@@ -1,14 +1,15 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 OPERATOR_SETTINGS_FILE=./operator-settings.sh
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings"
+    echo "$SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
-    echo "No existing settings, cannot continue"
+    echo "$SCRIPT_NAME No existing settings, cannot continue"
     exit 10
 fi
 
@@ -17,7 +18,7 @@ if [ -f $OPERATOR_SETTINGS_FILE ]
     echo "Loading operator settings"
     source $OPERATOR_SETTINGS_FILE
   else 
-    echo "No operator settings file( $OPERATOR_SETTINGS_FILE) cannot continue"
+    echo "$SCRIPT_NAME No operator settings file( $OPERATOR_SETTINGS_FILE) cannot continue"
     exit 11
 fi
 
@@ -30,7 +31,7 @@ if [ -z "$OPERATOR_SDK_REUSED" ]
 then
   echo "operator-sdk command not installed by this script, proceeding"
 else
-  echo "operator-sdk command already installed by this script, exiting"
+  echo "$SCRIPT_NAME  operator-sdk command already installed by this script, exiting"
   exit 0
 fi
 

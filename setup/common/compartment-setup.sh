@@ -1,4 +1,5 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -7,10 +8,10 @@ COMPARTMENT_NAME=CTDOKE
 
 if [ -f "$SETTINGS" ]
   then
-    echo "Loading existing settings"
+    echo "$SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
-    echo "No existing settings, using defaults"
+    echo "$SCRIPT_NAME No existing settings, using defaults"
 fi
 
 if [ -z "$AUTO_CONFIRM" ]
@@ -22,7 +23,7 @@ if [ -z "$COMPARTMENT_REUSED" ]
 then
   echo "No reuse information for compartment"
 else
-  echo "This script has already configured compartment details, and this information will be reused"
+  echo "$SCRIPT_NAME  has already configured compartment details, and this information will be reused"
   echo "Use the compartment-destroy.sh script to reset this"
   exit 0
 fi

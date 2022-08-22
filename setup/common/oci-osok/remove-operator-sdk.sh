@@ -1,4 +1,5 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -18,7 +19,7 @@ if [ -f $OPERATOR_SETTINGS_FILE ]
     echo "Loading operator settings"
     source $OPERATOR_SETTINGS_FILE
   else 
-    echo "No operator settings file( $OPERATOR_SETTINGS_FILE ) cannot continue"
+    echo "$SCRIPT_NAME  No operator settings file( $OPERATOR_SETTINGS_FILE ) cannot continue"
     exit 11
 fi
 
@@ -29,7 +30,7 @@ fi
 
 if [ -z "$OPERATOR_SDK_REUSED" ]
 then
-  echo "no operator reuse information, cannot proceed"
+  echo "$SCRIPT_NAME  no operator reuse information, cannot proceed"
   exit 0
 else
   echo "reuse info for operator found, proceeding"

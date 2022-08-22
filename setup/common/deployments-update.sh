@@ -1,6 +1,8 @@
 #!/bin/bash
+SCRIPT_NAME=`basename $0`
+
 display_usage () {
-    echo "Missing arguments, you must provide these arguments in order :"
+    echo "$SCRIPT_NAME Missing arguments, you must provide these arguments in order :"
     echo "Operation to be performed this is one of set or reset"
     echo "Location of the template yaml file (withouth the .yaml)"
     echo "If the operation is set then you must also provide"

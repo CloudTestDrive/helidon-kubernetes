@@ -1,8 +1,10 @@
 #!/bin/bash -f
 
+SCRIPT_NAME=`basename $0`
+
 if [ $# -lt 3 ]
 then
-  echo "The dynamic setup script requires three arguments:"
+  echo "$SCRIPT_NAME requires three arguments:"
   echo "the rule of the dynamic group to create"
   echo "the resource type of the dynamic group e.g. devopsbuildpipeline"
   echo "the description of the dynamic group (which needs to be quoted)"
@@ -20,9 +22,9 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 

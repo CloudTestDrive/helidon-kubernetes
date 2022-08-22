@@ -26,7 +26,7 @@ bash ./osok-bundle-destroy.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Error uninstalling Oracle Service Operator for Kubernetes, cannot continue"
+  echo "$SCRIPT_NAME  Error uninstalling Oracle Service Operator for Kubernetes, cannot continue"
   exit $RESP
 fi
 bash ./operator-lifecycle-manager-destroy.sh $CLUSTER_CONTEXT_NAME

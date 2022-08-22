@@ -1,13 +1,14 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -19,7 +20,7 @@ then
   export AUTO_CONFIRM=false
 fi
 
-echo "This script will run the required commands to destroy the container images setup for the lab"
+echo "$SCRIPT_NAME  will run the required commands to destroy the container images setup for the lab"
 echo "It will only destroy repositories and tokens created by these scripts, if you reused an existing resource"
 echo "then those resources will not be destroyed, and neither will the compartment containing them"
 if [ "$AUTO_CONFIRM" = true ]

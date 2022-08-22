@@ -1,4 +1,5 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 bash ./vault-key-destroy.sh RSA
 RESP=$?

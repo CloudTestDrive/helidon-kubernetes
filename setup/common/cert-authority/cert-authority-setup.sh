@@ -22,14 +22,14 @@ if [ -f $CA_SETTINGS ]
 fi
 if [ -z $USER_INITIALS ]
 then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
+  echo "$SCRIPT_NAME Your initials have not been set, you need to run the initials-setup.sh script before you can run thie script"
   exit 1
 fi
 
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -37,7 +37,7 @@ if [ -z "$CERT_AUTHORITY_REUSED" ]
 then
   echo "No certificate authority reuse information found, continuing"
 else
-  echo "the certificate authority has already been setup using these scripts, existing"
+  echo "$SCRIPT_NAME the certificate authority has already been setup using these scripts, existing"
   exit 0
 fi
 

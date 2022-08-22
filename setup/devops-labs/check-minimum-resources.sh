@@ -1,19 +1,21 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
+
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot contiue"
+    echo "$SCRIPT_NAME No existing settings cannot contiue"
     exit 10
 fi
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -22,7 +24,7 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 if [ -z $COMPARTMENT_NAME ]
 then
-  echo "The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have provided the correct value in the first param"
+  echo "$SCRIPT_NAME The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have provided the correct value in the first param"
   exit 99
 fi
 

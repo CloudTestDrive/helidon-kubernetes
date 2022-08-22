@@ -1,7 +1,8 @@
 #!/bin/bash
+SCRIPT_NAME=`basename $0`
 if [ $# -lt 4 ]
   then
-    echo "Missing arguments, you must provide these arguments in order :"
+    echo "$SCRIPT_NAME Missing arguments, you must provide these arguments in order :"
     echo "Operation to be performed this is one of set or reset"
     echo "Name of the OCIR host e.g. fra.ocir.io"
     echo "Name of the object storage namespace - this is a set of random letters and numbers usually"

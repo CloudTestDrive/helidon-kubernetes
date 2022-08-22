@@ -1,10 +1,11 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings"
+    echo "$SCRIPT_NAME Loading existing settings"
     source $SETTINGS
   else 
     echo "No existing settings, using defaults"
@@ -12,7 +13,7 @@ fi
 
 if [ -z $USER_OCID ]
   then
-    echo "No existing user info, retrieving"
+    echo "$SCRIPT_NAME No existing user info, retrieving"
   else
     USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'` 
     echo "User OCID is already set to and maps to $USERNAME, this information will be reused."

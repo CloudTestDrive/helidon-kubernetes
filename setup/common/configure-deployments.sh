@@ -1,43 +1,44 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
 echo "Use this script if the deployments are out of sync with the repo locations - for example you've reset the scripts file structure"
 if [ -z $OCIR_STOCKMANAGER_LOCATION ]
 then
-  echo 'No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 if [ -z $OCIR_LOGGER_LOCATION ]
 then
-  echo 'No OCIR location found for logger repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR location found for logger repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 
 if [ -z $OCIR_STOREFRONT_LOCATION ]
 then
-  echo 'No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR location found for stockmanager repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 if [ -z $OCIR_STOCKMANAGER_OCID ]
 then
-  echo 'No OCIR ocid found for stockmanager repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR ocid found for stockmanager repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 
 if [ -z $OCIR_STOREFRONT_OCID ]
 then
-  echo 'No OCIR ocid found for storefront repo have you run the ocir-setup.sh script ?'
+  echo "$SCRIPT_NAME No OCIR ocid found for storefront repo have you run the ocir-setup.sh script ?"
   exit 1
 fi
 

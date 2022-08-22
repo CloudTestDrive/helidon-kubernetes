@@ -1,8 +1,9 @@
 #!/bin/bash -f
+SCRIPT_NAME=`basename $0`
 
 if [ $# -lt 3 ]
 then
-  echo "The policy setup script requires three arguments:"
+  echo "$SCRIPT_NAME requires three arguments:"
   echo "the name of the policy to create"
   echo "the policy text - this should be quoted as it's mutiple words"
   echo "the description of the dynamic group (which needs to be quoted if it's multiple words)"
@@ -20,10 +21,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -31,7 +32,7 @@ source $SETTINGS
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -42,7 +43,7 @@ if [ -z "${!POLICY_REUSED_NAME}" ]
 then
   echo "No reuse info for policy $POLICY_NAME"
 else
-  echo "This script has already setup the policy $POLICY_NAME"
+  echo "$SCRIPT_NAME  has already setup the policy $POLICY_NAME"
   exit 0
 fi
 
