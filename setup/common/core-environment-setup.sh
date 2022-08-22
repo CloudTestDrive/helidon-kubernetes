@@ -24,7 +24,7 @@ if [ -z "$SETUP_REGION" ]
 then
   echo "No existing setup region info, proceeding"
 else
-  if [ "$SETUP_REGION" = "$OCI_REGION"]
+  if [ "$SETUP_REGION" = "$OCI_REGION" ]
   then
     echo "Setup previously run in this region"
   else
