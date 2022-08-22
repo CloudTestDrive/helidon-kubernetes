@@ -30,8 +30,9 @@ fi
 
 if [ -z "$PROVIDED_AUTH_TOKEN" ]
 then
-  echo "Using provided auth token"
+  echo "Attempting to use saved auth token"
 else
+  echo "Using provided auth token"
   AUTH_TOKEN="$PROVIDED_AUTH_TOKEN"
 fi
 if [ -z $AUTH_TOKEN ]
