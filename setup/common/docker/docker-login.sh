@@ -49,7 +49,7 @@ fi
 
 
 LOG_IN_COUNT_NAME=`bash ./docker-login-get-var-name.sh $OCIR_HOST_NAME`
-LOG_IN_COUNT="${!$LOG_IN_COUNT_NAME}"
+LOG_IN_COUNT="${!LOG_IN_COUNT_NAME}"
 if [ -z "$LOG_IN_COUNT" ]
 then
   echo "No existing login found for OCIR $OCIR_HOST_NAME , nothing to log out of"
