@@ -93,13 +93,3 @@ else
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_REUSED
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
 fi
-
-echo "You are still logged into docker for OCIR services on the stockmanager in $OCIR_STOCKMANAGER_LOCATION"
-echo "If you with to logout from that execute the command"
-echo "docker logout $OCIR_STOCKMANAGER_LOCATION"
-
-echo "You are still logged into docker for OCIR services on the storefront in $OCIR_STOREFRONT_LOCATION"
-echo "If you with to logout from that execute the command"
-echo "docker logout $OCIR_STOREFRONT_LOCATION"
-
-echo "If both locations are the same you only need to do this once"
