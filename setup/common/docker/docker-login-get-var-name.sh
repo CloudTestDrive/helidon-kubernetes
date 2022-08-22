@@ -1,5 +1,5 @@
 #!/bin/bash -f
-if [ $# -lt 2 ]
+if [ $# -eq 0 ]
 then
   SCRIPT_NAME=`basename $0`
   echo "$SCRIPT_NAME requires arguments :"

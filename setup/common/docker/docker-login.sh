@@ -5,10 +5,18 @@ if [ $# -eq 0 ]
 then
   echo "$SCRIPT_NAME requires arguments :"
   echo "  1st arg name of the OCIR Host to log into e.g. lhr.ocir.io"
+  echo "Optional"
+  echo "  2nd arg the auth token to use for the login - make sure this is quoted when you call this script or the shall may do horrible things"
   exit 1
 fi
 OCIR_HOST_NAME=$1
 
+if [ $# -gt 1 ]
+then
+  PROVIDED_AUTH_TOKEN="$2"
+else
+  unset PROVIDED_AUTH_TOKEN
+fi
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -20,6 +28,18 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$PROVIDED_AUTH_TOKEN" ]
+then
+  echo "Using provided auth token"
+else
+  AUTH_TOKEN="$PROVIDED_AUTH_TOKEN"
+fi
+if [ -z $AUTH_TOKEN ]
+then
+  echo "$SCRIPT_NAME Your auth token has not been set, you need to provide it as the 2nd argument to this script or run the auth-token-setup.sh script and save the token before you can run this script"
+  exit 1
+fi
+echo "Checking for logins to $OCIR_HOST_NAME"
 LOG_IN_COUNT_NAME=`bash ./docker-login-get-var-name.sh $OCIR_HOST_NAME`
 LOG_IN_COUNT="${!LOG_IN_COUNT_NAME}"
 if [ -z "$LOG_IN_COUNT" ]
@@ -28,7 +48,7 @@ then
 fi
 if [ "$LOG_IN_COUNT" = 0 ]
 then
-  echo "No existing login found for OCIR $OCIR_HOST_NAME and service $LOGIN_REASON_NAME proceeding"
+  echo "No existing login found for OCIR $OCIR_HOST_NAME , proceeding"
 else
   echo "Already logged into OCIR $OCIR_HOST_NAME $LOG_IN_COUNT times, updating count"
   let "LOG_IN_COUNT = $LOG_IN_COUNT + 1"
