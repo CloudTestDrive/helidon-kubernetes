@@ -30,7 +30,7 @@ else
   echo "Logging out of docker for stockmanager repo $OCIR_STOCKMANAGER_LOCATION"
     SAVED_DIR=`pwd`
     cd docker
-    bash ./docker-logout $OCIR_STOCKMANAGER_LOCATION
+    bash ./docker-logout.sh $OCIR_STOCKMANAGER_LOCATION
     cd $SAVED_DIR
   fi
   echo "Removing storefront repo saved values from $SETTINGS"
@@ -58,7 +58,7 @@ else
   echo "Logging out of docker for logger repo $OCIR_LOGGER_LOCATION"
     SAVED_DIR=`pwd`
     cd docker
-    bash ./docker-logout $OCIR_LOGGER_LOCATION
+    bash ./docker-logout.sh $OCIR_LOGGER_LOCATION
     cd $SAVED_DIR
   fi
   echo "Removing logger repo saved values from $SETTINGS"
@@ -85,7 +85,7 @@ else
   echo "Logging out of docker for storefront repo $OCIR_STOREFRONT_LOCATION"
     SAVED_DIR=`pwd`
     cd docker
-    bash ./docker-logout $OCIR_STOREFRONT_LOCATION
+    bash ./docker-logout.sh $OCIR_STOREFRONT_LOCATION
     cd $SAVED_DIR
   fi
     echo "Removing storefront repo saved values from $SETTINGS"
