@@ -228,21 +228,21 @@ SAVED_DIR=`pwd`
 cd docker
 
 FINAL_RESP=0
-bash ./docker-login.sh $OCIR_STOCKMANAGER_LOCATION
+bash ./docker-login.sh $OCIR_STOCKMANAGER_LOCATION "$AUTH_TOKEN"
 RESP=$?
 if [ $RESP -ne 0 ]
 then
   echo "docker login to $OCIR_STOCKMANAGER_LOCATION returned error $RESP"
   FINAL_RESP=$RESP
 fi
-bash ./docker-login.sh $OCIR_LOGGER_LOCATION
+bash ./docker-login.sh $OCIR_LOGGER_LOCATION "$AUTH_TOKEN"
 RESP=$?
 if [ $RESP -ne 0 ]
 then
   echo "docker login to $OCIR_LOGGER_LOCATION returned error $RESP"
   FINAL_RESP=$RESP
 fi
-bash ./docker-login.sh $OCIR_STOREFRONT_LOCATION
+bash ./docker-login.sh $OCIR_STOREFRONT_LOCATION "$AUTH_TOKEN"
 RESP=$?
 if [ $RESP -ne 0 ]
 then
