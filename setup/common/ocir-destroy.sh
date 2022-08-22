@@ -23,10 +23,20 @@ else
     echo "Destroying repo"
     oci artifacts container repository delete --repository-id $OCIR_STOCKMANAGER_OCID --force
   fi
-    echo "Removing storefront repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_OCID
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
+  if [ -z "$OCIR_STOCKMANAGER_LOCATION" ]
+  then
+    echo "No OCIR info for stockmanager, cannot do a docker logout"
+  else
+  echo "Logging out of docker for stockmanager repo $OCIR_STOCKMANAGER_LOCATION"
+    SAVED_DIR=`pwd`
+    cd docker
+    bash ./docker-logout $OCIR_STOCKMANAGER_LOCATION
+    cd $SAVED_DIR
+  fi
+  echo "Removing storefront repo saved values from $SETTINGS"
+  bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_OCID
+  bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_REUSED
+  bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
 fi
 
 
@@ -41,10 +51,20 @@ else
     echo "Destroying repo"
     oci artifacts container repository delete --repository-id $OCIR_LOGGER_OCID --force
   fi
-    echo "Removing logger repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_OCID
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
+  if [ -z "$OCIR_LOGGER_LOCATION" ]
+  then
+    echo "No OCIR info for logger, cannot do a docker logout"
+  else
+  echo "Logging out of docker for logger repo $OCIR_LOGGER_LOCATION"
+    SAVED_DIR=`pwd`
+    cd docker
+    bash ./docker-logout $OCIR_LOGGER_LOCATION
+    cd $SAVED_DIR
+  fi
+  echo "Removing logger repo saved values from $SETTINGS"
+  bash ./delete-from-saved-settings.sh OCIR_LOGGER_OCID
+  bash ./delete-from-saved-settings.sh OCIR_LOGGER_REUSED
+  bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
 fi
 
 if [ -z $OCIR_STOREFRONT_REUSED ]
@@ -57,6 +77,16 @@ else
   else 
     echo "Destroying repo"
     oci artifacts container repository delete --repository-id $OCIR_STOREFRONT_OCID --force
+  fi
+  if [ -z "$OCIR_LOGGER_LOCATION" ]
+  then
+    echo "No OCIR info for stockmanager, cannot do a docker logout"
+  else
+  echo "Logging out of docker for storefront repo $OCIR_STOREFRONT_LOCATION"
+    SAVED_DIR=`pwd`
+    cd docker
+    bash ./docker-logout $OCIR_STOREFRONT_LOCATION
+    cd $SAVED_DIR
   fi
     echo "Removing storefront repo saved values from $SETTINGS"
     bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_OCID

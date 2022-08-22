@@ -224,75 +224,33 @@ else
   echo "OCI Repo for storefront has already been setup by this script, you can remove it and other repos using the ocir-delete.sh script, that will also remove any existing images"
 fi
 
+SAVED_DIR=`pwd`
+cd docker
 
-MAX_LOGIN_ATTEMPTS=12
-DOCKER_LOGIN_FAILED_SLEEP_TIME=10
-echo "About to docker login for stockmanager repo to $OCIR_STOCKMANAGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
-echo "Please ignore warnings about insecure password storage"
-echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
-for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
-do
-  echo -n $AUTH_TOKEN | docker login $OCIR_STOCKMANAGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-  RESP=$?
-  echo "Docker Login resp is $RESP"
-  if [ $RESP = 0 ]
-  then
-    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
-    break ;
-  else
-    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
-    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
-  fi
-  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
-  then
-    echo "Unable to complete docker login after 12 attempts, cannot continue"
-    exit 10
-  fi
-done
-
-echo "About to docker login for logger repo to $OCIR_LOGGER_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
-echo "Please ignore warnings about insecure password storage"
-echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
-for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
-do
-  echo -n $AUTH_TOKEN | docker login $OCIR_LOGGER_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-  RESP=$?
-  echo "Docker Login resp is $RESP"
-  if [ $RESP = 0 ]
-  then
-    echo "docker login to $OCIR_LOGGER_LOCATION suceeded on attempt $i, continuing"
-    break ;
-  else
-    echo "docker login to $OCIR_LOGGER_LOCATION failed on attempt $i, retrying after pause"
-    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
-  fi
-  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
-  then
-    echo "Unable to complete docker login after 12 attempts, cannot continue"
-    exit 10
-  fi
-done
-
-echo "About to docker login for storefront repo to $OCIR_STOREFRONT_LOCATION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
-echo "Please ignore warnings about insecure password storage"
-echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
-for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
-do
-  echo -n $AUTH_TOKEN | docker login $OCIR_STOREFRONT_LOCATION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-  RESP=$?
-  echo "Docker Login resp is $RESP"
-  if [ $RESP = 0 ]
-  then
-    echo "docker login to $OCIR_STOCKMANAGER_LOCATION suceeded on attempt $i, continuing"
-    break ;
-  else
-    echo "docker login to $OCIR_STOCKMANAGER_LOCATION failed on attempt $i, retrying after pause"
-    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
-  fi
-  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
-  then
-    echo "Unable to complete docker login after 12 attempts, cannot continue"
-    exit 10
-  fi
-done
-
+FINAL_RESP=0
+bash ./docker-login.sh $OCIR_STOCKMANAGER_LOCATION
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "docker login to $OCIR_STOCKMANAGER_LOCATION returned error $RESP"
+  FINAL_RESP=$RESP
+fi
+bash ./docker-login.sh $OCIR_LOGGER_LOCATION
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "docker login to $OCIR_LOGGER_LOCATION returned error $RESP"
+  FINAL_RESP=$RESP
+fi
+bash ./docker-login.sh $OCIR_STOREFRONT_LOCATION
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "docker login to $OCIR_STOREFRONT_LOCATION returned error $RESP"
+  FINAL_RESP=$RESP
+fi
+if [ "$FINAL_RESP" -ne 0 ]
+then
+  echo "Error in docker logins, stopping"
+  exit $FINAL_RESP
+fi
