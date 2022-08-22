@@ -8,4 +8,4 @@ then
 fi
 OCIR_HOST_NAME=$1
 
-echo `bash ../settings/to-valid-name.sh "DOCKER_LOGIN_COUNT_""$OCIR_HOST_NAME"
+echo `bash ../settings/to-valid-name.sh "DOCKER_LOGIN_COUNT_""$OCIR_HOST_NAME"`
