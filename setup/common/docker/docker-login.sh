@@ -69,7 +69,7 @@ echo "Please ignore warnings about insecure password storage"
 echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
 for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
 do
-  echo -n $AUTH_TOKEN | docker login $OCIR_HOST_NAME --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
+  echo -n "$AUTH_TOKEN" | docker login $OCIR_HOST_NAME --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
   RESP=$?
   echo "Docker Login resp is $RESP"
   if [ $RESP = 0 ]
