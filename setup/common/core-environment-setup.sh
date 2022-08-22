@@ -1,5 +1,15 @@
 #!/bin/bash -f
 
+export SETTINGS=$HOME/hk8sLabsSettings
+
+
+if [ -f $SETTINGS ]
+  then
+    echo "Loading existing settings information"
+    source $SETTINGS
+  else 
+    echo "No existing settings"
+fi
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -8,6 +18,22 @@ fi
 if [ -z "$PARALLEL_SETUP" ]
 then
   export PARALLEL_SETUP=false
+fi
+
+if [ -z "$SETUP_REGION" ]
+then
+  echo "No existing setup region info, proceeding"
+else
+  if [ "$SETUP_REGION" = "$OCI_REGION"]
+  then
+    echo "Setup previously run in this region"
+  else
+    echo "You are running the setup scripts in a different region ( $OCI_REGION ) from"
+    echo "the region therty were priviously run in ( $SETUP_REGION ). This may cause lots"
+    echo "of conflicts with locations of images and other resources so is not supported and"
+    echo "this script will exit"
+    exit 100
+  fi
 fi
 
 echo "This script will run the required commands to setup your core environment"
@@ -46,10 +72,11 @@ then
 else
   echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
 fi
-
-export SETTINGS=$HOME/hk8sLabsSettings
-
-echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
+# save the region if we haven't already done so
+if [ -z "$SETUP_REGION" ]
+then
+  echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
+fi
 bash initials-setup.sh
 RESP=$?
 if [ $RESP -ne 0 ]
