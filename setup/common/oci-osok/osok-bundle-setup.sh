@@ -71,34 +71,10 @@ else
   echo "Using the saved auth token for the docker login"
 fi
 
-
-OCI_USERNAME=`oci iam user get --user-id $USER_OCID | jq -j '.data.name'`
-
-OBJECT_STORAGE_NAMESPACE=`oci os ns get | jq -j '.data'`
-MAX_LOGIN_ATTEMPTS=12
-DOCKER_LOGIN_FAILED_SLEEP_TIME=10
-echo "About to docker login for operator bundle repo to $OPERATOR_BUNDLE_OCIR_REGION and object storage namespace $OBJECT_STORAGE_NAMESPACE with username $OCI_USERNAME using your auth token as the password"
-echo "Please ignore warnings about insecure password storage"
-echo "It can take a short while for a new auth token to be propogated to the OCIR service, so if the docker login fails do not be alarmed the script will retry after a short delay."
-for i in  `seq 1 $MAX_LOGIN_ATTEMPTS` 
-do
-  echo -n $AUTH_TOKEN | docker login $OPERATOR_BUNDLE_OCIR_REGION --username=$OBJECT_STORAGE_NAMESPACE/$OCI_USERNAME --password-stdin
-  RESP=$?
-  echo "Docker Login resp is $RESP"
-  if [ $RESP = 0 ]
-  then
-    echo "docker login to $OPERATOR_BUNDLE_OCIR_REGION suceeded on attempt $i, continuing"
-    break ;
-  else
-    echo "docker login to $OPERATOR_BUNDLE_OCIR_REGION failed on attempt $i, retrying after pause"
-    sleep $DOCKER_LOGIN_FAILED_SLEEP_TIME
-  fi
-  if [ $i -eq $MAX_LOGIN_ATTEMPTS ]
-  then
-    echo "Unable to complete docker login after 12 attempts, cannot continue"
-    exit 10
-  fi
-done
+SAVED_DIR=`pwd`
+cd ../docker
+bash docker-login.sh $OPERATOR_BUNDLE_OCIR_REGION
+cd $SAVED_DIR
 
 echo "Temporary fix copying kubeconfig"
 KCONF=$HOME/.kube/config

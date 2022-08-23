@@ -72,4 +72,9 @@ kubectl delete ns oci-service-operator-system --context $CLUSTER_CONTEXT_NAME
 rm $TMP_KCONF
 unset KUBECONFIG
 
+SAVED_DIR=`pwd`
+cd ../docker
+bash docker-logout.sh $OPERATOR_BUNDLE_OCIR_REGION
+cd $SAVED_DIR
+
 bash ../delete-from-saved-settings.sh  "$OSOK_REUSED_NAME"
