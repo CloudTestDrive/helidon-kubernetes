@@ -92,6 +92,8 @@ then
       rmdir $TF_GIT_BASE
     fi
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
+    KUBERNETES_VERSION_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_VERSION_"$CLUSTER_CONTEXT_NAME`
+    bash ../delete-from-saved-settings.sh $KUBERNETES_VERSION_NAME
     bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ../delete-from-saved-settings.sh $OKE_OCID_NAME
     bash ../delete-from-saved-settings.sh $OKE_REUSED_NAME

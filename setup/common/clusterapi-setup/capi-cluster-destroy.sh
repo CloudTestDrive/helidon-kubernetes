@@ -201,6 +201,8 @@ else
   echo "Cannot locate cluster network file $CLUSTER_NETWORK_FILE unable to clean it up"
 fi
 KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CAPI_CONTEXT_NAME`
-bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
-bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_REUSED_NAME
-bash ../delete-from-saved-settings.sh $CAPI_CLUSTER_NAMESPACE_REUSED_NAME
+KUBERNETES_VERSION_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_VERSION_"$CLUSTER_CONTEXT_NAME`
+bash ../delete-from-saved-settings.sh "$KUBERNETES_VERSION_NAME"
+bash ../delete-from-saved-settings.sh "$KUBERNETES_CLUSTER_TYPE_NAME"
+bash ../delete-from-saved-settings.sh "$CAPI_CLUSTER_REUSED_NAME"
+bash ../delete-from-saved-settings.sh "$CAPI_CLUSTER_NAMESPACE_REUSED_NAME"
