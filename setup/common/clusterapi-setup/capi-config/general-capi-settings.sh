@@ -17,6 +17,9 @@
 #export WORKER_MACHINE_COUNT=2
 # the version of kubernetes to install in the cluster, probabaly this will need updating
 # over time
+# Make sure that is this goes to 1.24 or later that the kubectl in the cloud shell matches and that the 
+# kubernetes-services-setup.sh knows to use the kubectl create token command to get the token (as 1.24
+# stopped generating tokes for us automaticaly)
 export KUBERNETES_VERSION=v1.22.5
 export OCI_IMAGE_ID=ocid1.image.oc1.uk-london-1.aaaaaaaa47douc3hrwoia2sdi64uwjac5gdgjhvksydvu372fwjrxxzvchma
 # this is the namespace in the OKE management cluster and the resources will be created in, it will be created if needs be
