@@ -1,0 +1,17 @@
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: IngressGatewayRouteTable
+metadata:
+  name: store-ingress-gateway-route-table
+spec:
+  compartmentId: COMPARTMENT_OCID
+  ingressGateway:
+    ref:
+      name: store-ingress-gateway
+  routeRules:
+    - httpRoute:
+        destinations:
+          - virtualService:
+              ref:
+                name: productpage
+        ingressGatewayHost:
+          name: storeHost

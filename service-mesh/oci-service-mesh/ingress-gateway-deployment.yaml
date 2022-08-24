@@ -1,0 +1,18 @@
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: IngressGatewayDeployment
+metadata:
+  name: store-ingress-gateway-deployment
+spec:
+  ingressGateway:
+    ref:
+      name: store-ingress-gateway
+  deployment:
+    autoscaling:
+      minPods: 1
+      maxPods: 2
+  ports:
+    - protocol: TCP
+      port: 80
+      serviceport: 80
+  service:
+    type: LoadBalancer
