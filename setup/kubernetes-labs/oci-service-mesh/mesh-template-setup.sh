@@ -43,5 +43,5 @@ if [ -z "$CERT_AUTHORITY_OCID" ]
     exit 20
 fi
 
-bash ./mesh-template-setup.sh $CLUSTER_CONTEXT_NAME
+bash ./compartment-template-setup.sh $CLUSTER_CONTEXT_NAME
 bash ./cert-authority-setup.sh $CLUSTER_CONTEXT_NAME
