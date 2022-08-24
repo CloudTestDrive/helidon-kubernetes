@@ -1,6 +1,5 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
-
 MESH_SETTINGS=./oci-service-mesh-settings.sh
 
 if [ -f "$MESH_SETTINGS" ]
@@ -11,8 +10,8 @@ else
   echo "$SCRIPT_NAME unable to locate mesh specific settings, cannot continue"
   exit 30
 fi
-
 CLUSTER_CONTEXT_NAME=one
+
 if [ $# -gt 0 ]
 then
   CLUSTER_CONTEXT_NAME=$1
@@ -31,14 +30,18 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z $COMPARTMENT_OCID ]
+then
+  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  exit 2
+fi
+
+
 if [ -z "$CERT_AUTHORITY_OCID" ]
   then
     echo "$SCRIPT_NAME No certificate authority is setup, have you run the cert-authority-setup.sh scripts ?"
     exit 20
-  else 
-    echo "$SCRIPT_NAME Located cert authority, continuing"
 fi
 
-OCI_MESH_DIR=$HOME/helidon-kubernetes/service-mesh/oci-service-mesh
-
-bash ../../common/update-file.sh $OCI_MESH_DIR/mesh-"$CLUSTER_CONTEXT_NAME".yaml CERT_AUTHORITY_OCID $CERT_AUTHORITY_OCID
+bash ./mesh-template-setup.sh $CLUSTER_CONTEXT_NAME
+bash ./cert-authority-setup.sh $CLUSTER_CONTEXT_NAME

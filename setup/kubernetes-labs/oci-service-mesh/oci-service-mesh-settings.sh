@@ -1,0 +1,1 @@
+OCI_MESH_DIR=$HOME/helidon-kubernetes/service-mesh/oci-service-mesh

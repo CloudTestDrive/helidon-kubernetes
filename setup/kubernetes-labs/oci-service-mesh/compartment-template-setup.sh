@@ -1,5 +1,15 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
+MESH_SETTINGS=./oci-service-mesh-settings.sh
+
+if [ -f "$MESH_SETTINGS" ]
+then
+  echo "$SCRIPT_NAME loading mesh specific settings"
+  source $MESH_SETTINGS
+else
+  echo "$SCRIPT_NAME unable to locate mesh specific settings, cannot continue"
+  exit 30
+fi
 CLUSTER_CONTEXT_NAME=one
 
 if [ $# -gt 0 ]
@@ -26,12 +36,10 @@ then
   exit 2
 fi
 
-OCI_MESH_DIR=$HOME/helidon-kubernetes/service-mesh/oci-service-mesh
-
 for TEMPLATE in $OCI_MESH_DIR/*template.yaml
 do
   TEMPLATE_DIR=`dirname $TEMPLATE`
   TEMPLATE_BASE=`basename $TEMPLATE -template.yaml`
   OUTPUT_YAML="$TEMPLATE_DIR/$TEMPLATE_BASE""-""$CLUSTER_CONTEXT_NAME".yaml
-  bash ../..common/template-file.sh $TEMPLATE $OUTPUT_YAML COMPARTMENT_OCID $COMPARTMENT_OCID
+  bash ../../common/template-file.sh $TEMPLATE $OUTPUT_YAML COMPARTMENT_OCID $COMPARTMENT_OCID
 done
