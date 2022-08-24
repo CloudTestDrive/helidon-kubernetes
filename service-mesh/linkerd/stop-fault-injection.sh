@@ -11,6 +11,6 @@ else
 fi
 kubectl delete -f fault-injector-traffic-split.yaml --context $CLUSTER_CONTEXT_NAME
 kubectl delete -f ingressFaultInjectorRules.yaml --context $CLUSTER_CONTEXT_NAME
-kubectl delete -f fault-injector-service.yaml --context $CLUSTER_CONTEXT_NAME
-kubectl delete -f nginx-fault-injector-deployment.yaml --context $CLUSTER_CONTEXT_NAME
-kubectl delete -f nginx-fault-injector-configmap.yaml --context $CLUSTER_CONTEXT_NAME
+kubectl delete -f ../fault-injector-service.yaml --context $CLUSTER_CONTEXT_NAME
+kubectl delete -f ../nginx-fault-injector-deployment.yaml --context $CLUSTER_CONTEXT_NAME
+kubectl delete -f ../nginx-fault-injector-configmap.yaml --context $CLUSTER_CONTEXT_NAME
