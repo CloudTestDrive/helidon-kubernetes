@@ -1,0 +1,17 @@
+kind: VirtualDeployment
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: zipkin-v1
+spec:
+  virtualService:
+    ref:
+      name: zipkin
+  compartmentId: COMPARTMENT_OCID
+  listener:
+    - port: 9411
+      protocol: HTTP
+  accessLogging:
+    isEnabled: true
+  serviceDiscovery:
+    type: DNS
+    hostname: zipkin

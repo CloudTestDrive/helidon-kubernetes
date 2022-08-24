@@ -1,0 +1,19 @@
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: VirtualServiceRouteTable
+metadata:
+  name: logger-route-table
+spec:
+  compartmentId: COMPARTMENT_OCID
+  virtualService:
+    ref:
+      name: logger
+  routeRules:
+    - httpRoute:
+        destinations:
+          - virtualDeployment:
+              ref:
+                name: logger-v1
+            weight: 100
+        isGrpc: false
+        path: /
+        pathType: PREFIX

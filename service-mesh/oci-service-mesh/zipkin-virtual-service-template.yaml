@@ -1,0 +1,15 @@
+kind: VirtualService
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: zipkin
+spec:
+  mesh:
+    ref:
+      name: storemesh
+  defaultRoutingPolicy:
+    type: UNIFORM
+  compartmentId: COMPARTMENT_OCID
+  hosts:
+    - zipkin:9411
+  mtls:
+    mode: PERMISSIVE

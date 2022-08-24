@@ -43,7 +43,6 @@ apiVersion: servicemesh.oci.oracle.com/v1beta1
 kind: IngressGatewayRouteTable
 metadata:
   name: bookinfo-ingress-gateway-route-table
-  namespace: bookinfo
 spec:
   compartmentId: ocid1.compartment.oc1.aaaaaaa...
   ingressGateway:

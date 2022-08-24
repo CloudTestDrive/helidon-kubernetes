@@ -1,0 +1,19 @@
+kind: VirtualDeployment
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: logger-v1
+spec:
+  virtualService:
+    ref:
+      name: logger
+  compartmentId: COMPARTMENT_OCID
+  listener:
+    - port: 8082
+      protocol: HTTP
+    - port: 9082
+      protocol: HTTP
+  accessLogging:
+    isEnabled: true
+  serviceDiscovery:
+    type: DNS
+    hostname: logger

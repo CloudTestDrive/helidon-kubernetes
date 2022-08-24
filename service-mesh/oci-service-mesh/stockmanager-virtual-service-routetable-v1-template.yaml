@@ -1,0 +1,19 @@
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: VirtualServiceRouteTable
+metadata:
+  name: stockmanager-route-table
+spec:
+  compartmentId: COMPARTMENT_OCID
+  virtualService:
+    ref:
+      name: stockmanager
+  routeRules:
+    - httpRoute:
+        destinations:
+          - virtualDeployment:
+              ref:
+                name: stockmanager-v1
+            weight: 100
+        isGrpc: false
+        path: /
+        pathType: PREFIX

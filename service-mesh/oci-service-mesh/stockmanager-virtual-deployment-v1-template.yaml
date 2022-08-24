@@ -1,0 +1,19 @@
+kind: VirtualDeployment
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: stockmanager-v1
+spec:
+  virtualService:
+    ref:
+      name: stockmanager
+  compartmentId: COMPARTMENT_OCID
+  listener:
+    - port: 8081
+      protocol: HTTP
+    - port: 9081
+      protocol: HTTP
+  accessLogging:
+    isEnabled: true
+  serviceDiscovery:
+    type: DNS
+    hostname: stockmanager

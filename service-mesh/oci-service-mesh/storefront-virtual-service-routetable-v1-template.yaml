@@ -1,0 +1,19 @@
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+kind: VirtualServiceRouteTable
+metadata:
+  name: storefront-route-table
+spec:
+  compartmentId: COMPARTMENT_OCID
+  virtualService:
+    ref:
+      name: storefront
+  routeRules:
+    - httpRoute:
+        destinations:
+          - virtualDeployment:
+              ref:
+                name: storefront-v1
+            weight: 100
+        isGrpc: false
+        path: /
+        pathType: PREFIX

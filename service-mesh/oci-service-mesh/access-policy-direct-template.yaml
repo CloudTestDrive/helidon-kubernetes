@@ -1,0 +1,55 @@
+kind: AccessPolicy
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: store-policy
+spec:
+  mesh:
+    ref:
+      name: store
+  compartmentId: COMPARTMENT_OCID
+  rules:
+    - action: ALLOW
+      source:
+        virtualService:
+          ref:
+            name: storefront
+      destination:
+        virtualService:
+          ref:
+            name: logger
+    - action: ALLOW
+      source:
+        virtualService:
+          ref:
+            name: storefront
+      destination:
+        virtualService:
+          ref:
+            name: stockmanager
+    - action: ALLOW
+      source:
+        virtualService:
+          ref:
+            name: storefront
+      destination:
+        virtualService:
+          ref:
+            name: zipkin
+    - action: ALLOW
+      source:
+        virtualService:
+          ref:
+            name: stockmanager
+      destination:
+        virtualService:
+          ref:
+            name: zipkin
+    - action: ALLOW
+      source:
+        virtualService:
+          ref:
+            name: logger
+      destination:
+        virtualService:
+          ref:
+            name: zipkin

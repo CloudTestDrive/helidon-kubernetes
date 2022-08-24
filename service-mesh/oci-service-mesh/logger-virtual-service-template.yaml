@@ -1,0 +1,16 @@
+kind: VirtualService
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: logger
+spec:
+  mesh:
+    ref:
+      name: storemesh
+  defaultRoutingPolicy:
+    type: UNIFORM
+  compartmentId: COMPARTMENT_OCID
+  hosts:
+    - logger:9082
+    - logger:8082
+  mtls:
+    mode: PERMISSIVE

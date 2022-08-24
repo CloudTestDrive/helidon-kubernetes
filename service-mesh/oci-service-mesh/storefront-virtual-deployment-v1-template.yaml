@@ -1,0 +1,19 @@
+kind: VirtualDeployment
+apiVersion: servicemesh.oci.oracle.com/v1beta1
+metadata:
+  name: storefront-v1
+spec:
+  virtualService:
+    ref:
+      name: storefront
+  compartmentId: COMPARTMENT_OCID
+  listener:
+    - port: 8080
+      protocol: HTTP
+    - port: 9080
+      protocol: HTTP
+  accessLogging:
+    isEnabled: true
+  serviceDiscovery:
+    type: DNS
+    hostname: storefront
