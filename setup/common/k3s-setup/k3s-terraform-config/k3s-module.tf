@@ -31,7 +31,7 @@ module k3s {
   
   secret_name="K3S_TOKEN_SECRET"
   vault_id="VAULT_OCID"
-  kms_key_id="VAULT_KEY_OCID"
+  master_encryption_key_id="VAULT_KEY_OCID"
   ssh_public_key_path="K3S_SSH_PUBLIC_KEY_PATH"
   ssh_private_key_path="K3S_SSH_PRIVATE_KEY_PATH"
   
