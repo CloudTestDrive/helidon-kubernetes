@@ -5,14 +5,14 @@ if [ $# -lt 3 ]
 then
   echo "$SCRIPT_NAME requires three arguments:"
   echo "the name of the dynamic group to create"
-  echo "the resource type of the dynamic group e.g. devopsbuildpipeline"
   echo "the description of the dynamic group (which needs to be quoted)"
+  echo "the resource type of the dynamic group e.g. devopsbuildpipeline"
   exit 1
 fi
 
 GROUP_NAME=$1
-GROUP_RESOURCE_TYPE=$2
-GROUP_DESCRIPTION=$3
+GROUP_DESCRIPTION=$2
+GROUP_RESOURCE_TYPE=$3
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -35,4 +35,4 @@ fi
 
 GROUP_RULE="ALL {resource.type = '$GROUP_RESOURCE_TYPE', resource.compartment.id = '$COMPARTMENT_OCID'}"
 
-bash ./dynamic-group-setup.sh "$GROUP_NAME" "$GROUP_RULE" "$GROUP_DESCRIPTION"
+bash ./dynamic-group-setup.sh "$GROUP_NAME" "$GROUP_DESCRIPTION" "$GROUP_RULE"

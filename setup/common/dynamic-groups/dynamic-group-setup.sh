@@ -6,14 +6,14 @@ if [ $# -lt 3 ]
 then
   echo "$SCRIPT_NAME requires three arguments:"
   echo "the rule of the dynamic group to create"
-  echo "the resource type of the dynamic group e.g. devopsbuildpipeline"
   echo "the description of the dynamic group (which needs to be quoted)"
+  echo "the rule to use for the dynamic group e.g. devopsbuildpipeline"
   exit 1
 fi
 
 GROUP_NAME=$1
-GROUP_RULE=$2
-GROUP_DESCRIPTION=$3
+GROUP_DESCRIPTION=$2
+GROUP_RULE=$3
 GROUP_NAME_CAPS=`bash ../settings/to-valid-name.sh $GROUP_NAME`
 GROUP_OCID_NAME=DYNAMIC_GROUP_"$GROUP_NAME_CAPS"_OCID
 GROUP_REUSED_NAME=DYNAMIC_GROUP_"$GROUP_NAME_CAPS"_REUSED

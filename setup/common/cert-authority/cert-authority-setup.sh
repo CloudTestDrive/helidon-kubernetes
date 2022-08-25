@@ -66,7 +66,7 @@ SAVED_DIR=`pwd`
 cd ../dynamic-groups
 DG_NAME="$USER_INITIALS"CertAuthorityDynamicGroup
 
-bash ./dynamic-group-by-resource-type-setup.sh "$DG_NAME" certificateauthority "Identifies the certificate authority"
+bash ./dynamic-group-by-resource-types.sh "$DG_NAME" "Identifies the certificate authority" certificateauthority certificate
 
 cd $SAVED_DIR
 cd ../policies

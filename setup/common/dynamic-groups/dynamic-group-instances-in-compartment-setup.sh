@@ -40,4 +40,4 @@ fi
 
 GROUP_RULE="Any {instance.compartment.id = '$COMPARTMENT_OCID'}"
 
-bash ./dynamic-group-setup.sh "$GROUP_NAME" "$GROUP_RULE" "$GROUP_DESCRIPTION"
+bash ./dynamic-group-setup.sh "$GROUP_NAME" "$GROUP_DESCRIPTION" "$GROUP_RULE"
