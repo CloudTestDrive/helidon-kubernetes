@@ -54,6 +54,6 @@ if [ "$FINAL_RESP" -ne 0 ]
 then
   exit $FINAL_RESP
 else 
-  bash ../common/delete-from-saved-settings.sh OCI_OSOK_SERVICE_MESH_POLICIES_CONFIGURED
+  bash ../delete-from-saved-settings.sh OCI_OSOK_SERVICE_MESH_POLICIES_CONFIGURED
   exit $FINAL_RESP
 fi
