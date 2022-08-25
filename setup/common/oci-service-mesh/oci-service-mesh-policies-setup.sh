@@ -68,7 +68,7 @@ FINAL_RESP="0"
 #  echo "Problem setting up policy $OBSERVABILITY_POLICY_NAME response is $RESP"
 #  FINAL_RESP=$RESP
 #fi
-SM_POLICY_RULE="[\"Allow dynamic-group $DG_NAME to manage all-resources in compartment $COMPARTMENT_NAME\"]" 
+SM_POLICY_RULE="[\"Allow dynamic-group $DG_NAME to manage all-resources in compartment $COMPARTMENT_NAME\", \"Allow group Administrators to manage all-resources in compartment $COMPARTMENT_NAME\"]" 
 
 echo "Creating service mesh core policies"
 bash ./policy-by-text-setup.sh "$SM_POLICY_NAME" "$SM_POLICY_RULE" "This policy allows the dynamic group resources resources to do everything"
