@@ -50,7 +50,7 @@ bash ./dynamic-group-instances-in-compartment-setup.sh "$DG_NAME" "This dynamic 
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Problem setting up dynamic group $$DG_NAME response is $RESP"
+  echo "Problem setting up dynamic group $DG_NAME response is $RESP"
   FINAL_RESP=$RESP
 fi
 cd $SAVED_DIR
