@@ -89,7 +89,7 @@ if [ "$COMMIT_COUNT" = "null" ]
 then
   COMMIT_COUNT=0
 fi
-if [ "$COMMIT_COUNT" = 0]
+if [ "$COMMIT_COUNT" = 0 ]
 then
   echo "No commits found, continuing"
 else
