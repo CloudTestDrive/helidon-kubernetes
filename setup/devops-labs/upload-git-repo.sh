@@ -105,7 +105,7 @@ if [ "$BRANCH_COUNT" = "null" ]
 then
   BRANCH_COUNT=0
 fi
-if [ "$BRANCH_COUNT" = "null" ]
+if [ "$BRANCH_COUNT" = 0 ]
 then
   echo "No branches found, continuing"
 else
