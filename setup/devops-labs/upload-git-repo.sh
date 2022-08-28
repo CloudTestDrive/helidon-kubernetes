@@ -103,6 +103,10 @@ BRANCH_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.dat
 
 if [ "$BRANCH_COUNT" = "null" ]
 then
+  BRANCH_COUNT=0
+fi
+if [ "$BRANCH_COUNT" = "null" ]
+then
   echo "No branches found, continuing"
 else
   echo "OCI Code repo $REPO_NAME has $BRANCH_COUNT existing branches, cannot proceed as there may be damage to existing data"
