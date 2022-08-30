@@ -88,6 +88,10 @@ echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no commi
 COMMIT_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."commit-count"'`
 if [ "$COMMIT_COUNT" = "null" ]
 then
+  COMMIT_COUNT=0
+fi
+if [ "$COMMIT_COUNT" = 0 ]
+then
   echo "No commits found, continuing"
 else
   echo "OCI Code repo $REPO_NAME has $COMMIT_COUNT existing commits, cannot proceed as there may be damage to existing data"
@@ -99,6 +103,10 @@ echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no branc
 BRANCH_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."branch-count"'`
 
 if [ "$BRANCH_COUNT" = "null" ]
+then
+  BRANCH_COUNT=0
+fi
+if [ "$BRANCH_COUNT" = 0 ]
 then
   echo "No branches found, continuing"
 else

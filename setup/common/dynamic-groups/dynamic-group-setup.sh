@@ -95,5 +95,5 @@ else
   echo $GROUP_RULE
   echo $GROUP_OCID_NAME=$GROUP_OCID >> $SETTINGS
   echo $GROUP_REUSED_NAME=true >> $SETTINGS
-  exit 1
+  exit 0
 fi
