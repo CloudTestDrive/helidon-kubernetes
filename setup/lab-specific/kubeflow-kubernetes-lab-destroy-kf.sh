@@ -65,6 +65,7 @@ SAVED_PWD=`pwd`
 
 # kubectl delete namespace ingress-nginx --ignore-not-found=true
 cd $HOME/kubeflow_1.6/
+kubectl patch crd/profiles.kubeflow.org -p '{"metadata":{"finalizers":[]}}' --type=merge
 $HOME/kustomize build example | kubectl delete -f -; kubectl delete namespace kubeflow-user-example-com
 
 # cd $MODULES_DIR
