@@ -266,7 +266,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
     echo "Versions doesn't seem to be needed any more, not copying"
-    cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
+    #cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
     cd $TF_DIR
     echo "Processing the provider information"
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
@@ -300,11 +300,11 @@ TF_GIT_BASE=$HOME/k3s-terraform
     
     echo "Updating module networking info"
     echo "Update $TF_MODULE_FILE to set VCN_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM VCN_CIDR "$VCN_CIDR"
+    bash $UPDATE_FILE_SCRIPT $TFM VCN_CIDR "$VCN_CIDR" ':'
     echo "Update $TF_MODULE_FILE to set SERVER_SUBNET_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM SERVER_SUBNET_CIDR "$SERVER_SUBNET_CIDR"
+    bash $UPDATE_FILE_SCRIPT $TFM SERVER_SUBNET_CIDR "$SERVER_SUBNET_CIDR" ':'
     echo "Update $TF_MODULE_FILE to set WORKER_SUBNET_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM WORKER_SUBNET_CIDR "$WORKER_SUBNET_CIDR"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_SUBNET_CIDR "$WORKER_SUBNET_CIDR" ':'
     echo "Update $TF_MODULE_FILE to set PUBLIC_KUBEAPI"
     bash $UPDATE_FILE_SCRIPT $TFM PUBLIC_KUBEAPI "$PUBLIC_KUBEAPI"
     #echo "Update $TF_MODULE_FILE to set datastore type version"
