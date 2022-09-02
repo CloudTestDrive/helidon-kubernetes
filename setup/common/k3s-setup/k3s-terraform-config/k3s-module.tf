@@ -14,6 +14,7 @@ module k3s {
   
   compute_shape="COMPUTE_SHAPE"
   operating_system="OPERATING_SYSTEM"
+  os_image_id="IMAGE_OCID"
   server_ocpus=CONTROL_PLANE_OCPUS 
   server_memory_in_gbs=CONTROL_PLANE_MEMORY
   k3s_server_pool_size=CONTROL_PLANE_EXTRA_NODE_COUNT

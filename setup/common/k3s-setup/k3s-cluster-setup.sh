@@ -245,6 +245,38 @@ TF_GIT_BASE=$HOME/k3s-terraform
       echo "Located worker Network CIDR start as $WORKER_SUBNET_CIDR"
     fi
     
+    if [ -z "$IMAGE_OCID" ]
+    then
+      echo "No OS image specified, trying to locate image"
+      # try to locate the image to use
+      if [ "$OPERATING_SYSTEM" = "oraclelinux" ]
+      then
+        OS_NAME="Oracle Linux"
+      elif [ "$OPERATING_SYSTEM" = "ubuntu" ]
+      then
+        OS_NAME="Canonical Ubuntu"
+      else
+        echo "Unknown operating system name $OPERATING_SYSTEM cannot proceed"
+        exit 12
+      fi
+    
+      if [ -z "$OPERATING_SYSTEM_VERSION" ]
+      then
+        echo "No OPERATING_SYSTEM_VERSION set, cannot proceed"
+        exit 13
+      fi
+    
+      echo "trying to locate image for $OS_NAME and version $OPERATING_SYSTEM_VERSION"
+      IMAGE_OCID=`oci compute image list --all --compartment-id $COMPARTMENT_OCID --shape "VM.Standard.E4.Flex" | jq -r "[.data[] | select ((.\"operating-system\"==\"$OS_NAME\") and (.\"lifecycle-state\"==\"AVAILABLE\") and (.\"operating-system-version\"==\"$OPERATING_SYSTEM_VERSION\"))] | sort_by(.\"display-name\") | reverse | first | .id"`
+    
+      if [ -z "$IMAGE_OCID" ]
+      then
+        echo "Unable to locate an image in this region for OS name $OC_NAME and version $OS_VERSION"
+        exit 12
+      fi
+    else
+      "Using provided image OCID for workers and control plane"
+    fi
     echo "Creating  K3s cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
@@ -333,6 +365,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFM COMPUTE_SHAPE "$COMPUTE_SHAPE"
     echo "Update $TF_MODULE_FILE set OPERATING_SYSTEM"
     bash $UPDATE_FILE_SCRIPT $TFM OPERATING_SYSTEM $OPERATING_SYSTEM
+    echo "Update $TF_MODULE_FILE set IMAGE_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM IMAGE_OCID $IMAGE_OCID
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_OCPUS"
     bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_OCPUS "$CONTROL_PLANE_OCPUS"
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_MEMORY"
