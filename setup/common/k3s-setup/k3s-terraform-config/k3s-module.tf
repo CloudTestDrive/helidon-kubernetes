@@ -4,7 +4,7 @@ module k3s {
   
   region="OCI_REGION"
   availability_domain="AVAILABILITY_DOMAIN"
-  environment=K3S_ENVIRONMENT
+  environment="K3S_ENVIRONMENT"
   tenancy_ocid="OCI_TENANCY"
   compartment_ocid="COMPARTMENT_OCID"
   k3s_version="K3S_KUBERNETES_VERSION"
@@ -26,8 +26,8 @@ module k3s {
   oci_core_subnet_cidr10="SERVER_SUBNET_CIDR"
   oci_core_subnet_cidr11="WORKER_SUBNET_CIDR"
   
-  oci_identity_dynamic_group_name=K3S_CLUSTER_DYNAMIC_GROUP_NAME
-  oci_identity_policy_name=K3S_CLUSTER_POLICY_NAME
+  oci_identity_dynamic_group_name="K3S_CLUSTER_DYNAMIC_GROUP_NAME"
+  oci_identity_policy_name="K3S_CLUSTER_POLICY_NAME"
   
   install_nginx_ingress=INSTALL_NGINX_INGRESS
   install_certmanager=INSTALL_CERT_MGR
@@ -36,7 +36,7 @@ module k3s {
   install_longhorn=INSTALL_LONGHORN
   longhorn_release="LONGHORN_VERSION"
   install_oci_ccm=INSTALL_OCI_CCM
-  oci_ccm_release=OCI_CCM_VERSION
+  oci_ccm_release="OCI_CCM_VERSION"
   
   expose_kubeapi=PUBLIC_KUBEAPI
     
