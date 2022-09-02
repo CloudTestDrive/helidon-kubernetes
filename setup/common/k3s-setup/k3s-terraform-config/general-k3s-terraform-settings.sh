@@ -1,6 +1,6 @@
 K3S_GH_REPO=hyder/terraform-oci-k3s
 #K3S_GH_URL=https://github.com/$K3S_GH_REPO
-K3S_GH_URL=$HOME/k3s-cluster-oci-main
+K3S_GH_URL=$HOME/k3s-cluster
 echo "Using pre-loaded K3S TF data in $K3S_GH_URL for now, this needs to be switched when the pubnloic GH repo is available"
 # Be carefull updating to 1.24 until the kubectl command is at that version and understanda the create token sub command
 # also ensure that the 
