@@ -40,11 +40,11 @@ then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
-if [ -z $VAULT_OCID ]
-then
-  echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
-  exit 2
-fi
+#if [ -z $VAULT_OCID ]
+#then
+#  echo "Your VAULT_OCID has not been set, you need to run the vault-setup.sh before you can run this script"
+#  exit 2
+#fi
 SAVED_DIR=`pwd`
 #cd ../vault
 #VAULT_KEY_NAME_BASE=AES
