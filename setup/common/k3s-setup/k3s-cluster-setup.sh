@@ -410,7 +410,7 @@ fi
       exit 11
     fi
     echo "Applying terraform - this may take a while"
-    terraform apply $TF_DIR/terraform.plan
+    terraform apply -parallelism=1 -auto-approve $TF_DIR/terraform.plan
     if [ $? -ne 0 ]
     then
       echo "Problem applying terraform, cannot continue"

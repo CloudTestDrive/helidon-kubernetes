@@ -73,7 +73,7 @@ then
     echo "Planning destrucion"
     terraform plan -destroy -out=$TF_DIR/destroy.plan
     echo "Destroying cluster"
-    terraform apply -destroy $TF_DIR/destroy.plan
+    terraform apply -destroy -parallelism=1 -auto-approve $TF_DIR/destroy.plan
     echo "Removing terraform scripts"
     cd $SAVED_DIR
     rm -rf $TF_DIR
