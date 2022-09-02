@@ -274,6 +274,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION "$OCI_HOME_REGION"
     echo "Update $TFV set PROVIDER_VERSION"
     bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    echo "Update $TFP set PROVIDER_VERSION"
+    bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
     
     echo "Processing the module general settings"
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
