@@ -10,7 +10,7 @@ K3S_KUBERNETES_VERSION="latest"
 #PROVIDER_VERSION=">= 4.67.3"
 PROVIDER_VERSION=">= 4.64.0"
 # default networking values, if using multiple clusters these reall should be overidden
-VCN_CIDR="12.0.0.0/24"
+VCN_CIDR="12.0.0.0/16"
 SERVER_SUBNET_CIDR="12.0.0.0/24"
 WORKER_SUBNET_CIDR="12.0.1.0/24"
 
