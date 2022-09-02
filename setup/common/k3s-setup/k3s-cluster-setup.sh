@@ -265,16 +265,15 @@ TF_GIT_BASE=$HOME/k3s-terraform
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
-    echo "Versions doesn't seem to be needed any more, not copying"
-    #cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
+    cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
     cd $TF_DIR
     echo "Processing the provider information"
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION "$OCI_REGION"
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION "$OCI_HOME_REGION"
-    #echo "Update $TFV set PROVIDER_VERSION"
-    #bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    echo "Update $TFV set PROVIDER_VERSION"
+    bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
     
     echo "Processing the module general settings"
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
