@@ -419,10 +419,10 @@ fi
     K3S_REUSED=false
     echo "Getting cluster netwoking info from terraform"
     K3S_VCN=`terraform output vcn_id |  sed -e 's/"//g'`
-    K3S_LB_SUBNET_OCID=`terraform output subnet_ids | grep pub_lb | awk '{print $3}' | sed -e 's/"//g'`
-    K3S_WORKER_SUBNET_OCID=`terraform output subnet_ids | grep agent | awk '{print $3}' | sed -e 's/"//g'`
-    K3S_LB_NSG_OCID=`terraform output pub_lb_nsg_id | sed -e 's/"//g'`
-    K3S_WORKER_NSG_OCID=""
+    K3S_LB_SUBNET_OCID=`terraform output control_plane_subnet_id | sed -e 's/"//g'`
+    K3S_WORKER_SUBNET_OCID=`terraform output workers_subnet_id | sed -e 's/"//g'`
+    K3S_LB_NSG_OCID=`terraform output public_lb_nsg_id | sed -e 's/"//g'`
+    K3S_WORKER_NSG_OCID=`terraform output lb_to_workers_nsg_id | sed -e 's/"//g'`
     cd $SAVED_DIR
 GETKC=false
 if [ "$GETKC" = "true" ]
