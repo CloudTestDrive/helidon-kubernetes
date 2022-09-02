@@ -40,7 +40,7 @@ module k3s {
   
   expose_kubeapi=PUBLIC_KUBEAPI
     
-   providers = {
-    oci.home = oci.home
-  }
+  # providers = {
+  #  oci.home = oci.home
+  #}
 }
