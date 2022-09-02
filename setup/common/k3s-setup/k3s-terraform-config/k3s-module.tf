@@ -13,6 +13,7 @@ module k3s {
   PATH_TO_PRIVATE_KEY="K3S_SSH_PRIVATE_KEY_PATH"
   
   compute_shape="COMPUTE_SHAPE"
+  operating_system="OPERATING_SYSTEM"
   server_ocpus=CONTROL_PLANE_OCPUS 
   server_memory_in_gbs=CONTROL_PLANE_MEMORY
   k3s_server_pool_size=CONTROL_PLANE_EXTRA_NODE_COUNT
