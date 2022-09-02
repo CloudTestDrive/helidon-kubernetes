@@ -46,17 +46,17 @@ then
   exit 2
 fi
 SAVED_DIR=`pwd`
-#cd ../vault
-#VAULT_KEY_NAME_BASE=AES
-#VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
-#VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
-#VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
-#cd $SAVED_DIR
-#if [ -z $VAULT_KEY_OCID ]
-#then
-#  echo "Your VAULT_KEY_OCID has not been set for key $VAULT_KEY_NAME_BASE, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
-#  exit 2
-#fi
+cd ../vault
+VAULT_KEY_NAME_BASE=AES
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
+VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
+VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
+cd $SAVED_DIR
+if [ -z $VAULT_KEY_OCID ]
+then
+  echo "Your VAULT_KEY_OCID has not been set for key $VAULT_KEY_NAME_BASE, you need to run the vault-key-setup.sh to create an AES key named $VAULT_KEY_NAME before you can run this script"
+  exit 2
+fi
 
 # Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
@@ -101,16 +101,6 @@ else
   echo "Operating in compartment $COMPARTMENT_NAME"
 fi
 
-# make sure we can get some availability domain info
-UPPER_CASE_REGION=`echo $OCI_REGION | tr [a-z] [A-Z]`
-AVAILABILITY_DOMAIN=`oci iam availability-domain list --compartment-id $OCI_TENANCY | jq -r '.data[] | .name' | grep $UPPER_CASE_REGION | tail -n 1`
-
-if [ -z "$AVAILABILITY_DOMAIN" ]
-then
-  echo "Unable to locate any availability domains, cannot continue"
-  exit 100
-fi
-
 CLUSTER_NAME="$USER_INITIALS"
 CLUSTER_NAME_FULL="lab-$USER_INITIALS-$CLUSTER_CONTEXT_NAME"
 if [ "$AUTO_CONFIRM" = true ]
@@ -135,15 +125,6 @@ else
   echo "OK, going to use $CLUSTER_NAME_FULL as the Kubernetes cluster name"
 fi
 
-# we need to ssh between the control plane and workers so ...
-PRE_SSH_SAVED_DIR=`pwd`
-cd ../ssh-keys
-bash ./ssh-key-setup.sh $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME
-# the resulting keys will be  $HOME/ssh/id_rsa_k3s_$CLUSTER_CONTEXT_NAME (.pub and .pem)
-K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
-K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
-cd $PRE_SSH_SAVED_DIR
-
 OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 
 OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
@@ -162,39 +143,20 @@ TF_GIT_BASE=$HOME/k3s-terraform
     fi
     
     # set some defaults so we can ensure that there will be some data for these
-    K3S_ENVIRONMENT="lab"
-    K3S_KUBERNETES_VERSION="latest"
-    # set these to ensure that there will be some defaults
-    COMPUTE_SHAPE="VM.Standard.E4.Flex"
+    
+    CONTROL_PLANE_SHAPE="VM.Standard.E4.Flex"
     CONTROL_PLANE_OCPUS=1
     CONTROL_PLANE_MEMORY=16
-    CONTROL_PLANE_EXTRA_NODE_COUNT=0
+    CONTROL_PLANE_COUNT=1
     CONTROL_PLANE_BOOT_SIZE=50
+    WORKER_SHAPE="VM.Standard.E4.Flex"
     WORKER_OCPUS=1
     WORKER_MEMORY=16
     WORKER_COUNT=3
     WORKER_BOOT_SIZE=50
-    K3S_CLUSTER_DYNAMIC_GROUP_NAME="$USER_INITIALS"k3sComputeDynamicGroup"$CLUSTER_CONTEXT_NAME"
-    K3S_CLUSTER_POLICY_NAME="$USER_INITIALS"k3sComputePolicy"$CLUSTER_CONTEXT_NAME"
-    
-    INSTALL_NGINX_INGRESS=false
-    INSTALL_CERT_MGR=false
-    CERT_MGR_VERSION="v1.8.2"
-    CERT_MGR_EMAIL="changeme@example.com"
-    INSTALL_LONGHORN=false
-    LONGHORN_VERSION=false
-    LONGHORN_VERSION="v1.2.3"
-    INSTALL_OCI_CCM=true
-    OCI_CCM_VERSION="v1.24.0"
-    
-    PUBLIC_KUBEAPI=true
-    PROVIDER_VERSION=">= 4.64.0"
-    
-    #CLUSTER_TZ=`basename \`readlink -f /etc/localtime\``
-    #DATASTORE_TYPE="etcd"
-    
-    # we've setup the defaults, next stage is to see if there is any override on them
-    
+    CLUSTER_TZ=`basename \`readlink -f /etc/localtime\``
+    DATASTORE_TYPE="etcd"
+    PROVIDER_VERSION=">= 4.67.3"
     echo "Checking for teraform module generic settings file"
     GENERIC_K3S_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-k3s-terraform-settings.sh
     if [ -f $GENERIC_K3S_TERRAFORM_SETTINGS ]
@@ -219,30 +181,26 @@ TF_GIT_BASE=$HOME/k3s-terraform
     fi
     
     # Check for the VCN Network address being set
-    if [ -z $VCN_CIDR ]
+    if [ -z $VCN_CLASS_B_NETWORK_CIDR_START ]
     then
-      echo 'Unable to locate the VCN Network CIDR start variable ( VCN_CIDR )'
-      echo 'This is required'
-      exit 50
+      echo 'Unable to locate the VCN Network CIDR start variable ( VCN_CLASS_B_NETWORK_CIDR_START )'
+      echo 'Cannot continue'
+      exit 11
     else
-      echo "Located VCN Network CIDR start as $VCN_CIDR"
+      echo "Located VCN Network CIDR start as $VCN_CLASS_B_NETWORK_CIDR_START"
     fi
-    if [ -z $SERVER_SUBNET_CIDR ]
-    then
-      echo 'Unable to locate the Server Network CIDR start variable ( SERVER_SUBNET_CIDR )'
-      echo 'This is required'
-      exit 51
-    else
-      echo "Located Server Network CIDR start as $SERVER_SUBNET_CIDR"
-    fi
-    if [ -z $WORKER_SUBNET_CIDR ]
-    then
-      echo 'Unable to locate the worker Network CIDR start variable ( WORKER_SUBNET_CIDR )'
-      echo 'This is required'
-      exit 50
-    else
-      echo "Located worker Network CIDR start as $WORKER_SUBNET_CIDR"
-    fi
+    
+    # we need to ssh between the control plane and workers so ...
+    PRE_SSH_SAVED_DIR=`pwd`
+    cd ../ssh-keys
+    bash ./ssh-key-setup.sh $HOME/ssh id_rsa_k3s_$CLUSTER_CONTEXT_NAME
+    # the resulting keys will be  $HOME/ssh/id_rsa_k3s_$CLUSTER_CONTEXT_NAME (.pub and .pem)
+    K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
+    K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
+    cd $PRE_SSH_SAVED_DIR
+    
+    K3S_TOKEN_SECRET=K3S_Token_`date | cksum | awk -e '{print $1}'`
+    K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
     
     echo "Creating  K3s cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME"
     echo "Preparing terraform directory"
@@ -265,118 +223,81 @@ TF_GIT_BASE=$HOME/k3s-terraform
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
-    echo "Versions doesn't seem to be needed any more, not copying"
     cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
     cd $TF_DIR
-    echo "Processing the provider information"
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
-    bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION "$OCI_REGION"
+    bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION $OCI_REGION
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
-    bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION "$OCI_HOME_REGION"
-    #echo "Update $TFV set PROVIDER_VERSION"
-    #bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION $OCI_HOME_REGION
     
-    echo "Processing the module general settings"
+    echo "Update $TFV set PROVIDER_VERSION"
+    bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    
+    
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL "$K3S_GH_URL" '^'
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL $K3S_GH_URL '^'
     echo "Update $TF_MODULE_FILE to set compartment OCID"
-    bash $UPDATE_FILE_SCRIPT $TFM COMPARTMENT_OCID "$COMPARTMENT_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM COMPARTMENT_OCID $COMPARTMENT_OCID
     echo "Update $TF_MODULE_FILE to set tenancy OCID"
-    bash $UPDATE_FILE_SCRIPT $TFM OCI_TENANCY "$OCI_TENANCY"
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_TENANCY $OCI_TENANCY
     echo "Update $TF_MODULE_FILE to set OCI Region"
-    bash $UPDATE_FILE_SCRIPT $TFM OCI_REGION "$OCI_REGION"
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_REGION $OCI_REGION
     echo "Update $TF_MODULE_FILE set OCI_HOME_REGION"
-    bash $UPDATE_FILE_SCRIPT $TFM OCI_HOME_REGION "$OCI_HOME_REGION"
-    echo "Update $TF_MODULE_FILE set AVAILABILITY_DOMAIN"
-    bash $UPDATE_FILE_SCRIPT $TFM AVAILABILITY_DOMAIN "$AVAILABILITY_DOMAIN"
-    echo "Update $TF_MODULE_FILE set K3S_ENVIRONMENT"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_ENVIRONMENT "$K3S_ENVIRONMENT"
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_HOME_REGION $OCI_HOME_REGION
     echo "Update $TF_MODULE_FILE to set Cluster name"
-    bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_NAME "$CLUSTER_NAME_FULL"
-    #echo "Update $TF_MODULE_FILE to set Label prefix"
-    #bash $UPDATE_FILE_SCRIPT $TFM LABEL_PREFIX "$CLUSTER_NAME_FULL"
+    bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_NAME $CLUSTER_NAME_FULL
+    echo "Update $TF_MODULE_FILE to set Label prefix"
+    bash $UPDATE_FILE_SCRIPT $TFM LABEL_PREFIX "$CLUSTER_NAME_FULL"
+    echo "Update $TF_MODULE_FILE to set VCN CIDR"
+    bash $UPDATE_FILE_SCRIPT $TFM VCN_CLASS_B_NETWORK_CIDR_START $VCN_CLASS_B_NETWORK_CIDR_START
     echo "Update $TF_MODULE_FILE to set K3S Kubernetes version"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_KUBERNETES_VERSION "$K3S_KUBERNETES_VERSION"
+    echo "Update $TF_MODULE_FILE to set datastore type version"
+    bash $UPDATE_FILE_SCRIPT $TFM DATASTORE_TYPE "$DATASTORE_TYPE"
     
-    echo "Updating module networking info"
-    echo "Update $TF_MODULE_FILE to set VCN_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM VCN_CIDR "$VCN_CIDR"
-    echo "Update $TF_MODULE_FILE to set SERVER_SUBNET_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM SERVER_SUBNET_CIDR "$SERVER_SUBNET_CIDR"
-    echo "Update $TF_MODULE_FILE to set WORKER_SUBNET_CIDR"
-    bash $UPDATE_FILE_SCRIPT $TFM WORKER_SUBNET_CIDR "$WORKER_SUBNET_CIDR"
-    echo "Update $TF_MODULE_FILE to set PUBLIC_KUBEAPI"
-    bash $UPDATE_FILE_SCRIPT $TFM PUBLIC_KUBEAPI "$PUBLIC_KUBEAPI"
-    #echo "Update $TF_MODULE_FILE to set datastore type version"
-    #bash $UPDATE_FILE_SCRIPT $TFM DATASTORE_TYPE "$DATASTORE_TYPE"
-    
-    echo "Updating module security info"
-    echo "Update $TF_MODULE_FILE to set K3S_CLUSTER_DYNAMIC_GROUP_NAME"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_CLUSTER_DYNAMIC_GROUP_NAME "$K3S_CLUSTER_DYNAMIC_GROUP_NAME"
-    echo "Update $TF_MODULE_FILE to set K3S_CLUSTER_POLICY_NAME"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_CLUSTER_POLICY_NAME "$K3S_CLUSTER_POLICY_NAME"
-    #echo "Update $TF_MODULE_FILE set VAULT_OCID"
-    #bash $UPDATE_FILE_SCRIPT $TFM VAULT_OCID "$VAULT_OCID"
-    #echo "Update $TF_MODULE_FILE set VAULT_KEY_OCID"
-    #bash $UPDATE_FILE_SCRIPT $TFM VAULT_KEY_OCID "$VAULT_KEY_OCID"
-    echo "Update $TF_MODULE_FILE set K3S_SSH_PUBLIC_KEY_PATH"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PUBLIC_KEY_PATH "$K3S_SSH_PUBLIC_KEY_PATH" ':'
-    echo "Update $TF_MODULE_FILE set K3S_SSH_PRIVATE_KEY_PATH"
-    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PRIVATE_KEY_PATH "$K3S_SSH_PRIVATE_KEY_PATH" ':'
-    #echo "Update $TF_MODULE_FILE set K3S_TOKEN_SECRET"
-    #bash $UPDATE_FILE_SCRIPT $TFM K3S_TOKEN_SECRET "$K3S_TOKEN_SECRET"
-    
-    echo "Updating module instance info"
-    echo "Update $TF_MODULE_FILE set COMPUTE_SHAPE"
-    bash $UPDATE_FILE_SCRIPT $TFM COMPUTE_SHAPE "$COMPUTE_SHAPE"
+    echo "Update $TF_MODULE_FILE set CONTROL_PLANE_SHAPE"
+    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_SHAPE $CONTROL_PLANE_SHAPE
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_OCPUS"
-    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_OCPUS "$CONTROL_PLANE_OCPUS"
+    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_OCPUS $CONTROL_PLANE_OCPUS
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_MEMORY"
-    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_MEMORY "$CONTROL_PLANE_MEMORY"
+    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_MEMORY $CONTROL_PLANE_MEMORY
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_COUNT"
-    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_COUNT "$CONTROL_PLANE_EXTRA_NODE_COUNT"
-    #echo "Update $TF_MODULE_FILE set CONTROL_PLANE_SHAPE"
-    #bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_BOOT_SIZE "$CONTROL_PLANE_BOOT_SIZE"
+    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_COUNT $CONTROL_PLANE_COUNT
+    echo "Update $TF_MODULE_FILE set CONTROL_PLANE_SHAPE"
+    bash $UPDATE_FILE_SCRIPT $TFM CONTROL_PLANE_BOOT_SIZE $CONTROL_PLANE_BOOT_SIZE
     
+    echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_SHAPE $WORKER_SHAPE
     echo "Update $TF_MODULE_FILE set WORKER_OCPUS"
-    bash $UPDATE_FILE_SCRIPT $TFM WORKER_OCPUS "$WORKER_OCPUS"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_OCPUS $WORKER_OCPUS
     echo "Update $TF_MODULE_FILE set WORKER_MEMORY"
-    bash $UPDATE_FILE_SCRIPT $TFM WORKER_MEMORY "$WORKER_MEMORY"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_MEMORY $WORKER_MEMORY
     echo "Update $TF_MODULE_FILE set WORKER_COUNT"
-    bash $UPDATE_FILE_SCRIPT $TFM WORKER_COUNT "$WORKER_COUNT"
-    #echo "Update $TF_MODULE_FILE set WORKER_BOOT_SIZE"
-    #bash $UPDATE_FILE_SCRIPT $TFM WORKER_BOOT_SIZE "$WORKER_BOOT_SIZE"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_COUNT $WORKER_COUNT
+    echo "Update $TF_MODULE_FILE set WORKER_SHAPE"
+    bash $UPDATE_FILE_SCRIPT $TFM WORKER_BOOT_SIZE $WORKER_BOOT_SIZE
     
-    #echo "Update $TF_MODULE_FILE set CLUSTER_TZ"
-    #bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_TZ $CLUSTER_TZ
-    #echo "Update $TF_MODULE_FILE set CREATE_BASION"
-    #bash $UPDATE_FILE_SCRIPT $TFM CREATE_BASION $CREATE_BASION
-    
-    
-    echo "Updating module addons info"
-    echo "Update $TF_MODULE_FILE set INSTALL_NGINX_INGRESS"
-    bash $UPDATE_FILE_SCRIPT $TFM INSTALL_NGINX_INGRESS "$INSTALL_NGINX_INGRESS"
-    echo "Update $TF_MODULE_FILE set INSTALL_CERT_MGR"
-    bash $UPDATE_FILE_SCRIPT $TFM INSTALL_CERT_MGR "$INSTALL_CERT_MGR"
-    echo "Update $TF_MODULE_FILE set INSTALL_NGINX_INGRESS"
-    bash $UPDATE_FILE_SCRIPT $TFM CERT_MGR_VERSION "$CERT_MGR_VERSION"
-    echo "Update $TF_MODULE_FILE set CERT_MGR_EMAIL"
-    bash $UPDATE_FILE_SCRIPT $TFM CERT_MGR_EMAIL "$CERT_MGR_EMAIL"
-    echo "Update $TF_MODULE_FILE set INSTALL_LONGHORN"
-    bash $UPDATE_FILE_SCRIPT $TFM INSTALL_LONGHORN "$INSTALL_LONGHORN"
-    echo "Update $TF_MODULE_FILE set LONGHORN_VERSION"
-    bash $UPDATE_FILE_SCRIPT $TFM LONGHORN_VERSION "$LONGHORN_VERSION"
-    echo "Update $TF_MODULE_FILE set INSTALL_OCI_CCM"
-    bash $UPDATE_FILE_SCRIPT $TFM INSTALL_OCI_CCM "$INSTALL_OCI_CCM"
-    echo "Update $TF_MODULE_FILE set INSTALL_NGINX_INGRESS"
-    bash $UPDATE_FILE_SCRIPT $TFM OCI_CCM_VERSION "$OCI_CCM_VERSION"
+    echo "Update $TF_MODULE_FILE set CLUSTER_TZ"
+    bash $UPDATE_FILE_SCRIPT $TFM CLUSTER_TZ $CLUSTER_TZ
+    echo "Update $TF_MODULE_FILE set CREATE_BASION"
+    bash $UPDATE_FILE_SCRIPT $TFM CREATE_BASION $CREATE_BASION
     
    
+    echo "Update $TF_MODULE_FILE set VAULT_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM VAULT_OCID $VAULT_OCID
+    echo "Update $TF_MODULE_FILE set VAULT_KEY_OCID"
+    bash $UPDATE_FILE_SCRIPT $TFM VAULT_KEY_OCID $VAULT_KEY_OCID
+    echo "Update $TF_MODULE_FILE set K3S_SSH_PUBLIC_KEY_PATH"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PUBLIC_KEY_PATH $K3S_SSH_PUBLIC_KEY_PATH ':'
+    echo "Update $TF_MODULE_FILE set K3S_SSH_PRIVATE_KEY_PATH"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_SSH_PRIVATE_KEY_PATH $K3S_SSH_PRIVATE_KEY_PATH ':'
+    echo "Update $TF_MODULE_FILE set K3S_TOKEN_SECRET"
+    bash $UPDATE_FILE_SCRIPT $TFM K3S_TOKEN_SECRET $K3S_TOKEN_SECRET
     
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
-  echo "Auto confirm is enabled, Do you want to create K3S cluster with full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME defaulting to $REPLY"
+  echo "Auto confirm is enabled, Do you want to create K3S cluster wityh full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME defaulting to $REPLY"
 else
   read -p "Do you want to create K3S cluster with full name of $CLUSTER_NAME_FULL in $COMPARTMENT_NAME (y/n) " REPLY
 fi
@@ -388,7 +309,7 @@ then
 fi
     
         
-    # echo "SHOULD BE Downloading TF versions file, using static version until repo is available"
+    echo "SHOULD BE Downloading TF versions file, using static version until repo is available"
     # curl --silent https://raw.githubusercontent.com/$K3S_GH_REPO/main/versions.tf --output $TF_DIR/versions.tf
     
     echo "Initialising Terraform"
