@@ -162,6 +162,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     fi
     
     # set some defaults so we can ensure that there will be some data for these
+    OCI_AUTH_MODE="InstancePrincipal"
     K3S_ENVIRONMENT="lab"
     K3S_KUBERNETES_VERSION="latest"
     # set these to ensure that there will be some defaults
@@ -305,14 +306,16 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFP OCI_REGION "$OCI_REGION"
     echo "Update $TF_PROVIDER_FILE set OCI_HOME_REGION"
     bash $UPDATE_FILE_SCRIPT $TFP OCI_HOME_REGION "$OCI_HOME_REGION"
-    echo "Update $TFV set PROVIDER_VERSION"
-    bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
+    #echo "Update $TFV set PROVIDER_VERSION"
+    #bash $UPDATE_FILE_SCRIPT $TFV PROVIDER_VERSION "$PROVIDER_VERSION"
     echo "Update $TFP set PROVIDER_VERSION"
     bash $UPDATE_FILE_SCRIPT $TFP PROVIDER_VERSION "$PROVIDER_VERSION"
     
     echo "Processing the module general settings"
     echo "Update $TF_MODULE_FILE set K3S_GH_URL"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_GH_URL "$K3S_GH_URL" '^'
+    echo "Update $TF_MODULE_FILE set OCI_AUTH_MODE"
+    bash $UPDATE_FILE_SCRIPT $TFM OCI_AUTH_MODE "$OCI_AUTH_MODE" 
     echo "Update $TF_MODULE_FILE to set compartment OCID"
     bash $UPDATE_FILE_SCRIPT $TFM COMPARTMENT_OCID "$COMPARTMENT_OCID"
     echo "Update $TF_MODULE_FILE to set tenancy OCID"
