@@ -136,6 +136,11 @@ echo "Test reserve stock command  - Assumes that you have resources called Pins"
 echo 'curl -u jack:password -i -k -H "Content-Type: application/json" -X POST -d "{\"requestedItem\":\"Pins\", \"requestedCount\": 5}"'" $BASE_URL/store/reserveStock"  >> $INFO_FILE
 echo >> $INFO_FILE
 
+# save the zupkin url
+echo "Zipkin" >> $INFO_FILE
+echo "$BASE_URL/zipkin" >> $INFO_FILE
+echo >> $INFO_FILE
+
 # now we have the ingress we csan update the rules to fit it
 echo "updating base ingress rules"
 bash $HOME/helidon-kubernetes/base-kubernetes/set-ingress-ip.sh $EXTERNAL_IP $CLUSTER_CONTEXT_NAME
