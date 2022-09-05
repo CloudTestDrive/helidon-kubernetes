@@ -7,6 +7,6 @@ spec:
   compartmentId: COMPARTMENT_OCID
   certificateAuthorities:
     - id: CERT_AUTHORITY_OCID
-  displayName: store-mesh
+  displayName: storemesh
   mtls:
     minimum: PERMISSIVE
