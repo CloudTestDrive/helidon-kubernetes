@@ -460,29 +460,48 @@ fi
     K3S_WORKER_SUBNET_OCID=`terraform output workers_subnet_id | sed -e 's/"//g'`
     K3S_LB_NSG_OCID=`terraform output public_lb_nsg_id | sed -e 's/"//g'`
     K3S_WORKER_NSG_OCID=`terraform output lb_to_workers_nsg_id | sed -e 's/"//g'`
+    K3S_SERVER_IP=`terraform output k3s_primary_server_ip |  sed -e 's/"//g'`
     cd $SAVED_DIR
-GETKC=false
-if [ "$GETKC" = "true" ]
-then
-  echo "Getting the kube config file"
+
+  echo "Getting the k3s kubeconfig"
   # ensure the context file exists
   KUBECONF_DIR=$HOME/.kube
   KUBECONF_FILE=$KUBECONF_DIR/config
   mkdir -p $KUBECONF_DIR
   touch $KUBECONF_FILE
-  # oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONF_FILE --region $OCI_REGION --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
-  # chmod to be on the safe side sometimes things can have the wront permissions which caused helm to issue warnings
   chmod 600 $KUBECONF_FILE
-  echo "Renaming context to $CLUSTER_CONTEXT_NAME"
-  # the oci command sets the latest cluster as the default, let's rename it to one so it fits in with the rest of the lab instructions
-  CURRENT_CONTEXT=`kubectl config current-context`
-  kubectl config rename-context $CURRENT_CONTEXT $CLUSTER_CONTEXT_NAME
-fi
+  
+  
+  TMP_KUBE_CONF="$CLUSTER_NAME_FULL"_KUBECONF.yaml
+  
+  scp -i $K3S_SSH_PRIVATE_KEY_PATH -o StrictHostKeyChecking=accept-new  opc@"$K3S_SERVER_IP":/etc/rancher/k3s/k3s.yaml $TMP_KUBE_CONF
+  
+  
+  
+  echo "Reconfiguring kubeconfig to set name and server location"
+  
+  CURRENT_K3S_CONTEXT=`kubectl --kubeconfig=$TMP_KUBE_CONF config current-context`
+  kubectl --kubeconfig=$TMP_KUBE_CONF config rename-context $CURRENT_K3S_CONTEXT $CLUSTER_CONTEXT_NAME
+  LOCALHOST="127.0.0.1"
+  bash ../update-file.sh $TMP_KUBE_CONF "$LOCALHOST" "$K3S_SERVER_IP"
+  
+  echo "Merging k3s cluster kube config with main kubeconfig"
+  # Make a copy of your existing config 
+  cp $HOME/.kube/config $HOME/.kube/config.bak 
+  # Merge the two config files together into a new config file 
+  KUBECONFIG=$HOME/.kube/config:$TMP_KUBE_CONF kubectl config view --flatten > merged.config 
+  rm $HOME/.kube/config
+  # Replace your old config with the new merged config 
+  mv merged.config $HOME/.kube/config 
+  chmod 600 $HOME/.kube/config
+  # remove temp version
+  rm $TMP_KUBE_CONF
+
   echo "$K3S_REUSED_NAME=false" >> $SETTINGS
   # it's now save to save the OCID's as we've finished
   KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_CLUSTER_TYPE_NAME=K3S" >> $SETTINGS
-  echo "$K3S_TOKEN_SECRET_NAME=$K3S_TOKEN_SECRET" >> $SETTINGS
+  #echo "$K3S_TOKEN_SECRET_NAME=$K3S_TOKEN_SECRET" >> $SETTINGS
   KUBERNETES_VERSION_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_VERSION_"$CLUSTER_CONTEXT_NAME`
   echo "$KUBERNETES_VERSION_NAME=$K3S_KUBERNETES_VERSION_BASE" >> $SETTINGS
 
@@ -495,3 +514,5 @@ echo "export LB_SUBNET_OCID=$K3S_LB_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
 echo "export WORKER_SUBNET_OCID=$K3S_WORKER_SUBNET_OCID" >> $CLUSTER_NETWORK_FILE
 echo "export LB_NSG_OCID=$K3S_LB_NSG_OCID" >> $CLUSTER_NETWORK_FILE
 echo "export WORKER_NSG_OCID=$K3S_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "export WORKER_NSG_OCID=$K3S_WORKER_NSG_OCID" >> $CLUSTER_NETWORK_FILE
+echo "export SERVER_IP=$SERVER_IP"  >> $CLUSTER_NETWORK_FILE
