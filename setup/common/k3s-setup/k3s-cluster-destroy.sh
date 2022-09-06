@@ -107,38 +107,38 @@ cd $SAVED_DIR
 # so we have to do the work to remove it from the vault and can't use the scritps that do that already as
 # they use the OCID
 
-echo "Scheduling deletion of K3S Token secret"
-K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
-K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
-if [ -z "$K3S_TOKEN_SECRET" ]
-then
-  echo "Cannot locate the name of the K3S token secret in the vault, so can't delete it"
-else
-  echo "Attempting to locate Vault secret $K3S_TOKEN_SECRET"
-  K3S_TOKEN_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $K3S_TOKEN_SECRET --vault-id $VAULT_OCID | jq -j '.data[0].id'`
-  if [ -z "$K3S_TOKEN_SECRET_OCID" ]
-  then
-    K3S_TOKEN_SECRET_OCID="null"
-  fi
-  if [ "$K3S_TOKEN_SECRET_OCID" = "null" ]
-  then
-    echo "Unable to locate an active secret named $K3S_TOKEN_SECRET in the vault"
-  else
-    echo "Located secret deleting"
-    oci vault secret schedule-secret-deletion --secret-id "$K3S_TOKEN_SECRET_OCID"
-    RESP=$?
-    if [ $RESP -ne 0 ]
-    then
-      echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP"
-    fi 
-  fi
-fi
+#echo "Scheduling deletion of K3S Token secret"
+#K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
+#K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
+#if [ -z "$K3S_TOKEN_SECRET" ]
+#then
+#  echo "Cannot locate the name of the K3S token secret in the vault, so can't delete it"
+#else
+#  echo "Attempting to locate Vault secret $K3S_TOKEN_SECRET"
+#  K3S_TOKEN_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $K3S_TOKEN_SECRET --vault-id $VAULT_OCID | jq -j '.data[0].id'`
+#  if [ -z "$K3S_TOKEN_SECRET_OCID" ]
+#  then
+#    K3S_TOKEN_SECRET_OCID="null"
+#  fi
+#  if [ "$K3S_TOKEN_SECRET_OCID" = "null" ]
+#  then
+#    echo "Unable to locate an active secret named $K3S_TOKEN_SECRET in the vault"
+#  else
+#    echo "Located secret deleting"
+#    oci vault secret schedule-secret-deletion --secret-id "$K3S_TOKEN_SECRET_OCID"
+#    RESP=$?
+#    if [ $RESP -ne 0 ]
+#    then
+#      echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP"
+#    fi 
+#  fi
+#fi
 
 KUBERNETES_VERSION_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_VERSION_"$CLUSTER_CONTEXT_NAME`
 bash ../delete-from-saved-settings.sh "$KUBERNETES_VERSION_NAME"
 bash ../delete-from-saved-settings.sh "$K3S_REUSED_NAME"
 bash ../delete-from-saved-settings.sh "$KUBERNETES_CLUSTER_TYPE_NAME"
-bash ../delete-from-saved-settings.sh "$K3S_TOKEN_SECRET_NAME"
+#bash ../delete-from-saved-settings.sh "$K3S_TOKEN_SECRET_NAME"
 
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 if [ -f $CLUSTER_NETWORK_FILE ]
