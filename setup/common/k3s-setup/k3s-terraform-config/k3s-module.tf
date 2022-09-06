@@ -12,11 +12,11 @@ module k3s {
   cluster_name="CLUSTER_NAME"
   # fault_domains - leave as the defaults
   PATH_TO_PUBLIC_KEY="K3S_SSH_PUBLIC_KEY_PATH"
-  PATH_TO_PRIVATE_KEY="K3S_SSH_PRIVATE_KEY_PATH"
+  #PATH_TO_PRIVATE_KEY="K3S_SSH_PRIVATE_KEY_PATH"
   # no longer needed ? availability_domain="AVAILABILITY_DOMAIN"
   
   operating_system="OPERATING_SYSTEM"
-  os_image_id="IMAGE_OCID"
+  #os_image_id="IMAGE_OCID"
   compute_shape="COMPUTE_SHAPE"
   server_ocpus=CONTROL_PLANE_OCPUS 
   server_memory_in_gbs=CONTROL_PLANE_MEMORY

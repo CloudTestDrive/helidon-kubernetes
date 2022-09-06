@@ -190,7 +190,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     OCI_CCM_VERSION="v1.24.0"
     
     PUBLIC_KUBEAPI=true
-    PROVIDER_VERSION=">= 4.64.0"
+    PROVIDER_VERSION=">= 4.91.0"
     
     #CLUSTER_TZ=`basename \`readlink -f /etc/localtime\``
     #DATASTORE_TYPE="etcd"
