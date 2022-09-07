@@ -39,7 +39,28 @@ else
 fi
 
 SAVED_PWD=`pwd`
+cd $MODULES_DIR
 
+bash ./persistence-setup.sh
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Persistence setup module returned an error, unable to continue"
+  exit $RESP
+fi
+
+cd $SAVED_PWD
+
+cd $MODULES_DIR
+
+bash ./opensearch-setup.sh
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Opensearch policies setup module returned an error, unable to continue"
+  exit $RESP
+fi
+cd $SAVED_PWD
 cd $MODULES_DIR
 
 bash ./kubernetes-services-destroy-module.sh
