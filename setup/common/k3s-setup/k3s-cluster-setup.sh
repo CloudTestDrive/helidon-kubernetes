@@ -102,14 +102,14 @@ else
 fi
 
 # make sure we can get some availability domain info
-UPPER_CASE_REGION=`echo $OCI_REGION | tr [a-z] [A-Z]`
-AVAILABILITY_DOMAIN=`oci iam availability-domain list --compartment-id $OCI_TENANCY | jq -r '.data[] | .name' | grep $UPPER_CASE_REGION | tail -n 1`
-
-if [ -z "$AVAILABILITY_DOMAIN" ]
-then
-  echo "Unable to locate any availability domains, cannot continue"
-  exit 100
-fi
+#UPPER_CASE_REGION=`echo $OCI_REGION | tr [a-z] [A-Z]`
+#AVAILABILITY_DOMAIN=`oci iam availability-domain list --compartment-id $OCI_TENANCY | jq -r '.data[] | .name' | grep $UPPER_CASE_REGION | tail -n 1`
+#
+#if [ -z "$AVAILABILITY_DOMAIN" ]
+#then
+#  echo "Unable to locate any availability domains, cannot continue"
+#  exit 100
+#fi
 
 CLUSTER_NAME="$USER_INITIALS"
 CLUSTER_NAME_FULL="lab-$USER_INITIALS-$CLUSTER_CONTEXT_NAME"
@@ -167,7 +167,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     K3S_KUBERNETES_VERSION="latest"
     # set these to ensure that there will be some defaults
     COMPUTE_SHAPE="VM.Standard.E4.Flex"
-    OPERATING_SYSTEM="oraclelinux"
+    #OPERATING_SYSTEM="oraclelinux"
     CONTROL_PLANE_OCPUS=1
     CONTROL_PLANE_MEMORY=16
     CONTROL_PLANE_EXTRA_NODE_COUNT=0
@@ -324,8 +324,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     bash $UPDATE_FILE_SCRIPT $TFM OCI_REGION "$OCI_REGION"
     echo "Update $TF_MODULE_FILE set OCI_HOME_REGION"
     bash $UPDATE_FILE_SCRIPT $TFM OCI_HOME_REGION "$OCI_HOME_REGION"
-    echo "Update $TF_MODULE_FILE set AVAILABILITY_DOMAIN"
-    bash $UPDATE_FILE_SCRIPT $TFM AVAILABILITY_DOMAIN "$AVAILABILITY_DOMAIN"
+    #echo "Update $TF_MODULE_FILE set AVAILABILITY_DOMAIN"
+    #bash $UPDATE_FILE_SCRIPT $TFM AVAILABILITY_DOMAIN "$AVAILABILITY_DOMAIN"
     echo "Update $TF_MODULE_FILE set K3S_ENVIRONMENT"
     bash $UPDATE_FILE_SCRIPT $TFM K3S_ENVIRONMENT "$K3S_ENVIRONMENT"
     echo "Update $TF_MODULE_FILE to set Cluster name"

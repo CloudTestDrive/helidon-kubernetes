@@ -8,10 +8,10 @@ echo "Using pre-loaded K3S TF data in $K3S_GH_URL for now, this needs to be swit
 #K3S_KUBERNETES_VERSION="v""$K3S_KUBERNETES_VERSION_BASE""+k3s1"
 K3S_KUBERNETES_VERSION="latest"
 #PROVIDER_VERSION=">= 4.67.3"
-PROVIDER_VERSION=">= 4.64.0"
+PROVIDER_VERSION=">= 4.91.0"
 # default networking values, if using multiple clusters these reall should be overidden
 VCN_CIDR="10.0.110.0/16"
 SERVER_SUBNET_CIDR="10.0.110.0/24"
 WORKER_SUBNET_CIDR="10.0.111.0/24"
-OPERATING_SYSTEM=oraclelinux
-OPERATING_SYSTEM_VERSION=8
+#OPERATING_SYSTEM=oraclelinux
+#OPERATING_SYSTEM_VERSION=8
