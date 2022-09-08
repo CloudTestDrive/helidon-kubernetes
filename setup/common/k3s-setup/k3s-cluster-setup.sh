@@ -144,9 +144,9 @@ K3S_SSH_PRIVATE_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"
 K3S_SSH_PUBLIC_KEY_PATH="$HOME/ssh/id_rsa_k3s_""$CLUSTER_CONTEXT_NAME"".pub"
 cd $PRE_SSH_SAVED_DIR
 
-OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+#OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
 
-OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+#OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
 
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
 TF_GIT_BASE=$HOME/k3s-terraform
@@ -299,7 +299,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     cp $TF_SOURCE_CONFIG_DIR/$TF_PROVIDER_FILE $TFP
     cp $TF_SOURCE_CONFIG_DIR/$TF_MODULE_FILE $TFM
     cp $TF_SOURCE_CONFIG_DIR/$TF_OUTPUTS_FILE $TFO
-    cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
+    #cp $TF_SOURCE_CONFIG_DIR/$TEMP_VERSIONS $TFV
     cd $TF_DIR
     echo "Processing the provider information"
     echo "Update $TF_PROVIDER_FILE set OCI_REGION"
@@ -366,8 +366,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     echo "Updating module instance info"
     echo "Update $TF_MODULE_FILE set COMPUTE_SHAPE"
     bash $UPDATE_FILE_SCRIPT $TFM COMPUTE_SHAPE "$COMPUTE_SHAPE"
-    echo "Update $TF_MODULE_FILE set OPERATING_SYSTEM"
-    bash $UPDATE_FILE_SCRIPT $TFM OPERATING_SYSTEM $OPERATING_SYSTEM
+    #echo "Update $TF_MODULE_FILE set OPERATING_SYSTEM"
+    #bash $UPDATE_FILE_SCRIPT $TFM OPERATING_SYSTEM $OPERATING_SYSTEM
     #echo "Update $TF_MODULE_FILE set IMAGE_OCID"
     #bash $UPDATE_FILE_SCRIPT $TFM IMAGE_OCID $IMAGE_OCID
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_OCPUS"
@@ -461,7 +461,6 @@ fi
     K3S_LB_NSG_OCID=`terraform output public_lb_nsg_id | sed -e 's/"//g'`
     K3S_WORKER_NSG_OCID=`terraform output lb_to_workers_nsg_id | sed -e 's/"//g'`
     K3S_SERVER_IP=`terraform output k3s_primary_server_ip |  sed -e 's/"//g'`
-    cd $SAVED_DIR
 
   echo "Getting the k3s kubeconfig"
   # ensure the context file exists
@@ -474,7 +473,7 @@ fi
   
   TMP_KUBE_CONF="$CLUSTER_NAME_FULL"_KUBECONF.yaml
   
-  scp -i $K3S_SSH_PRIVATE_KEY_PATH -o StrictHostKeyChecking=accept-new  opc@"$K3S_SERVER_IP":/etc/rancher/k3s/k3s.yaml $TMP_KUBE_CONF
+  scp -i $K3S_SSH_PRIVATE_KEY_PATH -o StrictHostKeyChecking=no  opc@"$K3S_SERVER_IP":/etc/rancher/k3s/k3s.yaml $TMP_KUBE_CONF
   
   
   
@@ -496,6 +495,8 @@ fi
   chmod 600 $HOME/.kube/config
   # remove temp version
   rm $TMP_KUBE_CONF
+  
+  cd $SAVED_DIR
 
   echo "$K3S_REUSED_NAME=false" >> $SETTINGS
   # it's now save to save the OCID's as we've finished
