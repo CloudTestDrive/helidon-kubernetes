@@ -33,6 +33,11 @@ then
   exit 0
 fi
 
+
+    GETKC=false
+  
+if [ "$GETKC" = "true" ]
+then
 CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name 2>/dev/null`
 
 if [ -z $CONTEXT_NAME_EXISTS ]
@@ -41,6 +46,9 @@ then
 else
   echo "A kubernetes context called $CLUSTER_CONTEXT_NAME does not exist, cannot proceed"
   exit 40
+fi
+else
+  echo "GETKC disabled, won't check for context, this needs to be fixed"
 fi
 # Where we will put the TF files, don't keep inthe git repo as they get clobbered when we rebuild it
 TF_GIT_BASE=$HOME/k3s-terraform
@@ -65,7 +73,7 @@ then
     echo "Planning destrucion"
     terraform plan -destroy -out=$TF_DIR/destroy.plan
     echo "Destroying cluster"
-    terraform apply -destroy -parallelism=1 -auto-approve $TF_DIR/destroy.plan
+    terraform apply -destroy $TF_DIR/destroy.plan
     echo "Removing terraform scripts"
     cd $SAVED_DIR
     rm -rf $TF_DIR
@@ -79,7 +87,8 @@ then
     KUBERNETES_CLUSTER_TYPE_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_CLUSTER_TYPE_"$CLUSTER_CONTEXT_NAME`
     bash ../delete-from-saved-settings.sh $KUBERNETES_CLUSTER_TYPE_NAME
     bash ../delete-from-saved-settings.sh $K3S_REUSED_NAME
-
+if [ "$GETKC" = "true" ]
+then
     echo "Removing context $CLUSTER_CONTEXT_NAME from the local kubernetes configuration"
     CLUSTER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME  --no-headers=true | sed -e 's/*//' | awk '{print $2}'`
     USER_INFO=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME   --no-headers=true  | sed -e 's/*//' | awk '{print $3}'`
@@ -87,6 +96,9 @@ then
     kubectl config delete-cluster $CLUSTER_INFO
     kubectl config delete-context $CLUSTER_CONTEXT_NAME
     echo "The current kubernetes context has been removed, if you have others in your configuration you will need to select it using kubectl configuration set-context context-name"
+else
+  echo "The k3s contest was not obtained, so can't remove it, thsi will need being fixed once Ali gives us a way to get the kube cofig"
+fi
   else
     echo "no state file, nothing to destroy"
     echo "cannot proceed"
@@ -107,38 +119,38 @@ cd $SAVED_DIR
 # so we have to do the work to remove it from the vault and can't use the scritps that do that already as
 # they use the OCID
 
-#echo "Scheduling deletion of K3S Token secret"
-#K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
-#K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
-#if [ -z "$K3S_TOKEN_SECRET" ]
-#then
-#  echo "Cannot locate the name of the K3S token secret in the vault, so can't delete it"
-#else
-#  echo "Attempting to locate Vault secret $K3S_TOKEN_SECRET"
-#  K3S_TOKEN_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $K3S_TOKEN_SECRET --vault-id $VAULT_OCID | jq -j '.data[0].id'`
-#  if [ -z "$K3S_TOKEN_SECRET_OCID" ]
-#  then
-#    K3S_TOKEN_SECRET_OCID="null"
-#  fi
-#  if [ "$K3S_TOKEN_SECRET_OCID" = "null" ]
-#  then
-#    echo "Unable to locate an active secret named $K3S_TOKEN_SECRET in the vault"
-#  else
-#    echo "Located secret deleting"
-#    oci vault secret schedule-secret-deletion --secret-id "$K3S_TOKEN_SECRET_OCID"
-#    RESP=$?
-#    if [ $RESP -ne 0 ]
-#    then
-#      echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP"
-#    fi 
-#  fi
-#fi
+echo "Scheduling deletion of K3S Token secret"
+K3S_TOKEN_SECRET_NAME=`bash ../settings/to-valid-name.sh  "K3S_TOKEN_SECRET_NAME_"$CLUSTER_CONTEXT_NAME`
+K3S_TOKEN_SECRET="${!K3S_TOKEN_SECRET_NAME}"
+if [ -z "$K3S_TOKEN_SECRET" ]
+then
+  echo "Cannot locate the name of the K3S token secret in the vault, so can't delete it"
+else
+  echo "Attempting to locate Vault secret $K3S_TOKEN_SECRET"
+  K3S_TOKEN_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $K3S_TOKEN_SECRET --vault-id $VAULT_OCID | jq -j '.data[0].id'`
+  if [ -z "$K3S_TOKEN_SECRET_OCID" ]
+  then
+    K3S_TOKEN_SECRET_OCID="null"
+  fi
+  if [ "$K3S_TOKEN_SECRET_OCID" = "null" ]
+  then
+    echo "Unable to locate an active secret named $K3S_TOKEN_SECRET in the vault"
+  else
+    echo "Located secret deleting"
+    oci vault secret schedule-secret-deletion --secret-id "$K3S_TOKEN_SECRET_OCID"
+    RESP=$?
+    if [ $RESP -ne 0 ]
+    then
+      echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP"
+    fi 
+  fi
+fi
 
 KUBERNETES_VERSION_NAME=`bash ../settings/to-valid-name.sh "KUBERNETES_VERSION_"$CLUSTER_CONTEXT_NAME`
 bash ../delete-from-saved-settings.sh "$KUBERNETES_VERSION_NAME"
 bash ../delete-from-saved-settings.sh "$K3S_REUSED_NAME"
 bash ../delete-from-saved-settings.sh "$KUBERNETES_CLUSTER_TYPE_NAME"
-#bash ../delete-from-saved-settings.sh "$K3S_TOKEN_SECRET_NAME"
+bash ../delete-from-saved-settings.sh "$K3S_TOKEN_SECRET_NAME"
 
 CLUSTER_NETWORK_FILE=$HOME/clusterNetwork.$CLUSTER_CONTEXT_NAME
 if [ -f $CLUSTER_NETWORK_FILE ]
