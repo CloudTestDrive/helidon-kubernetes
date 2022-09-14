@@ -167,7 +167,7 @@ TF_GIT_BASE=$HOME/k3s-terraform
     K3S_KUBERNETES_VERSION="latest"
     # set these to ensure that there will be some defaults
     COMPUTE_SHAPE="VM.Standard.E4.Flex"
-    #OPERATING_SYSTEM="oraclelinux"
+    OPERATING_SYSTEM="oraclelinux"
     CONTROL_PLANE_OCPUS=1
     CONTROL_PLANE_MEMORY=16
     CONTROL_PLANE_EXTRA_NODE_COUNT=0
@@ -366,8 +366,8 @@ TF_GIT_BASE=$HOME/k3s-terraform
     echo "Updating module instance info"
     echo "Update $TF_MODULE_FILE set COMPUTE_SHAPE"
     bash $UPDATE_FILE_SCRIPT $TFM COMPUTE_SHAPE "$COMPUTE_SHAPE"
-    #echo "Update $TF_MODULE_FILE set OPERATING_SYSTEM"
-    #bash $UPDATE_FILE_SCRIPT $TFM OPERATING_SYSTEM $OPERATING_SYSTEM
+    echo "Update $TF_MODULE_FILE set OPERATING_SYSTEM"
+    bash $UPDATE_FILE_SCRIPT $TFM OPERATING_SYSTEM $OPERATING_SYSTEM
     #echo "Update $TF_MODULE_FILE set IMAGE_OCID"
     #bash $UPDATE_FILE_SCRIPT $TFM IMAGE_OCID $IMAGE_OCID
     echo "Update $TF_MODULE_FILE set CONTROL_PLANE_OCPUS"
