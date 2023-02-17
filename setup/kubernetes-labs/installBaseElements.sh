@@ -96,10 +96,13 @@ echo >> $INFO_FILE
 echo "Installing dashboard user"
 cd $HOME/helidon-kubernetes/base-kubernetes
 kubectl apply -f dashboard-user.yaml --context $CLUSTER_CONTEXT_NAME
-echo "getting dashboard token"
-dashboardUserSecret=`kubectl -n kube-system get secret  --context $CLUSTER_CONTEXT_NAME | grep dashboard-user | awk '{print $1}'`
-dashboardUserTokenEncoded=`kubectl -n kube-system get secret $dashboardUserSecret  --context $CLUSTER_CONTEXT_NAME -o=jsonpath='{.data.token}'`
-dashboardUserToken=`echo $dashboardUserTokenEncoded | base64 -d`
+echo "Creating dashboard token"
+# before K8S 1.24 the token was created when the servcie acct was created, that has changes and we have to create it manually now
+dashboardUserToken=`kubectl create token dashboard-user -n kube-system --context $CLUSTER_CONTEXT_NAME`
+# this is the old rpew 1.24 way of doing things
+#dashboardUserSecret=`kubectl -n kube-system get secret  --context $CLUSTER_CONTEXT_NAME | grep dashboard-user | awk '{print $1}'`
+#dashboardUserTokenEncoded=`kubectl -n kube-system get secret $dashboardUserSecret  --context $CLUSTER_CONTEXT_NAME -o=jsonpath='{.data.token}'`
+#dashboardUserToken=`echo $dashboardUserTokenEncoded | base64 -d`
 echo "Dashboard token is $dashboardUserToken"
 echo Dashboard Token >> $INFO_FILE
 echo $dashboardUserToken >> $INFO_FILE

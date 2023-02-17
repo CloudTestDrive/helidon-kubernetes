@@ -1,8 +1,8 @@
 #!/bin/bash
-ingressHelmChartVersion=4.1.4
-dashboardHelmChartVersion=5.7.0
-prometheusHelmChartVersion=15.11.0
-grafanaHelmChartVerion=6.32.10
-elasticSearchHelmChartVersion=7.17.3
-metricsServerHelmChartVersion=3.8.2
-prometheusStackHelmChartVersion=39.2.1
+ingressHelmChartVersion=4.5.2
+dashboardHelmChartVersion=6.0.0
+prometheusHelmChartVersion=19.6.1
+grafanaHelmChartVerion=6.50.7
+elasticSearchHelmChartVersion=8.5.1
+metricsServerHelmChartVersion=3.8.3
+prometheusStackHelmChartVersion=45.1.1

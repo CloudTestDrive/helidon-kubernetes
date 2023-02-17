@@ -22,7 +22,7 @@ module oke {
   label_prefix="lab-K8S_CONTEXT"
 
   node_pools = {
-    POOL_NAME = { shape = "WORKER_SHAPE", ocpus = WORKER_OCPUS, memory = WORKER_MEMORY, node_pool_size = WORKER_COUNT, boot_volume_size = WORKER_BOOT_SIZE, label = {pool = "POOL_NAME" } }
+    POOL_NAME = { shape = "WORKER_SHAPE", ocpus = WORKER_OCPUS, memory = WORKER_MEMORY, node_pool_size = WORKER_COUNT, boot_volume_size = WORKER_BOOT_SIZE, label = {pool = "POOL_NAME" }, autoscaler = false, max_node_pool_size = WORKER_COUNT }
   } 
 
    providers = {
