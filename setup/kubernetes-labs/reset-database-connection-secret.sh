@@ -26,7 +26,7 @@ fi
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY="y"
-  echo "Auto confirm enabled, Updating the database connection secret config to reset $dbname as the database connection defaults to $REPLY"
+  echo "Auto confirm enabled, Updating the database connection secret config to reset $DB_NAME as the database connection defaults to $REPLY"
 else
   read -p "Proceed (y/n) ?" REPLY
 fi
@@ -39,7 +39,7 @@ else
 fi
 DB_SECRET=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
 TEMP="$DB_SECRET".tmp
-echo "Updating the database connection secret config in $config to reset $dbname as the database connection"
+echo "Updating the database connection secret config in $DB_SECRET to reset $DB_NAME as the database connection"
 # echo command is "s/$DB_NAME/<database connection name>/"
 cat $DB_SECRET | sed -e "s/$DB_NAME/<database connection name>/" > $TEMP
 rm $DB_SECRET
