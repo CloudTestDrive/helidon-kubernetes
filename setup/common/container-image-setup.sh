@@ -277,4 +277,10 @@ fi
 cd $SCRIPTS_DIR
 bash storefront-deployment-update.sh set $OCIR_STOREFRONT_LOCATION $OBJECT_STORAGE_NAMESPACE $OCIR_STOREFRONT_NAME
 
-rm -rf $WORK_DIR
+if [ -z "$RETAIN_IMAGE_WORK_DIR" ]
+then
+  echo "Destroying temp image working space $WORK_DIR"
+  rm -rf $WORK_DIR
+else 
+  echo "Retaining the image repo $WORK_DIR"
+fi
