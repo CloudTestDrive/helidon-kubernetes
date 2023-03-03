@@ -12,7 +12,7 @@ fi
 TOPIC_NAME=$1
 if [ $# -gt 1 ]
 then
-  TOPIC_DESCRIPTION=$1
+  TOPIC_DESCRIPTION=$2
 else
   TOPIC_DESCRIPTION="Not provided"
 fi
@@ -52,7 +52,16 @@ else
   exit 0
 fi
 
-# try to locate an existing instance
+# try to locate an existing instance that's in the deleting state
+TOPIC_DELEING_OCID=`oci ons topic list --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" | jq -j '.data[] | select (."lifecycle-state" == "DELETING") | ."topic-id"'`
+if [ -z "$TOPIC_DELEING_OCID" ]
+then
+  echo "Topic $TOPIC_NAME does exist in a deleting state continuing"
+else 
+  echo "Topic $TOPIC_NAME is in a deleting state, unable to continue"
+  exit 3
+fi
+
 TOPIC_OCID=`oci ons topic list --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" | jq -j '.data[] | select (."lifecycle-state" != "DELETING") | ."topic-id"'`
 
 if [ -z "$TOPIC_OCID" ]
