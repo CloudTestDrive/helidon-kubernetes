@@ -33,6 +33,8 @@ then
   exit 2
 fi
 
+POLICY_NAME_CAPS=`bash ../settings/to-valid-name.sh $POLICY_NAME`
+POLICY_REUSED_NAME=POLICY_"$POLICY_NAME_CAPS"_REUSED
 
 # look for reuse info on the group, if so it's already there
 
