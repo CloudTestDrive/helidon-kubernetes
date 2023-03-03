@@ -1,6 +1,6 @@
 #!/bin/bash -f
 
-if [ $# -lt 4 ]
+if [ $# -lt 1 ]
 then
   echo "The policy setup script requires one argument:"
   echo "the name of the topic to to create"
