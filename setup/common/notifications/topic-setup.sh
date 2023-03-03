@@ -4,10 +4,18 @@ if [ $# -lt 1 ]
 then
   echo "The policy setup script requires one argument:"
   echo "the name of the topic to to create"
+  echo "Optional args"
+  echo "Description of the topic"
   exit 1
 fi
 
 TOPIC_NAME=$1
+if [ $# -gt 1 ]
+then
+  TOPIC_DESCRIPTION=$1
+else
+  TOPIC_DESCRIPTION="Not provided"
+fi
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -70,7 +78,7 @@ else
   fi
 fi
 echo "Creating topic $TOPIC_NAME"
-TOPIC_OCID=`oci ons topic create --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" | jq -e '.data."topic-id"'`
+TOPIC_OCID=`oci ons topic create --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" --description "$TOPIC_DESCRIPTION" | jq -e '.data."topic-id"'`
 if [ -z "$TOPIC_OCID" ]
 then
   echo "Topic $TOPIC_NAME could not be created, unable to continue"
@@ -78,4 +86,4 @@ then
 fi
 echo "Created topic $TOPIC_NAME"
 echo "$TOPIC_OCID_NAME=$TOPIC_OCID" >> $SETTINGS
-echo "$TOPIC_REUSED_NAME=true" >> $SETTINGS
+echo "$TOPIC_REUSED_NAME=false" >> $SETTINGS

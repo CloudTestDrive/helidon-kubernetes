@@ -48,7 +48,7 @@ TOPIC_OCID="${!TOPIC_OCID_NAME}"
 
 echo "Deleting topic $TOPIC_NAME"
 
-oci ons topic delete --topic-id  --force 
+oci ons topic delete --topic-id  $TOPIC_OCID --force 
 bash ../delete-from-saved-settings.sh $TOPIC_OCID_NAME
 bash ../delete-from-saved-settings.sh $TOPIC_REUSED_NAME
 
