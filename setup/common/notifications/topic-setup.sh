@@ -2,7 +2,7 @@
 
 if [ $# -lt 1 ]
 then
-  echo "The policy setup script requires one argument:"
+  echo "The topic setup script requires one argument:"
   echo "the name of the topic to to create"
   echo "Optional args"
   echo "Description of the topic"
@@ -41,8 +41,8 @@ then
 fi
 
 TOPIC_NAME_CAPS=`bash ../settings/to-valid-name.sh $TOPIC_NAME`
-TOPIC_OCID_NAME=POLICY_"$TOPIC_NAME_CAPS"_OCID
-TOPIC_REUSED_NAME=POLICY_"$TOPIC_NAME_CAPS"_REUSED
+TOPIC_OCID_NAME=TOPIC_"$TOPIC_NAME_CAPS"_OCID
+TOPIC_REUSED_NAME=TOPIC_"$TOPIC_NAME_CAPS"_REUSED
 
 if [ -z "${!TOPIC_REUSED_NAME}" ]
 then
