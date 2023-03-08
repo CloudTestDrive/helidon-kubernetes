@@ -12,7 +12,7 @@ fi
 TOPIC_NAME=$1
 if [ $# -gt 1 ]
 then
-  TOPIC_DESCRIPTION=$2
+  TOPIC_DESCRIPTION="$2"
 else
   TOPIC_DESCRIPTION="Not provided"
 fi

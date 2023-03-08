@@ -34,8 +34,11 @@ fi
 
 if [ "${!TOPIC_REUSED_NAME}" = true ]
 then
-  echo "Cannot delete a topic group not created by these scripts, please delete the topic by hand"
+  echo "Cannot delete a topic group not created by these scripts, deleting the saves settings, please delete the topic by hand"
+  bash ../delete-from-saved-settings.sh $TOPIC_OCID_NAME
+  bash ../delete-from-saved-settings.sh $TOPIC_REUSED_NAME
   exit 0
+  
 fi
 
 if [ -z "${!TOPIC_OCID_NAME}" ]
