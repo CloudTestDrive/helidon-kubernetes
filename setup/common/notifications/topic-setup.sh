@@ -40,6 +40,7 @@ then
   export AUTO_CONFIRM=false
 fi
 
+echo "Getting var names for topic $TOPIC_NAME"
 TOPIC_OCID_NAME=`bash ./get-topic-ocid-name.sh $TOPIC_NAME`
 TOPIC_REUSED_NAME=`bash ./get-topic-reused-name.sh $TOPIC_NAME`
 

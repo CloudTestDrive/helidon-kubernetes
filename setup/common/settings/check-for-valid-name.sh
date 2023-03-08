@@ -1,8 +1,9 @@
 #!/bin/bash -f
 
 if [ "$#" -lt 1 ]
-then
-  echo "The check for valid name script requires one argument the word to check"
+then  
+  SCRIPT_NAME=`basename $0`
+  echo "The $SCRIPT_NAME script requires one argument the word to check"
   exit -1
 fi
 
