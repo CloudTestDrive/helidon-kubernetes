@@ -2,7 +2,8 @@
 
 if [ $# -lt 1 ]
 then
-  echo "The user group setup script requires one argument"
+  SCRIPT_NAME=`basename $0`
+  echo "The $SCRIPT_NAME requires one argument"
   echo "the name of the topic to destroy"
   exit 1
 fi

@@ -2,7 +2,8 @@
 
 if [ $# -lt 1 ]
 then
-  echo "The topic setup script requires one argument:"
+  SCRIPT_NAME=`basename $0`
+  echo "The $SCRIPT_NAME requires one argument:"
   echo "the name of the topic to to create"
   echo "Optional args"
   echo "Description of the topic"
