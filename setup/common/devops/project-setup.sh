@@ -72,7 +72,15 @@ then
   exit -5
 fi
 
-DEVOPS_PROJECT_OCID=`oci devops project list --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" | jq -j '.data[] | select (."lifecycle-state" != "DELETING") | ."topic-id"'`
+DEVOPS_PROJECT_NON_ACTIVE_OCID=`oci devops project list --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
+if [ -z "$DEVOPS_PROJECT_NON_ACTIVE_OCID" ]
+then
+  echo "Devops project $DEVOPS_PROJECT_NAME does not exist in a non active state"
+else
+  echo "Devops project $DEVOPS_PROJECT_NAME exist in a non active state, cannot proceed"
+  exit 10
+fi
+DEVOPS_PROJECT_OCID=`oci devops project list --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
 
 if [ -z "$DEVOPS_PROJECT_OCID" ]
 then
@@ -97,7 +105,7 @@ else
   fi
 fi
 echo "Creating devops project $DEVOPS_PROJECT_NAME"
-DEVOPS_PROJECT_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state SUCCEEDED | jq -e '.data.id'`
+DEVOPS_PROJECT_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state SUCCEEDED | jq -j '.data.id'`
 if [ -z "$DEVOPS_PROJECT_OCID" ]
 then
   echo "devops project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
