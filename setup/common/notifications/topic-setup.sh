@@ -40,9 +40,8 @@ then
   export AUTO_CONFIRM=false
 fi
 
-TOPIC_NAME_CAPS=`bash ../settings/to-valid-name.sh $TOPIC_NAME`
-TOPIC_OCID_NAME=TOPIC_"$TOPIC_NAME_CAPS"_OCID
-TOPIC_REUSED_NAME=TOPIC_"$TOPIC_NAME_CAPS"_REUSED
+TOPIC_OCID_NAME=`bash ./get-topic-ocid-name.sh $TOPIC_NAME`
+TOPIC_REUSED_NAME=`bash ./get-topic-reused-name.sh $TOPIC_NAME`
 
 if [ -z "${!TOPIC_REUSED_NAME}" ]
 then

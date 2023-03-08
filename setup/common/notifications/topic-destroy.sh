@@ -8,9 +8,8 @@ then
 fi
 
 TOPIC_NAME=$1
-TOPIC_NAME_CAPS=`bash ../settings/to-valid-name.sh $TOPIC_NAME`
-TOPIC_OCID_NAME=TOPIC_"$TOPIC_NAME_CAPS"_OCID
-TOPIC_REUSED_NAME=TOPIC_"$TOPIC_NAME_CAPS"_REUSED
+TOPIC_OCID_NAME=`bash ./get-topic-ocid-name.sh $TOPIC_NAME`
+TOPIC_REUSED_NAME=`bash ./get-topic-reused-name.sh $TOPIC_NAME`
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
