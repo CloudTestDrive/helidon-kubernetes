@@ -53,7 +53,7 @@ fi
 
 echo "Deleting devops repo $DEVOPS_REPO_NAME  in project $DEVOPS_PROJECT_NAME"
 
-oci devops repo delete --repository-id  $DEVOPS_REPO_OCID --force 
+oci devops repository delete --repository-id  $DEVOPS_REPO_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $DEVOPS_REPO_OCID_NAME
 bash ../delete-from-saved-settings.sh $DEVOPS_REPO_REUSED_NAME
 

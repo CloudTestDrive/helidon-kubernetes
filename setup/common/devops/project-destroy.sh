@@ -49,7 +49,7 @@ DEVOPS_PROJECT_OCID="${!DEVOPS_PROJECT_OCID_NAME}"
 
 echo "Deleting devops project $DEVOPS_PROJECT_NAME"
 
-oci devops project delete --project-id  $DEVOPS_PROJECT_OCID --force 
+oci devops project delete --project-id  $DEVOPS_PROJECT_OCID --force  --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $DEVOPS_PROJECT_OCID_NAME
 bash ../delete-from-saved-settings.sh $DEVOPS_PROJECT_REUSED_NAME
 
