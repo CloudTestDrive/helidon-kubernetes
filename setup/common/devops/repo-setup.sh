@@ -73,7 +73,7 @@ else
   exit 0
 fi
 
-DEVOPS_REPO_NON_ACTIVE_OCID=`oci devops repository list --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_REPO_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
+DEVOPS_REPO_NON_ACTIVE_OCID=`oci devops repository list --name "$DEVOPS_REPO_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
 if [ -z "$DEVOPS_REPO_NON_ACTIVE_OCID" ]
 then
   echo "Devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME does not exist in a non active state"
@@ -81,7 +81,7 @@ else
   echo "Devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME exists in a non active state, cannot proceed"
   exit 10
 fi
-DEVOPS_REPO_OCID=`oci devops repository list --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_REPO_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
+DEVOPS_REPO_OCID=`oci devops repository list --name "$DEVOPS_REPO_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
 
 if [ -z "$DEVOPS_REPO_OCID" ]
 then
@@ -106,7 +106,7 @@ else
   fi
 fi
 echo "Creating devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME"
-DEVOPS_REPO_OCID=`oci devops repository create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_REPO_NAME" --project-id "$DEVOPS_PROJECT_OCID" --repository-type "$DEVOPS_REPO_TYPE" --description "$DEVOPS_REPO_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state SUCCEEDED | jq -j '.data.id'`
+DEVOPS_REPO_OCID=`oci devops repository create --name "$DEVOPS_REPO_NAME" --project-id "$DEVOPS_PROJECT_OCID" --repository-type "$DEVOPS_REPO_TYPE" --description "$DEVOPS_REPO_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state SUCCEEDED | jq -j '.data.id'`
 if [ -z "$DEVOPS_REPO_OCID" ]
 then
   echo "devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
