@@ -105,7 +105,7 @@ else
   fi
 fi
 echo "Creating devops project $DEVOPS_PROJECT_NAME"
-DEVOPS_PROJECT_WORK_REQUEST_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" | jq -j '.data.id'`
+DEVOPS_PROJECT_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" | jq -j '.data.id'`
 if [ -z "$DEVOPS_PROJECT_OCID" ]
 then
   echo "devops project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
