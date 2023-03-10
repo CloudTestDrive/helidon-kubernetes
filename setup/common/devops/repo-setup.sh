@@ -90,9 +90,9 @@ else
   if [ "$AUTO_CONFIRM" = true ]
   then
     REPLY="y"
-    echo "Devops repo $DEVOPS_PROJECT_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? defaulting to $REPLY"
+    echo "Devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? defaulting to $REPLY"
   else
-    read -p "Devops repo $DEVOPS_PROJECT_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? (y/n) ? " REPLY  
+    read -p "Devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? (y/n) ? " REPLY  
   fi
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
