@@ -88,7 +88,7 @@ else
   fi
 fi
 echo "Creating topic $TOPIC_NAME"
-TOPIC_OCID=`oci ons topic create --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" --description "$TOPIC_DESCRIPTION" | jq -e '.data."topic-id"'`
+TOPIC_OCID=`oci ons topic create --compartment-id $COMPARTMENT_OCID --name "$TOPIC_NAME" --description "$TOPIC_DESCRIPTION" | jq -j '.data."topic-id"'`
 if [ -z "$TOPIC_OCID" ]
 then
   echo "Topic $TOPIC_NAME could not be created, unable to continue"
