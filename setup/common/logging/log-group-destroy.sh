@@ -52,7 +52,7 @@ LOG_GROUP_OCID="${!LOG_GROUP_OCID_NAME}"
 
 echo "Deleting log group $LOG_GROUP_NAME"
 
-oci ons log-group delete --log-group-id  $LOG_GROUP_OCID --force  --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
+oci logging log-group delete --log-group-id  $LOG_GROUP_OCID --force  --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $LOG_GROUP_OCID_NAME
 bash ../delete-from-saved-settings.sh $LOG_GROUP_REUSED_NAME
 
