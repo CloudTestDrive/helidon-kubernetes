@@ -44,7 +44,7 @@ then
 fi
 # Get the OCID for the repo
 DEVOPS_REPO_OCID="${!DEVOPS_REPO_OCID_NAME}"
-if [ -z "${!DEVOPS_REPO_OCID}" ]
+if [ -z "$DEVOPS_REPO_OCID" ]
 then
   echo "No devops repo OCID information, cannot proceed"
   exit 0
