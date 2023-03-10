@@ -38,6 +38,8 @@ fi
 if [ "${!DEVOPS_REPO_REUSED_NAME}" = true ]
 then
   echo "Cannot delete a devops repo not created by these scripts, please delete the repo by hand"
+  bash ../delete-from-saved-settings.sh $DEVOPS_REPO_OCID_NAME
+  bash ../delete-from-saved-settings.sh $DEVOPS_REPO_REUSED_NAME
   exit 0
 fi
 # Get the OCID for the repo
