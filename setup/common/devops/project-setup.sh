@@ -105,7 +105,9 @@ else
   fi
 fi
 echo "Creating devops project $DEVOPS_PROJECT_NAME"
-DEVOPS_PROJECT_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" | jq -j '.data.id'`
+# if waiting for state this returns the work request details (that's what we are actually waiting
+# on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
+DEVOPS_PROJECT_OCID=`oci devops project create --compartment-id $COMPARTMENT_OCID --name "$DEVOPS_PROJECT_NAME" --description "$DEVOPS_PROJECT_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.resources[0].identifier'`
 if [ -z "$DEVOPS_PROJECT_OCID" ]
 then
   echo "devops project $DEVOPS_PROJECT_NAME could not be created, unable to continue"

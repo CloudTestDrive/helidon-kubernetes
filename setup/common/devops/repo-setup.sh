@@ -106,7 +106,9 @@ else
   fi
 fi
 echo "Creating devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME"
-DEVOPS_REPO_OCID=`oci devops repository create --name "$DEVOPS_REPO_NAME" --project-id "$DEVOPS_PROJECT_OCID" --repository-type "$DEVOPS_REPO_TYPE" --description "$DEVOPS_REPO_DESCRIPTION" --notification-config "{\"topicId\":\"$TOPIC_OCID\"}" --wait-for-state SUCCEEDED | jq -j '.data.id'`
+# if waiting for state this returns the work request details (that's what we are actually waiting
+# on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
+DEVOPS_REPO_OCID=`oci devops repository create --name "$DEVOPS_REPO_NAME" --project-id "$DEVOPS_PROJECT_OCID" --repository-type "$DEVOPS_REPO_TYPE" --description "$DEVOPS_REPO_DESCRIPTION" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.resources[0].identifier'`
 if [ -z "$DEVOPS_REPO_OCID" ]
 then
   echo "devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
