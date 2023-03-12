@@ -71,7 +71,7 @@ else
   exit 0
 fi
 
-DEVOPS_BUILD_PIPELINE_NON_ACTIVE_OCID=`oci devops build-pipeline list --name "$DEVOPS_BUILD_PIPELINE_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
+DEVOPS_BUILD_PIPELINE_NON_ACTIVE_OCID=`oci devops build-pipeline list --display-name "$DEVOPS_BUILD_PIPELINE_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
 if [ -z "$DEVOPS_BUILD_PIPELINE_NON_ACTIVE_OCID" ]
 then
   echo "Devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME does not exist in a non active state"
@@ -79,7 +79,7 @@ else
   echo "Devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME exists in a non active state, cannot proceed"
   exit 10
 fi
-DEVOPS_BUILD_PIPELINE_OCID=`oci devops build-pipeline list --name "$DEVOPS_BUILD_PIPELINE_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
+DEVOPS_BUILD_PIPELINE_OCID=`oci devops build-pipeline list --display-name "$DEVOPS_BUILD_PIPELINE_NAME" --project-id $DEVOPS_PROJECT_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
 
 if [ -z "$DEVOPS_BUILD_PIPELINE_OCID" ]
 then
