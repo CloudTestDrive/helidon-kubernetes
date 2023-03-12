@@ -9,8 +9,6 @@ then
   echo "  already been created with the project-setup.sh script)"
   echo "Optional args"
   echo "  Description of the build pipeline"
-  echo "Note"
-  echo " This script only creates hosted build pipelinesitories, not mirrored ones"
   exit 1
 fi
 
