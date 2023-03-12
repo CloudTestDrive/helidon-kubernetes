@@ -53,7 +53,7 @@ fi
 
 echo "Deleting devops deploy pipeline $DEVOPS_DEPLOPY_PIPELINE_NAME  in project $DEVOPS_PROJECT_NAME"
 
-oci devops deploy-pipeline delete --deploy-pipeline-id  $DEVOPS_DEPLOPY_PIPELINE_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
+oci devops deploy-pipeline delete --pipeline-id  $DEVOPS_DEPLOPY_PIPELINE_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $DEVOPS_DEPLOPY_PIPELINE_OCID_NAME
 bash ../delete-from-saved-settings.sh $DEVOPS_DEPLOPY_PIPELINE_REUSED_NAME
 
