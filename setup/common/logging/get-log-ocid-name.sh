@@ -1,4 +1,4 @@
-/bin/bash -f
+#!/bin/bash -f
 
 if [ $# -lt 2 ]
 then
