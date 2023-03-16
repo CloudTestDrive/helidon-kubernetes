@@ -43,8 +43,8 @@ then
   exit 0
 fi
 # Get the OCID for the repo
-DEVOPS_REPO_OCID="${!DEVOPS_REPO_OCID_NAME}"
-if [ -z "$DEVOPS_REPO_OCID" ]
+LOG_OCID="${!LOG_OCID_NAME}"
+if [ -z "$LOG_OCID" ]
 then
   echo "No log OCID information, cannot proceed"
   exit 0
@@ -53,7 +53,7 @@ fi
 
 echo "Deleting log $LOG_NAME in log group $LOG_GROUP_NAME"
 
-oci logging log delete --log-id  $DEVOPS_REPO_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
+oci logging log delete --log-id  $LOG_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $LOG_OCID_NAME
 bash ../delete-from-saved-settings.sh $LOG_REUSED_NAME
 
