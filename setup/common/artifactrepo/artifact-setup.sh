@@ -34,7 +34,7 @@ ARTIFACT_REPO_OCID_NAME=`bash ./get-artifact-repo-ocid-name.sh $ARTIFACT_REPO_NA
 
 ARTIFACT_REPO_OCID="${!ARTIFACT_REPO_OCID_NAME}"
 
-if [ -z "${!ARTIFACT_REPO_OCID}" ]
+if [ -z "$ARTIFACT_REPO_OCID" ]
 then
   echo "No artifact repo OCID information found, has it been created by these scripts ?, cannot proceed"
   exit 0
