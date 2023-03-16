@@ -24,7 +24,12 @@ then
 fi
 
 OCIDS=`bash ./get-artifact-ocids-from-repository.sh $ARTIFACT_REPO_NAME $ARTIFACT_PATH_PARAM $ARTIFACT_VERSION_PARAM`
-
+RESP=$?
+if [ "$RESP" != 0 ]
+then
+  echo "problem listing the OCID's ( $RESP ) cannot continue"
+  exit $RESP
+fi
 for OCID in "$OCIDS"
 do
   echo "Deleting artifact $OCID"
