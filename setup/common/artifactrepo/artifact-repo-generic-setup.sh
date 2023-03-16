@@ -66,14 +66,6 @@ else
   exit 0
 fi
 
-ARTIFACT_REPO_NON_ACTIVE_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" != "AVAILABLE") | ."id"'`
-if [ -z "$ARTIFACT_REPO_NON_ACTIVE_OCID" ]
-then
-  echo "Artifact repo $ARTIFACT_REPO_NAME does not exist in a non available state"
-else
-  echo "Artifact repo $ARTIFACT_REPO_NAME exists in a non available state, cannot proceed"
-  exit 10
-fi
 ARTIFACT_REPO_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" == "AVAILABLE") | ."id"'`
 
 if [ -z "$ARTIFACT_REPO_OCID" ]
