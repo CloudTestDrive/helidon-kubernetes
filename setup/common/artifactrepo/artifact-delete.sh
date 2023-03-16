@@ -35,7 +35,7 @@ then
   echo "No artifacts round for $ARTIFACT_REPO_NAME $ARTIFACT_PATH_PARAM $ARTIFACT_VERSION_PARAM"
   exit 0
 fi
-for OCID in "$OCIDS"
+for OCID in $OCIDS
 do
   echo "Deleting artifact $OCID"
   bash ./artifact-delete-by-ocid.sh $OCID
