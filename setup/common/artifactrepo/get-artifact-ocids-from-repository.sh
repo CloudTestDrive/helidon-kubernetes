@@ -27,7 +27,8 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    # the output may vbe used by other scripts so only putput errors
+    # echo "Loading existing settings information"
     source $SETTINGS
   else 
     echo "No existing settings cannot continue"
