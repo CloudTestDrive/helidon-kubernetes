@@ -24,6 +24,14 @@ fi
 
 source $SETTINGS
 
+echo "Getting var names for log group $LOG_GROUP_NAME"
+LOG_GROUP_OCID_NAME=`bash ./get-log-group-ocid-name.sh $LOG_GROUP_NAME`
+LOG_GROUP_OCID="${!LOG_GROUP_OCID_NAME}"
+if [ -z "$LOG_GROUP_OCID" ]
+then
+  echo "No log group OCID information, cannot proceed"
+  exit 1
+fi
 # get the possible reuse and OCID for the log group itself
 echo "Getting var names for log $LOG_NAME in log group $LOG_GROUP_NAME"
 LOG_OCID_NAME=`bash ./get-log-ocid-name.sh $LOG_NAME $LOG_GROUP_NAME`
@@ -32,7 +40,7 @@ LOG_REUSED_NAME=`bash ./get-log-reused-name.sh $LOG_NAME $LOG_GROUP_NAME`
 if [ -z "${!LOG_REUSED_NAME}" ]
 then
   echo "No reuse information for log $LOG_NAME in log group $LOG_GROUP_NAME, perhaps it's already been removed ? Cannot safely proceed with deleting repo"
-  exit 0
+  exit 2
 fi
 
 if [ "${!LOG_REUSED_NAME}" = true ]
@@ -53,7 +61,7 @@ fi
 
 echo "Deleting log $LOG_NAME in log group $LOG_GROUP_NAME"
 
-oci logging log delete --log-id  $LOG_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
+oci logging log delete --log-id  $LOG_OCID --log-group-id $LOG_GROUP_OCID --force --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $LOG_OCID_NAME
 bash ../delete-from-saved-settings.sh $LOG_REUSED_NAME
 
