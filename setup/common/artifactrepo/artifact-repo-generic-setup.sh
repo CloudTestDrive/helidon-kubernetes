@@ -108,6 +108,8 @@ echo "Creating artifact repository $ARTIFACT_REPO_NAME"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
 ARTIFACT_REPO_OCID=`oci artifacts repository create-generic-repository --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --is-immutable "$ARTIFACT_REPO_IMMUTABLE" --description "$ARTIFACT_REPO_DESCRIPTION" --wait-for-state "AVAILABLE" --wait-interval-seconds 5 | jq -j '.data.id'`
+if [ -z "$ARTIFACT_REPO_OCID" ]
+then
   echo "Artifacts generic repo $ARTIFACT_REPO_NAME could not be created, unable to continue"
   exit 2
 fi
