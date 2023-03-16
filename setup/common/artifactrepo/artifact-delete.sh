@@ -30,6 +30,11 @@ then
   echo "problem listing the OCID's ( $RESP ) cannot continue"
   exit $RESP
 fi
+if [ -z "$OCIDS" ]
+then
+  echo "No artifacts round for $ARTIFACT_REPO_NAME $ARTIFACT_PATH_PARAM $ARTIFACT_VERSION_PARAM"
+  exit 0
+fi
 for OCID in "$OCIDS"
 do
   echo "Deleting artifact $OCID"
