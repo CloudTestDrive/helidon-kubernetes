@@ -27,6 +27,6 @@ OCIDS=`bash ./get-artifact-ocids-from-repository.sh $ARTIFACT_REPO_NAME $ARTIFAC
 
 for OCID in "$OCIDS"
 do
-  echo "$Deleting artifact $OCID"
+  echo "Deleting artifact $OCID"
   bash ./artifact-delete-by-ocid.sh $OCID
 done
