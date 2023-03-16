@@ -50,4 +50,4 @@ then
   exit 3
 fi
 
-oci artifacts generic artifact list --compartment-id $COMPARTMENT_OCID --repository-id $ARTIFACT_REPO_OCID $ARTIFACT_PATH_PARAM  $ARTIFACT_VERSION_PARAM | jq -r '.data.items[] | select (."lifecycle-state" != "DELETED") | .id'
+oci artifacts generic artifact list --compartment-id $COMPARTMENT_OCID --repository-id $ARTIFACT_REPO_OCID $ARTIFACT_PATH_PARAM  $ARTIFACT_VERSION_PARAM --all | jq -r '.data.items[] | select (."lifecycle-state" != "DELETED") | .id'
