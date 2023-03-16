@@ -9,4 +9,4 @@ then
 fi
 
 ARTIFACT_OCID=$1
-oci artifacts generic artifact delete --artifact-id $ARTIFACT_OCID --force  --wait-for-state "SUCCEEDED" --wait-interval-seconds 5
+oci artifacts generic artifact delete --artifact-id $ARTIFACT_OCID --force  --wait-for-state "DELETED" --wait-interval-seconds 5
