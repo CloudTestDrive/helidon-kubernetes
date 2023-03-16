@@ -66,21 +66,21 @@ else
   exit 0
 fi
 
-ARTIFACT_REPO_NON_ACTIVE_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
+ARTIFACT_REPO_NON_ACTIVE_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" != "AVAILABLE") | ."id"'`
 if [ -z "$ARTIFACT_REPO_NON_ACTIVE_OCID" ]
 then
-  echo "Artifact repo $ARTIFACT_REPO_NAME does not exist in a non active state"
+  echo "Artifact repo $ARTIFACT_REPO_NAME does not exist in a non available state"
 else
-  echo "Artifact repo $ARTIFACT_REPO_NAME exists in a non active state, cannot proceed"
+  echo "Artifact repo $ARTIFACT_REPO_NAME exists in a non available state, cannot proceed"
   exit 10
 fi
-ARTIFACT_REPO_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
+ARTIFACT_REPO_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --all | jq -j '.data.items[] | select (."lifecycle-state" == "AVAILABLE") | ."id"'`
 
 if [ -z "$ARTIFACT_REPO_OCID" ]
 then
   echo "Artifact repo $ARTIFACT_REPO_NAME does not exist, creating it"
 else
-  ARTIFACT_REPO_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --is-immutable $ARTIFACT_REPO_IMMUTABLE --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
+  ARTIFACT_REPO_OCID=`oci artifacts repository list --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --is-immutable $ARTIFACT_REPO_IMMUTABLE --all | jq -j '.data.items[] | select (."lifecycle-state" == "AVAILABLE") | ."id"'`
   if [ -z "$ARTIFACT_REPO_OCID" ]
   then
     echo "Artifact repo $ARTIFACT_REPO_NAME exists and is active but is not in the immutable setting of $ARTIFACT_REPO_IMMUTABLE that you specified, cannot continue"
@@ -107,9 +107,7 @@ fi
 echo "Creating artifact repository $ARTIFACT_REPO_NAME"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-ARTIFACT_REPO_OCID=`oci artifacts repository create-generic-repository --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --is-immutable "$ARTIFACT_REPO_IMMUTABLE" --description "$ARTIFACT_REPO_DESCRIPTION" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.resources[0].identifier'`
-if [ -z "$ARTIFACT_REPO_OCID" ]
-then
+ARTIFACT_REPO_OCID=`oci artifacts repository create-generic-repository --compartment-id $COMPARTMENT_OCID --display-name "$ARTIFACT_REPO_NAME" --is-immutable "$ARTIFACT_REPO_IMMUTABLE" --description "$ARTIFACT_REPO_DESCRIPTION" --wait-for-state "AVAILABLE" --wait-interval-seconds 5 | jq -j '.data.id'`
   echo "Artifacts generic repo $ARTIFACT_REPO_NAME could not be created, unable to continue"
   exit 2
 fi

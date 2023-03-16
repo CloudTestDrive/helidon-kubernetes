@@ -56,7 +56,7 @@ fi
 
 echo "Deleting artifact repo $ARTIFACT_REPO_NAME"
 
-oci artifacts repository delete --repository-id  $ARTIFACT_REPO_OCID --force  --wait-for-state "SUCCEEDED" --wait-interval-seconds 10
+oci artifacts repository delete --repository-id  $ARTIFACT_REPO_OCID --force  --wait-for-state "DELETED" --wait-interval-seconds 10
 bash ../delete-from-saved-settings.sh $ARTIFACT_REPO_OCID_NAME
 bash ../delete-from-saved-settings.sh $ARTIFACT_REPO_REUSED_NAME
 
