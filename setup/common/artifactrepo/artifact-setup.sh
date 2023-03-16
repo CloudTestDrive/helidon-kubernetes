@@ -47,4 +47,4 @@ fi
    echo "Cannot read $FILE_TO_UPLOAD to upload"
    exit 10
  fi
-oci artifacts generic artifact upload-by-path --repository_id "$ARTIFACT_REPO_OCID" --artifact-path "$ARTIFACT_PATH" --artifact-version "$ARTIFACT_VERSION" --content-body "$FILE_TO_UPLOAD"
+oci artifacts generic artifact upload-by-path --repository-id "$ARTIFACT_REPO_OCID" --artifact-path "$ARTIFACT_PATH" --artifact-version "$ARTIFACT_VERSION" --content-body "$FILE_TO_UPLOAD"
