@@ -56,7 +56,7 @@ fi
 
 # get the possible reuse and OCID for the devops project itself
 echo "Getting var names for OCIR repo $OCIR_REPO_NAME"
-OCIR_REPO_OCID_NAME=`bash ./get-ocid-ocid-name.sh $OCIR_REPO_NAME`
+OCIR_REPO_OCID_NAME=`bash ./get-ocir-ocid-name.sh $OCIR_REPO_NAME`
 OCIR_REPO_REUSED_NAME=`bash ./get-ocir-reused-name.sh $OCIR_REPO_NAME`
 
 OCIR_REPO_REUSED="${!OCIR_REPO_REUSED_NAME}"
