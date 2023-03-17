@@ -20,7 +20,7 @@ then
 
 fi
 
-if [ "$OCIR_REPO_PUBLIC" != "true" ] && [ "$OCIR_REPO_PUBLIC" != "true" ]
+if [ "$OCIR_REPO_PUBLIC" != "true" ] && [ "$OCIR_REPO_PUBLIC" != "false" ]
 then
   echo "You have provided an public flag that is not either true or false, you specified $OCIR_REPO_PUBLIC Unable to continue"
   exit 3
@@ -31,7 +31,7 @@ then
 
 fi
 
-if [ "$OCIR_REPO_IMMUTABLE" != "true" ] && [ "$OCIR_REPO_IMMUTABLE" != "true" ]
+if [ "$OCIR_REPO_IMMUTABLE" != "true" ] && [ "$OCIR_REPO_IMMUTABLE" != "false" ]
 then
   echo "You have provided an immutable flag that is not either true or false, you specified $OCIR_REPO_IMMUTABLE Unable to continue"
   exit 3
