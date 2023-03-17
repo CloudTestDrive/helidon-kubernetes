@@ -93,22 +93,24 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 OCIR_STOCKMANAGER_NAME=$OCIR_BASE_NAME/stockmanager
 OCIR_LOGGER_NAME=$OCIR_BASE_NAME/logger
 OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
+PUBLIC=true
+IMMUTABLE=false
 cd ocir
-bash ./ocir-setup.sh $OCIR_STOCKMANAGER_NAME true false
+bash ./ocir-setup.sh $OCIR_STOCKMANAGER_NAME $PUBLIC $IMMUTABLE
 RESP=$?
 if [ "$RESP" != 0 ] 
 then
   echo "Problem creating the stockmanager repo, cannot continue"
   exit $RESP
 fi
-bash ./ocir-setup.sh $OCIR_STOREFRONT_NAME true false
+bash ./ocir-setup.sh $OCIR_STOREFRONT_NAME $PUBLIC $IMMUTABLE
 RESP=$?
 if [ "$RESP" != 0 ] 
 then
   echo "Problem creating the stockmanager repo, cannot continue"
   exit $RESP
 fi
-bash ./ocir-setup.sh $OCIR_LOGGER_NAME true false
+bash ./ocir-setup.sh $OCIR_LOGGER_NAME $PUBLIC $IMMUTABLE
 RESP=$?
 if [ "$RESP" != 0 ] 
 then

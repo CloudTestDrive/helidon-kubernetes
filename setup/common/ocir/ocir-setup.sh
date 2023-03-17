@@ -8,7 +8,8 @@ then
   echo " the name of the ocir repo to create"
   echo "optionally"
   echo " if the repo will be public (true or false, defaults to false)"
-  echo " if the repo is immutable (true or false, default false)"
+  # settign immptabel is not currentlty supported
+  # echo " if the repo is immutable (true or false, default false)"
   exit -1
 fi
 OCIR_REPO_NAME=$1
@@ -31,11 +32,11 @@ then
 
 fi
 
-if [ "$OCIR_REPO_IMMUTABLE" != "true" ] && [ "$OCIR_REPO_IMMUTABLE" != "false" ]
-then
-  echo "You have provided an immutable flag that is not either true or false, you specified $OCIR_REPO_IMMUTABLE Unable to continue"
-  exit 3
-fi
+#if [ "$OCIR_REPO_IMMUTABLE" != "true" ] && [ "$OCIR_REPO_IMMUTABLE" != "false" ]
+#then
+#  echo "You have provided an immutable flag that is not either true or false, you specified $OCIR_REPO_IMMUTABLE Unable to continue"
+#  exit 3
+#fi
 export SETTINGS=$HOME/hk8sLabsSettings
 
 
@@ -75,7 +76,9 @@ if [ $OCIR_REPO_OCID = 'null' ]
 then
 # No existing repo for stock manager
   echo "Creating OCIR repo named $OCIR_REPO_NAME "
-  OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-immutable "$OCIR_REPO_IMMUTABLE" --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
+# setting immutable isn't currentl supported
+#  OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-immutable "$OCIR_REPO_IMMUTABLE" --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
+  OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
   echo "$OCIR_REPO_OCID_NAME=$OCIR_REPO_OCID" >> $SETTINGS 
   echo "$OCIR_REPO_REUSED_NAME=false" >> $SETTINGS
 else
