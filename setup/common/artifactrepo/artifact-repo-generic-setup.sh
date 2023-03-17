@@ -19,7 +19,7 @@ else
   ARTIFACT_REPO_IMMUTABLE="true"
 fi
 
-if [ "$ARTIFACT_REPO_IMMUTABLE" != "true" ] && [ "$ARTIFACT_REPO_IMMUTABLE" != "true" ]
+if [ "$ARTIFACT_REPO_IMMUTABLE" != "true" ] && [ "$ARTIFACT_REPO_IMMUTABLE" != "false" ]
 then
   echo "You have provided an immutable flag that is not either true or false, you specified $ARTIFACT_REPO_IMMUTABLE Unable to continue"
   exit 3
