@@ -24,8 +24,8 @@ source $SETTINGS
 
 # get the possible reuse and OCID for the repo itself
 echo "Getting var names for ocir repo $OCIR_REPO_NAME"
-OCIR_REPO_OCID_NAME=`bash ./get-ocir-repo-ocid-name.sh $OCIR_REPO_NAME`
-OCIR_REPO_REUSED_NAME=`bash ./get-ocir-repo-reused-name.sh $OCIR_REPO_NAME`
+OCIR_REPO_OCID_NAME=`bash ./get-ocir-ocid-name.sh $OCIR_REPO_NAME`
+OCIR_REPO_REUSED_NAME=`bash ./get-ocir-reused-name.sh $OCIR_REPO_NAME`
 
 if [ -z "${!OCIR_REPO_REUSED_NAME}" ]
 then
@@ -39,13 +39,12 @@ then
   exit 0
 fi
 
-if [ -z "${!OCIR_REPO_OCID_NAME}" ]
+OCIR_REPO_OCID="${!OCIR_REPO_OCID_NAME}"
+if [ -z "${!OCIR_REPO_OCID}" ]
 then
   echo "No OCIR repo $OCIR_REPO_NAME OCID information, cannot proceed"
   exit 0
 fi
-
-OCIR_REPO_OCID="${!OCIR_REPO_OCID_NAME}"
 
 echo "Deleting OCIR repo $OCIR_REPO_NAME"
 

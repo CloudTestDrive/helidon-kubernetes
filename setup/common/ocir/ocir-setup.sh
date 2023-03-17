@@ -74,7 +74,7 @@ OCIR_REPO_OCID=`oci artifacts container repository list --compartment-id $COMPAR
 if [ $OCIR_REPO_OCID = 'null' ]
 then
 # No existing repo for stock manager
-  echo "Creating OCIR repo named $OCIR_REPO_OCID "
+  echo "Creating OCIR repo named $OCIR_REPO_NAME "
   OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-immutable "$OCIR_REPO_IMMUTABLE" --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
   echo "$OCIR_REPO_OCID_NAME=$OCIR_REPO_OCID" >> $SETTINGS 
   echo "$OCIR_REPO_REUSED_NAME=false" >> $SETTINGS
