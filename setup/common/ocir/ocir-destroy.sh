@@ -40,7 +40,7 @@ then
 fi
 
 OCIR_REPO_OCID="${!OCIR_REPO_OCID_NAME}"
-if [ -z "${!OCIR_REPO_OCID}" ]
+if [ -z "$OCIR_REPO_OCID" ]
 then
   echo "No OCIR repo $OCIR_REPO_NAME OCID information, cannot proceed"
   exit 0
