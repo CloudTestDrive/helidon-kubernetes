@@ -91,7 +91,7 @@ else
     echo "OK, stopping script, the repo has not been reused, you need to re-run this script before doing any container image pushes"
     exit 1
   else     
-    echo "OK, going to use reuse existing OCIR repo called $OCIR_BASE_NAME"
+    echo "OK, going to use reuse existing OCIR repo called $OCIR_REPO_NAME"
     echo "$OCIR_REPO_OCID_NAME=$OCIR_REPO_OCID" >> $SETTINGS 
     echo "$OCIR_REPO_REUSED_NAME=true" >> $SETTINGS
   fi
