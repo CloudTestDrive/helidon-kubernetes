@@ -4,7 +4,7 @@ if [ $# -lt 4 ]
 then
   SCRIPT_NAME=`basename $0`
   echo "The $SCRIPT_NAME requires one argument"
-  echo "the name of the artifact reposiutory to upload to"
+  echo "the name of the artifact repository to delete from"
   echo "the artifact name (also known as the artifact path, this does not include the version number)"
   echo "the artifact version"
   echo "the local path to upload"
