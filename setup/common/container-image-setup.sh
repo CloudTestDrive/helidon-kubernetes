@@ -21,31 +21,20 @@ then
   export AUTO_CONFIRM=false
 fi
 
-if [ -z $OCIR_STOCKMANAGER_OCID ]
-then
-  echo 'No OCIR id found for stockmanager repo have you run the ocir-setup.sh script ?'
-  exit 1
-fi
 
-if [ -z $OCIR_LOGGER_OCID ]
+if [ -z $OCIR_BASE_NAME ]
 then
-  echo 'No OCIR id found for logger repo have you run the ocir-setup.sh script ?'
-  exit 1
-fi
-
-if [ -z $OCIR_STOREFRONT_OCID ]
-then
-  echo 'No OCIR id found for storefront repo have you run the ocir-setup.sh script ?'
+  echo 'No base name found,  have you run the ocir-setup.sh script ?'
   exit 1
 fi
 
 
 # Get the OCIR locations
 echo "Locating repo names"
-OCIR_STOCKMANAGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOCKMANAGER_OCID | jq -r '.data."display-name"'`
-OCIR_LOGGER_NAME=`oci artifacts  container repository get  --repository-id $OCIR_LOGGER_OCID | jq -r '.data."display-name"'`
-OCIR_STOREFRONT_NAME=`oci artifacts  container repository get  --repository-id $OCIR_STOREFRONT_OCID | jq -r '.data."display-name"'`
 
+OCIR_STOCKMANAGER_NAME=$OCIR_BASE_NAME/stockmanager
+OCIR_LOGGER_NAME=$OCIR_BASE_NAME/logger
+OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
 
 echo "Checking for existing images"
 IMAGE_STOCKMANAGER_V001_OCID=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_STOCKMANAGER_NAME:0.0.1 | jq -j ".data.items[0].id"`
