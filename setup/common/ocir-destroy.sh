@@ -11,61 +11,53 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z $OCIR_STOCKMANAGER_REUSED ]
+echo "OCIR_BASE_NAME=$OCIR_BASE_NAME" >> $SETTINGS
+if [ -z "$OCIR_BASE_NAME" ]
 then
-  echo "No reuse information for OCIR stockmanager repo, cannot safely continue, you will have to destroy it manually"
-else
-  if [ $OCIR_STOCKMANAGER_REUSED = true ]
-  then
-    echo "You have been using an OCIR repo for the stock manager that was not created by these scripts, you will need to destroy the repo by hand"
-  else 
-    echo "Destroying repo"
-    oci artifacts container repository delete --repository-id $OCIR_STOCKMANAGER_OCID --force
-  fi
-    echo "Removing storefront repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_OCID
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
+  echo "Cannot locate the OCIR_BASE_NAME, unable to proceed"
+  exit 5 ;
 fi
+# create the repos
+OCIR_STOCKMANAGER_NAME=$OCIR_BASE_NAME/stockmanager
+OCIR_LOGGER_NAME=$OCIR_BASE_NAME/logger
+OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
+cd ocir
+bash ./ocir-destroy.sh $OCIR_STOCKMANAGER_NAME true false
+RESP=$?
+if [ "$RESP" != 0 ] 
+then
+  echo "Problem destroying the stockmanager repo, cannot continue"
+  exit $RESP
+fi
+bash ./ocir-destroy.sh $OCIR_STOREFRONT_NAME true false
+RESP=$?
+if [ "$RESP" != 0 ] 
+then
+  echo "Problem destroying the stockmanager repo, cannot continue"
+  exit $RESP
+fi
+bash ./ocir-destroy.sh $OCIR_LOGGER_NAME true false
+RESP=$?
+if [ "$RESP" != 0 ] 
+then
+  echo "Problem destroying the logger repo, cannot continue"
+  exit $RESP
+fi
+cd ..
 
 
-if [ -z $OCIR_LOGGER_REUSED ]
-then
-  echo "No reuse information for OCIR logger repo, cannot safely continue, you will have to destroy it manually"
-else
-  if [ $OCIR_LOGGER_REUSED = true ]
-  then
-    echo "You have been using an OCIR repo for the logger that was not created by these scripts, you will need to destroy the repo by hand"
-  else 
-    echo "Destroying repo"
-    oci artifacts container repository delete --repository-id $OCIR_LOGGER_OCID --force
-  fi
-    echo "Removing logger repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_OCID
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
-fi
-
-if [ -z $OCIR_STOREFRONT_REUSED ]
-then
-  echo "No reuse information for OCIR storefront repo, cannot safely continue, you will have to destroy it manually"
-else
-  if [ $OCIR_STOREFRONT_REUSED = true ]
-  then
-    echo "You have been using an OCIR repo for the storefront that was not created by these scripts, you will need to destroy the repo by hand"
-  else 
-    echo "Destroying repo"
-    oci artifacts container repository delete --repository-id $OCIR_STOREFRONT_OCID --force
-  fi
-    echo "Removing storefront repo saved values from $SETTINGS"
-    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_OCID
-    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_REUSED
-    bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
-fi
+bash ./delete-from-saved-settings.sh OCIR_STOCKMANAGER_LOCATION
+bash ./delete-from-saved-settings.sh OCIR_LOGGER_LOCATION
+bash ./delete-from-saved-settings.sh OCIR_STOREFRONT_LOCATION
+bash ./delete-from-saved-settings.sh OCIR_BASE_NAME
 
 echo "You are still logged into docker for OCIR services on the stockmanager in $OCIR_STOCKMANAGER_LOCATION"
 echo "If you with to logout from that execute the command"
 echo "docker logout $OCIR_STOCKMANAGER_LOCATION"
+
+echo "You are still logged into docker for OCIR services on the logger in $OCIR_LOGGER_LOCATION"
+echo "If you with to logout from that execute the command"
+echo "docker logout $OCIR_LOGGER_LOCATION"
 
 echo "You are still logged into docker for OCIR services on the storefront in $OCIR_STOREFRONT_LOCATION"
 echo "If you with to logout from that execute the command"
