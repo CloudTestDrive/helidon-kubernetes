@@ -41,6 +41,13 @@ then
 else
   echo "Operating in compartment $COMPARTMENT_NAME"
 fi
+# there are a lot of possible logic branched that may result in this having previiusly been set, let's save the state to see if it has
+if [ -z "$VAULT_UNDELETED" ]
+then
+  VAULT_UNDELETED_SET=false
+else
+  VAULT_UNDELETED_SET=true
+fi
 # assume that the vault is not undeleted
 VAULT_UNDELETED=false
 if [ -z "$VAULT_REUSED" ]
@@ -191,5 +198,9 @@ else
     echo "Vault with OCID $VAULT_OCID is named $VAULT_NAME"
   fi
 fi
-
-echo "VAULT_UNDELETED=$VAULT_UNDELETED" >> $SETTINGS
+# there are a lot of possible logic branched that may result in this having previiusly been set, so let's just test for it 
+# to avoid duplicated values
+if [ "$VAULT_UNDELETED_SET" = false ]
+then
+  echo "VAULT_UNDELETED=$VAULT_UNDELETED" >> $SETTINGS
+fi
