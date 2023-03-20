@@ -8,7 +8,7 @@ then
   echo "The script will try and locate a pre-set OCID for the secret from the settings file, and will then try and get it's contents"
   exit 1
 fi
-SETTINGS_NAME=$1
+SECRET_NAME=`./bash get-vault-secret-name.sh $1`
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -21,6 +21,5 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
-VAULT_SECRET_OCID=`bash ./vault-individual-secret-oicd-retrieve.sh $SETTINGS_NAME`
-echo $VAULT_SECRET_OCID
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SECRET_NAME`
+echo ${!VAULT_SECRET_OCID_NAME}

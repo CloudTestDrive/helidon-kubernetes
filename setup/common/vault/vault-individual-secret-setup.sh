@@ -11,7 +11,7 @@ then
   exit -1
 fi
 VAULT_KEY_NAME_BASE=$1
-SETTINGS_NAME=$2
+SETTINGS_NAME=$1
 VAULT_SECRET_DESCRIPTION=$3
 VAULT_SECRET_VALUE=$4
 
@@ -60,14 +60,14 @@ else
 fi
 
 VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
-VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SETTINGS_NAME`
-VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $SETTINGS_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $VAULT_SECRET_NAME`
+VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $VAULT_SECRET_NAME`
 
 if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
-  echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, continuing"
+  echo "No existing reuse information for "$SETTINGS_NAME", continuing"
 else
-  echo "The "$SETTINGS_NAME"_VAULT secret has already been setup, will not be recreated."
+  echo "The "$SETTINGS_NAME" secret has already been setup, will not be recreated."
   VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
   VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
   if [ "$VAULT_SECRET_CONTENTS" = "$VAULT_SECRET_VALUE" ]
@@ -105,7 +105,7 @@ then
     echo "$VAULT_SECRET_REUSED_NAME=false" >> $SETTINGS
   else
     # it exists, we will just re-use it
-    echo "$VAULT_SECRET_NAME already exists, reusing it"
+    echo "$SETTINGS_NAME already exists, reusing it"
     VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
     if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
     then
@@ -122,12 +122,12 @@ then
   fi
   echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCID"
 else
-  echo "A Vault secret named $VAULT_SECRET_NAME already exists but has a deletion scheduled. It "
+  echo "A Vault secret named $SETTINGS_NAME already exists but has a deletion scheduled. It "
   echo "cannot be used unless the deletion is cancled."
   read -p "Do you want to cancel the pending deletion (y/n) ? " REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK, you cannot use the secret name $VAULT_SECRET_NAME, you can manually create another secret"
+    echo "OK, you cannot use the secret name $SETTINGS_NAME, you can manually create another secret"
     echo "to hold this information with value $VAULT_SECRET_VALUE and use it's OCID in the labs"
     exit 1
   else

@@ -7,5 +7,6 @@ then
   exit -1
 fi
 SETTINGS_NAME=$1
-SETTINGS_NAME_VAR=`bash ../settings/to-valid-name.sh $SETTINGS_NAME`
-echo $SETTINGS_NAME_VAR
+SETTINGS_NAME_VAR=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_NAME=VAULT_SECRET_"$SETTINGS_NAME_VAR"
+echo $VAULT_SECRET_NAME
