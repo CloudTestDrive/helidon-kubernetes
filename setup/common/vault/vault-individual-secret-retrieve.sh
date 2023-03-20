@@ -21,8 +21,8 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-VAULT_SECRET_OCID_NAME="VAULT_SECRET_"$SETTINGS_NAME"_OCID"
+VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $VAULT_SECRET_NAME`
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 
 then
   echo "Can't locate the variable $VAULT_SECRET_OCID_NAME (or it has no value) which holds the OCID for"

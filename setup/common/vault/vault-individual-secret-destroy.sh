@@ -20,17 +20,17 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-VAULT_SECRET_OCID_NAME="VAULT_SECRET_"$SETTINGS_NAME"_OCID"
-SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
+VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SETTINGS_NAME`
+VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $SETTINGS_NAME`
 
-if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
+if [ -z "${!VAULT_SECRET_REUSED_NAME}" ] 
 then
   echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, , perhaps it's already been removed ? Nothing to delete"
   exit 0
 fi
 
-if [ "${!SECRET_REUSED_VAR_NAME}"  = true ] 
+if [ "${!VAULT_SECRET_REUSED_NAME}"  = true ] 
 then
   echo "The secret $VAULT_SECRET_NAME was not created by this script, will not delete it"
   exit 0
@@ -62,4 +62,4 @@ fi
 
 # clean up the settings
 bash ../delete-from-saved-settings.sh "$VAULT_SECRET_OCID_NAME"
-bash ../delete-from-saved-settings.sh "$SECRET_REUSED_VAR_NAME"
+bash ../delete-from-saved-settings.sh "$VAULT_SECRET_REUSED_NAME"

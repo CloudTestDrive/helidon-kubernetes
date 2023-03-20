@@ -59,8 +59,9 @@ else
   echo "Found OCID for vault key $VAULT_KEY_NAME"
 fi
 
-VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
+VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SETTINGS_NAME`
+VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $SETTINGS_NAME`
 
 if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
@@ -100,8 +101,8 @@ then
       echo "Please review the output and rerun the script"
       exit $RESP
     fi  
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=false" >> $SETTINGS
   else
     # it exists, we will just re-use it
     echo "$VAULT_SECRET_NAME already exists, reusing it"
@@ -116,8 +117,8 @@ then
       echo "purposes, however yor lab will probabaly not work until you manually create a new secret version"
       echo "with the specified contents of $VAULT_SECRET_VALUE" 
     fi
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=true" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=true" >> $SETTINGS
   fi
   echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCID"
 else
@@ -160,7 +161,7 @@ else
       exit 2
     fi
     echo "Saving details of restored secet"
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=false" >> $SETTINGS
   fi
 fi
