@@ -59,14 +59,15 @@ else
   echo "Found OCID for vault key $VAULT_KEY_NAME"
 fi
 
-VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
+VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $VAULT_SECRET_NAME`
+VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $VAULT_SECRET_NAME`
 
 if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
 then
-  echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, continuing"
+  echo "No existing reuse information for "$SETTINGS_NAME", continuing"
 else
-  echo "The "$SETTINGS_NAME"_VAULT secret has already been setup, will not be recreated."
+  echo "The "$SETTINGS_NAME" secret has already been setup, will not be recreated."
   VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
   VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
   if [ "$VAULT_SECRET_CONTENTS" = "$VAULT_SECRET_VALUE" ]
@@ -100,11 +101,11 @@ then
       echo "Please review the output and rerun the script"
       exit $RESP
     fi  
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=false" >> $SETTINGS
   else
     # it exists, we will just re-use it
-    echo "$VAULT_SECRET_NAME already exists, reusing it"
+    echo "$SETTINGS_NAME already exists, reusing it"
     VAULT_SECRET_CONTENTS=`oci secrets secret-bundle get --secret-id $VAULT_SECRET_OCID --stage CURRENT | jq -r '.data."secret-bundle-content".content' | base64 --decode`
     if [ $VAULT_SECRET_VALUE = $VAULT_SECRET_CONTENTS ]
     then
@@ -116,17 +117,17 @@ then
       echo "purposes, however yor lab will probabaly not work until you manually create a new secret version"
       echo "with the specified contents of $VAULT_SECRET_VALUE" 
     fi
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=true" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=true" >> $SETTINGS
   fi
   echo "The OCID for the $VAULT_SECRET_NAME secret is $VAULT_SECRET_OCID"
 else
-  echo "A Vault secret named $VAULT_SECRET_NAME already exists but has a deletion scheduled. It "
+  echo "A Vault secret named $SETTINGS_NAME already exists but has a deletion scheduled. It "
   echo "cannot be used unless the deletion is cancled."
   read -p "Do you want to cancel the pending deletion (y/n) ? " REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]
   then
-    echo "OK, you cannot use the secret name $VAULT_SECRET_NAME, you can manually create another secret"
+    echo "OK, you cannot use the secret name $SETTINGS_NAME, you can manually create another secret"
     echo "to hold this information with value $VAULT_SECRET_VALUE and use it's OCID in the labs"
     exit 1
   else
@@ -160,7 +161,7 @@ else
       exit 2
     fi
     echo "Saving details of restored secet"
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_OCID=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS
-    echo "VAULT_SECRET_"$SETTINGS_NAME"_REUSED=false" >> $SETTINGS
+    echo "$VAULT_SECRET_OCID_NAME=$VAULT_SECRET_PENDING_DELETION_OCID" >> $SETTINGS
+    echo "$VAULT_SECRET_REUSED_NAME=false" >> $SETTINGS
   fi
 fi

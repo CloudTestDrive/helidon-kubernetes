@@ -8,7 +8,6 @@ then
 fi
 SETTINGS_NAME=$1
 
-
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -20,29 +19,30 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-VAULT_SECRET_NAME=$SETTINGS_NAME"_VAULT"
-VAULT_SECRET_OCID_NAME="VAULT_SECRET_"$SETTINGS_NAME"_OCID"
-SECRET_REUSED_VAR_NAME="VAULT_SECRET_"$SETTINGS_NAME"_REUSED"
+SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
+VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SECRET_NAME`
+VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SECRET_NAME`
+VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $SECRET_NAME`
 
-if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
+if [ -z "${!VAULT_SECRET_REUSED_NAME}" ] 
 then
-  echo "No existing reuse information for "$SETTINGS_NAME"_VAULT, , perhaps it's already been removed ? Nothing to delete"
+  echo "No existing reuse information for vault secret "$SETTINGS_NAME" , perhaps it's already been removed ? Nothing to delete"
   exit 0
 fi
 
-if [ "${!SECRET_REUSED_VAR_NAME}"  = true ] 
+if [ "${!VAULT_SECRET_REUSED_NAME}"  = true ] 
 then
-  echo "The secret $VAULT_SECRET_NAME was not created by this script, will not delete it"
+  echo "The secret $SETTINGS_NAME was not created by this script, will not delete it"
   exit 0
 fi
 
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 
 then
-  echo "The OCID of secret $VAULT_SECRET_NAME (stored in variable $VAULT_SECRET_OCID_NAME) is not in the $SETTINGS file, cannot proceed"
+  echo "The OCID of secret $SETTINGS_NAME (stored in variable $VAULT_SECRET_OCID_NAME) is not in the $SETTINGS file, cannot proceed"
   exit 13
 fi
 
-echo "Scheduling deletion of secret $VAULT_SECRET_NAME"
+echo "Scheduling deletion of secret $SETTINGS_NAME"
 echo "The actuall deletion will happen later (usually in a month) and you can cancel the"
 echo "deletion in the intervening time if you wish."
 echo "If you re-run this lab while the secrets deletion is still pending you will need to"
@@ -55,11 +55,11 @@ oci vault secret schedule-secret-deletion --secret-id "${!VAULT_SECRET_OCID_NAME
 RESP=$?
 if [ $RESP -ne 0 ]
 then
-  echo "Failure deleting the vault secret $VAULT_SECRET_NAME, exit code is $RESP, cannot continue"
+  echo "Failure deleting the vault secret $SETTINGS_NAME, exit code is $RESP, cannot continue"
   echo "Please review the output and rerun the script"
   exit $RESP
 fi 
 
 # clean up the settings
 bash ../delete-from-saved-settings.sh "$VAULT_SECRET_OCID_NAME"
-bash ../delete-from-saved-settings.sh "$SECRET_REUSED_VAR_NAME"
+bash ../delete-from-saved-settings.sh "$VAULT_SECRET_REUSED_NAME"
