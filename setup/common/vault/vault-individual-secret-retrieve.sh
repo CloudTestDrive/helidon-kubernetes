@@ -21,7 +21,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-SECRET_NAME=`./bash get-vault-secret-name.sh $SETTINGS_NAME`
+SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
 VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SECRET_NAME`
 VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SECRET_NAME`
 if [ -z "${!VAULT_SECRET_OCID_NAME}" ] 
