@@ -6,6 +6,13 @@ then
   echo "The $SCRIPT_NAME script requires one argument, the name of the devops project to process"
   exit -1
 fi
+if [ -f $SETTINGS ]
+then
+  source $SETTINGS
+else 
+  echo "No existing settings cannot continue"
+  exit 10
+fi
 DEVOPS_PROJECT_NAME=$1
 DEVOPS_PROJECT_OCID_NAME=`bash get-project-ocid-name.sh $DEVOPS_PROJECT_NAME`
 DEVOPS_PROJECT_OCID="${!DEVOPS_PROJECT_OCID_NAME}"
