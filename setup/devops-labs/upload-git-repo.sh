@@ -118,7 +118,7 @@ REPO_SSH=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."s
 
 if [ -z $REPO_SSH ]
 then
-  echo "Cannot get ssh access info foe OCI Code repo $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
+  echo "Cannot get ssh access info for OCI Code repo $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
   echo "This shouldn't happen !"
   exit 22
 else
@@ -134,6 +134,19 @@ else
   echo "OK, starting to transfer sample code"
 fi
 
+echo "Setting up for ssh known hosts"
+SSH_DIR=$HOME/.ssh
+KH_FILE=$SSH_DIR/known_hosts
+KH_FILE_TMP="$KH_FILE"_tmp
+mkdir -p $SSH_DIR
+touch $KH_FILE
+DEVOPS_SCM_HOST="devops.scmservice.""$OCI_REGION"".oci.oraclecloud.com"
+echo "Remove any old fingerprints for $DEVOPS_SCM_HOST"
+cat $KH_FILE | grep -v $DEVOPS_SCM_HOST > $KH_FILE_TMP
+rm $KH_FILE
+mv $KH_FILE_TMP $KH_FILE
+echo "Download new fingerprint for $DEVOPS_SCM_HOST"
+ssh -o StrictHostKeyChecking=no $DEVOPS_SCM_HOST
 
 SAVED_PWD=`pwd`
 
