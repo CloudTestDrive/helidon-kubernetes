@@ -17,7 +17,7 @@ else
   echo "No existing settings cannot continue"
   exit 10
 fi
-VAULT_SERET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh`
+VAULT_SERET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $SETTINGS_NAME`
 
 VAULT_SERET_OCID="${!VAULT_SERET_OCID_NAME}"
 if [ -z "$VAULT_SERET_OCID" ]
