@@ -23,6 +23,10 @@ then
   exit 2
 fi
 
+if [ -z "$AUTO_CONFIRM" ]
+then
+  export AUTO_CONFIRM=false
+fi
 
 REPO_NAME=cloudnative-helidon-storefront
 
@@ -125,7 +129,13 @@ else
   echo "Located ssh access details for OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
 fi
 
-read -p "Ready to start demo project code transfer, proceed (y/n) ?"
+if [ "$AUTO_CONFIRM" = true ]
+then
+  REPLY="y"
+  echo "Auto confirm is enabled, Ready to start demo project code transfer, proceed defaulting to $REPLY"
+else
+  read -p "Ready to start demo project code transfer, proceed (y/n) ?" REPLY
+fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, stopping"
