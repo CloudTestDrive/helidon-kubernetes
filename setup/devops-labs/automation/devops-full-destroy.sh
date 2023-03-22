@@ -126,6 +126,15 @@ fi
 echo "Destroy local code repo"
 rm -rf $CODE_BASE
 
+cd $DEVOPS_LAB_DIR
+bash ./reset-git-repo.sh
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing local git repo, unable to continue"
+  exit $RESP
+fi
+
 cd $COMMON_DIR/devops
 echo "Destroy code repo"
 bash ./repo-destroy.sh $CODE_REPO_NAME $PROJECT_NAME

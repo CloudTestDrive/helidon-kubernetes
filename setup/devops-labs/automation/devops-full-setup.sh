@@ -242,7 +242,7 @@ then
   exit $RESP
 fi
 echo "Creating OCIR repo"
-cd $COMMON/ocir
+cd $COMMON_DIR/ocir
 # create it as public and not immutable
 bash  ./ocir-setup.sh $OCIR_REPO_NAME true false
 RESP=$?
@@ -260,7 +260,7 @@ then
 fi
 
 echo "Creating artifact repo"
-cd $COMMON/artifactrepo
+cd $COMMON_DIR/artifactrepo
 bash ./artifact-repo-generic-setup.sh 
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -278,9 +278,8 @@ then
 fi
 
 echo "Creating deploy pipeline"
-cd $COMMON/devops
 
-cd $COMMON/devops
+cd $COMMON_DIR/devops
 bash ./deploy-pipeline-setup.sh $DEPLOY_PIPELINE_NAME $PROJECT_NAME 'Deploys the storefront service'
 RESP=$?
 if [ "$RESP" -ne 0 ]

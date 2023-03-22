@@ -11,6 +11,14 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$DEVOPS_LAB_CODE_REPO_TRANSFERRED" ]
+then
+  echo "Code repo not marked as being transferred, continuing"
+else
+  echo "Code repo has already been transferred transferred, stopping"
+  exit 0
+fi
+
 if [ -z $COMPARTMENT_OCID ]
 then
   echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
@@ -185,5 +193,7 @@ git push devops main
 
 echo "Sample code transfered"
 echo "IMPORTANT this will be on the default branch, remember to create a working branch before making any code changes"
+
+echo "DEVOPS_LAB_CODE_REPO_TRANSFERRED=true" >> $SETTINGS
 
 cd $SAVED_PWD
