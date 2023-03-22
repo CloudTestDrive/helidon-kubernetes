@@ -226,7 +226,7 @@ git commit -a -m 'Set secret OCIDs and updated version'
 git push devops my-lab-branch
 
 echo "Creating build pipeline"
-cd $COMMON/devops
+cd $COMMON_DIR/devops
 bash ./build-pipeline-setup.sh $BUILD_PIPELINE_NAME $PROJECT_NAME 'Builds the storefront service'
 RESP=$?
 if [ "$RESP" -ne 0 ]

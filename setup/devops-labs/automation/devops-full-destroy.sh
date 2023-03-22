@@ -72,7 +72,7 @@ DEVOPS_LAB_DIR=$SAVED_DIR/..
 echo "This script attempts to follow the reverse order of the dev-ops lab"
 
 echo "Destroying deploy pipeline"
-cd $COMMON/devops
+cd $COMMON_DIR/devops
 bash ./deploy-pipeline-destroy.sh $DEPLOY_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -82,7 +82,7 @@ then
 fi
 
 echo "Destroying artifacts in artifact repo"
-cd $COMMON/artifactrepo
+cd $COMMON_DIR/artifactrepo
 
 bash ./artifact-delete.sh $ARTIFACT_REPO_NAME
 echo "Destroying artifact repo"
@@ -96,7 +96,7 @@ then
 fi
 
 echo "Destroying OCIR repo"
-cd $COMMON/ocir
+cd $COMMON_DIR/ocir
 bash  ./ocir-destroy.sh $OCIR_REPO_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -106,7 +106,7 @@ then
 fi
 
 echo "Destroying build pipeline"
-cd $COMMON/devops
+cd $COMMON_DIR/devops
 bash ./build-pipeline-destroy.sh $BUILD_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?
 if [ "$RESP" -ne 0 ]
