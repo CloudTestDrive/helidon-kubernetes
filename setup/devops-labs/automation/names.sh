@@ -1,6 +1,7 @@
 TOPIC_NAME="$USER_INITIALS""DevOpsTopic"
 PROJECT_NAME="$USER_INITIALS""DevOpsProject"
-LOG_GROUP_NAME="Default_group"
+LOG_GROUP_NAME="Default_Group"
+LOG_GROUP_DESCRIPTION="Auto created log group for all users in the compartment"
 LOG_NAME="$PROJECT_NAME""_all"
 CODE_REPO_NAME="cloudnative-helidon-storefront"
 HOST_SECRET_NAME="OCIR_HOST"

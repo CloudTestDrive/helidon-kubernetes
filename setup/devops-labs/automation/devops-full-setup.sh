@@ -139,7 +139,7 @@ fi
 cd $SAVED_DIR
 cd $COMMON_DIR/logging
 echo "Creating log group"
-bash ./log-group-setup.sh $LOG_GROUP_NAME "Log group for Devops project $PROJECT_NAME"
+bash ./log-group-setup.sh "$LOG_GROUP_NAME" "$LOG_GROUP_DESCRIPTION"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
