@@ -261,7 +261,7 @@ fi
 
 echo "Creating artifact repo"
 cd $COMMON_DIR/artifactrepo
-bash ./artifact-repo-generic-setup.sh 
+bash ./artifact-repo-generic-setup.sh $ARTIFACT_REPO_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
