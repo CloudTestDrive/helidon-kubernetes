@@ -17,8 +17,8 @@ fi
 
 DEVOPS_TRIGGER_NAME=$1
 DEVOPS_PROJECT_NAME=$2
-DEVOPS_CODE_REPO_NAME=$3
-DEVOPS_CODE_REPO_BRANCH_NAME=$4
+DEVOPS_REPO_NAME=$3
+DEVOPS_REPO_BRANCH_NAME=$4
 DEVOPS_BUILD_PIPELINE_NAME=$5
 if [ $# -ge 6 ]
 then
@@ -139,7 +139,7 @@ else
   fi
 fi
 echo "Creating devops trigger $DEVOPS_TRIGGER_NAME in project $DEVOPS_PROJECT_NAME"
-TRIGGER_ACTIONS="{\"buildPipelineId\": \"$DEVOPS_BUILD_PIPELINE_OCID\", \"filter\":{\"events\": [\"PUSH\"],\"include\": {\"head-ref\": \"$BRANCH_NAME\"},\"trigger-source\": \"DEVOPS_CODE_REPOSITORY\"}, \"type\": \"TRIGGER_BUILD_PIPELINE\"}"
+TRIGGER_ACTIONS="{\"buildPipelineId\": \"$DEVOPS_BUILD_PIPELINE_OCID\", \"filter\":{\"events\": [\"PUSH\"],\"include\": {\"head-ref\": \"$DEVOPS_REPO_BRANCH_NAME\"},\"trigger-source\": \"DEVOPS_CODE_REPOSITORY\"}, \"type\": \"TRIGGER_BUILD_PIPELINE\"}"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
 DEVOPS_TRIGGER_OCID=`oci devops trigger create-devops-code-repo-trigger --actions $TRIGGER_ACTIONS --display-name "$DEVOPS_TRIGGER_NAME" --project-id "$DEVOPS_PROJECT_OCID" --description "$DEVOPS_TRIGGER_DESCRIPTION" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.resources[0].identifier'`
