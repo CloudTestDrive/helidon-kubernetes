@@ -6,6 +6,16 @@ then
   echo "The $SCRIPT_NAME script requires two arguments, the name of the trigger to process and the name of the containing devops project"
   exit -1
 fi
+
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f $SETTINGS ]
+then
+  source $SETTINGS
+else 
+  echo "No existing settings cannot continue"
+  exit 10
+fi
 DEVOPS_TRIGGER_NAME=$1
 DEVOPS_PROJECT_NAME=$2
 DEVOPS_TRIGGER_OCID_NAME=`bash ./get-trigger-ocid-name.sh $DEVOPS_TRIGGER_NAME $DEVOPS_PROJECT_NAME`

@@ -6,6 +6,8 @@ then
   echo "The $SCRIPT_NAME script requires two arguments, the name of the deploy pipeline to process and the name of the containing devops project"
   exit -1
 fi
+export SETTINGS=$HOME/hk8sLabsSettings
+
 if [ -f $SETTINGS ]
 then
   source $SETTINGS

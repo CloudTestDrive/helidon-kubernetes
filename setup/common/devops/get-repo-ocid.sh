@@ -15,6 +15,7 @@ else
   echo "No existing settings cannot continue"
   exit 10
 fi
+
 DEVOPS_REPO_NAME=$1
 DEVOPS_PROJECT_NAME=$2
 DEVOPS_REPO_OCID_NAME=`bash ./get-repo-ocid-name.sh $DEVOPS_REPO_NAME $DEVOPS_PROJECT_NAME`
