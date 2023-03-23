@@ -95,7 +95,6 @@ then
   echo "get build pipeline ocid returned an error, unable to continue"
   exit $RESP
 fi
-DEVOPS_BUILD_PIPELINE_OCID="${!DEVOPS_BUILD_PIPELINE_OCID_NAME}"
 if [ -z "$DEVOPS_BUILD_PIPELINE_OCID" ]
 then
   echo "No ocid found for devops buiild pipeline $DEVOPS_BUILD_PIPELINE_NAME in project  $DEVOPS_PROJECT_NAME cannot continue. Has the repo been created with the repo-setup script ?"
