@@ -1,9 +1,9 @@
 #!/bin/bash -f
 
-if [ $# -lt 4 ]
+if [ $# -lt 5 ]
 then
   SCRIPT_NAME=`basename $0`
-  echo "The $SCRIPT_NAME script requires three arguments:"
+  echo "The $SCRIPT_NAME script requires five arguments:"
   echo "the name of the devops trigger to to create"
   echo "the name of the containing project (which must have"
   echo "  already been created with the project-setup.sh script)"
