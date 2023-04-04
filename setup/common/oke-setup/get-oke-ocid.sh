@@ -17,7 +17,7 @@ else
 fi
 
 OKE_NAME=$1
-OKE_OCID_NAME=`bash ./get-okd-ocid-name.sh $OKE_NAME`
+OKE_OCID_NAME=`bash ./get-oke-ocid-name.sh $OKE_NAME`
 OKE_OCID="${!OKE_OCID_NAME}"
 if [ -z "$OKE_OCID" ]
 then
