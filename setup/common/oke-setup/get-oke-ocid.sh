@@ -24,4 +24,4 @@ then
   echo "Cannot locate OCID for OKE cluster $OKE_NAME"
   exit 1
 fi
-echo $DEVOPS_REPO_OCID
+echo $OKE_OCID
