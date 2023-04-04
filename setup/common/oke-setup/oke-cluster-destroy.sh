@@ -24,7 +24,7 @@ fi
 # extract the specific settings for the cluster we're dealing with
 #Do a bit of messing around to basically create a rediection on the variable and context to get a context specific varible name
 # Create a name using the variable
-OKE_REUSED_NAME=`bash ../settings/to-valid-name.sh "OKE_REUSED_"$CLUSTER_CONTEXT_NAME`
+OKE_REUSED_NAME=`bash ./get-oke-reused-name.sh $CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_REUSED_NAME and save it
 OKE_REUSED="${!OKE_REUSED_NAME}"
 #echo "Checking for $OKE_REUSED_NAME var value is $OKE_REUSED"
@@ -37,7 +37,7 @@ fi
 
 # Do the variable redirection trick again
 # Create a name using the variable
-OKE_OCID_NAME=`bash ../settings/to-valid-name.sh "OKE_OCID_"$CLUSTER_CONTEXT_NAME`
+OKE_OCID_NAME=`bash ./get-oke-ocid-name.sh $CLUSTER_CONTEXT_NAME`
 # Now locate the value of the variable who's name is in OKE_OCID_NAME and save it
 OKE_OCID="${!OKE_OCID_NAME}"
 #echo "Checking for $OKE_OCID_NAME var value is $OKE_OCID"
