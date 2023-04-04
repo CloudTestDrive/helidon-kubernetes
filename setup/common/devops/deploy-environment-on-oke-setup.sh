@@ -73,7 +73,7 @@ OKE_CLUSTER_OCID=`bash ./get-oke-ocid.sh $OKE_CLUSTER_NAME`
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "get OKC lcuster ocid returned an error $OKE_CLUSTER_OCID , unable to continue"
+  echo "get OKE cluster ocid returned an error $OKE_CLUSTER_OCID , unable to continue"
   exit $RESP
 fi
 if [ -z "$OKE_CLUSTER_OCID" ]
