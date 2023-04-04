@@ -76,8 +76,7 @@ then
   echo "get repo ocid returned an error, unable to continue"
   exit $RESP
 fi
-DEVOPS_REPO_OCID="${!DEVOPS_REPO_OCID_NAME}"
-if [ -z "$DEVOPS_PROJECT_OCID" ]
+if [ -z "$DEVOPS_REPO_OCID" ]
 then
   echo "No ocid found for devops repo $DEVOPS_REPO_NAME in project  $DEVOPS_PROJECT_NAME cannot continue. Has the repo been created with the repo-setup script ?"
   exit 1
