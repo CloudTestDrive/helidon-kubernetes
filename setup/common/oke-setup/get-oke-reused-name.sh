@@ -1,6 +1,6 @@
 #!/bin/bash -f
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   SCRIPT_NAME=`basename $0`
   echo "The $SCRIPT_NAME script requires one argument, the name of the OKE cluster to process"
