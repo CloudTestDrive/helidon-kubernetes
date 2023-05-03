@@ -54,7 +54,7 @@ fi
 echo "Checking for stages dependent on build stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME "
 DEPENDENT_STAGES_COUNT=`oci devops build-pipeline-stage list --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --all | jq "[ .data.items[] | .\"build-pipeline-stage-predecessor-collection\".items[] | select (.id==\"$BUILD_STAGE_OCID\") ] | length "`
 
-if ( $DEPENDENT_STAGES_COUNT -ne 0 )
+if [ "$DEPENDENT_STAGES_COUNT" -gt 0 ]
 then
   echo "devops build stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME has dependent stages, cannot delete it"
   exit 3
