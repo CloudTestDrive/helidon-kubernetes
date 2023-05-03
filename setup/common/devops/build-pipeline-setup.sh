@@ -61,7 +61,7 @@ fi
 echo "Getting var names for devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME"
 DEVOPS_BUILD_PIPELINE_OCID_NAME=`bash ./get-build-pipeline-ocid-name.sh $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 DEVOPS_BUILD_PIPELINE_REUSED_NAME=`bash ./get-build-pipeline-reused-name.sh $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
-if [ -z "${!DEVOPS_PROJECT_REUSED_NAME}" ]
+if [ -z "${!DEVOPS_BUILD_PIPELINE_REUSED_NAME}" ]
 then
   echo "No reuse info for devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
 else
