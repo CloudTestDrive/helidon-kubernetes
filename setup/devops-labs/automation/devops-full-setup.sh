@@ -207,8 +207,9 @@ then
 fi
 
 echo "Creating new branch for modifications"
+GIT_BRANCH_NAME="my-lab-branch"
 cd $CODE_BASE
-git checkout -b my-lab-branch
+git checkout -b GIT_BRANCH_NAME
 
 echo "Updating build spec"
 cp $SOURCE_BUILD_SPEC $CODE_BASE
@@ -220,10 +221,11 @@ bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your storage namespac
 echo "Updating version number"
 bash $COMMON_DIR/update-file.sh  $STATUS_RESOURCE '1.0.0' '1.0.1'
 
+
 echo "Updating local repo and uploading to remote repo"
 git add .
 git commit -a -m 'Set secret OCIDs and updated version'
-git push devops my-lab-branch
+git push devops $GIT_BRANCH_NAME
 
 echo "Creating build pipeline"
 cd $COMMON_DIR/devops
@@ -241,6 +243,23 @@ then
   echo "Problem getting ocid for build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
 fi
+
+echo "Creating Build runner stage"
+BUILD_STAGE_RUNNER_NAME=buildstorefront
+BUILD_SOURCE_INFO=`bash ./assemble-source-devops-code-repo-info.sh $CODE_REPO_NAME $PROJECT_NAME $GIT_BRANCH_NAME`
+BUILD_SOURCE_ARRAY=`bash ../build-items-array.sh "$BUILD_SOURCE_INFO"`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem assembling build runner stage $BUILD_STAGE_RUNNER_NAME info for repo $CODE_REPO_NAME with branch $GIT_BRANCH_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+BUILD_RUNNER_STAGE_PREDECESSOR="$BUILD_PIPELINE_OCID"
+BUILD_RUNNER_STAGE_PREDECESSOR_ARRAY=`bash ../build-items-array.sh "$BUILD_RUNNER_STAGE_PREDECESSOR"`
+bash ./build-stage-build-runner-setup.sh "$BUILD_STAGE_RUNNER_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_SOURCE_ARRAY" "$BUILD_RUNNER_STAGE_PREDECESSOR_ARRAY" 
+
+BUILD_RUNNER_STAGE_OCID=`bash ./get-build-stage-ocid.sh "$BUILD_STAGE_RUNNER_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME"`
+
 echo "Creating OCIR repo"
 cd $COMMON_DIR/ocir
 # create it as public and not immutable
