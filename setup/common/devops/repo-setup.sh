@@ -66,7 +66,7 @@ fi
 echo "Getting var names for devops repo $DEVOPS_REPO_NAME"
 DEVOPS_REPO_OCID_NAME=`bash ./get-repo-ocid-name.sh $DEVOPS_REPO_NAME $DEVOPS_PROJECT_NAME`
 DEVOPS_REPO_REUSED_NAME=`bash ./get-repo-reused-name.sh $DEVOPS_REPO_NAME $DEVOPS_PROJECT_NAME`
-if [ -z "${!DEVOPS_PROJECT_REUSED_NAME}" ]
+if [ -z "${!DEVOPS_REPO_REUSED_NAME}" ]
 then
   echo "No reuse info for devops repo $DEVOPS_REPO_NAME in project $DEVOPS_PROJECT_NAME"
 else
