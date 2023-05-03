@@ -66,9 +66,9 @@ then
   # currently devops UI doesn't allow this to be changed so for now
   # force it to be the one they use
   #DEVOPS_BUILD_RUNNER_IMAGE_PARAM="--image $8"
-  DEVOPS_BUILD_RUNNER_IMAGE_PARAM="--image OL7_X86_64_STANDARD_10"
+  DEVOPS_BUILD_RUNNER_IMAGE="OL7_X86_64_STANDARD_10"
 else
-  DEVOPS_BUILD_RUNNER_IMAGE_PARAM="--image OL7_X86_64_STANDARD_10"
+  DEVOPS_BUILD_RUNNER_IMAGE="OL7_X86_64_STANDARD_10"
 fi
 
 if [ -z "$COMPARTMENT_OCID" ]
