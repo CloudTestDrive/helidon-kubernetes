@@ -113,7 +113,7 @@ bash ./build-stage-destroy.sh $BUILD_STAGE_RUNNER_NAME $BUILD_PIPELINE_NAME $PRO
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Problem remofing build runner $BUILD_STAGE_RUNNER_NAME in build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  echo "Problem removing build runner $BUILD_STAGE_RUNNER_NAME in build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
 fi
 echo "Removing the build pipeline itself"

@@ -99,7 +99,7 @@ fi
 echo "Getting var names for devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME"
 DEVOPS_BUILD_PIPELINE_OCID_NAME=`bash ./get-build-pipeline-ocid-name.sh $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 DEVOPS_BUILD_PIPELINE_OCID="${!DEVOPS_BUILD_PIPELINE_OCID_NAME}"
-if [ -z "${!DEVOPS_BUILD_PIPELINE_OCID}" ]
+if [ -z "$DEVOPS_BUILD_PIPELINE_OCID" ]
 then
   echo "No OCID found for devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
   exit 1
@@ -109,7 +109,7 @@ echo "Getting var names for stage $BUILD_STAGE_NAME in devops build pipeline $DE
 BUILD_STAGE_OCID_NAME=`bash ./get-build-stage-ocid-name.sh $BUILD_STAGE_NAME $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 BUILD_STAGE_REUSED_NAME=`bash ./get-build-stage-reused-name.sh $BUILD_STAGE_NAME $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 
-if [ -z "${!STAGE_REUSED_NAME}" ]
+if [ -z "${!BUILD_STAGE_REUSED_NAME}" ]
 then
   echo "No reuse information found,continuing"
 else
