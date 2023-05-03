@@ -61,7 +61,7 @@ fi
 echo "Getting var names for devops deploy pipeline $DEVOPS_DEPLOPY_PIPELINE_NAME"
 DEVOPS_DEPLOPY_PIPELINE_OCID_NAME=`bash ./get-deploy-pipeline-ocid-name.sh $DEVOPS_DEPLOPY_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 DEVOPS_DEPLOPY_PIPELINE_REUSED_NAME=`bash ./get-deploy-pipeline-reused-name.sh $DEVOPS_DEPLOPY_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
-if [ -z "${!DEVOPS_PROJECT_REUSED_NAME}" ]
+if [ -z "${!DEVOPS_DEPLOPY_PIPELINE_REUSED_NAME}" ]
 then
   echo "No reuse info for devops deploy pipeline $DEVOPS_DEPLOPY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
 else
