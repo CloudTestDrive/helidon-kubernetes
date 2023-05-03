@@ -206,7 +206,7 @@ then
   exit $RESP
 fi
 
-echo "Creating new branch for modifications"
+echo "Creating new branch $GIT_BRANCH_NAME for modifications"
 cd $CODE_BASE
 git checkout -b $GIT_BRANCH_NAME
 
@@ -252,8 +252,10 @@ then
   echo "Problem assembling build runner stage $BUILD_STAGE_RUNNER_NAME info for repo $CODE_REPO_NAME with branch $GIT_BRANCH_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
 fi
-BUILD_RUNNER_STAGE_PREDECESSOR="$BUILD_PIPELINE_OCID"
+BUILD_RUNNER_STAGE_PREDECESSOR=`bash ./builders/build-stage-predecessor.sh "$BUILD_PIPELINE_OCID"`
 BUILD_RUNNER_STAGE_PREDECESSOR_ARRAY=`bash ../build-items-array.sh "$BUILD_RUNNER_STAGE_PREDECESSOR"`
+echo "About to create runner as"
+echo ./build-stage-build-runner-setup.sh "$BUILD_STAGE_RUNNER_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_SOURCE_ARRAY" "$BUILD_RUNNER_STAGE_PREDECESSOR_ARRAY"
 bash ./build-stage-build-runner-setup.sh "$BUILD_STAGE_RUNNER_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_SOURCE_ARRAY" "$BUILD_RUNNER_STAGE_PREDECESSOR_ARRAY" 
 
 BUILD_RUNNER_STAGE_OCID=`bash ./get-build-stage-ocid.sh "$BUILD_STAGE_RUNNER_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME"`
