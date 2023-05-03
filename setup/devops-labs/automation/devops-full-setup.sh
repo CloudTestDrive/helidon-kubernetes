@@ -207,9 +207,8 @@ then
 fi
 
 echo "Creating new branch for modifications"
-GIT_BRANCH_NAME="my-lab-branch"
 cd $CODE_BASE
-git checkout -b GIT_BRANCH_NAME
+git checkout -b $GIT_BRANCH_NAME
 
 echo "Updating build spec"
 cp $SOURCE_BUILD_SPEC $CODE_BASE
@@ -245,7 +244,6 @@ then
 fi
 
 echo "Creating Build runner stage"
-BUILD_STAGE_RUNNER_NAME=buildstorefront
 BUILD_SOURCE_INFO=`bash ./assemble-source-devops-code-repo-info.sh $CODE_REPO_NAME $PROJECT_NAME $GIT_BRANCH_NAME`
 BUILD_SOURCE_ARRAY=`bash ../build-items-array.sh "$BUILD_SOURCE_INFO"`
 RESP=$?

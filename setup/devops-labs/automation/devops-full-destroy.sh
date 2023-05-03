@@ -109,7 +109,6 @@ echo "Destroying build pipeline"
 cd $COMMON_DIR/devops
 
 echo "Removing build runner"
-BUILD_STAGE_RUNNER_NAME=buildstorefront
 bash ./build-stage-destroy.sh $BUILD_STAGE_RUNNER_NAME $BUILD_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?
 if [ "$RESP" -ne 0 ]

@@ -13,4 +13,6 @@ STATUS_RESOURCE="$CODE_BASE/helidon-storefront-full/src/main/java/com/oracle/lab
 BUILD_PIPELINE_NAME="BuildStorefront"
 OCIR_REPO_NAME="$USER_INITIALS""devops/storefront"
 ARTIFACT_REPO_NAME="$USER_INITIALS""DevOps"
+BUILD_STAGE_RUNNER_NAME=buildstorefront
+GIT_BRANCH_NAME="my-lab-branch"
 DEPLOY_PIPELINE_NAME="DeployStorefront"
