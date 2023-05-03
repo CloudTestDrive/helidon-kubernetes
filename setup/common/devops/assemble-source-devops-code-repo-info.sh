@@ -20,7 +20,6 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
     source $SETTINGS
   else 
     echo "No existing settings cannot continue"
@@ -38,4 +37,4 @@ then
 fi
 
 REPO_URL_HTTPS=`oci devops repository get --repository-id "$REPO_OCID" | jq -j '.data."http-url"'`
-bash ./builders/build-source-devops-code-repo.sh "$REPO_OCID" $REPO_NAME" "$REPO_URL_HTTPS" "$REPO_BRANCH"
+bash ./builders/build-source-devops-code-repo.sh "$REPO_OCID" "$REPO_NAME" "$REPO_URL_HTTPS" "$REPO_BRANCH"
