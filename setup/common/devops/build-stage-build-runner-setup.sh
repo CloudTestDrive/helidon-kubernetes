@@ -111,7 +111,7 @@ BUILD_STAGE_REUSED_NAME=`bash ./get-build-stage-reused-name.sh $BUILD_STAGE_NAME
 
 if [ -z "${!BUILD_STAGE_REUSED_NAME}" ]
 then
-  echo "No reuse information found,continuing"
+  echo "No reuse information found for build stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME ,continuing"
 else
   echo "Reuse information found for stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME has already been setup, to remove it use the build-stage-destroy.sh script"
   exit 0
