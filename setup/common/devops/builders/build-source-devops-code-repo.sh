@@ -1,9 +1,10 @@
 #!/bin/bash -f
 
-if [ $# -lt 4 ]
+REQUIRED_ARGS_COUNT=4
+if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
-  echo "The $SCRIPT_NAME script requires four arguments"
+  echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments:"
   echo "The OCID of the devops service code repo"
   echo "the name of the code repo to use as the build source"
   echo "the URL of the code repo"

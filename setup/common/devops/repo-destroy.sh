@@ -1,9 +1,10 @@
 #!/bin/bash -f
 
-if [ $# -lt 2 ]
+REQUIRED_ARGS_COUNT=2
+if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
-  echo "The $SCRIPT_NAME requires two arguments"
+  echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments:"
   echo "the name of the devops repo to destroy"
   echo "the name of the containing devops project"
   exit 1

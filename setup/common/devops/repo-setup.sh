@@ -1,9 +1,10 @@
 #!/bin/bash -f
 
-if [ $# -lt 2 ]
+REQUIRED_ARGS_COUNT=2
+if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
-  echo "The $SCRIPT_NAME script requires two arguments:"
+  echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments:"
   echo "the name of the devops repo to to create"
   echo "the name of the containing project (which must have"
   echo "  already been created with the project-setup.sh script)"
