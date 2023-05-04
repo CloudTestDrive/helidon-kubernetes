@@ -61,7 +61,7 @@ then
 fi
 
 echo "No dependencies, deleting"
-oci devops build-pipeline-stage delete --stage-id "$BUILD_STAGE_OCID" --force --wait-for-state SUCCEEDED 
+oci devops build-pipeline-stage delete --stage-id "$BUILD_STAGE_OCID" --force --wait-for-state SUCCEEDED --wait-interval-seconds 5
 
 bash ../delete-from-saved-settings.sh $BUILD_STAGE_OCID_NAME
 bash ../delete-from-saved-settings.sh $BUILD_STAGE_REUSED_NAME
