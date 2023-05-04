@@ -5,7 +5,7 @@ if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
   echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments:"
-  echo "the name of the devops build runner to to create"
+  echo "the name of the devops wait stage to create"
   echo "the name of the containing build pipeline (which must have"
   echo "  already been created with the build-pipeline-setup.sh script)"
   echo "the name of the containing project (which must have"
@@ -105,7 +105,7 @@ fi
 echo "Creating devops build stage $BUILD_STAGE_NAME in build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-BUILD_STAGE_OCID=`oci devops build-pipeline-stage create-wait-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" ----wait-criteria  "$WAIT_CRITERIA" --display-name "$BUILD_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_BUILD_PIPELINE_DESCRIPTION" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.id'`
+BUILD_STAGE_OCID=`oci devops build-pipeline-stage create-wait-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --wait-criteria  "$WAIT_CRITERIA" --display-name "$BUILD_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_BUILD_PIPELINE_DESCRIPTION" --wait-for-state "SUCCEEDED" --wait-interval-seconds 5 | jq -j '.data.id'`
  
 if [ -z "$BUILD_STAGE_OCID" ]
 then
