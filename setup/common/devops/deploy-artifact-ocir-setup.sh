@@ -115,7 +115,7 @@ fi
 echo "Creating devops deploy artifact $DEPLOY_ARTIFACT_NAME in project $DEVOPS_PROJECT_NAME"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-DEPLOY_ARTIFACT_OCID=`oci devops deploy-artifact create-ocir-artifact --argument-substitution-mode  "$ALLOW_PARAM_SUBSTITUTION" --artifact-type "$ARTIFACT_TYPE" --project-id  "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --source-image-uri "$OCIR_SOURCE_URI" --description "$DEVOPS_DEPLOY_ARTIFACT_DESCRIPTION" --query '.data.id' --raw-output`
+DEPLOY_ARTIFACT_OCID=`oci devops deploy-artifact create-ocir-artifact --argument-substitution-mode  "$ALLOW_PARAM_SUBSTITUTION" --artifact-type "$ARTIFACT_TYPE" --project-id  "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --source-image-uri "$OCIR_SOURCE_URI" --description "$DEVOPS_DEPLOY_ARTIFACT_DESCRIPTION" | jq -r '.data.id'`
  
 if [ -z "$DEPLOY_ARTIFACT_OCID" ]
 then

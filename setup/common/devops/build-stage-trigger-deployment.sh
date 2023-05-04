@@ -131,7 +131,7 @@ fi
 echo "Creating devops trigger deploy stage $BUILD_STAGE_NAME in build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
 # if waiting for state this returns the work request details (that's what we are actually waiting
 # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-BUILD_STAGE_OCID=`oci devops build-pipeline-stage create-trigger-deployment-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --deploy-pipeline-id  "$DEVOPS_DEPLOY_PIPELINE_OCID" --display-name "$BUILD_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --is-pass-all-parameters-enabled "$PASS_BUILD_PARAMS" --description "$DEVOPS_BUILD_PIPELINE_DESCRIPTION" --query '.data.id' --raw-output`
+BUILD_STAGE_OCID=`oci devops build-pipeline-stage create-trigger-deployment-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --deploy-pipeline-id  "$DEVOPS_DEPLOY_PIPELINE_OCID" --display-name "$BUILD_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --is-pass-all-parameters-enabled "$PASS_BUILD_PARAMS" --description "$DEVOPS_BUILD_PIPELINE_DESCRIPTION" | jq -r '.data.id'`
  
 if [ -z "$BUILD_STAGE_OCID" ]
 then
