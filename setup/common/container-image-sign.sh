@@ -12,7 +12,7 @@ OCIR_BASE_NAME=$1
 echo "Signing images for $OCIR_BASE_NAME/logger (0.0.1), $OCIR_BASE_NAME/storefront (0.0.1, 0.0.2) and $OCIR_BASE_NAME/stockmanager (0.0.1, 0.0.2)"
 
 SAVED_DIR=`pwd`
-cd ocir
+cd ./ocir
 
 # Get the OCIR locations
 echo "Locating repo names"
@@ -22,8 +22,8 @@ OCIR_LOGGER_NAME=$OCIR_BASE_NAME/logger
 OCIR_STOREFRONT_NAME=$OCIR_BASE_NAME/storefront
 
 
-bash ./ocir-image-sign.sh $OCIR_LOGGER_NAME 0.0.1 RSA
-bash ./ocir-image-sign.sh $OCIR_STOCKMANAGER_NAME 0.0.1 RSA
-bash ./ocir-image-sign.sh $OCIR_STOCKMANAGER_NAME 0.0.2 RSA
-bash ./ocir-image-sign.sh $OCIR_STOREFRONT_NAME 0.0.1 RSA
-bash ./ocir-image-sign.sh $OCIR_STOREFRONT_NAME 0.0.2 RSA
+bash ./ocir-image-sign-setup.sh $OCIR_LOGGER_NAME 0.0.1 RSA
+bash ./ocir-image-sign-setup.sh $OCIR_STOCKMANAGER_NAME 0.0.1 RSA
+bash ./ocir-image-sign-setup.sh $OCIR_STOCKMANAGER_NAME 0.0.2 RSA
+bash ./ocir-image-sign-setup.sh $OCIR_STOREFRONT_NAME 0.0.1 RSA
+bash ./ocir-image-sign-setup.sh $OCIR_STOREFRONT_NAME 0.0.2 RSA
