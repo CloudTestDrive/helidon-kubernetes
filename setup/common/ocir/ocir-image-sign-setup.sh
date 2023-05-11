@@ -7,7 +7,7 @@ then
   echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments:"
   echo "the name of the ocir image"
   echo "the version or tag of the ocir image"
-  echo "the key name to use (shoudl be prefixed with your initials to match the"
+  echo "the key name to use (will be auto-prefixed with your initials to match the"
   echo "  other key related scripts and like the other scripts assumse a"
   echo "  single vault is in use here)"
   echo "  if this is not an RSA key then the signing algorythmn will need to be chosen"
@@ -20,7 +20,7 @@ fi
 
 OCIR_REPO_NAME=$1
 OCIR_IMAGE_TAG=$2
-OCIR_KEY_NAME=$3
+VAULT_KEY_NAME_BASE=$3
 
 if [ $# -ge 4 ]
 then
@@ -65,6 +65,7 @@ then
   echo "Your vault ocid has not been set, you need to run the vault-setup.sh script before you can run this script"
   exit 1
 fi
+VAULT_KEY_NAME=`bash ./vault-key-get-key-name.sh $VAULT_KEY_NAME_BASE`
 echo "Getting vault key info var name"
 VAULT_KEY_OCID_NAME=`bash ./vault-key-get-var-name-ocid.sh $VAULT_KEY_NAME`
 VAULT_KEY_OCID="${!VAULT_KEY_OCID_NAME}"
