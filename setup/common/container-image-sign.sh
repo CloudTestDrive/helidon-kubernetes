@@ -1,6 +1,6 @@
 #!/bin/bash -f
 
-if [ $# -lt 3 ]
+if [ $# -lt 1 ]
 then
   echo "$SCRIPT_NAME requires one arguments:"
   echo "Base name of the OCIR repo"
