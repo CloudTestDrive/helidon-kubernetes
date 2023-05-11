@@ -124,7 +124,7 @@ else
 fi
 
 echo "Requesting signing of image $OCIR_REPO_NAME"":""$OCIR_IMAGE_TAG using key $VAULT_KEY_NAME and algorythmn $SIGNING_ALGORITHM"
-IMAGE_SIGN_OCID=`oci artifacts container image-signature sign-upload --compartment-id "$COMPARTMENT_OCID" --kms-key-id "$VAULT_KEY_OCID" --kms-key-version-id "$KEY_VERSION_OCID" --signing-algorithm "$SIGNING_ALGORITHM" --image-id "$IMAGE_VERSION_OCID" --description "$SIGNING_DESCRIPTION" | jq -j '.data.id'`
+IMAGE_SIGN_OCID=`oci artifacts container image-signature sign-upload --compartment-id "$COMPARTMENT_OCID" --kms-key-id "$VAULT_KEY_OCID" --kms-key-version-id "$KEY_VERSION_OCID" --signing-algorithm "$SIGNING_ALGORITHM" --image-id "$IMAGE_VERSION_OCID" --description "$SIGNING_DESCRIPTION" | grep '^ID:' | sed -e 's/^ID: //'`
 
 if [ -z "$IMAGE_SIGN_OCID" ]
 then
