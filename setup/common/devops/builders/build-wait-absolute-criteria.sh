@@ -3,7 +3,7 @@ REQUIRED_ARGS_COUNT=1
 if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
-  echo "The $SCRIPT_NAME script requires 1 arguments"
+  echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments"
   echo "The duration of the wait in seconds"
   exit -1
 fi
