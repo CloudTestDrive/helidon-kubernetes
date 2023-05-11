@@ -74,6 +74,8 @@ if [ -z "$VAULT_KEY_OCID" ]
 then
   echo "Your vault key OCID has not been set for key $VAULT_KEY_NAME, you need to run the vault-key-setup.sh script before you can run this script"
   exit 1
+else 
+  echo "Located OCID for vault key $VAULT_KEY_NAME"
 fi
 cd $SAVED_DIR
 # get the possible reuse and OCID for the devops project itself
@@ -89,14 +91,14 @@ then
 else
   echo "Located OCID for Repo $OCIR_REPO_NAME"
 fi
-
+echo "Looking for image $OCIR_REPO_NAME"":""$OCIR_IMAGE_TAG ocid"
 IMAGE_VERSION_OCID=`oci artifacts container image list --compartment-id $COMPARTMENT_OCID --display-name "$OCIR_REPO_NAME"":""$OCIR_IMAGE_TAG" | jq -j ".data.items[0].id"`
 if [ -z "$IMAGE_VERSION_OCID" ]
 then
   echo "Cannot locate image $OCIR_REPO_NAME with tag $OCIR_IMAGE_TAG"
   exit 6
 else
-  echo "Located image $OCIR_REPO_NAME with tag $OCIR_IMAGE_TAG"
+  echo "Located image OCID for $OCIR_REPO_NAME"":""$OCIR_IMAGE_TAG"
 fi
 
 echo "Getting vault endpoint for vault OCID $VAULT_OCID"
@@ -112,13 +114,16 @@ fi
 
 echo "Getting vault key info"
 
-KEY_VERSION_OCID=`oci kms management key-version list --key-id "$VAULT_KEY_OCID" --endpoint "$VAULT_ENDPOINT" --all --sort-by TIMECREATED | jq -j "[ .data[] | select ( .\"lifecycle-state\" == \"ENABLED\" )] | first | .id"`
+KEY_VERSION_OCID=`oci kms management key-version list --key-id "$VAULT_KEY_OCID" --endpoint "$VAULT_ENDPOINT" --all --sort-by TIMECREATED | jq -j "[ .data[] | select ( .\"lifecycle-state\" == \"ENABLED\" ) ] | first | .id"`
 if [ -z "$KEY_VERSION_OCID" ]
 then
-  echo "Can't locate a enabled key versionn for key $VAULT_KEY_NAME, cannot continue"
+  echo "Can't locate a enabled key version for key $VAULT_KEY_NAME, cannot continue"
   exit 4 
+else
+  echo "Located an enabled key version for key $VAULT_KEY_NAME"
 fi
 
+echo "Requesting signing of image $OCIR_REPO_NAME"":""$OCIR_IMAGE_TAG using key $VAULT_KEY_NAME and algorythmn $SIGNING_ALGORITHM"
 IMAGE_SIGN_OCID=`oci artifacts container image-signature sign-upload --compartment-id "$COMPARTMENT_OCID" --kms-key-id "$VAULT_KEY_OCID" --kms-key-version-id "$KEY_VERSION_OCID" --signing-algorithm "$SIGNING_ALGORITHM" --image-id "$IMAGE_VERSION_OCID" --description "$SIGNING_DESCRIPTION" | jq -j '.data.id'`
 
 if [ -z "$IMAGE_SIGN_OCID" ]
