@@ -291,7 +291,7 @@ then
     echo "Update $TF_MODULE_FILE to set OKE image signing required"
     bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES $USE_SIGNED_IMAGES
     echo "Update $TF_MODULE_FILE to set OKE image signing keys"
-    bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES "$IMAGE_SIGNING_KEYS"
+    bash $UPDATE_FILE_SCRIPT $TFM IMAGE_SIGNING_KEYS "$IMAGE_SIGNING_KEYS"
     
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf
