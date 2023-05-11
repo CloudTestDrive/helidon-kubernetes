@@ -142,6 +142,8 @@ then
     WORKER_MEMORY=16
     WORKER_COUNT=3
     WORKER_BOOT_SIZE=50
+    USE_SIGNED_IMAGES=false
+    IMAGE_SIGNING_KEYS='[]'
     echo "Checking for teraform module generic settings file"
     GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
     if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
@@ -286,6 +288,10 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM TERRAFORM_OKE_MODULE_VERSION $TERRAFORM_OKE_MODULE_VERSION
     echo "Update $TF_MODULE_FILE to set OKE Kubernetes version"
     bash $UPDATE_FILE_SCRIPT $TFM OKE_KUBERNETES_VERSION $OKE_KUBERNETES_VERSION
+    echo "Update $TF_MODULE_FILE to set OKE image signing required"
+    bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES $USE_SIGNED_IMAGES
+    echo "Update $TF_MODULE_FILE to set OKE image signing keys"
+    bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES "$IMAGE_SIGNING_KEYS"
     
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf
