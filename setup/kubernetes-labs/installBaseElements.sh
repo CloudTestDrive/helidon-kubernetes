@@ -63,7 +63,7 @@ else
   LB_NSG_OPTION='--set controller.service.annotations."oci\.oraclecloud\.com/oci-network-security-groups"='"$LB_NSG_OCID"
 fi
 
-helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx  --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=20 --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-security-list-management-mode"=All $LB_NSG_OPTION
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx  --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx --version $ingressHelmChartVersion --set rbac.create=true  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-protocol"=TCP --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape"=flexible --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-min"=10  --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-shape-flex-max"=10 --set controller.service.annotations."service\.beta\.kubernetes\.io/oci-load-balancer-security-list-management-mode"=All $LB_NSG_OPTION
 echo "Helm for ingress completed - It may take a while to get the external IP address of the ingress load ballancer"
 EXTERNAL_IP=""
 WAIT_COUNTER=1
