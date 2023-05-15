@@ -21,6 +21,12 @@ fi
 # the DIR based locations must have been set before calling this script
 SAVED_PWD=`pwd`
 
+# be sure to remove the k8s ingress controller, sometimes removing the 
+# destroying the cluster or the ingress-nginx namespace leaves this around 
+# and that blocks shutting down the vcn
+
+helm uninstall ingress-nginx --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx 
+
 # remove the DB and other configuration from the repo
 
 cd $KUBERNETES_LABS_DIR

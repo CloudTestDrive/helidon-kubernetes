@@ -39,12 +39,9 @@ echo "  Terminate the database and destroy test data"
 echo "  Attempt to remove your working a compartment (this will fail if it contains resources you've created)"
 echo "  Remove gathered basic information such as your initials"
 echo "  Remove the downloaded step certificate manager and certificates it's generated"
-echo "At completion this will have removed the resources created by the setup scripts, however any resources outside the"
-echo "Kubernetes cluster, this means that unless you have already deleted the ingress-nginx namespace created when you"
-echo "setup the ingress contrtoller (or done a helm unitnalle of the ingress controller) that the load balancer will"
-echo "not be destroyed, and neither will the VCN."
-echo ""
-echo "Therefore if you have not released the Load balancer please stop this script, delete those and then re-run it"
+echo "At completion this will have removed the resources created by the setup scripts and from the lab"
+echo "instructions, however any resources outside the Kubernetes cluster you may have manully created will be"
+echo "retained (for example if you did the devops lab using this environment and created that project)."
 
 read -p "Do you want to proceed (y/n) ?" REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -70,13 +67,6 @@ fi
 SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
-
-# Try and tidy things up in the cluster
-# fortunately everything uses the same ingress so only one LB which is created when the ingress controller is creted
-# so just delete the controller namespoace which will delete the LB, everything else is inside OKE so will be destroyed 
-# with the cluster
-
-kubectl delete namespace ingress-nginx --ignore-not-found=true  --context $CLUSTER_CONTEXT_NAME
 
 cd $MODULES_DIR
 
