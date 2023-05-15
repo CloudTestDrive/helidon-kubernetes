@@ -25,6 +25,7 @@ SAVED_PWD=`pwd`
 # destroying the cluster or the ingress-nginx namespace leaves this around 
 # and that blocks shutting down the vcn
 
+echo "Removing ingress LB"
 helm uninstall ingress-nginx --kube-context $CLUSTER_CONTEXT_NAME --namespace ingress-nginx 
 
 # remove the DB and other configuration from the repo
