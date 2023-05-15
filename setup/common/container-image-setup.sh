@@ -273,3 +273,9 @@ then
 else 
   echo "Retaining the image repo $WORK_DIR"
 fi
+
+cd $SCRIPTS_DIR
+if [ "$SIGN_OCIR_IMAGES" = "true" ]
+then
+  bash ./container-image-sign.sh $OCIR_BASE_NAME
+fi
