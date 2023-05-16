@@ -67,6 +67,8 @@ if [ $do_step_install = true ]
     rm step.tar.gz
     echo "Moving step into place"
     mv step_*/bin/step .
+    echo "Making executable"
+    chmod +x step
     echo "Removing unneeded temp location"
     rm -rf step_*
   else 
