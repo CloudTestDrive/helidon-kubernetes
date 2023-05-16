@@ -49,7 +49,7 @@ if [ $do_step_install = true ]
     then
       echo "Downloaded step"
     else
-      STEP_LATEST_DOWNLOAD=https://dl.step.sm/gh-release/cli/gh-release-header/v0.24.4/step_linux_0.24.4_amd64.tar.gz 
+      STEP_LATEST_DOWNLOAD=https://github.com/smallstep/cli/releases/download/v0.24.4/step_linux_0.24.4_amd64.tar.gz 
       echo "Problem downloading step, going to use a fallback of $STEP_LATEST_DOWNLOAD"
       wget -O step.tar.gz $STEP_LATEST_DOWNLOAD
       RESP=$?
