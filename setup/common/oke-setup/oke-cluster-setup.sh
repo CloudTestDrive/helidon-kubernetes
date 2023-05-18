@@ -144,6 +144,9 @@ then
     WORKER_BOOT_SIZE=50
     USE_SIGNED_IMAGES=false
     IMAGE_SIGNING_KEYS='[]'
+    ENABLE_CALICO='false'
+    CALICO_VERSION='3.24.5'
+    CALICO_MODE='policy-only'
     echo "Checking for teraform module generic settings file"
     GENERIC_OKE_TERRAFORM_SETTINGS=$TF_SOURCE_CONFIG_DIR/general-oke-terraform-settings.sh
     if [ -f $GENERIC_OKE_TERRAFORM_SETTINGS ]
@@ -292,7 +295,14 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES $USE_SIGNED_IMAGES
     echo "Update $TF_MODULE_FILE to set OKE image signing keys"
     bash $UPDATE_FILE_SCRIPT $TFM IMAGE_SIGNING_KEYS "$IMAGE_SIGNING_KEYS"
-    
+    # calico support
+    echo "Update $TF_MODULE_FILE to set calico enabled"
+    bash $UPDATE_FILE_SCRIPT $TFM ENABLE_CALICO "$ENABLE_CALICO"
+    echo "Update $TF_MODULE_FILE to set calico version"
+    bash $UPDATE_FILE_SCRIPT $TFM CALICO_VERSION "$CALICO_VERSION"
+    echo "Update $TF_MODULE_FILE to set calico mode"
+    bash $UPDATE_FILE_SCRIPT $TFM CALICO_MODE "$CALICO_MODE"
+        
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf
     
