@@ -10,8 +10,12 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
-CLUSTER_CONTEXT_NAME=one
-
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 if [ $# -ge 1 ]
 then
   CLUSTER_CONTEXT_NAME=$1

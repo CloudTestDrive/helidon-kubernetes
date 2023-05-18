@@ -1,13 +1,19 @@
 #!/bin/bash -f
 
-CLUSTER_CONTEXT_NAME=one
 
-if [ $# -gt 0 ]
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
+
+if [ $# -ge 1 ]
 then
   CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Operating on context name $CLUSTER_CONTEXT_NAME"
 else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 export SETTINGS=$HOME/hk8sLabsSettings

@@ -1,7 +1,12 @@
 #!/bin/bash -f
 SCRIPT_NAME=`basename $0`
 
-CLUSTER_CONTEXT_NAME=one
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 
 if [ $# -gt 0 ]
 then

@@ -67,7 +67,12 @@ cd $MODULES_DIR
 kubectl delete namespace ingress-nginx --ignore-not-found=true
 
 cd $MODULES_DIR
-CLUSTER_CONTEXT_NAME=one
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 bash ./core-and-single-kubernetes-cluster-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
