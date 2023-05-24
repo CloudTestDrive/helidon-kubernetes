@@ -86,7 +86,7 @@ spec:
             command:
             - /bin/bash
             - -c
-            - 'curl -s http://localhost:9082/health/ready | grep "\"outcome\":\"UP\""'
+            - 'curl -s http://localhost:9082/health/ready | grep "\"status\":\"UP\""'
           # No point in checking until it's been running for a while 
           # Comment this out when using a startup probe
           initialDelaySeconds: 15
