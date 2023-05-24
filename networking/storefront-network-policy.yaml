@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: stockmanager-network-policy
+spec:
+  podSelector:
+    # Apply to the stock manager
+    matchLabels:
+      app: stockmanager
+  # this policy only controlls incomming requests
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        # ingress controller
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+        # things in the kube-system likes metrics server or dashboard
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+        # prometheus log capture
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        # this is not connected to by any services within this namespace
