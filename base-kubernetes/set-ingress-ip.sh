@@ -10,7 +10,13 @@ if [ $# -eq 0 ]
     exit -1 
 fi
 EXTERNAL_IP=$1
-CLUSTER_CONTEXT_NAME=one
+
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 
 if [ $# -ge 2 ]
 then

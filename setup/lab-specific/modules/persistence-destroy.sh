@@ -4,7 +4,12 @@ if [ -z "$PARALLEL_SETUP" ]
 then
   export PARALLEL_SETUP=false
 fi
-CLUSTER_CONTEXT_NAME=one
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 
 if [ $# -ge 1 ]
 then
