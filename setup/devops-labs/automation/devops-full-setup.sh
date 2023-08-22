@@ -298,7 +298,14 @@ fi
 cd $COMMON_DIR/devops
 # build the artifact entries
 echo "Building artifact repo template entries"
+echo "$ARTIFACT_STOREFRONT_OCIR_NAME"
 bash ./deploy-artifact-ocir-setup.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME" "$ARTIFACT_STOREFRONT_OCIR_PATH" "Storefront container image"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy artifact $ARTIFACT_STOREFRONT_OCIR_NAME, unable to continue"
+  exit $RESP
+fi
 ARTIFACT_STOREFRONT_OCIR_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME"`
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -306,7 +313,13 @@ then
   echo "Problem getting ocid for artifact ocir $ARTIFACT_STOREFRONT_OCIR_NAME, unable to continue"
   exit $RESP
 fi
+echo "$ARTIFACT_STOREFRONT_SERVICE_NAME"
 bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_SERVICE_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_SERVICE_PATH" "$ARTIFACT_STOREFRONT_SERVICE_VERSION" "Storefront service"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy artifact $ARTIFACT_STOREFRONT_SERVICE_NAME, unable to continue"
+  exit $RESP
+fi
 ARTIFACT_STOREFRONT_SERVICE_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_SERVICE_NAME" "$PROJECT_NAME"`
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -314,7 +327,13 @@ then
   echo "Problem getting ocid for artifact service $ARTIFACT_STOREFRONT_SERVICE_NAME, unable to continue"
   exit $RESP
 fi
+echo "$ARTIFACT_STOREFRONT_INGRESS_NAME"
 bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_INGRESS_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_INGRESS_PATH" "$ARTIFACT_STOREFRONT_INGRESS_VERSION" "Storefront ingress rule"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy artifact $ARTIFACT_STOREFRONT_INGRESS_NAME, unable to continue"
+  exit $RESP
+fi
 ARTIFACT_STOREFRONT_INGRESS_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_INGRESS_NAME" "$PROJECT_NAME"`
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -322,7 +341,13 @@ then
   echo "Problem getting ocid for artifact ingress $ARTIFACT_STOREFRONT_INGRESS_NAME, unable to continue"
   exit $RESP
 fi
+echo "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME"
 bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_DEPLOYMENT_PATH" "$ARTIFACT_STOREFRONT_DEPLOYMENT_VERSION" "Storefront deployment"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy artifact $ARTIFACT_STOREFRONT_DEPLOYMENT_NAME, unable to continue"
+  exit $RESP
+fi
 ARTIFACT_STOREFRONT_DEPLOYMENT_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME" "$PROJECT_NAME"`
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -339,7 +364,7 @@ ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_DEPLOYMENT=`bash ./builders/build-deliver-depl
 echo "Building artifact repo template to build spec mappings array"
 ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY=`bash ../build-items-array.sh "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_IMAGE" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_SERVICE" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_INGRESS" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_DEPLOYMENT"`
 echo "Result is"
-echo "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY"
+echo "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY"*
 
 
 BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_PREDECESSOR=`bash ./builders/build-stage-predecessor.sh "$BUILD_RUNNER_STAGE_OCID"`
