@@ -63,7 +63,7 @@ VAULT_SECRET_NAME=`bash ./get-vault-secret-name.sh $SETTINGS_NAME`
 VAULT_SECRET_OCID_NAME=`bash ./get-vault-secret-ocid-name.sh $VAULT_SECRET_NAME`
 VAULT_SECRET_REUSED_NAME=`bash ./get-vault-secret-reused-name.sh $VAULT_SECRET_NAME`
 
-if [ -z "${!SECRET_REUSED_VAR_NAME}" ] 
+if [ -z "${!VAULT_SECRET_REUSED_NAME}" ] 
 then
   echo "No existing reuse information for "$SETTINGS_NAME", continuing"
 else
@@ -84,7 +84,7 @@ fi
 BASE64_VAULT_SECRET_VALUE=`echo $VAULT_SECRET_VALUE | base64`
 #lets see it it exists already
 echo "Checking if secret $VAULT_SECRET_NAME already exists"
-VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ENABLED --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
+VAULT_SECRET_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state ACTIVE --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
 
 VAULT_SECRET_PENDING_DELETION_OCID=`oci vault secret list --compartment-id $COMPARTMENT_OCID --all --lifecycle-state PENDING_DELETION --name $VAULT_SECRET_NAME --vault-id $VAULT_OCID | jq -j '.data[0].id'`
 if [ -z $VAULT_SECRET_PENDING_DELETION_OCID ]
