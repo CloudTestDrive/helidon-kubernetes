@@ -81,7 +81,49 @@ then
   exit $RESP
 fi
 
-echo "Destroying the build stage to deploy artifacts stage"
+echo "Destroying the deliver artifacts stage"
+bash ./build-stage-destroy.sh $BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME $BUILD_PIPELINE_NAME $PROJECT_NAME 
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing deploy artifacts $BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME in build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+
+echo "Destroying the deploy artifacts"
+echo "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME"
+bash ./deploy-artifact-destroy.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem destroying artifact repo $ARTIFACT_STOREFRONT_DEPLOYMENT_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+echo "$ARTIFACT_STOREFRONT_SERVICE_NAME"
+bash ./deploy-artifact-destroy.sh "$ARTIFACT_STOREFRONT_SERVICE_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem destroying artifact repo $ARTIFACT_STOREFRONT_SERVICE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+echo "$ARTIFACT_STOREFRONT_INGRESS_NAME"
+bash ./deploy-artifact-destroy.sh "$ARTIFACT_STOREFRONT_INGRESS_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem destroying artifact repo $ARTIFACT_STOREFRONT_INGRESS_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+echo "$ARTIFACT_STOREFRONT_OCIR_NAME"
+bash ./deploy-artifact-destroy.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem destroying artifact repo $ARTIFACT_STOREFRONT_OCIR_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
 
 
 echo "Destroying artifacts in artifact repo"
