@@ -294,6 +294,8 @@ then
   exit $RESP
 fi
 
+
+cd $COMMON_DIR/devops
 # build the artifact entries
 echo "Building artifact repo template entries"
 bash ./deploy-artifact-ocir-setup.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME" "$ARTIFACT_STOREFRONT_OCIR_PATH" "Storefront container image"
