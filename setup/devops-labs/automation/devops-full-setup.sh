@@ -294,6 +294,67 @@ then
   exit $RESP
 fi
 
+# build the artifact entries
+echo "Building artifact repo template entries"
+bash ./deploy-artifact-ocir-setup.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME" "$ARTIFACT_STOREFRONT_OCIR_PATH" "Storefront container image"
+ARTIFACT_STOREFRONT_OCIR_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_OCIR_NAME" "$PROJECT_NAME"`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for artifact ocir $ARTIFACT_STOREFRONT_OCIR_NAME, unable to continue"
+  exit $RESP
+fi
+bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_SERVICE_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_SERVICE_PATH" "$ARTIFACT_STOREFRONT_SERVICE_VERSION" "Storefront service"
+ARTIFACT_STOREFRONT_SERVICE_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_SERVICE_NAME" "$PROJECT_NAME"`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for artifact service $ARTIFACT_STOREFRONT_SERVICE_NAME, unable to continue"
+  exit $RESP
+fi
+bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_INGRESS_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_INGRESS_PATH" "$ARTIFACT_STOREFRONT_INGRESS_VERSION" "Storefront ingress rule"
+ARTIFACT_STOREFRONT_INGRESS_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_INGRESS_NAME" "$PROJECT_NAME"`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for artifact ingress $ARTIFACT_STOREFRONT_INGRESS_NAME, unable to continue"
+  exit $RESP
+fi
+bash ./deploy-artifact-generic-setup.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME" "$PROJECT_NAME"  "$ARTIFACT_REPO_NAME"  "$ARTIFACT_STOREFRONT_DEPLOYMENT_PATH" "$ARTIFACT_STOREFRONT_DEPLOYMENT_VERSION" "Storefront deployment"
+ARTIFACT_STOREFRONT_DEPLOYMENT_OCID=`bash ./get-deploy-artifact-ocid.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_NAME" "$PROJECT_NAME"`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for artifact deployment $ARTIFACT_STOREFRONT_DEPLOYMENT_NAME, unable to continue"
+  exit $RESP
+fi
+
+echo "Building artifact repo template to build spec mappings"
+ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_IMAGE=`bash ./builders/build-deliver-deploy-artifact-connection .sh $ARTIFACT_STOREFRONT_OCIR_OCID $ARTIFACT_STOREFRONT_OCIR_BUILD_SPEC_EXPORT_NAME`
+ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_SERVICE=`bash ./builders/build-deliver-deploy-artifact-connection .sh $ARTIFACT_STOREFRONT_SERVICE_OCID $ARTIFACT_STOREFRONT_SERVICE_BUILD_SPEC_EXPORT_NAME`
+ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_INGRESS=`bash ./builders/build-deliver-deploy-artifact-connection .sh $ARTIFACT_STOREFRONT_INGRESS_OCID $ARTIFACT_STOREFRONT_INGRESS_BUILD_SPEC_EXPORT_NAME`
+ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_DEPLOYMENT=`bash ./builders/build-deliver-deploy-artifact-connection .sh $ARTIFACT_STOREFRONT_DEPLOYMENT_OCID $ARTIFACT_STOREFRONT_OCIR_BUILD_SPEC_EXPORT_NAME`
+echo "Building artifact repo template to build spec mappings array"
+ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY=`bash ../build-items-array.sh "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_IMAGE" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_SERVICE" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_INGRESS" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_DEPLOYMENT"`
+echo "Result is"
+echo "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY"
+
+
+BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_PREDECESSOR=`bash ./builders/build-stage-predecessor.sh "$BUILD_RUNNER_STAGE_OCID"`
+BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY=`bash ../build-items-array.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_PREDECESSOR"`
+
+
+echo "Creating artifact to deployment deploy stage with command :"
+echo bash ./build-stage-deliver-artifacts-setup.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME"  "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$ARTIFACT_TO_DEPLOYMENT_BUILD_SPEC_ARRAY" "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY" "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_DESCRIPTION"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deliver artifacts stage for stage named $BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME in pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_OCID=`bash ./get-build-deliver-stage-ocid.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME"`
+
+
 echo "Creating deploy pipeline"
 
 cd $COMMON_DIR/devops

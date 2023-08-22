@@ -81,6 +81,9 @@ then
   exit $RESP
 fi
 
+echo "Destroying the build stage to deploy artifacts stage"
+
+
 echo "Destroying artifacts in artifact repo"
 cd $COMMON_DIR/artifactrepo
 
