@@ -6,6 +6,8 @@ then
   echo "The $SCRIPT_NAME script requires one argument, the name of the artifact repo to process"
   exit -1
 fi
+export SETTINGS=$HOME/hk8sLabsSettings
+
 if [ -f $SETTINGS ]
 then
   source $SETTINGS
