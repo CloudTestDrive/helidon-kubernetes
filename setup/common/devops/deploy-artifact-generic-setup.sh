@@ -103,10 +103,9 @@ fi
 
 # get the artifact repo details - note these are in a different folder so have to switch temporaraly
 SAVED_DIR=`pwd`
-cd ../artifactrepo
+cd ../artifactrepo*****
 echo "Getting OCID for artifact repo $ARTIFACT_REPO_NAME"
-ARTIFACT_REPO_OCID_NAME=`bash ./get-artifact-repo-ocid.sh $ARTIFACT_REPO_NAME`
-ARTIFACT_REPO_OCID="${!ARTIFACT_REPO_OCID_NAME}"
+ARTIFACT_REPO_OCID=`bash ./get-artifact-repo-ocid.sh $ARTIFACT_REPO_NAME`
 if [ -z "$ARTIFACT_REPO_OCID" ]
 then
   echo "No ocid found for artifact repo $ARTIFACT_REPO_NAME cannot continue. Has the artifact been created with the artifact-repo-generic-setup.sh script ?"
