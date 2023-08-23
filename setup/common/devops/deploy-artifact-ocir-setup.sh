@@ -95,7 +95,7 @@ echo "Getting var names for deploy artifact $DEPLOY_ARTIFACT_NAME in devops proj
 DEPLOY_ARTIFACT_OCID_NAME=`bash ./get-deploy-artifact-ocid-name.sh $DEPLOY_ARTIFACT_NAME $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 DEPLOY_ARTIFACT_REUSED_NAME=`bash ./get-deploy-artifact-reused-name.sh $DEPLOY_ARTIFACT_NAME $DEVOPS_BUILD_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 
-if [ -z "${!BUILD_STAGE_REUSED_NAME}" ]
+if [ -z "${!DEPLOY_ARTIFACT_REUSED_NAME}" ]
 then
   echo "No reuse information found for deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME ,continuing"
 else
