@@ -105,7 +105,7 @@ fi
 SAVED_DIR=`pwd`
 cd ../artifactrepo
 echo "Getting OCID for artifact repo $ARTIFACT_REPO_NAME"
-ARTIFACT_REPO_OCID_NAME=`bash ./get-project-ocid-name.sh $ARTIFACT_REPO_NAME`
+ARTIFACT_REPO_OCID_NAME=`bash ./get-artifact-repo-ocid.sh $ARTIFACT_REPO_NAME`
 ARTIFACT_REPO_OCID="${!ARTIFACT_REPO_OCID_NAME}"
 if [ -z "$ARTIFACT_REPO_OCID" ]
 then
