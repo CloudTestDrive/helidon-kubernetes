@@ -22,7 +22,7 @@ then
   echo "Optional args"
   echo "  Description of the deploy artifact  (defaults to not provided)"
   echo "  Artifact type (COMMAND_SPEC, DEPLOYMENT_SPEC, DOCKER_IMAGE, GENERIC_FILE,"
-  echo "    JOB_SPEC, KUBERNETES_MANIFEST, default so GENERIC_FILE)"
+  echo "    JOB_SPEC, KUBERNETES_MANIFEST, default to KUBERNETES_MANIFEST)"
   echo "  Parameter substitution mode (SUBSTITUTE_PLACEHOLDERS or NONE"
   echo "    defaults to SUBSTITUTE_PLACEHOLDERS)"
   
@@ -57,7 +57,7 @@ if [ $# -ge 7 ]
 then
   ARTIFACT_TYPE="$7"
 else
-  ARTIFACT_TYPE="DOCKER_IMAGE"
+  ARTIFACT_TYPE="KUBERNETES_MANIFEST"
 fi
 if [ "$ARTIFACT_TYPE" != "COMMAND_SPEC" ] && [ "$ARTIFACT_TYPE" != "DOCKER_IMAGE" ] && [ "$ARTIFACT_TYPE" != "GENERIC_FILE" ] && [ "$ARTIFACT_TYPE" != "JOB_SPEC" ] && [ "$ARTIFACT_TYPE" != "KUBERNETES_MANIFEST" ]
 then
