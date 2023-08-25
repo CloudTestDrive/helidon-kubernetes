@@ -81,6 +81,16 @@ then
   exit $RESP
 fi
 
+echo "Destroying the deploy environment"
+cd $COMMON_DIR/devops
+bash ./deploy-environment-destroy.sh "$DEVOPS_DEPLOY_ENV_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem destroying deploy environment $DEVOPS_DEPLOY_ENV_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
 echo "Destroying the deliver artifacts stage"
 bash ./build-stage-destroy.sh $BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME $BUILD_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?

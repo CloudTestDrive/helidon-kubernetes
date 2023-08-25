@@ -6,6 +6,23 @@ then
   CLUSTER_CONTEXT=$1
 fi
 
+# try to locate the cluster settings file for this cluster
+CLUSTER_SETTINGS="$HOME/clusterSettings"".""$CLUSTER_CONTEXT"
+if [ -f "$CLUSTER_SETTINGS" ]
+then
+  echo "Located $CLUSTER_SETTINGS, loading settings from it"
+  source $CLUSTER_SETTINGS
+else
+  echo "Can't locate cluster settings file $CLUSTER_SETTINGS unless EXTERNAL_IP is set elsewhere this may be a problem"
+fi
+if [ -z "$EXTERNAL_IP" ]
+then
+  echo "Variable EXTERNAL_IP which should contain the IP address of the ingress controller in your cluster is not"
+  echo "set, either the $CLUSTER_SETTINGS does not exist (or if it does does not set EXTERNAL_IP) or it's not set"
+  echo "in other ways, cannot continue"
+  exit 1
+fi
+
 export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
@@ -294,6 +311,12 @@ then
   exit $RESP
 fi
 
+cd $COMMON_DIR/devops
+# setup the  build pipeline params
+BUILD_INITIALS_PARAM=`bash ./builders/build-pipeline-parameter.sh "$PARAM_BUILD_INITIALS_NAME" "$USER_INITIALS" "$PARAM_BUILD_INITIALS_DESCRIPTION"`
+BUILD_PARAMS_LIST=`../build-items-list.sh "$BUILD_INITIALS_PARAM"`
+./build-pipeline-params-setup.sh "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
+
 
 cd $COMMON_DIR/devops
 # build the artifact entries
@@ -383,6 +406,9 @@ then
 fi
 BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_OCID=`bash ./get-build-deliver-stage-ocid.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME"`
 
+echo "Creaing the devops to deploy environment called $DEVOPS_DEPLOY_ENV_NAME targeting OKE cluster named $CLUSTER_CONTEXT"
+
+bash ./deploy-environment-on-oke-setup.sh "$DEVOPS_DEPLOY_ENV_NAME" "$PROJECT_NAME" "$CLUSTER_CONTEXT" 
 
 echo "Creating deploy pipeline"
 
@@ -401,3 +427,11 @@ then
   echo "Problem getting ocid for deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
 fi
+
+echo "Setting deploy pipeline paraps"
+DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "EXTERNAL_IP" "$EXTERNAL_IP" "ingress controller external ip"`
+DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "KUBERNETES_NAMESPACE" "$NAMESPACE" "OKE Deployment namespace"`
+DEPLOY_PARAMS_LIST=`bash ../build-items.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_PARAM_NAMESPACE"`
+
+
+./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
