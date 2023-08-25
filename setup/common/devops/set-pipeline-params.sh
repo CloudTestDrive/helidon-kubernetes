@@ -38,10 +38,12 @@ then
   PIPELINE_COMMAND="build-pipeline"
   PIPELINE_OCID_FLAG="--build-pipeline-id"
   PARAMS_FLAG="--build-pipeline-parameters"
+  JQ_FLAG='.data."build-pipeline-parameters".items'
 else
   PIPELINE_COMMAND="deploy-pipeline"
   PIPELINE_OCID_FLAG="--pipeline-id"
   PARAMS_FLAG="--pipeline-parameters"
+  JQ_FLAG='.data."deploy-pipeline-parameters".items'
 fi
 
 echo "Setting pipeline params"
@@ -52,4 +54,4 @@ then
   echo "Problem setting $DEVOPS_PIPELINE_TYPE pipeline with ocid $DEVOPS_PIPELINE_OCID to $DEVOPS_PIPELINE_PARAMS, unable to continue"
   exit $RESP
 fi
-echo $RET | jq -j '.data.deploy-pipeline-parameters.items'
+echo $RET | jq -j "$JQ_FLAG"
