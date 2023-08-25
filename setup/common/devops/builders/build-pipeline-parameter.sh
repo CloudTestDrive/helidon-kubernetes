@@ -8,13 +8,13 @@ then
   echo "The name of the pipeline parameter"
   echo "The default value of the piupeline parameter"
   echo "Optionally"
-  echo " The descriptio of the pipelikne parameter"
+  echo " The description of the pipeline parameter"
   exit -1
 fi
 
 PARAM_NAME=$1
 PARAM_DEFAULT=$2
-if [ $# -Gt $REQUIRED_ARGS_COUNT ]
+if [ $# -gt "$REQUIRED_ARGS_COUNT" ]
 then
   PARAM_DESCRIPTION=$3
 else
