@@ -62,17 +62,10 @@ then
   exit 1
 fi
 
-if [ -z "$COMPARTMENT_OCID" ]
-then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
-  exit 2
-fi
-
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
 fi
-
 
 # get the possible OCID for the devops project itself
 echo "Getting var names for devops project $DEVOPS_PROJECT_NAME"

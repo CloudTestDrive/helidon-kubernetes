@@ -56,7 +56,7 @@ DEPENDENT_STAGES_COUNT=`oci devops build-pipeline-stage list --build-pipeline-id
 
 if [ "$DEPENDENT_STAGES_COUNT" -gt 0 ]
 then
-  echo "devops build stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME has dependent stages, cannot delete it"
+  echo "devops build stage $BUILD_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME has $DEPENDENT_STAGES_COUNT dependent stages, cannot delete it"
   exit 3
 fi
 
