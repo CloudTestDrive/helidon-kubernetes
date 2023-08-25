@@ -10,6 +10,7 @@ then
   echo "The items array of params (use the builders/build-pipeline-parameter.sh"
   echo "script to create the individual param entries then the build-items.sh"
   echo "script to combine them)"
+  echo "To remove params using the build-items.sh command with no args to get an empoty array"
   exit -1
 fi
 DEVOPS_PIPELINE_NAME=$1

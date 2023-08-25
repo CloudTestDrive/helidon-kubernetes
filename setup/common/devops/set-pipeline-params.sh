@@ -8,8 +8,9 @@ then
   echo "The type of pipeine (BUILD or DEPLOY)"
   echo "The OCID of the pipeline"
   echo "The items array of params (use the builders/pipeline-parameter.sh"
-  echo "script to create the individual param entrues then the build-items.sh"
+  echo "script to create the individual param entries then the build-items.sh"
   echo "script to combine them)"
+  echo "To remove params using the build-items.sh command with no args to get an empoty array"
   exit -1
 fi
 DEVOPS_PIPELINE_TYPE=$1

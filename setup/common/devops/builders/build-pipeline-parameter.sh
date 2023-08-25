@@ -6,7 +6,7 @@ then
   SCRIPT_NAME=`basename $0`
   echo "The $SCRIPT_NAME script requires $REQUIRED_ARGS_COUNT arguments"
   echo "The name of the pipeline parameter"
-  echo "The default value of the piupeline parameter"
+  echo "The default value of the pipeline parameter"
   echo "Optionally"
   echo " The description of the pipeline parameter"
   exit -1
