@@ -44,6 +44,5 @@ else
   PARAMS_FLAG="--pipeline-parameters"
 fi
 
-echo "Setting pipeline params using command"
-echo oci devops "$PIPELINE_COMMAND" update "$PIPELINE_OCID_FLAG" "$DEVOPS_PIPELINE_OCID" "$PARAMS_FLAG" "$DEVOPS_PIPELINE_PARAMS"
-oci devops "$PIPELINE_COMMAND" update "$PIPELINE_OCID_FLAG" "$DEVOPS_PIPELINE_OCID" "$PARAMS_FLAG" "$DEVOPS_PIPELINE_PARAMS"
+echo "Setting pipeline params to $DEVOPS_PIPELINE_PARAMS "
+oci devops "$PIPELINE_COMMAND" update "$PIPELINE_OCID_FLAG" "$DEVOPS_PIPELINE_OCID" "$PARAMS_FLAG" "$DEVOPS_PIPELINE_PARAMS" --force
