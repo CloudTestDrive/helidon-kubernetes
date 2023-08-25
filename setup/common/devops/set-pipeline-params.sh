@@ -44,5 +44,12 @@ else
   PARAMS_FLAG="--pipeline-parameters"
 fi
 
-echo "Setting pipeline params to $DEVOPS_PIPELINE_PARAMS "
-oci devops "$PIPELINE_COMMAND" update "$PIPELINE_OCID_FLAG" "$DEVOPS_PIPELINE_OCID" "$PARAMS_FLAG" "$DEVOPS_PIPELINE_PARAMS" --force
+echo "Setting pipeline params"
+RET=`oci devops "$PIPELINE_COMMAND" update "$PIPELINE_OCID_FLAG" "$DEVOPS_PIPELINE_OCID" "$PARAMS_FLAG" "$DEVOPS_PIPELINE_PARAMS" --force`
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem setting $DEVOPS_PIPELINE_TYPE pipeline with ocid $DEVOPS_PIPELINE_OCID to $DEVOPS_PIPELINE_PARAMS, unable to continue"
+  exit $RESP
+fi
+echo $RET | jq -j '.data.deploy-pipeline-parameters.items'
