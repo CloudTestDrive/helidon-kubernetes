@@ -1,6 +1,6 @@
 #!/bin/bash -f
 
-REQUIRED_ARGS_COUNT=4
+REQUIRED_ARGS_COUNT=3
 if [ $# -lt $REQUIRED_ARGS_COUNT ]
 then
   SCRIPT_NAME=`basename $0`
