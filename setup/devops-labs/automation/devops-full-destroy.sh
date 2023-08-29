@@ -71,13 +71,26 @@ DEVOPS_LAB_DIR=$SAVED_DIR/..
 
 echo "This script attempts to follow the reverse order of the dev-ops lab"
 
+echo "Destroy the build pipeline stage trigger deployment"
+bash ./build-stage-destroy.sh $BUILD_STAGE_TRIGGER_DEPLPOY_NAME $BUILD_PIPELINE_NAME $PROJECT_NAME 
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing trigger deploy pipeline stage $BUILD_STAGE_TRIGGER_DEPLPOY_NAME in build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+
+cd $COMMON_DIR/devops
+
+
 echo "Destroying deploy pipeline"
 cd $COMMON_DIR/devops
 bash ./deploy-pipeline-destroy.sh $DEPLOY_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
-  echo "Problem destroying deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  echo "Problem destroying deploy pipeline stage  $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
 fi
 
