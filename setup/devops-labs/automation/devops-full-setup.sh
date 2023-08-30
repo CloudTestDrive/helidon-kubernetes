@@ -428,6 +428,8 @@ then
   exit $RESP
 fi
 
+cd $COMMON_DIR/devops
+
 echo "Setting deploy pipeline paraps"
 DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "EXTERNAL_IP" "$EXTERNAL_IP" "ingress controller external ip"`
 DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "KUBERNETES_NAMESPACE" "$NAMESPACE" "OKE Deployment namespace"`
@@ -437,10 +439,12 @@ DEPLOY_PARAMS_LIST=`bash ../build-items.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_
 ./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
 
 echo "Adding start deployment stage to build pipeline"
-
+cd $COMMON_DIR/devops
 BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR=`bash ./builders/build-stage-predecessor.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_OCID"`
 BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY=`bash ../build-items-array.sh "$BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR"`
 
 bash ./build-stage-trigger-deployment.sh "$BUILD_STAGE_TRIGGER_DEPLPOY_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_PIPELINE_NAME" "$BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY" "$BUILD_STAGE_TRIGGER_DEPLPOY_DESCRIPTION" 
 
 echo "Creating trigger on git repo"
+cd $COMMON_DIR/devops 
+bash ./trigger-on-devops-repo-setup.sh "$TRIGGER_ON_GIT_PUSH_NAME" "$PROJECT_NAME" "$CODE_REPO_NAME" "$GIT_BRANCH_NAME" "$BUILD_PIPELINE_NAME" "$TRIGGER_ON_GIT_PUSH_DESCRIPTION"

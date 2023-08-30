@@ -71,6 +71,10 @@ DEVOPS_LAB_DIR=$SAVED_DIR/..
 
 echo "This script attempts to follow the reverse order of the dev-ops lab"
 
+echo "Destroying trigger on git repo"
+cd $COMMON_DIR/devops 
+bash ./trigger-destroy.sh "$TRIGGER_ON_GIT_PUSH_NAME" "$PROJECT_NAME"
+
 echo "Destroy the build pipeline stage trigger deployment"
 bash ./build-stage-destroy.sh $BUILD_STAGE_TRIGGER_DEPLPOY_NAME $BUILD_PIPELINE_NAME $PROJECT_NAME 
 RESP=$?

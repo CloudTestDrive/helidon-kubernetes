@@ -43,3 +43,6 @@ BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_DESCRIPTION="Upload artifacts to the registri
 
 BUILD_STAGE_TRIGGER_DEPLPOY_NAME='StartStorefrontDeployment'
 BUILD_STAGE_TRIGGER_DEPLPOY_DESCRIPTION='Trigger storefront deployment pipeline after build'
+
+TRIGGER_ON_GIT_PUSH_NAME='StorefrontTrigger'
+TRIGGER_ON_GIT_PUSH_DESCRIPTION='triggers the build of the storefront'
