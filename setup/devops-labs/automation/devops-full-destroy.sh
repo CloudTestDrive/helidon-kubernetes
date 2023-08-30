@@ -84,6 +84,30 @@ then
   exit $RESP
 fi
 
+echo "Destroy third deploy stage - ingress"
+bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_INGRESS_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing deploy pipeline stage $DEPLOY_STAGE_STOREFRONT_INGRESS_NAME in build pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+echo "Destroy second deploy stage - service"
+bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_SERVICE_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing deploy pipeline stage $DEPLOY_STAGE_STOREFRONT_SERVICE_NAME in build pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+echo "Destroy first deploy stage - deplpyment"
+bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem removing deploy pipeline stage $DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME in build pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
 
 cd $COMMON_DIR/devops
 
@@ -177,7 +201,7 @@ then
   exit $RESP
 fi
 
-echo "Destroying build pipeline"
+echo "Destroying build stage"
 cd $COMMON_DIR/devops
 
 echo "Removing build runner"

@@ -407,11 +407,9 @@ fi
 BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_OCID=`bash ./get-build-deliver-stage-ocid.sh "$BUILD_ARTIFACT_TO_DEPLOYMENT_STAGE_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME"`
 
 echo "Creaing the devops to deploy environment called $DEVOPS_DEPLOY_ENV_NAME targeting OKE cluster named $CLUSTER_CONTEXT"
-
 bash ./deploy-environment-on-oke-setup.sh "$DEVOPS_DEPLOY_ENV_NAME" "$PROJECT_NAME" "$CLUSTER_CONTEXT" 
 
 echo "Creating deploy pipeline"
-
 cd $COMMON_DIR/devops
 bash ./deploy-pipeline-setup.sh $DEPLOY_PIPELINE_NAME $PROJECT_NAME 'Deploys the storefront service'
 RESP=$?
@@ -428,15 +426,82 @@ then
   exit $RESP
 fi
 
-cd $COMMON_DIR/devops
-
 echo "Setting deploy pipeline paraps"
-DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "EXTERNAL_IP" "$EXTERNAL_IP" "ingress controller external ip"`
-DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "KUBERNETES_NAMESPACE" "$NAMESPACE" "OKE Deployment namespace"`
+cd $COMMON_DIR/devops
+DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DEPLOY_EXTERNAL_IP_NAME" "$EXTERNAL_IP" "$PARAM_DEPLOY_EXTERNAL_IP_DESCRIPTION"`
+DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DEPLOY_NAMESPACE_NAME" "$NAMESPACE" "$PARAM_DEPLOY_NAMESPACE_DESCRIPTION"`
 DEPLOY_PARAMS_LIST=`bash ../build-items.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_PARAM_NAMESPACE"`
 
+./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem setting params for deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
 
-./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
+echo "Creating first deploy stage - storefront deployment"
+cd $COMMON_DIR/devops
+DEPLOY_STOREFRONT_DEPLOYMENT_PREDECESSOR=`bash ./build-stage-predecessor.sh "$DEPLOY_PIPELINE_OCID"`
+DEPLOY_STOREFRONT_DEPLOYMENT_PREDECESSOR_LIST=`bash ../build-items-array.sh "$DEPLOY_STOREFRONT_DEPLOYMENT_PREDECESSOR"`
+
+DEPLOY_STOREFRONT_DEPLOYMENT_ARTIFACTS_LIST=`bash ../build-strings-array.sh "$ARTIFACT_STOREFRONT_DEPLOYMENT_OCID"`
+
+
+bash ./deploy-stage-oke-setup.sh "$DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_STOREFRONT_DEPLOYMENT_ARTIFACTS_LIST" "$DEVOPS_DEPLOY_ENV_NAME" "$DEPLOY_STOREFRONT_DEPLOYMENT_PREDECESSOR_LIST" "$DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_DESCRIPTION"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy stage $DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+DEPLOY_STOREFRONT_DEPLOYMENT_STAGE_OCID=`bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"`
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for deploy stage $DEPLOY_STAGE_STOREFRONT_DEPLOYMENT_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+echo "Creating second deploy stage - storefront service"
+cd $COMMON_DIR/devops
+DEPLOY_STOREFRONT_SERVICE_PREDECESSOR=`bash ./build-stage-predecessor.sh "$DEPLOY_STOREFRONT_DEPLOYMENT_STAGE_OCID"`
+DEPLOY_STOREFRONT_SERVICE_PREDECESSOR_LIST=`bash ../build-items-array.sh "$DEPLOY_STOREFRONT_SERVICE_PREDECESSOR"`
+
+DEPLOY_STOREFRONT_SERVICE_ARTIFACTS_LIST=`bash ../build-strings-array.sh "$ARTIFACT_STOREFRONT_SERVICE_OCID"`
+
+bash ./deploy-stage-oke-setup.sh "$DEPLOY_STAGE_STOREFRONT_SERVICE_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_STOREFRONT_SERVICE_ARTIFACTS_LIST" "$DEVOPS_DEPLOY_ENV_NAME" "$DEPLOY_STOREFRONT_SERVICE_PREDECESSOR_LIST" "$DEPLOY_STAGE_STOREFRONT_SERVICE_DESCRIPTION"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy stage $DEPLOY_STAGE_STOREFRONT_SERVICE_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+DEPLOY_STOREFRONT_SERVICE_STAGE_OCID=`bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_SERVICE_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"`
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for deploy stage $DEPLOY_STAGE_STOREFRONT_SERVICE_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+echo "Creating thirs deploy stage - storefront ingress"
+cd $COMMON_DIR/devops
+DEPLOY_STOREFRONT_INGRESS_PREDECESSOR=`bash ./build-stage-predecessor.sh "$DEPLOY_STOREFRONT_SERVICE_STAGE_OCID"`
+DEPLOY_STOREFRONT_INGRESS_PREDECESSOR_LIST=`bash ../build-items-array.sh "$DEPLOY_STOREFRONT_INGRESS_PREDECESSOR"`
+
+DEPLOY_STOREFRONT_INGRESS_ARTIFACTS_LIST=`bash ../build-strings-array.sh "$ARTIFACT_STOREFRONT_INGRESS_OCID"`
+
+bash ./deploy-stage-oke-setup.sh "$DEPLOY_STAGE_STOREFRONT_INGRESS_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_STOREFRONT_INGRESS_ARTIFACTS_LIST" "$DEVOPS_DEPLOY_ENV_NAME" "$DEPLOY_STOREFRONT_INGRESS_PREDECESSOR_LIST" "$DEPLOY_STAGE_STOREFRONT_INGRESS_DESCRIPTION"
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating deploy stage $DEPLOY_STAGE_STOREFRONT_INGRESS_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
+
+DEPLOY_STOREFRONT_INGRESS_STAGE_OCID=`bash ./get-deploy-stage-ocid.sh "$DEPLOY_STAGE_STOREFRONT_INGRESS_NAME" "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME"`
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem getting ocid for deploy stage $DEPLOY_STAGE_STOREFRONT_INGRESS_NAME in deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
 
 echo "Adding start deployment stage to build pipeline"
 cd $COMMON_DIR/devops
