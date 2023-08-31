@@ -314,7 +314,7 @@ fi
 cd $COMMON_DIR/devops
 # setup the  build pipeline params
 BUILD_INITIALS_PARAM=`bash ./builders/build-pipeline-parameter.sh "$PARAM_BUILD_INITIALS_NAME" "$USER_INITIALS" "$PARAM_BUILD_INITIALS_DESCRIPTION"`
-BUILD_PARAMS_LIST=`../build-items-list.sh "$BUILD_INITIALS_PARAM"`
+BUILD_PARAMS_LIST=`../build-items-array.sh "$BUILD_INITIALS_PARAM"`
 ./build-pipeline-params-setup.sh "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
 
 
@@ -430,7 +430,7 @@ echo "Setting deploy pipeline paraps"
 cd $COMMON_DIR/devops
 DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DEPLOY_EXTERNAL_IP_NAME" "$EXTERNAL_IP" "$PARAM_DEPLOY_EXTERNAL_IP_DESCRIPTION"`
 DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DEPLOY_NAMESPACE_NAME" "$NAMESPACE" "$PARAM_DEPLOY_NAMESPACE_DESCRIPTION"`
-DEPLOY_PARAMS_LIST=`bash ../build-items.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_PARAM_NAMESPACE"`
+DEPLOY_PARAMS_LIST=`bash ../build-items-array.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_PARAM_NAMESPACE"`
 
 ./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"RESP=$?
 if [ "$RESP" -ne 0 ]
