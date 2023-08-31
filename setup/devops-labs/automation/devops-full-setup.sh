@@ -510,7 +510,18 @@ BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR=`bash ./builders/build-stage-predeces
 BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY=`bash ../build-items-array.sh "$BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR"`
 
 bash ./build-stage-trigger-deployment.sh "$BUILD_STAGE_TRIGGER_DEPLPOY_NAME" "$BUILD_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_PIPELINE_NAME" "$BUILD_TRIGGER_DEPLOYMENT_STAGE_PREDECESSOR_ARRAY" "$BUILD_STAGE_TRIGGER_DEPLPOY_DESCRIPTION" 
-
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem setup deploy stage trigger $BUILD_STAGE_TRIGGER_DEPLPOY_NAME in build pipeline $BUILD_PIPELINE_NAME to call deploy pipeline $DEPLOY_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
 echo "Creating trigger on git repo"
 cd $COMMON_DIR/devops 
 bash ./trigger-on-devops-repo-setup.sh "$TRIGGER_ON_GIT_PUSH_NAME" "$PROJECT_NAME" "$CODE_REPO_NAME" "$GIT_BRANCH_NAME" "$BUILD_PIPELINE_NAME" "$TRIGGER_ON_GIT_PUSH_DESCRIPTION"
+RESP=$?
+if [ "$RESP" -ne 0 ]
+then
+  echo "Problem creating git trigger $TRIGGER_ON_GIT_PUSH_NAME to call build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
+  exit $RESP
+fi
