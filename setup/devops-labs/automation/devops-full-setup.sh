@@ -432,7 +432,7 @@ DEPLOY_PARAM_EXTERNAL_IP=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DE
 DEPLOY_PARAM_NAMESPACE=`bash ./builders/build-pipeline-parameter.sh "$PARAM_DEPLOY_NAMESPACE_NAME" "$NAMESPACE" "$PARAM_DEPLOY_NAMESPACE_DESCRIPTION"`
 DEPLOY_PARAMS_LIST=`bash ../build-items-array.sh "$DEPLOY_PARAM_EXTERNAL_IP" "$DEPLOY_PARAM_NAMESPACE"`
 
-bash ./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$BUILD_PARAMS_LIST"
+bash ./deploy-pipeline-params-setup.sh "$DEPLOY_PIPELINE_NAME" "$PROJECT_NAME" "$DEPLOY_PARAMS_LIST"
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
