@@ -96,25 +96,43 @@ else
 fi
 
 echo "Checking for build deliver stage with existing name"
-MATCHING_NAMES_COUNT=`oci devops build-pipeline-stage list --build-pipeline-id $DEVOPS_BUILD_PIPELINE_OCID --display-name "$DELIVER_STAGE_NAME" --all | jq '.data.items | length'`
+MATCHING_STAGES=`oci devops build-pipeline-stage list --build-pipeline-id $DEVOPS_BUILD_PIPELINE_OCID --display-name "$DELIVER_STAGE_NAME" --all`
+MATCHING_STAGES_COUNT=`echo "$MATCHING_STAGES" | jq '.data.items | length'`
 if [ $MATCHING_NAMES_COUNT -ne 0 ]
 then
-  echo "Found an existing stage with the name $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME cannot continue"
-  exit 2
+  DELIVER_STAGE_OCID=`echo "$MATCHING_STAGES" | jq '.data.items[0].id'`
 fi
-
-
-echo "Creating devops deliver artifacts $DELIVER_STAGE_NAME in build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
-# if waiting for state this returns the work request details (that's what we are actually waiting
-# on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-DELIVER_STAGE_OCID=`oci devops build-pipeline-stage create-deliver-artifact-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --deliver-artifact-collection "$DELIVER_ARTIFACTS_COLLECTION" --display-name "$DELIVER_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_DELIVER_DESCRIPTION" | jq -r '.data.id'`
- 
-if [ -z "$DELIVER_STAGE_OCID" ]
+if [ -z "$DELIVER_STAGE_OCID"]
 then
-  echo "devops build stage $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
-  exit 2
+  echo "Creating devops deliver artifacts $DELIVER_STAGE_NAME in build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+  # if waiting for state this returns the work request details (that's what we are actually waiting
+  # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
+  DELIVER_STAGE_OCID=`oci devops build-pipeline-stage create-deliver-artifact-stage --build-pipeline-id "$DEVOPS_BUILD_PIPELINE_OCID" --deliver-artifact-collection "$DELIVER_ARTIFACTS_COLLECTION" --display-name "$DELIVER_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_DELIVER_DESCRIPTION" | jq -r '.data.id'`
+  if [ -z "$DELIVER_STAGE_OCID" ]
+  then
+    echo "devops build stage $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
+    exit 2
+  fi
+  echo "Created devops deliver stage $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+  echo "$DELIVER_STAGE_OCID_NAME=$DELIVER_STAGE_OCID" >> $SETTINGS
+  echo "$DELIVER_STAGE_REUSED_NAME=false" >> $SETTINGS
+else
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Devops build pipeline stage with the name $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? defaulting to $REPLY"
+  else
+    read -p "Devops build pipeline stage with the name $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? (y/n) ? " REPLY  
+  fi
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, you will need to delete the build pipeline stage $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+    exit 1
+  else
+    echo "OK, will reuse existing devops build pipeline $DEVOPS_PROJECT_NAME in project $DEVOPS_PROJECT_NAME"
+    echo "$DELIVER_STAGE_OCID_NAME=$DELIVER_STAGE_OCID" >> $SETTINGS
+    echo "$DELIVER_STAGE_REUSED_NAME=true" >> $SETTINGS
+    exit 0
+  fi
 fi
-echo "Created devops deliver stage $DELIVER_STAGE_NAME in devops build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
-echo "$DELIVER_STAGE_OCID_NAME=$DELIVER_STAGE_OCID" >> $SETTINGS
-echo "$DELIVER_STAGE_REUSED_NAME=false" >> $SETTINGS
 
