@@ -91,7 +91,7 @@ fi
 
 # get the possible  OCID for the devops deploy pipeline 
 echo "Getting var names for devops deploy pipeline $DEVOPS_BUILD_PIPELINE_NAME"
-DEVOPS_DEPLOY_PIPELINE_OCID_NAME=`bash ./getdeploy-pipeline-ocid-name.sh $DEVOPS_DEPLOY_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
+DEVOPS_DEPLOY_PIPELINE_OCID_NAME=`bash ./get-deploy-pipeline-ocid-name.sh $DEVOPS_DEPLOY_PIPELINE_NAME $DEVOPS_PROJECT_NAME`
 DEVOPS_DEPLOY_PIPELINE_OCID="${!DEVOPS_DEPLOY_PIPELINE_OCID_NAME}"
 if [ -z "$DEVOPS_DEPLOY_PIPELINE_OCID" ]
 then
