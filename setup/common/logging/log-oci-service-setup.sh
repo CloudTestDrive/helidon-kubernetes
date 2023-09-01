@@ -75,7 +75,7 @@ else
   exit 0
 fi
 
-LOG_NON_ACTIVE_OCID=`oci logging log list --display-name "$LOG_NAME" --log-group-id $LOG_GROUP_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
+LOG_NON_ACTIVE_OCID=`oci logging log list --display-name "$LOG_NAME" --log-group-id $LOG_GROUP_OCID --all | jq -j '.data[] | select (."lifecycle-state" != "ACTIVE") | ."id"'`
 if [ -z "$LOG_NON_ACTIVE_OCID" ]
 then
   echo "Log $LOG_NAME in log group $LOG_GROUP_NAME does not exist in a non active state"
@@ -83,7 +83,7 @@ else
   echo "Log $LOG_NAME in log group $LOG_GROUP_NAME exists in a non active state, cannot proceed"
   exit 10
 fi
-LOG_OCID=`oci logging log list --display-name "$LOG_NAME" --log-group-id $LOG_GROUP_OCID --all | jq -j '.data.items[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
+LOG_OCID=`oci logging log list --display-name "$LOG_NAME" --log-group-id $LOG_GROUP_OCID --all | jq -j '.data[] | select (."lifecycle-state" == "ACTIVE") | ."id"'`
 
 if [ -z "$LOG_OCID" ]
 then
