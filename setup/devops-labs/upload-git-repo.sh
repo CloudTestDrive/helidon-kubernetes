@@ -45,9 +45,7 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 echo "This script looks for an existing project called $PROJECT_NAME in $COMPARTMENT_NAME"
 echo "If it finds it it will then look for an OCI Code Repo (also known as a git repo) named $REPO_NAME"
-echo "To prevent damaging any existing contents the OCI Code repo must be newly created and not have any"
-echo "commits or branches"
-echo "You must have manually created both of these in advance as this script will not create them for you."
+echo "You must have created both of these in advance as this script will not create them for you."
 echo "Assuming it finds these it will download into the OCI cloud shell the source code to be used in this lab"
 echo "and will then configure your local git environment and upload the source code to the OCI Code repo"
 echo "in your project."
@@ -56,8 +54,22 @@ echo "Checking environment - looking for an existing local repo"
 
 if [ -d $HOME/$REPO_NAME ]
 then
-  echo "The directory $REPO_NAME already exists, to prvend unintentional damage this script will stop"
-  exit 1
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "The directory $HOME/$REPO_NAME already exists, do you want to use it and assume that the rest of the git repo had been processed ? defaulting to $REPLY"
+  else
+    read -p "The directory $HOME/$REPO_NAME already exists, do you want to use it and assume that the rest of the git repo had been processed (y/n) ? " REPLY  
+  fi
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, do what you need to do to protect the local git repo $HOME/$REPO_NAME"
+    exit 1
+  else
+    echo "OK, will reuse the directory $HOME/$REPO_NAME and assuming that the DevOPs repo has been setup and code pushed to it"
+    echo "DEVOPS_LAB_CODE_REPO_TRANSFERRED=true" >> $SETTINGS
+    exit 0
+  fi
 else
   echo "No local repo, continuing"
 fi
@@ -92,38 +104,6 @@ then
   exit 21
 else
   echo "Located OCI Code repo called $REPO_NAME in devops project $PROJECT_NAME in $COMPARTMENT_NAME"
-fi
-
-echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no commits"
-
-COMMIT_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."commit-count"'`
-if [ "$COMMIT_COUNT" = "null" ]
-then
-  COMMIT_COUNT=0
-fi
-if [ "$COMMIT_COUNT" = 0 ]
-then
-  echo "No commits found, continuing"
-else
-  echo "OCI Code repo $REPO_NAME has $COMMIT_COUNT existing commits, cannot proceed as there may be damage to existing data"
-  echo "You will have to manually configure the OCI Code repo"
-  exit 5
-fi
-
-echo "Checking environment - ensuring that OCI Code repo $REPO_NAME had no branches"
-BRANCH_COUNT=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."branch-count"'`
-
-if [ "$BRANCH_COUNT" = "null" ]
-then
-  BRANCH_COUNT=0
-fi
-if [ "$BRANCH_COUNT" = 0 ]
-then
-  echo "No branches found, continuing"
-else
-  echo "OCI Code repo $REPO_NAME has $BRANCH_COUNT existing branches, cannot proceed as there may be damage to existing data"
-  echo "You will have to manually configure the OCI Code repo"
-  exit 6
 fi
 
 REPO_SSH=`oci devops repository get --repository-id $REPO_OCID | jq -r '.data."ssh-url"'`
