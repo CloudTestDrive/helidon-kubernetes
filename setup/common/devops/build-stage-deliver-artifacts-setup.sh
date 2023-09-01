@@ -102,7 +102,7 @@ if [ "$MATCHING_STAGES_COUNT" -gt 0 ]
 then
   DELIVER_STAGE_OCID=`echo "$MATCHING_STAGES" | jq '.data.items[0].id'`
 fi
-if [ -z "$DELIVER_STAGE_OCID"]
+if [ -z "$DELIVER_STAGE_OCID" ]
 then
   echo "Creating devops deliver artifacts $DELIVER_STAGE_NAME in build pipeline $DEVOPS_BUILD_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
   # if waiting for state this returns the work request details (that's what we are actually waiting
