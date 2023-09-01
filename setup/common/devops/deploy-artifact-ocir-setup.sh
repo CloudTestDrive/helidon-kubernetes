@@ -102,26 +102,44 @@ else
   echo "Reuse information found for deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME has already been setup, to remove it use the build-stage-destroy.sh script"
   exit 0
 fi
-
 echo "Checking for deploy artifact with existing name"
-MATCHING_NAMES_COUNT=`oci devops deploy-artifact list --project-id "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --lifecycle-state "ACTIVE" --all | jq '.data.items | length'`
-if [ $MATCHING_NAMES_COUNT -ne 0 ]
+MATCHING_ARTIFACTS=`oci devops deploy-artifact list --project-id "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --lifecycle-state "ACTIVE" --all `
+MATCHING_ARTIFACTS_COUNT=`echo "$MATCHING_ARTIFACTS" | jq '.data.items | length'`
+if [ "$MATCHING_ARTIFACTS_COUNT" -gt 0 ]
 then
-  echo "Found an existing deploy artifact with the name $DEPLOY_ARTIFACT_NAME in project $DEVOPS_PROJECT_NAME cannot continue"
-  exit 2
+  DEPLOY_ARTIFACT_OCID=`echo "$MATCHING_ARTIFACTS" | jq '.data.items[0].id'`
 fi
-
-
-echo "Creating devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in project $DEVOPS_PROJECT_NAME"
-# if waiting for state this returns the work request details (that's what we are actually waiting
-# on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-DEPLOY_ARTIFACT_OCID=`oci devops deploy-artifact create-ocir-artifact --argument-substitution-mode  "$ALLOW_PARAM_SUBSTITUTION" --artifact-type "$ARTIFACT_TYPE" --project-id  "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --source-image-uri "$OCIR_SOURCE_URI" --description "$DEVOPS_DEPLOY_ARTIFACT_DESCRIPTION" | jq -r '.data.id'`
- 
 if [ -z "$DEPLOY_ARTIFACT_OCID" ]
 then
-  echo "devops deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME, unable to continue"
-  exit 2
+  echo "Creating devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in project $DEVOPS_PROJECT_NAME"
+  # if waiting for state this returns the work request details (that's what we are actually waiting
+  # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
+  DEPLOY_ARTIFACT_OCID=`oci devops deploy-artifact create-ocir-artifact --argument-substitution-mode  "$ALLOW_PARAM_SUBSTITUTION" --artifact-type "$ARTIFACT_TYPE" --project-id  "$DEVOPS_PROJECT_OCID" --display-name "$DEPLOY_ARTIFACT_NAME" --source-image-uri "$OCIR_SOURCE_URI" --description "$DEVOPS_DEPLOY_ARTIFACT_DESCRIPTION" | jq -r '.data.id'`
+  if [ -z "$DEPLOY_ARTIFACT_OCID" ]
+  then
+    echo "devops deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME, unable to continue"
+    exit 2
+  fi
+  echo "Created devops deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME"
+  echo "$DEPLOY_ARTIFACT_OCID_NAME=$DEPLOY_ARTIFACT_OCID" >> $SETTINGS
+  echo "$DEPLOY_ARTIFACT_REUSED_NAME=false" >> $SETTINGS
+else
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? defaulting to $REPLY"
+  else
+    read -p "Devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? (y/n) ? " REPLY  
+  fi
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, you will need to delete the OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME"
+    exit 1
+  else
+    echo "OK, will reuse existing devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME"
+    echo "$DEPLOY_ARTIFACT_OCID_NAME=$DEPLOY_ARTIFACT_OCID" >> $SETTINGS
+    echo "$DEPLOY_ARTIFACT_REUSED_NAME=true" >> $SETTINGS
+    exit 0
+  fi
 fi
-echo "Created devops deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME"
-echo "$DEPLOY_ARTIFACT_OCID_NAME=$DEPLOY_ARTIFACT_OCID" >> $SETTINGS
-echo "$DEPLOY_ARTIFACT_REUSED_NAME=false" >> $SETTINGS
+

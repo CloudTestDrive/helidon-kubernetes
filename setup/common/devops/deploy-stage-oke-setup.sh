@@ -101,24 +101,42 @@ else
 fi
 
 echo "Checking for deploy stage with existing name"
-MATCHING_NAMES_COUNT=`oci devops deploy-stage list --pipeline-id $DEVOPS_DEPLOY_PIPELINE_OCID --display-name "$DEPLOY_STAGE_NAME" --all | jq '.data.items | length'`
-if [ $MATCHING_NAMES_COUNT -ne 0 ]
+MATCHING_STAGES=`oci devops deploy-stage list --pipeline-id $DEVOPS_DEPLOY_PIPELINE_OCID --display-name "$DEPLOY_STAGE_NAME" --all `
+MATCHING_STAGES_COUNT=`echo "$MATCHING_STAGES" | jq '.data.items | length'`
+if [ "$MATCHING_STAGES_COUNT" -gt 0 ]
 then
-  echo "Found an existing stage with the name $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME cannot continue"
-  exit 2
+  DEPLOY_STAGE_OCID=`echo "$MATCHING_STAGES" | jq '.data.items[0].id'`
 fi
-
-
-echo "Creating devops deploy to oke stage $DEPLOY_STAGE_NAME in deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
-# if waiting for state this returns the work request details (that's what we are actually waiting
-# on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
-DEPLOY_STAGE_OCID=`oci devops deploy-stage create-deploy-oke-stage  --kubernetes-manifest-artifact-ids "$DEPLOY_ARTIFACTS_COLLECTION" --oke-cluster-environment-id "$DEPLOY_ENVIRONMENT_OCID" --pipeline-id "$DEVOPS_DEPLOY_PIPELINE_OCID" --display-name "$DEPLOY_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_DEPLOY_PIPELINE_DESCRIPTION" | jq -r '.data.id'`
- 
 if [ -z "$DEPLOY_STAGE_OCID" ]
 then
-  echo "devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
-  exit 2
+  echo "Creating devops deploy to oke stage $DEPLOY_STAGE_NAME in deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+  # if waiting for state this returns the work request details (that's what we are actually waiting
+  # on) so from there need to extract the identifier of the resource that was created as that's the actuall one we want
+  DEPLOY_STAGE_OCID=`oci devops deploy-stage create-deploy-oke-stage  --kubernetes-manifest-artifact-ids "$DEPLOY_ARTIFACTS_COLLECTION" --oke-cluster-environment-id "$DEPLOY_ENVIRONMENT_OCID" --pipeline-id "$DEVOPS_DEPLOY_PIPELINE_OCID" --display-name "$DEPLOY_STAGE_NAME" --stage-predecessor-collection  "$PREDECESSOR_STAGE_COLLECTION" --description "$DEVOPS_DEPLOY_PIPELINE_DESCRIPTION" | jq -r '.data.id'`
+  if [ -z "$DEPLOY_STAGE_OCID" ]
+  then
+    echo "devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME could not be created, unable to continue"
+    exit 2
+  fi
+  echo "Created devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+  echo "$DEPLOY_STAGE_OCID_NAME=$DEPLOY_STAGE_OCID" >> $SETTINGS
+  echo "$DEPLOY_STAGE_REUSED_NAME=false" >> $SETTINGS
+else
+  if [ "$AUTO_CONFIRM" = true ]
+  then
+    REPLY="y"
+    echo "Devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? defaulting to $REPLY"
+  else
+    read -p "Devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME exists, do you want to reuse it ? (y/n) ? " REPLY  
+  fi
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    echo "OK, you will need to delete the deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
+    exit 1
+  else
+    echo "OK, will reuse existing devops OCIR deploy artifact $DEPLOY_ARTIFACT_NAME in devops project $DEVOPS_PROJECT_NAME"
+  echo "$DEPLOY_STAGE_OCID_NAME=$DEPLOY_STAGE_OCID" >> $SETTINGS
+  echo "$DEPLOY_STAGE_REUSED_NAME=true" >> $SETTINGS
+    exit 0
+  fi
 fi
-echo "Created devops deploy stage $DEPLOY_STAGE_NAME in devops deploy pipeline $DEVOPS_DEPLOY_PIPELINE_NAME in project $DEVOPS_PROJECT_NAME"
-echo "$DEPLOY_STAGE_OCID_NAME=$DEPLOY_STAGE_OCID" >> $SETTINGS
-echo "$DEPLOY_STAGE_REUSED_NAME=false" >> $SETTINGS
