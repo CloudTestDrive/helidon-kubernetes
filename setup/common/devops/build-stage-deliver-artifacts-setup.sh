@@ -98,7 +98,7 @@ fi
 echo "Checking for build deliver stage with existing name"
 MATCHING_STAGES=`oci devops build-pipeline-stage list --build-pipeline-id $DEVOPS_BUILD_PIPELINE_OCID --display-name "$DELIVER_STAGE_NAME" --all`
 MATCHING_STAGES_COUNT=`echo "$MATCHING_STAGES" | jq '.data.items | length'`
-if [ $MATCHING_NAMES_COUNT -ne 0 ]
+if [ "$MATCHING_STAGES_COUNT" -gt 0 ]
 then
   DELIVER_STAGE_OCID=`echo "$MATCHING_STAGES" | jq '.data.items[0].id'`
 fi
