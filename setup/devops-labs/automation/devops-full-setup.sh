@@ -52,6 +52,12 @@ then
   export AUTO_CONFIRM=false
 fi
 
+
+if [ -z "$RUN_TEST_COMMIT" ]
+then
+  export RUN_TEST_COMMIT=false
+fi
+
 if [ "$AUTO_CONFIRM" = true ]
 then
   REPLY="y"
@@ -234,14 +240,9 @@ bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your host secrets OCI
 
 bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your storage namespace OCID' $NAMESPACE_SECRET_OCID
 
-echo "Updating version number"
-bash $COMMON_DIR/update-file.sh  $STATUS_RESOURCE '1.0.0' '1.0.1'
 
-
-echo "Updating local repo and uploading to remote repo"
-git add .
-git commit -a -m 'Set secret OCIDs and updated version'
-git push devops $GIT_BRANCH_NAME
+echo "Updating version number and pushing git branch"
+bash ./update-status-version.sh  "$STATUS_VERSION_ORIGIONAL" "$STATUS_VERSION_UPDATED" "$STATUS_RESOURCE" "$GIT_BRANCH_NAME"
 
 echo "Creating build pipeline"
 cd $COMMON_DIR/devops
@@ -524,4 +525,13 @@ if [ "$RESP" -ne 0 ]
 then
   echo "Problem creating git trigger $TRIGGER_ON_GIT_PUSH_NAME to call build pipeline $BUILD_PIPELINE_NAME in project $PROJECT_NAME, unable to continue"
   exit $RESP
+fi
+
+if [ "$RUN_TEST_COMMIT" = true ]
+then
+   echo "Testing trigger and pipeline by updating git repo"
+   bash ./update-status-version.sh  "$STATUS_VERSION_UPDATED" "$STATUS_VERSION_FINAL" "$STATUS_RESOURCE" "$GIT_BRANCH_NAME"
+   
+else
+  echo "RUN_TEST_COMMIT is $RUN_TEST_COMMIT not running test of trigger and pipeline"
 fi
