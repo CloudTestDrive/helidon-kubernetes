@@ -52,6 +52,11 @@ then
   export AUTO_CONFIRM=false
 fi
 
+if [ -z "$MODIFY_FILES" ]
+then
+  export MODIFY_FILES=true
+fi
+
 
 if [ -z "$RUN_TEST_COMMIT" ]
 then
@@ -189,16 +194,20 @@ then
   exit $RESP
 fi
 cd $SAVED_DIR
-cd $DEVOPS_LAB_DIR
-echo "Uploading the git repo"
-bash ./upload-git-repo.sh
-RESP=$?
-if [ "$RESP" -ne 0 ]
+if [ "$MODIFY_FILES" = true ]
 then
-  echo "Problem uploading git repo initial code, unable to continue"
-  exit $RESP
+  cd $DEVOPS_LAB_DIR
+  echo "Uploading the git repo"
+  bash ./upload-git-repo.sh
+  RESP=$?
+  if [ "$RESP" -ne 0 ]
+  then
+    echo "Problem uploading git repo initial code, unable to continue"
+    exit $RESP
+  fi
+else
+  echo "MODIFY_FILES is $MODIFY_FILES not uploading git repo"
 fi
-
 
 cd $SAVED_DIR
 cd $DEVOPS_LAB_DIR
@@ -229,20 +238,24 @@ then
   exit $RESP
 fi
 
-echo "Creating new branch $GIT_BRANCH_NAME for modifications"
-cd $CODE_BASE
-git checkout -b $GIT_BRANCH_NAME
+if [ "$MODIFY_FILES" = true ]
+then
+  echo "Creating new branch $GIT_BRANCH_NAME for modifications"
+  cd $CODE_BASE
+  git checkout -b $GIT_BRANCH_NAME
 
-echo "Updating build spec"
-cp $SOURCE_BUILD_SPEC $CODE_BASE
+  echo "Updating build spec"
+  cp $SOURCE_BUILD_SPEC $CODE_BASE
 
-bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your host secrets OCID' $HOST_SECRET_OCID
+  bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your host secrets OCID' $HOST_SECRET_OCID
 
-bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your storage namespace OCID' $NAMESPACE_SECRET_OCID
+  bash $COMMON_DIR/update-file.sh $WORKING_BUILD_SPEC 'Needs your storage namespace OCID' $NAMESPACE_SECRET_OCID
 
-
-echo "Updating version number and pushing git branch"
-bash ./update-status-version.sh  "$STATUS_VERSION_ORIGIONAL" "$STATUS_VERSION_UPDATED" "$STATUS_RESOURCE" "$GIT_BRANCH_NAME"
+  echo "Updating version number and pushing git branch"
+  bash ./update-status-version.sh  "$STATUS_VERSION_ORIGIONAL" "$STATUS_VERSION_UPDATED" "$STATUS_RESOURCE" "$GIT_BRANCH_NAME"
+else 
+  echo "MODIFY_FILES is $MODIFY_FILES not modifying git repo"
+fi
 
 echo "Creating build pipeline"
 cd $COMMON_DIR/devops
@@ -531,7 +544,6 @@ if [ "$RUN_TEST_COMMIT" = true ]
 then
    echo "Testing trigger and pipeline by updating git repo"
    bash ./update-status-version.sh  "$STATUS_VERSION_UPDATED" "$STATUS_VERSION_FINAL" "$STATUS_RESOURCE" "$GIT_BRANCH_NAME"
-   
 else
   echo "RUN_TEST_COMMIT is $RUN_TEST_COMMIT not running test of trigger and pipeline"
 fi
