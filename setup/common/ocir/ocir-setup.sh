@@ -79,6 +79,7 @@ then
 # setting immutable isn't currentl supported
 #  OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-immutable "$OCIR_REPO_IMMUTABLE" --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
   OCIR_REPO_OCID=`oci artifacts container repository create --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --is-public "$OCIR_REPO_PUBLIC" --wait-for-state AVAILABLE | jq -j '.data.id'`
+  echo "Created repo has ocid of $OCIR_REPO_OCID"
   echo "$OCIR_REPO_OCID_NAME=$OCIR_REPO_OCID" >> $SETTINGS 
   echo "$OCIR_REPO_REUSED_NAME=false" >> $SETTINGS
 else
@@ -94,7 +95,7 @@ else
     echo "OK, stopping script, the repo has not been reused, you need to re-run this script before doing any container image pushes"
     exit 1
   else     
-    echo "OK, going to use reuse existing OCIR repo called $OCIR_REPO_NAME"
+    echo "OK, going to use reuse existing OCIR repo called $OCIR_REPO_NAME with OCID $OCIR_REPO_OCID"
     echo "$OCIR_REPO_OCID_NAME=$OCIR_REPO_OCID" >> $SETTINGS 
     echo "$OCIR_REPO_REUSED_NAME=true" >> $SETTINGS
   fi
