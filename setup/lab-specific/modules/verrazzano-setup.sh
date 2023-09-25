@@ -99,8 +99,8 @@ fi
 echo "Unpacking $VERRAZANO_DOWNLOAD_BASE_FILE"
 tar xvf $VERRAZANO_DOWNLOAD_BASE_FILE
 VERRAZZANO_INSTALL_DIR=$VERRAZZANO_DIR/$VERRAZZANO_BASE
-echo "Verrazzano installed to $VERRAZZANO_INSTALL_DIR
-cd $VERRAZZANO_INSTALL_DIR/bin/
+echo "Verrazzano installed to $VERRAZZANO_INSTALL_DIR"
+cd "$VERRAZZANO_INSTALL_DIR/bin"
 
 echo "Checking version"
 VERSION_OUTPUT=`./vz version`
