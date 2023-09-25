@@ -84,8 +84,8 @@ curl -LO "$VERRAZZANO_DOWNLOAD_URL_FILE"
 echo "Downloading Verrazzano installer checksum from $VERRAZZANO_DOWNLOAD_URL_CHECKSUM"
 curl -LO "$VERRAZZANO_DOWNLOAD_URL_CHECKSUM"
 
-echo "Comparimg checksums"
-CHECKSUM_OUTPUT=`sha256sum -c $VERRAZZANO_DOWNLOAD_URL_CHECKSUM`
+echo "Comparimg checksums using checksum file $VERRAZANO_DOWNLOAD_CHECKSUM_FILE"
+CHECKSUM_OUTPUT=`sha256sum -c $VERRAZANO_DOWNLOAD_CHECKSUM_FILE`
 OK_CHECKSUM=`echo $CHECKSUM_OUTPUT | grep OK | wc -l`
 if [ "$OK_CHECKSUM" -ge 1 ]
 then
