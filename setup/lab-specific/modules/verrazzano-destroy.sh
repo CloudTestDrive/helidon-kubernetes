@@ -46,4 +46,4 @@ kubectl logs -n verrazzano-install \
     -l job-name=verrazzano-uninstall-${MYVZ} \
     -o jsonpath="{.items[0].metadata.name}")
 
-bash ../../commondelete-from-saved-settings.sh "$VERRAZZANO_INSTALLED_VAR"
+bash ../../common/delete-from-saved-settings.sh "$VERRAZZANO_INSTALLED_VAR"
