@@ -14,4 +14,4 @@ export MODULES_DIR=$LAB_SPECIFIC_DIR/modules
 export PERSISTENCE_DIR=$GIT_REPO_DIR/persistence
 
 echo "Configuring version information"
-export VERRAZZANO_VERSION=1.6.2
+export VERRAZZANO_VERSION=1.6.7
