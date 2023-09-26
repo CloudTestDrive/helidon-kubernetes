@@ -25,6 +25,8 @@ else
   echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
+INFO_FILE=$HOME/clusterInfo.$CLUSTER_CONTEXT_NAME
+
 VERRAZZANO_INSTALLED_VAR="VERRAZZANO_INSTALLED_IN_CLUSTER_""$CLUSTER_CONTEXT_NAME"
 if [ -z "${!VERRAZZANO_INSTALLED_VAR}" ]
 then
@@ -52,7 +54,7 @@ fi
 
 SAVED_PWD=`pwd`
 
-VERRAZZANO_DIR=$HOME/verazzano
+VERRAZZANO_DIR=$HOME/verrazzano
 
 if [ -d "$VERRAZZANO_DIR" ]
 then
@@ -124,4 +126,33 @@ spec:
   profile: dev
 EOF
 
+echo "Verrazzano servcies url's"
+kubectl get vz -o jsonpath="{.items[].status.instance}" --context $CLUSTER_CONTEXT_NAME | jq . 
+echo "Verrazzano services url's" >> $INFO_FILE
+kubectl get vz -o jsonpath="{.items[].status.instance}" --context $CLUSTER_CONTEXT_NAME | jq . >> $INFO_FILE
+
+VERRAZZANO_PASSWORD=`kubectl get secret     --namespace verrazzano-system verrazzano     -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+
+echo "Verrazzano user is : verrazzano"
+echo "Verrazzano password is : $VERRAZZANO_PASSWORD"
+echo "Verrazzano user is : verrazzano" >> $INFO_FILE 
+echo "Verrazzano password is : $VERRAZZANO_PASSWORD">> $INFO_FILE 
+
+KEYCLOAK_PASSWORD=`kubectl get secret  --namespace keycloak keycloak-http  -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+
+echo "Keycloak user is : keycloakadmin"
+echo "Keycloak password is : $KEYCLOAK_PASSWORD"
+echo "Keycloak user is : keycloakadmin">> $INFO_FILE
+echo "Keycloak password is : $KEYCLOAK_PASSWORD">> $INFO_FILE
+
+
+
+RANCHER_PASSWORD=`kubectl get secret  --namespace cattle-system rancher-admin-secret  -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+
+echo "Rancher user is : admin"
+echo "Rancher password is : $RANCHER_PASSWORD"
+echo "Rancher user is : admin">> $INFO_FILE
+echo "Rancher password is : $RANCHER_PASSWORD">> $INFO_FILE
+
 echo "$VERRAZZANO_INSTALLED_VAR=true" >> $SETTINGS
+
