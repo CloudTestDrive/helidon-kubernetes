@@ -209,7 +209,7 @@ then
     then
       NODE_POOL_OS_OPTION=""
     else
-      NODE_POOL_OS_OPTION=", node_pool_os_version = \"$NODE_POOL_OS_VERSION\""
+      NODE_POOL_OS_OPTION=", node_pool_os_version = $NODE_POOL_OS_VERSION"
     fi
     if [ -z "$WORKER_SHAPE" ]
     then
