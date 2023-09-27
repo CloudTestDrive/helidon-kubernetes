@@ -36,14 +36,13 @@ fi
 echo "Unnstalling verrazzano, this will take a while"
 
 # Get the name of the Verrazzano custom resource
-MYVZ=$(kubectl  get vz -o jsonpath="{.items[0].metadata.name}")
+MYVZ=$(kubectl  get vz -o jsonpath="{.items[0].metadata.name}" --context $CLUSTER_CONTEXT_NAME )
 
 # Delete the Verrazzano custom resource
-kubectl delete verrazzano $MYVZ --wait=false
-kubectl logs -n verrazzano-install \
-    -f $(kubectl get pod \
-    -n verrazzano-install \
-    -l job-name=verrazzano-uninstall-${MYVZ} \
-    -o jsonpath="{.items[0].metadata.name}")
-
+echo "Deleting the verrazzano custom resource"
+kubectl delete verrazzano $MYVZ --wait=false --context $CLUSTER_CONTEXT_NAME
+echo "Monitoring delete logs"
+kubectl logs -n verrazzano-install -f $(kubectl get pod -n verrazzano-install -l job-name=verrazzano-uninstall-${MYVZ} -o jsonpath="{.items[0].metadata.name}" --context $CLUSTER_CONTEXT_NAME) --context $CLUSTER_CONTEXT_NAME
+echo "Deleting verrazzano-install namespace"
+kubectl delete ns verrazzano-install --context $CLUSTER_CONTEXT_NAME
 bash ../../common/delete-from-saved-settings.sh "$VERRAZZANO_INSTALLED_VAR"

@@ -117,7 +117,7 @@ else
 fi
 
 echo "Installing verrazzano, this will take a while, it can take upto 30 mins"
-./vz install -f - <<EOF
+./vz install --context $CLUSTER_CONTEXT_NAME -f - <<EOF
 apiVersion: install.verrazzano.io/v1beta1
 kind: Verrazzano
 metadata:
@@ -126,19 +126,19 @@ spec:
   profile: dev
 EOF
 
-echo "Verrazzano servcies url's"
+echo "Verrazzano services url's"
 kubectl get vz -o jsonpath="{.items[].status.instance}" --context $CLUSTER_CONTEXT_NAME | jq . 
 echo "Verrazzano services url's" >> $INFO_FILE
 kubectl get vz -o jsonpath="{.items[].status.instance}" --context $CLUSTER_CONTEXT_NAME | jq . >> $INFO_FILE
 
-VERRAZZANO_PASSWORD=`kubectl get secret     --namespace verrazzano-system verrazzano     -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+VERRAZZANO_PASSWORD=`kubectl get secret --namespace verrazzano-system verrazzano -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64 --decode; echo`
 
 echo "Verrazzano user is : verrazzano"
 echo "Verrazzano password is : $VERRAZZANO_PASSWORD"
 echo "Verrazzano user is : verrazzano" >> $INFO_FILE 
 echo "Verrazzano password is : $VERRAZZANO_PASSWORD">> $INFO_FILE 
 
-KEYCLOAK_PASSWORD=`kubectl get secret  --namespace keycloak keycloak-http  -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+KEYCLOAK_PASSWORD=`kubectl get secret --namespace keycloak keycloak-http -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64 --decode; echo`
 
 echo "Keycloak user is : keycloakadmin"
 echo "Keycloak password is : $KEYCLOAK_PASSWORD"
@@ -147,7 +147,7 @@ echo "Keycloak password is : $KEYCLOAK_PASSWORD">> $INFO_FILE
 
 
 
-RANCHER_PASSWORD=`kubectl get secret  --namespace cattle-system rancher-admin-secret  -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64     --decode; echo`
+RANCHER_PASSWORD=`kubectl get secret --namespace cattle-system rancher-admin-secret -o jsonpath={.data.password} --context $CLUSTER_CONTEXT_NAME | base64 --decode; echo`
 
 echo "Rancher user is : admin"
 echo "Rancher password is : $RANCHER_PASSWORD"
