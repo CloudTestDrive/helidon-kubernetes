@@ -205,6 +205,12 @@ then
       echo "This script cannot continue"
       exit 50
     fi
+    if [ -z "$NODE_POOL_OS_VERSION" ]
+    then
+      NODE_POOL_OS_OPTION=""
+    else
+      NODE_POOL_OS_OPTION="node_pool_os_version = $NODE_POOL_OS_VERSION"
+    fi
     if [ -z "$WORKER_SHAPE" ]
     then
       let OCPU_COUNT="$WORKER_OCPUS*$WORKER_COUNT"
@@ -228,20 +234,6 @@ then
     else
       echo "Using override worker shape of $WORKER_SHAPE, will not resource check"
     fi
-    if [ "$AUTO_CONFIRM" = true ]
-    then
-      REPLY="y"
-      echo "Auto confirm is enabled, Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? e defaulting to $REPLY"
-    else
-      read -p "Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? (y/n) " REPLY
-    fi
-
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-      echo "OK, stopping"
-      exit 0
-    fi
-    echo "Proceeding to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
@@ -300,6 +292,9 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES $USE_SIGNED_IMAGES
     echo "Update $TF_MODULE_FILE to set OKE image signing keys"
     bash $UPDATE_FILE_SCRIPT $TFM IMAGE_SIGNING_KEYS "$IMAGE_SIGNING_KEYS"
+    echo "Update $TF_MODULE_FILE to set OKE worker OS option"
+    bash $UPDATE_FILE_SCRIPT $TFM NODE_POOL_OS_OPTION "$NODE_POOL_OS_OPTION"
+    
     # calico support
     echo "Update $TF_MODULE_FILE to set calico enabled"
     bash $UPDATE_FILE_SCRIPT $TFM ENABLE_CALICO "$ENABLE_CALICO"
@@ -307,6 +302,22 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM CALICO_VERSION "$CALICO_VERSION"
     echo "Update $TF_MODULE_FILE to set calico mode"
     bash $UPDATE_FILE_SCRIPT $TFM CALICO_MODE "$CALICO_MODE"
+    
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? e defaulting to $REPLY"
+    else
+      read -p "Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? (y/n) " REPLY
+    fi
+
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, stopping"
+      exit 0
+    fi
+    
+    echo "Proceeding to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION"
         
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf

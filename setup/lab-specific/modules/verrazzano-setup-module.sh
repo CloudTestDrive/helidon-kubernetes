@@ -124,6 +124,11 @@ metadata:
   name: example-verrazzano
 spec:
   profile: dev
+  components:
+    argoCD:
+      enabled: true
+    velero:
+      enabled: true
 EOF
 
 echo "Verrazzano services url's"
