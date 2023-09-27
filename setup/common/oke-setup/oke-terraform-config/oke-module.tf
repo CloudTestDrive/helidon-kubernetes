@@ -30,9 +30,9 @@ module oke {
   calico_mode              = "CALICO_MODE"
 
   node_pools = {
-    POOL_NAME = { shape = "WORKER_SHAPE", ocpus = WORKER_OCPUS, memory = WORKER_MEMORY, node_pool_size = WORKER_COUNT, boot_volume_size = WORKER_BOOT_SIZE, label = {pool = "POOL_NAME" } NODE_POOL_OS_OPTION}
+    POOL_NAME = { shape = "WORKER_SHAPE", ocpus = WORKER_OCPUS, memory = WORKER_MEMORY, node_pool_size = WORKER_COUNT, boot_volume_size = WORKER_BOOT_SIZE, label = {pool = "POOL_NAME" } }
   } 
-
+  NODE_POOL_OS_OPTION
    providers = {
     oci.home = oci.home
   }
