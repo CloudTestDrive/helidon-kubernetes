@@ -90,7 +90,7 @@ else
 SAVED_PWD=`pwd`
 cd $MODULES_DIR
 
-bash ./core-kubernetes-setup-module.sh
+bash ./core-kubernetes-setup-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
