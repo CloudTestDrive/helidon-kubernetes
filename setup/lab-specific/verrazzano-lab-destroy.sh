@@ -27,7 +27,7 @@ echo "This script will destroy the verrazano configuration in cluster $CLUSTER_C
 
 SAVED_DIR=`pwd`
 cd $MODULES_DIR
-bash ./verrazzano-destroy.sh $CLUSTER_CONTEXT_NAME
+bash ./verrazzano-destroy-module.sh $CLUSTER_CONTEXT_NAME
 cd $SAVED_DIR
 
 read -p "Do you want to destroy the underlyign cluster and servcies (y/n) ?" REPLY

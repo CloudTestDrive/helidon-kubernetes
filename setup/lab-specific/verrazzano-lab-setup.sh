@@ -42,4 +42,4 @@ echo "Now the $SERVICES_TYPE lab setup has completed starting verrazzano core se
 SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
-bash ./verrazzano-setup.sh $CLUSTER_CONTEXT_NAME
+bash ./verrazzano-setup-module.sh $CLUSTER_CONTEXT_NAME
