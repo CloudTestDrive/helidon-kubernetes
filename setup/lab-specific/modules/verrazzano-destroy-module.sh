@@ -26,7 +26,7 @@ else
 fi
 
 VERRAZZANO_INSTALLED_VAR="VERRAZZANO_INSTALLED_IN_CLUSTER_""$CLUSTER_CONTEXT_NAME"
-if [ -z "${!VERRAZZANO_INSTALLED_VAR}"]
+if [ -z "${!VERRAZZANO_INSTALLED_VAR}" ]
 then
   echo "No record of installing verrazzano in cluster $CLUSTER_CONTEXT_NAME skipping"
   exit 0
