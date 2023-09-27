@@ -118,12 +118,18 @@ fi
 
 echo "Installing verrazzano, this will take a while, it can take upto 30 mins"
 ./vz install --context $CLUSTER_CONTEXT_NAME -f - <<EOF
+./vz upgrade --context $CLUSTER_CONTEXT_NAME -f - <<EOF
 apiVersion: install.verrazzano.io/v1beta1
 kind: Verrazzano
 metadata:
   name: example-verrazzano
 spec:
   profile: dev
+  components:
+    argoCD:
+      enabled: true
+    velero:
+      enabled: true
 EOF
 
 echo "Verrazzano services url's"
