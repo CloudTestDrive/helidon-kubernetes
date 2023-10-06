@@ -41,5 +41,12 @@ bash ./$SCRIPT_NAME $CLUSTER_CONTEXT_NAME
 echo "Now the $SERVICES_TYPE lab setup has completed starting verrazzano core setup"
 SAVED_PWD=`pwd`
 
-cd $MODULES_DIR
-bash ./verrazzano-setup-module.sh $CLUSTER_CONTEXT_NAME
+read -p "Do you want to do the Verrazzano install now ? (y/n) " REPLY
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, not installing verrazzano itself"  
+else
+  cd $MODULES_DIR
+  bash ./verrazzano-setup-module.sh $CLUSTER_CONTEXT_NAME
+  cd $SAVED_DIR
+fi

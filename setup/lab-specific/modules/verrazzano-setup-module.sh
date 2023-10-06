@@ -116,6 +116,12 @@ else
   exit 4
 fi
 
+read -p "Do you want to do the Verrazzano install now ? (y/n) " REPLY
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+  echo "OK, exiting script"
+  exit 0
+fi
 echo "Installing verrazzano, this will take a while, it can take upto 30 mins"
 ./vz install --context $CLUSTER_CONTEXT_NAME -f - <<EOF
 apiVersion: install.verrazzano.io/v1beta1
