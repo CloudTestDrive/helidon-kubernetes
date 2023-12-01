@@ -12,3 +12,6 @@ export LAB_SPECIFIC_DIR=$SETUP_DIR/lab-specific
 export OPEN_SEARCH_DIR=$KUBERNETES_LABS_DIR/opensearch
 export MODULES_DIR=$LAB_SPECIFIC_DIR/modules
 export PERSISTENCE_DIR=$GIT_REPO_DIR/persistence
+
+echo "Configuring version information"
+export VERRAZZANO_VERSION=1.6.7

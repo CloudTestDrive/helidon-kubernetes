@@ -1,6 +1,5 @@
 #!/bin/bash -f
-
-
+SCRIPT_NAME=`basename $0`
 if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
 then
   CLUSTER_CONTEXT_NAME=one
@@ -20,10 +19,10 @@ export SETTINGS=$HOME/hk8sLabsSettings
 
 if [ -f $SETTINGS ]
   then
-    echo "Loading existing settings information"
+    echo "$SCRIPT_NAME Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -35,14 +34,14 @@ fi
 
 if [ -z $USER_INITIALS ]
 then
-  echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
+  echo "$SCRIPT_NAME Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
   exit 1
 fi
 
 
 if [ -z $COMPARTMENT_OCID ]
 then
-  echo "Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
+  echo "$SCRIPT_NAME Your COMPARTMENT_OCID has not been set, you need to run the compartment-setup.sh before you can run this script"
   exit 2
 fi
 
@@ -53,9 +52,9 @@ OKE_REUSED_NAME=`bash ./get-oke-reused-name.sh $CLUSTER_CONTEXT_NAME`
 OKE_REUSED="${!OKE_REUSED_NAME}"
 if [ -z $OKE_REUSED ]
 then
-  echo "No reuse information for OKE context $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME No reuse information for OKE context $CLUSTER_CONTEXT_NAME"
 else
-  echo "This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting"
+  echo "$SCRIPT_NAME This script has already configured OKE details for context $CLUSTER_CONTEXT_NAME, exiting"
   exit 0
 fi
 
@@ -65,14 +64,14 @@ CONTEXT_NAME_EXISTS=`kubectl config get-contexts $CLUSTER_CONTEXT_NAME -o name 2
 
 if [ -z $CONTEXT_NAME_EXISTS ]
 then
-  echo "Using context name of $CLUSTER_CONTEXT_NAME"
+  echo "$SCRIPT_NAME Using context name of $CLUSTER_CONTEXT_NAME"
 else
-  echo "A kubernetes context called $CLUSTER_CONTEXT_NAME already exists, this script cannot replace it."
+  echo "$SCRIPT_NAME A kubernetes context called $CLUSTER_CONTEXT_NAME already exists, this script cannot replace it."
   if [ $# -gt 0 ]
   then
-    echo "Please re-run this script providing a different name than $CLUSTER_CONTEXT_NAME as the first argument"
+    echo "Please re-run this script $SCRIPT_NAME providing a different name than $CLUSTER_CONTEXT_NAME as the first argument"
   else
-    echo "Please re-run this script but provide an argument for the context name as the first argument. The name you chose cannot be $CLUSTER_CONTEXT_NAME"
+    echo "Please re-run this script $SCRIPT_NAME but provide an argument for the context name as the first argument. The name you chose cannot be $CLUSTER_CONTEXT_NAME"
   fi
   exit 40
 fi
@@ -83,10 +82,10 @@ COMPARTMENT_NAME=`oci iam compartment get  --compartment-id $COMPARTMENT_OCID | 
 
 if [ -z $COMPARTMENT_NAME ]
 then
-  echo "The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS"
+  echo "$SCRIPT_NAME The provided COMPARTMENT_OCID or $COMPARTMENT_OCID cant be located, please check you have set the correct value in $SETTINGS"
   exit 99
 else
-  echo "Operating in compartment $COMPARTMENT_NAME"
+  echo "$SCRIPT_NAME Operating in compartment $COMPARTMENT_NAME"
 fi
 
 CLUSTER_NAME="$USER_INITIALS"
@@ -206,6 +205,12 @@ then
       echo "This script cannot continue"
       exit 50
     fi
+    if [ -z "$NODE_POOL_OS_VERSION" ]
+    then
+      NODE_POOL_OS_OPTION=""
+    else
+      NODE_POOL_OS_OPTION="node_pool_os_version = $NODE_POOL_OS_VERSION"
+    fi
     if [ -z "$WORKER_SHAPE" ]
     then
       let OCPU_COUNT="$WORKER_OCPUS*$WORKER_COUNT"
@@ -229,20 +234,6 @@ then
     else
       echo "Using override worker shape of $WORKER_SHAPE, will not resource check"
     fi
-    if [ "$AUTO_CONFIRM" = true ]
-    then
-      REPLY="y"
-      echo "Auto confirm is enabled, Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? e defaulting to $REPLY"
-    else
-      read -p "Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? (y/n) " REPLY
-    fi
-
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-      echo "OK, stopping"
-      exit 0
-    fi
-    echo "Proceeding to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION"
     echo "Preparing terraform directory"
     SAVED_DIR=`pwd`
     UPDATE_FILE_SCRIPT=$HOME/helidon-kubernetes/setup/common/update-file.sh
@@ -301,6 +292,9 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM USE_SIGNED_IMAGES $USE_SIGNED_IMAGES
     echo "Update $TF_MODULE_FILE to set OKE image signing keys"
     bash $UPDATE_FILE_SCRIPT $TFM IMAGE_SIGNING_KEYS "$IMAGE_SIGNING_KEYS"
+    echo "Update $TF_MODULE_FILE to set OKE worker OS option"
+    bash $UPDATE_FILE_SCRIPT $TFM NODE_POOL_OS_OPTION "$NODE_POOL_OS_OPTION"
+    
     # calico support
     echo "Update $TF_MODULE_FILE to set calico enabled"
     bash $UPDATE_FILE_SCRIPT $TFM ENABLE_CALICO "$ENABLE_CALICO"
@@ -308,6 +302,22 @@ then
     bash $UPDATE_FILE_SCRIPT $TFM CALICO_VERSION "$CALICO_VERSION"
     echo "Update $TF_MODULE_FILE to set calico mode"
     bash $UPDATE_FILE_SCRIPT $TFM CALICO_MODE "$CALICO_MODE"
+    
+    if [ "$AUTO_CONFIRM" = true ]
+    then
+      REPLY="y"
+      echo "Auto confirm is enabled, Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? e defaulting to $REPLY"
+    else
+      read -p "Do you want to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION? (y/n) " REPLY
+    fi
+
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+      echo "OK, stopping"
+      exit 0
+    fi
+    
+    echo "Proceeding to create cluster lab-$CLUSTER_CONTEXT_NAME-$CLUSTER_NAME using TF module verison $TERRAFORM_OKE_MODULE_VERSION and Kubernetes version $OKE_KUBERNETES_VERSION"
         
     echo "Downloading TF versions file"
     curl --silent https://raw.githubusercontent.com/oracle-terraform-modules/terraform-oci-oke/main/versions.tf --output $TF_DIR/versions.tf

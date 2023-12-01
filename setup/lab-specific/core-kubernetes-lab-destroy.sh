@@ -85,7 +85,7 @@ cd $MODULES_DIR
 
 cd $MODULES_DIR
 
-bash ./core-kubernetes-destroy-module.sh
+bash ./core-kubernetes-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then

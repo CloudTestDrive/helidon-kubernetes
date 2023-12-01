@@ -1,5 +1,6 @@
 #!/bin/bash -f
 
+SCRIPT_NAME=`basename $0`
 
 if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
 then
@@ -23,7 +24,7 @@ if [ -f "$SETTINGS" ]
     echo "Loading existing settings information"
     source $SETTINGS
   else 
-    echo "No existing settings cannot continue"
+    echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
 
@@ -36,7 +37,7 @@ OKE_REUSED="${!OKE_REUSED_NAME}"
 #echo "Checking for $OKE_REUSED_NAME var value is $OKE_REUSED"
 if [ -z "$OKE_REUSED" ]
 then
-  echo "No reuse information for OKE cannot safely continue, you will have to destroy it manually"
+  echo "$SCRIPT_NAME No reuse information for OKE cannot safely continue, you will have to destroy it manually"
   exit 0
 fi
 
@@ -54,7 +55,7 @@ if [ -d $TF_GIT_BASE ]
 then
   echo "Located saved terraform state directory"
 else
-  echo "Unable to locate $TF_GIT_BASE which is where the saved terraform information is held, cannot proceed"
+  echo "$SCRIPT_NAME Unable to locate $TF_GIT_BASE which is where the saved terraform information is held, cannot proceed"
   exit 2
 fi
 
@@ -62,7 +63,7 @@ TF_DIR=$TF_GIT_BASE/terraform-oci-oke-$CLUSTER_CONTEXT_NAME
 
 if [ "$OKE_REUSED" = true ]
 then
-  echo "You have been using a cluster that was not created by these scripts, as it may"
+  echo "$SCRIPT_NAME You have been using a cluster that was not created by these scripts, as it may"
   echo "contain other resources this script cannot delete it, you will need to destroy the"
   echo "cluster by hand and then remove the variables $OKE_REUSE_NAME"
   echo "and $OKE_OCID_NAME from $SETTINGS and delete $TF_DIR"
@@ -71,7 +72,7 @@ fi
 
 if [ -z "$OKE_OCID" ]
 then 
-  echo "No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue"
+  echo "$SCRIPT_NAME No OKE OCID information found for context $CLUSTER_CONTEXT_NAME , cannot continue"
   exit 3
 fi
 
@@ -82,9 +83,9 @@ then
   TFS=$TF_DIR/terraform.tfstate
   if [ -e $TFS ]
   then
-    echo "Planning destrucion"
+    echo "Planning destrucion for $CLUSTER_CONTEXT_NAME"
     terraform plan -destroy -out=$TF_DIR/destroy.plan
-    echo "Destroying cluster"
+    echo "Destroying cluster $CLUSTER_CONTEXT_NAME"
     terraform apply -destroy $TF_DIR/destroy.plan
     echo "Removing terraform scripts"
     rm -rf $TF_DIR
