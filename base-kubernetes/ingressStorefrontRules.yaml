@@ -2,10 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: storefront-direct-ingress
-  annotations:
-    # use the shared ingress-nginx
-    kubernetes.io/ingress.class: "nginx"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts: 
     # ${EXTERNAL_IP} must be replaced with the IP address of the ingress controller
