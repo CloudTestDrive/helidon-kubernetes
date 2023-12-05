@@ -68,7 +68,7 @@ SAVED_PWD=`pwd`
 
 cd $MODULES_DIR
 
-bash ./kubernetes-services-destroy-module.sh $$CLUSTER_CONTEXT_NAME
+bash ./kubernetes-services-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
@@ -79,7 +79,7 @@ fi
 cd $SAVED_PWD
 cd $MODULES_DIR
 
-bash ./core-kubernetes-destroy-module.sh $$CLUSTER_CONTEXT_NAME
+bash ./core-kubernetes-destroy-module.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
 if [ "$RESP" -ne 0 ]
 then
