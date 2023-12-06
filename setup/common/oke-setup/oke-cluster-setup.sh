@@ -135,7 +135,7 @@ then
     TF_SOURCE_CONFIG_DIR=`pwd`/oke-terraform-config
     if [ -d $TF_SOURCE_CONFIG_DIR ]
     then
-      echo "Located cluster specific settings as $TF_SOURCE_CONFIG_DIR"
+      echo "Located cluster specific settings directory as $TF_SOURCE_CONFIG_DIR"
     else
       echo "Cannot locate directory $TF_SOURCE_CONFIG_DIR, cannot continue"
       exit 10
