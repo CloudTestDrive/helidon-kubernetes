@@ -72,6 +72,10 @@ fi
 
 echo "Checking for existing OCIR repo $OCIR_REPO_NAME"
 OCIR_REPO_OCID=`oci artifacts container repository list --compartment-id $COMPARTMENT_OCID --display-name $OCIR_REPO_NAME --all | jq -j '.data.items[0].id' `
+if [ -z $OCIR_REPO_OCID ] 
+then
+	OCIR_REPO_OCID = 'null'
+fi
 if [ $OCIR_REPO_OCID = 'null' ]
 then
 # No existing repo for stock manager
