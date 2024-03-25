@@ -17,8 +17,50 @@ then
   export AUTO_CONFIRM=false
 fi
 
-
-CURRENT_GIT_BRANCH=`git branch --show-current`
+# Is seems that the version of the git command in the cloud shell has been reverted to an  older version, so let's define a command to test versions
+# This is the vercomp examnple at https://www.baeldung.com/linux/compare-dot-separated-version-string
+vercomp() {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+CURRENT_GIT_VERSION=`git --version | sed -e 's/git//' -e 's/version//'  -e 's/ //g'`
+MINGIT_SHOW_VERSION=2.22
+vercomp $CURRENT_GIT_VERSION $MINGIT_SHOW_VERSION
+VERDATA=$?
+if [ $VERDATA -eq 2 ]
+then
+	echo "git version in use does not support git branch --show-current, reverting to grep based method"
+	CURRENT_GIT_BRANCH=`git branch | grep '*' | cut -c 3-`
+else 
+	echo "git version in use supports git branch --show-current, using that"
+	CURRENT_GIT_BRANCH=`git branch --show-current`
+fi
 COMPILE_DIR=`pwd`
 
 if [ -z "$GIT_BRANCH_TO_COMPILE" ]
