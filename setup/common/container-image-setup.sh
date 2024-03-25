@@ -117,9 +117,22 @@ SCRIPTS_DIR=`pwd`
 
 
 WORK_DIR=$HOME/tmp-docker-workspace-delete-me
-JAVA_LOCATION=https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz
-# Old version of Java
-#JAVA_LOCATION=https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
+# some versions of the clud shell have been switched from x68 to arm, so we need to get the right version
+# of the java compile stuff
+# get the system type
+ARCH_NAME=`uname -m`
+if [ "$ARCH_NAME" == "x86_64" ]
+then
+	JAVA_DOWNLOAD_ARCH="x64"
+elif [ "$ARCH_NAME" == "aarch64" ]
+then
+	JAVA_DOWNLOAD_ARCH="aarch64"
+else 
+	echo "Unknown system architecture $ARCH_NAME don't know what version of java top download and cannot continue with image build"
+	exit 10
+fi
+echo "Downloading java arch version $JAVA_DOWNLOAD_ARCH"
+JAVA_LOCATION="https://download.oracle.com/java/17/latest/jdk-17_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
 
 DEV_REL_GITHUB=https://github.com/oracle-devrel
 
@@ -150,7 +163,7 @@ then
 fi
 
 echo "About to install Java into $WORK_DIR from $JAVA_LOCATION"
-mkdir $WORK_DIR
+mkdir -p $WORK_DIR
 cd $WORK_DIR
 echo Downloading JDK
 wget -q $JAVA_LOCATION
