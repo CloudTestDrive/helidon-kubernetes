@@ -10,6 +10,18 @@ then
   export PARALLEL_SETUP=false
 fi
 
+ARCH_NAME=`uname -m`
+if [ "$ARCH_NAME" == "x86_64" ]
+then
+	echo "You are running in an x64 processor shell, this script can continue"
+elif [ "$ARCH_NAME" == "aarch64" ]
+then
+	echo "I'm sorry, but you are running in an ARM processor shell, this script currently has some x86 specific dependencies and cannot sucesfully run to completion in an ARM environment"
+	exit 11
+else 
+	echo "Unknown system architecture $ARCH_NAME don't know what architecture your cloud shell is cannot continue"
+	exit 10
+fi
 echo "This script will run the required commands to setup your core environment"
 echo "It assumes you are working in a free trial tenancy exclusively used by yourself"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
