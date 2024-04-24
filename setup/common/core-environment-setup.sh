@@ -86,8 +86,10 @@ fi
 
 # if there was a previous setup did it use the same cloud shell architecture ?
 # If it didn't then bad things are likely to happen
-if [ -v "$SETUP_ARCH" ]
+if [ -z "${SETUP_ARCH}" ]
 then
+    echo "No previous setup architecture value, continuing"
+else
     if [ "$SETUP_ARCH" = "$ARCH_NAME" ]
     then
         echo "Previous setup was done using this architecture, OK to continue"
@@ -95,8 +97,6 @@ then
         echo "Previous setup was done using $SETUP_ARCH this is incompatible with the current arc hitecture of $ARCH_NAME you will need to destroy the previous setup and re-run this script"
         exit 10
     fi
-else
-    echo "No previous setup architecture value, continuing"
 fi
 
 echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
