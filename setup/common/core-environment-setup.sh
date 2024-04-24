@@ -92,6 +92,8 @@ then
     then
         echo "Previous setup was done using this architecture, OK to continue"
     else
+        echo "Previous setup was done using $SETUP_ARCH this is incompatible with the current arc hitecture of $ARCH_NAME you will need to destroy the previous setup and re-run this script"
+        exit 10
     fi
 else
     echo "No previous setup architecture value, continuing"
