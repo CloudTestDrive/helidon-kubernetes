@@ -44,4 +44,7 @@ else
   fi
 fi
 
+echo "Sucesfully repoved core environment or user initials, user identiry and compartment"
+
 bash ./delete-from-saved-settings.sh SETUP_REGION
+bash ./delete-from-saved-settings.sh SETUP_ARCH
