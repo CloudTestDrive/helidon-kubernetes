@@ -66,9 +66,11 @@ then
   echo "bash compartment-setup.sh"
   exit 1
 else
-  echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
+  echo "Thank you for confirming you are in a free trial"
 fi
+echo "Checking for previous still active configurations"
 if [ -z "$SETUP_REGION" ]
+then
     echo "No setup previously recorded, continuing"
 else
     if [ "$SETUP_REGION" = "$OCI_REGION" ]
@@ -97,6 +99,7 @@ fi
 
 echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
 echo "SETUP_ARCH=$ARCH_NAME" >> $SETTINGS
+echo "Region and architecture are good, let's set your basic environment up
 
 bash initials-setup.sh
 RESP=$?
