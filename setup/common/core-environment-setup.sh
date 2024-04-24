@@ -101,7 +101,7 @@ fi
 
 echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
 echo "SETUP_ARCH=$ARCH_NAME" >> $SETTINGS
-echo "Region and architecture are good, let's set your basic environment up
+echo "Region and architecture are good, let's set your basic environment up"
 
 bash initials-setup.sh
 RESP=$?
