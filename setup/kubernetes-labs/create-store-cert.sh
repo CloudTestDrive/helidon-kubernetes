@@ -33,11 +33,20 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
+
+if [ -z "$SMALLSTEP_DIR"]
+then 
+    echo "Small step setup was not done my these scripts, cannot locate the step command, exiting"
+    exit 0
+else
+    echo "Smallstep command located, continuing"
+fi
+
 echo "removing existing store certs"
 touch tls-store-$EXTERNAL_IP.crt tls-store-$EXTERNAL_IP.key
 rm tls-store-$EXTERNAL_IP.crt tls-store-$EXTERNAL_IP.key
 echo "creating tls secret using step with common name of store.$EXTERNAL_IP.nip.io"
-$HOME/keys/step certificate create store.$EXTERNAL_IP.nip.io tls-store-$EXTERNAL_IP.crt tls-store-$EXTERNAL_IP.key --profile leaf --not-after 8760h --no-password --insecure  --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
+$SMALLSTEP_DIR/step certificate create store.$EXTERNAL_IP.nip.io tls-store-$EXTERNAL_IP.crt tls-store-$EXTERNAL_IP.key --profile leaf --not-after 8760h --no-password --insecure  --kty=RSA --ca $SMALLSTEP_DIR/root.crt --ca-key $SMALLSTEP_DIR/root.key
 echo "removing any existing tls-store secret from cluster $CLUSTER_CONTEXT_NAME"
 kubectl delete secret tls-store --ignore-not-found=true --context $CLUSTER_CONTEXT_NAME
 echo "creating new tls-store secret in cluster $CLUSTER_CONTEXT_NAME"
