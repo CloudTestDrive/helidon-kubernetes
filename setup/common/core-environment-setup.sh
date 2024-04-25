@@ -1,5 +1,14 @@
 #!/bin/bash -f
 
+
+export SETTINGS=$HOME/hk8sLabsSettings
+
+if [ -f "$SETTINGS" ]
+then
+    echo "Existing settings file located, loading it"
+    source $SETTINGS
+fi
+
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -10,7 +19,7 @@ then
   export PARALLEL_SETUP=false
 fi
 
-ARCH_NAME=`uname -m`
+ARCH_NAME=`uname -m | tr A-Z a-z | sed -e 's/-/_/g'`
 if [ "$ARCH_NAME" == "x86_64" ]
 then
 	echo "You are running in an x64 processor shell, this script can continue"
@@ -22,6 +31,7 @@ else
 	echo "Unknown system architecture $ARCH_NAME don't know what architecture your cloud shell is cannot continue"
 	exit 10
 fi
+
 echo "This script will run the required commands to setup your core environment"
 echo "It assumes you are working in a free trial tenancy exclusively used by yourself"
 echo "If you are not you will need to exit at the prompt and follow the lab instructions for setting up the configuration separatly"
@@ -56,12 +66,43 @@ then
   echo "bash compartment-setup.sh"
   exit 1
 else
-  echo "Thank you for confirming you are in a free trial, let's set your basic environment up"
+  echo "Thank you for confirming you are in a free trial"
+fi
+echo "Checking for previous still active configurations"
+if [ -z "$SETUP_REGION" ]
+then
+    echo "No setup previously recorded, continuing"
+else
+    if [ "$SETUP_REGION" = "$OCI_REGION" ]
+    then
+        echo "Previous setup was run in this region, continuing"
+    else
+        echo "You have previously run the setup in a different region ( $SETUP_REGION ) and not destroyed that"
+        echo "environment. You cannot continue as you may well corrupt your state information, and"
+        echo "end up with the state looking at resources in a different region"
+        exit 5
+    fi
 fi
 
-export SETTINGS=$HOME/hk8sLabsSettings
+# if there was a previous setup did it use the same cloud shell architecture ?
+# If it didn't then bad things are likely to happen
+if [ -z "${SETUP_ARCH}" ]
+then
+    echo "No previous setup architecture value, continuing"
+else
+    if [ "$SETUP_ARCH" = "$ARCH_NAME" ]
+    then
+        echo "Previous setup was done using this architecture, OK to continue"
+    else
+        echo "Previous setup was done using $SETUP_ARCH this is incompatible with the current arc hitecture of $ARCH_NAME you will need to destroy the previous setup and re-run this script"
+        exit 10
+    fi
+fi
 
 echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
+echo "SETUP_ARCH=$ARCH_NAME" >> $SETTINGS
+echo "Region and architecture are good, let's set your basic environment up"
+
 bash initials-setup.sh
 RESP=$?
 if [ $RESP -ne 0 ]
