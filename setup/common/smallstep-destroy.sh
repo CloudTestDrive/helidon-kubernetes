@@ -12,7 +12,7 @@ else
     exit 1
 fi
 
-if [ -z "$SMALLSTEP_DIR"]
+if [ -z "$SMALLSTEP_DIR" ]
 then 
     echo "Small step setup was not done my these scripts, exiting"
     exit 0
