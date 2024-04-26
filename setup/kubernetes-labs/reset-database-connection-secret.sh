@@ -1,46 +1,41 @@
 #!/bin/bash
 SCRIPT_NAME=`basename $0`
-if [ $# -eq 0 ]
-  then
-    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
-    echo "  1st arg the \"_high\" name of your database - e.g. tgdemo_high"
-    exit -1 
-fi
-
-if [ -z "$AUTO_CONFIRM" ]
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
 then
-  export AUTO_CONFIRM=false
-fi
-DB_NAME=$1
-export SETTINGS=$HOME/hk8sLabsSettings
-
-if [ -f $SETTINGS ]
-  then
-    echo "Loading existing settings"
-    source $SETTINGS
-  else 
-    echo "No existing settings, cannot continue"
-    exit 10
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
 fi
 
+
+if [ $# -ge 0 ]
+then
+  CLUSTER_CONTEXT_NAME=$0
+  echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+
+
+DB_CONNECTION_SECRET_DIR=$HOME/helidon-kubernetes/configurations/stockmanagerconf
+DB_CONNECTION_SECRET_YAML=$DB_CONNECTION_SECRET_DIR/databaseConnectionSecret.yaml
 if [ "$AUTO_CONFIRM" = "true" ]
 then
   REPLY="y"
-  echo "Auto confirm enabled, Updating the database connection secret config to reset $DB_NAME as the database connection defaults to $REPLY"
+  echo "Auto confirm enabled, Remove the configured the database connection config in $DB_CONNECTION_SECRET_YAML defaults to $REPLY"
 else
+  echo "Remove the configured the database connection config in $DB_CONNECTION_SECRET_YAML ."
   read -p "Proceed (y/n) ?" REPLY
 fi
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
   echo "OK, exiting"
   exit 1
-else
-  echo "Resetting database connection secret"
 fi
-DB_SECRET=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
-TEMP="$DB_SECRET".tmp
-echo "Updating the database connection secret config in $DB_SECRET to reset $DB_NAME as the database connection"
-# echo command is "s/$DB_NAME/<database connection name>/"
-cat $DB_SECRET | sed -e "s/$DB_NAME/<database connection name>/" > $TEMP
-rm $DB_SECRET
-mv $TEMP $DB_SECRET
+if [ -f "$DB_CONNECTION_SECRET_YAML" ]
+then
+    echo "Removing the configured the stockmanager config in $DB_CONNECTION_SECRET_YAML"
+    rm $DB_CONNECTION_SECRET_YAML
+else
+    echo "database connection config in $DB_CONNECTION_SECRET_YAML already removed"
+fi

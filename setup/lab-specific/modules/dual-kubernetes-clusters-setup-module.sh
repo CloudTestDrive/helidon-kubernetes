@@ -156,6 +156,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 cd $KUBERNETES_LABS_DIR
-bash ./configure-downloaded-git-repo.sh $USER_INITIALS
+bash ./configure-downloaded-git-repo.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME_ONE
 
 exit 0

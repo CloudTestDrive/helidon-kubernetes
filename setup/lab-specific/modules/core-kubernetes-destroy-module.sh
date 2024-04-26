@@ -47,7 +47,7 @@ helm uninstall ingress-nginx --kube-context $CLUSTER_CONTEXT_NAME --namespace in
 # remove the DB and other configuration from the repo
 
 cd $KUBERNETES_LABS_DIR
-bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS
+bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 
 cd $COMMON_DIR

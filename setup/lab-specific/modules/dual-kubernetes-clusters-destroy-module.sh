@@ -28,7 +28,7 @@ SAVED_PWD=`pwd`
 # remove the DB and other configuration from the repo
 
 cd $KUBERNETES_LABS_DIR
-bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS
+bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME_ONE
 
 
 cd $COMMON_DIR

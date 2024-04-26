@@ -3,11 +3,27 @@ SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
     echo "$SCRIPT_NAME No arguments supplied, you must provide :"
-    echo "  1st arg the name of your department, e.g. tg"
+    echo "  1st arg the name of your department - in lower case and only a-z, e.g. tg"
+    echo "Optional"
+    echo "  2nd arg the name of your cluster context (if not provided one will be used by default)"
     exit -1 
 fi
 DEPARTMENT=$1
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
 
+
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -20,7 +36,8 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+REPO_CONFIGURED_FOR_SERVICES_NAME="REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"
+if [ -z "${!REPO_CONFIGURED_FOR_SERVICES_NAME}" ]
 then
   echo "The repo has already been unconfigured for the database and other configuration information, run the configure-downloaded-git-repo.sh to set them"
   exit 0
@@ -52,9 +69,9 @@ fi
 
 DB_CONNECTION=`bash ./get-database-connection-name.sh`
 
-bash ./reset-database-connection-secret.sh $DB_CONNECTION 
-bash ./uninstall-db-wallet.sh $HOME/Wallet.zip 
-bash ./reset-stockmanager-config-department.sh $DEPARTMENT 
+bash ./reset-database-connection-secret.sh $CLUSTER_CONTEXT_NAME
+bash ./uninstall-db-wallet.sh
+bash ./reset-stockmanager-config-department.sh $CLUSTER_CONTEXT_NAME
 
 # flag that we've unconfigured things
-bash ../common/delete-from-saved-settings.sh REPO_CONFIGURED_FOR_SERVICES
+bash ../common/delete-from-saved-settings.sh $REPO_CONFIGURED_FOR_SERVICES_NAME
