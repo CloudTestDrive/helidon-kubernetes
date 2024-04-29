@@ -69,5 +69,11 @@ TEMP="$DB_CONNECTION_SECRET_YAML".tmp
 echo "Updating the database connection secret config in $DB_CONNECTION_SECRET_YAML to set $DB_CONNECTION_NAME as the database connection"
 # echo command is "s/<database connection name>/$DB_CONNECTION_NAME/"
 cat $DB_CONNECTION_SECRET_YAML_TEMPLATE | sed -e "s/<database connection name>/$DB_CONNECTION_NAME/" > $TEMP
-rm $DB_CONNECTION_SECRET_YAML
+if [ -f "$DB_CONNECTION_SECRET_YAML" ]
+then
+   echo "Removing old $DB_CONNECTION_SECRET_YAML file"
+   rm $DB_CONNECTION_SECRET_YAML
+else
+   echo "No old DB_CONNECTION_SECRET_YAML file to remove" 
+fi
 mv $TEMP $DB_CONNECTION_SECRET_YAML

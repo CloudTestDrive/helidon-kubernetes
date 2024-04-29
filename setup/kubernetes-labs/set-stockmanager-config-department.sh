@@ -64,5 +64,12 @@ TEMP="$STOCKMANAGER_CONFIG".tmp
 echo "Updating the stockmanager config in $STOCKMANAGER_CONFIG to reset $DEPARTMENT as the department name"
 # echo command is "s/#  department: \"My Shop\"/  department: \"$DEPARTMENT Shop\"/"
 cat $STOCKMANAGER_CONFIG_TEMPLATE | sed -e "s/#  department: \"My Shop\"/  department: \"$DEPARTMENT Shop\"/" > $TEMP
+if [ -f "$STOCKMANAGER_CONFIG" ]
+then
+   echo "Removing old $STOCKMANAGER_CONFIG file"
+   rm $DB_CONNECTION_SECRET_YAML
+else
+   echo "No old STOCKMANAGER_CONFIG file to remove" 
+fi
 rm $STOCKMANAGER_CONFIG
 mv $TEMP $STOCKMANAGER_CONFIG
