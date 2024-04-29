@@ -25,8 +25,9 @@ then
 else 
   echo "The images have been built and uploaded to the repo"
 fi
+REPO_CONFIGURED_FOR_SERVICES_NAME=`bash ../common/settings/to-valid-name.sh "REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"`
 
-if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+if [ -z "${!REPO_CONFIGURED_FOR_SERVICES_NAME}" ]
 then
   echo "The repo has not been configured for the database and other configuration information, cannot proceed as the YAML is not configured"
   exit 30

@@ -34,7 +34,7 @@ if [ -f $SETTINGS ]
     echo "$SCRIPT_NAME No existing settings cannot continue"
     exit 10
 fi
-REPO_CONFIGURED_FOR_SERVICES_NAME="REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"
+REPO_CONFIGURED_FOR_SERVICES_NAME=`bash ../common/settings/to-valid-name.sh "REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"`
 if [ -z "${!REPO_CONFIGURED_FOR_SERVICES_NAME}" ]
 then
   echo "Configuring the repo for the database and other settings"
