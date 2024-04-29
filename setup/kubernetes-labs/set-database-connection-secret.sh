@@ -74,6 +74,6 @@ then
    echo "Removing old $DB_CONNECTION_SECRET_YAML file"
    rm $DB_CONNECTION_SECRET_YAML
 else
-   echo "No old DB_CONNECTION_SECRET_YAML file to remove" 
+   echo "No old $DB_CONNECTION_SECRET_YAML file to remove" 
 fi
 mv $TEMP $DB_CONNECTION_SECRET_YAML
