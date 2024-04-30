@@ -25,8 +25,8 @@ else
 fi
 
 DEPARTMENT=$1
-REPO_CONFIGURED_FOR_SERVICES_NAME="REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"
+REPO_CONFIGURED_FOR_SERVICES_NAME=`bash ../common/settings/to-valid-name.sh "REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"`
 
 # reset the configuration flag - there won;t be anythign we can in the curren git repo as it will have been reset
-bash ../common/delete-from-saved-settings.sh REPO_CONFIGURED_FOR_SERVICES_NAME
+bash ../common/delete-from-saved-settings.sh $REPO_CONFIGURED_FOR_SERVICES_NAME
 bash ./configure-downloaded-git-repo.sh $DEPARTMENT $CLUSTER_CONTEXT_NAME
