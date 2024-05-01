@@ -16,7 +16,7 @@ else
 fi
 
 
-if [ $# -ge 1 ]
+if [ $# -ge 2 ]
 then
   CLUSTER_CONTEXT_NAME=$2
   echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
