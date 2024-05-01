@@ -10,7 +10,7 @@ fi
 
 if [ $# -ge 0 ]
 then
-  CLUSTER_CONTEXT_NAME=$0
+  CLUSTER_CONTEXT_NAME=$1
   echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
 else
   echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
