@@ -2,10 +2,28 @@
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied, you must provide the name of your department, e.g. tg"
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "  1st arg the name of your department - in lower case and only a-z, e.g. tg"
+    echo "Optional"
+    echo "  2nd arg the name of your cluster context (if not provided one will be used by default)"
     exit -1 
 fi
 DEPARTMENT=$1
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
+
+
+if [ $# -ge 2 ]
+then
+  CLUSTER_CONTEXT_NAME=$2
+  echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
 
 export SETTINGS=$HOME/hk8sLabsSettings
 
@@ -38,10 +56,19 @@ then
 else
   echo "Setting stockmanager department using $DEPARTMENT as the department name"
 fi
-STOCKMANAGER_CONFIG=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf/stockmanager-config.yaml
+
+CONFIG_DIR=$HOME/helidon-kubernetes/configurations/stockmanagerconf/conf
+STOCKMANAGER_CONFIG_TEMPLATE=$CONFIG_DIR/stockmanager-config-template.yaml
+STOCKMANAGER_CONFIG=$CONFIG_DIR/stockmanager-config.yaml
 TEMP="$STOCKMANAGER_CONFIG".tmp
-echo "Updating the stockmanager config in $STOCKMANAGER_CONFIG to reset $DEPARTMENT as the department name"
+echo "Updating the stockmanager config in $STOCKMANAGER_CONFIG to set $DEPARTMENT as the department name"
 # echo command is "s/#  department: \"My Shop\"/  department: \"$DEPARTMENT Shop\"/"
-cat $STOCKMANAGER_CONFIG | sed -e "s/#  department: \"My Shop\"/  department: \"$DEPARTMENT Shop\"/" > $TEMP
-rm $STOCKMANAGER_CONFIG
+cat $STOCKMANAGER_CONFIG_TEMPLATE | sed -e "s/#  department: \"My Shop\"/  department: \"$DEPARTMENT Shop\"/" > $TEMP
+if [ -f "$STOCKMANAGER_CONFIG" ]
+then
+   echo "Removing old $STOCKMANAGER_CONFIG file"
+   rm $STOCKMANAGER_CONFIG
+else
+   echo "No old $STOCKMANAGER_CONFIG file to remove" 
+fi
 mv $TEMP $STOCKMANAGER_CONFIG

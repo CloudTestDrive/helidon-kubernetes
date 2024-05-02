@@ -26,6 +26,14 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
+if [ -z "$SMALLSTEP_DIR"]
+then 
+    echo "Small step setup was not done my these scripts, cannot locate the step command, exiting"
+    exit 0
+else
+    echo "Smallstep command located, continuing"
+fi
+
 if [ -z "$AUTO_CONFIRM" ]
 then
   export AUTO_CONFIRM=false
@@ -52,7 +60,7 @@ echo "Creating Elastic auth secret in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create secret generic web-ingress-auth -n logging --from-file=auth --context $CLUSTER_CONTEXT_NAME
 
 echo "Creating Elastic search certificate in cluster $CLUSTER_CONTEXT_NAME"
-$HOME/keys/step certificate create search.logging.$EXTERNAL_LP.nip.io tls-search-$EXTERNAL_IP.crt tls-search-$EXTERNAL_IP.key  --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
+$SMALLSTEP_DIR/step certificate create search.logging.$EXTERNAL_LP.nip.io tls-search-$EXTERNAL_IP.crt tls-search-$EXTERNAL_IP.key  --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $SMALLSTEP_DIR/root.crt --ca-key $SMALLSTEP_DIR/root.key
 
 echo "Create search certificate secret in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create secret tls tls-search --key tls-search-$EXTERNAL_IP.key --cert tls-search-$EXTERNAL_IP.crt -n logging --context $CLUSTER_CONTEXT_NAME

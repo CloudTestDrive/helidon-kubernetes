@@ -42,6 +42,13 @@ else
     echo "Failure removing the user initials cannot continue"
     exit $RESP
   fi
+  bash smallstep-destroy.sh
+  RESP=$?
+  if [ $RESP -ne 0 ]
+  then
+    echo "Failure removing the small setep installation"
+    exit $RESP
+  fi
 fi
 
 echo "Sucesfully repoved core environment or user initials, user identiry and compartment"

@@ -40,14 +40,6 @@ SAVED_PWD=`pwd`
 
 cd $COMMON_DIR
 
-bash ./download-step.sh
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Downloading step returned an error, unable to continue"
-  exit $RESP
-fi
-
 # this needs to be modularised on a per-lab basis
 #bash ./check-minimum-resources.sh
 #RESP=$?

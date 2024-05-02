@@ -38,14 +38,6 @@ SAVED_PWD=`pwd`
 
 cd $COMMON_DIR
 
-bash ./download-step.sh
-RESP=$?
-if [ "$RESP" -ne 0 ]
-then
-  echo "Downloading step returned an error, unable to continue"
-  exit $RESP
-fi
-
 bash ./check-minimum-resources.sh
 RESP=$?
 if [ "$RESP" -ne 0 ]
@@ -143,6 +135,6 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 cd $KUBERNETES_LABS_DIR
-bash ./configure-downloaded-git-repo.sh $USER_INITIALS
+bash ./configure-downloaded-git-repo.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 exit 0

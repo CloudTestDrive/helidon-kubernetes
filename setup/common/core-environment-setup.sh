@@ -103,6 +103,16 @@ echo "SETUP_REGION=$OCI_REGION" >> $SETTINGS
 echo "SETUP_ARCH=$ARCH_NAME" >> $SETTINGS
 echo "Region and architecture are good, let's set your basic environment up"
 
+bash smallstep-setup.sh replace
+RESP=$?
+if [ $RESP -ne 0 ]
+then
+  echo "Failure setting up smallstep certificate tools, cannot continue"
+  echo "Please review the output and rerun the script"
+  exit $RESP
+fi
+
+
 bash initials-setup.sh
 RESP=$?
 if [ $RESP -ne 0 ]

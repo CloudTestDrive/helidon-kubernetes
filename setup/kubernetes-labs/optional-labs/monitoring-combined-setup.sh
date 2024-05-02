@@ -26,6 +26,14 @@ if [ -f $SETTINGS ]
 fi
 
 
+if [ -z "$SMALLSTEP_DIR"]
+then 
+    echo "Small step setup was not done my these scripts, cannot locate the step command, exiting"
+    exit 0
+else
+    echo "Smallstep command located, continuing"
+fi
+
 MONITORING_INSTALLED_NAME=`bash ../../common/settings/to-valid-name.sh "MONITORING_INSTALLED_""$CLUSTER_CONTEXT_NAME"`
 MONITORING_INSTALLED="${!MONITORING_INSTALLED_NAME}"
 if [ -z "$MONITORING_INSTALLED" ]
@@ -59,13 +67,13 @@ echo "Creating Prometheus auth secret in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create secret generic web-ingress-auth -n monitoring --from-file=auth=auth.$CLUSTER_CONTEXT_NAME --context $CLUSTER_CONTEXT_NAME
 
 echo "Create Prometheus certificate"
-$HOME/keys/step certificate create prometheus.monitoring.$EXTERNAL_IP.nip.io tls-prometheus-$EXTERNAL_IP.crt tls-prometheus-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
+$SMALLSTEP_DIR/step certificate create prometheus.monitoring.$EXTERNAL_IP.nip.io tls-prometheus-$EXTERNAL_IP.crt tls-prometheus-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $SMALLSTEP_DIR/root.crt --ca-key $SMALLSTEP_DIR/root.key
 
 echo "Create Prometheus certificate secret in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create secret tls tls-prometheus --key tls-prometheus-$EXTERNAL_IP.key --cert tls-prometheus-$EXTERNAL_IP.crt -n monitoring --context $CLUSTER_CONTEXT_NAME
 
 echo "Creating Grafana certificate"
-$HOME/keys/step certificate create grafana.monitoring.$EXTERNAL_IP.nip.io tls-grafana-$EXTERNAL_IP.crt tls-grafana-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $HOME/keys/root.crt --ca-key $HOME/keys/root.key
+$SMALLSTEP_DIR/step certificate create grafana.monitoring.$EXTERNAL_IP.nip.io tls-grafana-$EXTERNAL_IP.crt tls-grafana-$EXTERNAL_IP.key --profile leaf  --not-after 8760h --no-password --insecure --kty=RSA --ca $SMALLSTEP_DIR/root.crt --ca-key $SMALLSTEP_DIR/root.key
 
 echo "Creating Grafana certificate secret in cluster $CLUSTER_CONTEXT_NAME"
 kubectl create secret tls tls-grafana --key tls-grafana-$EXTERNAL_IP.key --cert tls-grafana-$EXTERNAL_IP.crt -n monitoring --context $CLUSTER_CONTEXT_NAME

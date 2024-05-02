@@ -47,7 +47,7 @@ helm uninstall ingress-nginx --kube-context $CLUSTER_CONTEXT_NAME --namespace in
 # remove the DB and other configuration from the repo
 
 cd $KUBERNETES_LABS_DIR
-bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS
+bash ./unconfigure-downloaded-git-repo.sh $USER_INITIALS $CLUSTER_CONTEXT_NAME
 
 
 cd $COMMON_DIR
@@ -86,12 +86,5 @@ then
   echo "core environment destroy returned an error, unable to continue"
   exit $RESP
 fi
-
-# until I figure out a way to determine if we've used the last of the keys (they can be manually and 
-# script created) leave the step command and root stuff there for now
-#if [ -d $HOME/keys ]
-#then
-#  rm -rf $HOME/keys
-#fi
 
 exit 0

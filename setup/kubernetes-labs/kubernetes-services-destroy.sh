@@ -58,6 +58,8 @@ then
   fi
 fi
 
+bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME
+
 # run the pre-existing script
 bash ./resetEntireCluster.sh $CLUSTER_CONTEXT_NAME
 RESP=$?
@@ -67,4 +69,3 @@ then
   exit $RESP
 fi
 
-bash ../common/delete-from-saved-settings.sh $KUBERNETES_SERVICES_CONFIGURED_SETTING_NAME

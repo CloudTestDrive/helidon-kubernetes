@@ -12,6 +12,21 @@ if [ -f $SETTINGS ]
 fi
 
 
+
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
+if [ $# -ge 1 ]
+then
+  CLUSTER_CONTEXT_NAME=$1
+  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+
 if [ -z "$USER_INITIALS" ]
 then
   echo "Your initials have not been set, you need to run the initials-setup.sh script before you can run this script"
@@ -25,25 +40,12 @@ then
 else 
   echo "The images have been built and uploaded to the repo"
 fi
+REPO_CONFIGURED_FOR_SERVICES_NAME=`bash ../common/settings/to-valid-name.sh "REPO_CONFIGURED_FOR_SERVICES"_"$CLUSTER_CONTEXT_NAME"`
 
-if [ -z "$REPO_CONFIGURED_FOR_SERVICES" ]
+if [ -z "${!REPO_CONFIGURED_FOR_SERVICES_NAME}" ]
 then
   echo "The repo has not been configured for the database and other configuration information, cannot proceed as the YAML is not configured"
   exit 30
-fi
-
-if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
-then
-  CLUSTER_CONTEXT_NAME=one
-else
-  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
-fi
-if [ $# -gt 0 ]
-then
-  CLUSTER_CONTEXT_NAME=$1
-  echo "Operating on context name $CLUSTER_CONTEXT_NAME"
-else
-  echo "Using default context name of $CLUSTER_CONTEXT_NAME"
 fi
 
 if [ -z "$AUTO_CONFIRM" ]

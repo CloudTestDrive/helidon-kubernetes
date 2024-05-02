@@ -1,4 +1,29 @@
-#!/bin/bash
+#!/bin/bashSCRIPT_NAME=`basename $0`
+if [ $# -eq 0 ]
+  then
+    echo "$SCRIPT_NAME No arguments supplied, you must provide :"
+    echo "  1st arg the name of your department - in lower case and only a-z, e.g. tg"
+    echo "Optional"
+    echo "  2nd arg the name of your cluster context (if not provided one will be used by default)"
+    exit -1 
+fi
+DEPARTMENT=$1
+if [ -z "$DEFAULT_CLUSTER_CONTEXT_NAME" ]
+then
+  CLUSTER_CONTEXT_NAME=one
+else
+  CLUSTER_CONTEXT_NAME="$DEFAULT_CLUSTER_CONTEXT_NAME"
+fi
+
+
+if [ $# -ge 2 ]
+then
+  CLUSTER_CONTEXT_NAME=$2
+  echo "$SCRIPT_NAME Operating on supplied context name $CLUSTER_CONTEXT_NAME"
+else
+  echo "$SCRIPT_NAME Using default context name of $CLUSTER_CONTEXT_NAME"
+fi
+
 SCRIPT_NAME=`basename $0`
 if [ $# -eq 0 ]
   then
@@ -37,10 +62,18 @@ then
 else
   echo "Updating the database connection secret config to set $DB_CONNECTION_NAME as the database connection"
 fi
-DB_CONNECTION_SECRET_YAML=$HOME/helidon-kubernetes/configurations/stockmanagerconf/databaseConnectionSecret.yaml
+DB_CONNECTION_SECRET_DIR=$HOME/helidon-kubernetes/configurations/stockmanagerconf
+DB_CONNECTION_SECRET_YAML_TEMPLATE=$DB_CONNECTION_SECRET_DIR/databaseConnectionSecret-template.yaml
+DB_CONNECTION_SECRET_YAML=$DB_CONNECTION_SECRET_DIR/databaseConnectionSecret.yaml
 TEMP="$DB_CONNECTION_SECRET_YAML".tmp
 echo "Updating the database connection secret config in $DB_CONNECTION_SECRET_YAML to set $DB_CONNECTION_NAME as the database connection"
 # echo command is "s/<database connection name>/$DB_CONNECTION_NAME/"
-cat $DB_CONNECTION_SECRET_YAML | sed -e "s/<database connection name>/$DB_CONNECTION_NAME/" > $TEMP
-rm $DB_CONNECTION_SECRET_YAML
+cat $DB_CONNECTION_SECRET_YAML_TEMPLATE | sed -e "s/<database connection name>/$DB_CONNECTION_NAME/" > $TEMP
+if [ -f "$DB_CONNECTION_SECRET_YAML" ]
+then
+   echo "Removing old $DB_CONNECTION_SECRET_YAML file"
+   rm $DB_CONNECTION_SECRET_YAML
+else
+   echo "No old $DB_CONNECTION_SECRET_YAML file to remove" 
+fi
 mv $TEMP $DB_CONNECTION_SECRET_YAML
