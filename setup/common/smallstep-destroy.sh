@@ -24,6 +24,6 @@ if [ -d "$SMALLSTEP_DIR" ]
 then
     rm -rf "$SMALLSTEP_DIR"
 else
-    echo "It looks like the smallstep directory ( $SMALLSTEP_DIR ) is nto there, continuing"
+    echo "It looks like the smallstep directory ( $SMALLSTEP_DIR ) is not there, continuing"
 fi
 bash ./delete-from-saved-settings.sh SMALLSTEP_DIR
