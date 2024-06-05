@@ -20,10 +20,10 @@ then
 fi
 
 ARCH_NAME=`uname -m | tr A-Z a-z | sed -e 's/-/_/g'`
-if [ "$ARCH_NAME" == "x86_64" ]
+if [ "$ARCH_NAME" = "x86_64" ]
 then
 	echo "You are running in an x64 processor shell, this script can continue"
-elif [ "$ARCH_NAME" == "aarch64" ]
+elif [ "$ARCH_NAME" = "aarch64" ]
 then
 	echo "I'm sorry, but you are running in an ARM processor shell, this script currently has some x86 specific dependencies and cannot sucesfully run to completion in an ARM environment"
 	exit 11
