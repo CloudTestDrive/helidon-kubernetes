@@ -28,6 +28,10 @@ then
   exit 1
 fi
 
+if [ -z "$JAVA_VERSION_FOR_BUILD" ]
+then
+  export JAVA_VERSION_FOR_BUILD=21
+fi
 
 # Get the OCIR locations
 echo "Locating repo names"
@@ -132,7 +136,7 @@ else
 	exit 10
 fi
 echo "Downloading java arch version $JAVA_DOWNLOAD_ARCH"
-JAVA_LOCATION="https://download.oracle.com/java/17/latest/jdk-17_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
+JAVA_LOCATION="https://download.oracle.com/java/$JAVA_VERSION_FOR_BUILD/latest/jdk-""$JAVA_VERSION_FOR_BUILD""_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
 
 DEV_REL_GITHUB=https://github.com/oracle-devrel
 
