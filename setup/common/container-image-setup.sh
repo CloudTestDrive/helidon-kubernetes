@@ -28,11 +28,6 @@ then
   exit 1
 fi
 
-if [ -z "$JAVA_VERSION_FOR_BUILD" ]
-then
-  export JAVA_VERSION_FOR_BUILD=21
-fi
-
 # Get the OCIR locations
 echo "Locating repo names"
 
@@ -121,6 +116,14 @@ SCRIPTS_DIR=`pwd`
 
 
 WORK_DIR=$HOME/tmp-docker-workspace-delete-me
+
+
+# define the jdk version we want
+if [ -z "$JAVA_VERSION_FOR_BUILD" ]
+then
+  export JAVA_VERSION_FOR_BUILD=17
+fi
+
 # some versions of the clud shell have been switched from x68 to arm, so we need to get the right version
 # of the java compile stuff
 # get the system type
@@ -136,7 +139,11 @@ else
 	exit 10
 fi
 echo "Downloading java arch version $JAVA_DOWNLOAD_ARCH"
-JAVA_LOCATION="https://download.oracle.com/java/$JAVA_VERSION_FOR_BUILD/latest/jdk-""$JAVA_VERSION_FOR_BUILD""_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
+# this version is probabaly broken as the "latest" isn't available anymore
+#JAVA_LOCATION="https://download.oracle.com/java/$JAVA_VERSION_FOR_BUILD/latest/jdk-""$JAVA_VERSION_FOR_BUILD""_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
+# for now it's more hard coded
+JAVA_LOCATION="https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-""$JAVA_VERSION_FOR_BUILD""_bin.tar.gz"
+
 
 DEV_REL_GITHUB=https://github.com/oracle-devrel
 
