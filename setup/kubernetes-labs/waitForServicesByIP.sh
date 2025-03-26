@@ -14,8 +14,8 @@ WAIT_LOOP_LIMIT=60
 CHECK_COUNTER=0
 while [ -z "$OK_RESP" ] ; do
   let CHECK_COUNTER="$CHECK_COUNTER+1"
-  echo -n "Waiting for services to start on $EXTERNAL_IP, test $CHECK_COUNTER"
-  RESP=`curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "HTTP/1.1"`
+  echo -n "Waiting for services to start on https://store.$EXTERNAL_IP.nip.io/store/stocklevel, test $CHECK_COUNTER"
+  RESP=`curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "HTTP/"`
   echo "response is $RESP"
   OK_RESP=`echo $RESP | grep "200 OK"`
   if [ -z "$OK_RESP" ] 
