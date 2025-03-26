@@ -15,9 +15,9 @@ CHECK_COUNTER=0
 while [ -z "$OK_RESP" ] ; do
   let CHECK_COUNTER="$CHECK_COUNTER+1"
   echo -n "Waiting for services to start on https://store.$EXTERNAL_IP.nip.io/store/stocklevel, test $CHECK_COUNTER"
-  RESP=`curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "HTTP/"`
+  RESP=`curl -i -X GET -u jack:password -k -s https://store.$EXTERNAL_IP.nip.io/store/stocklevel | grep "HTTP"`
   echo "response is $RESP"
-  OK_RESP=`echo $RESP | grep "200 OK"`
+  OK_RESP=`echo $RESP | grep "200"`
   if [ -z "$OK_RESP" ] 
   then
     if [ "$CHECK_COUNTER" = "$WAIT_LOOP_LIMIT" ]
