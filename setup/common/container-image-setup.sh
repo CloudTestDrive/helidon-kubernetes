@@ -142,7 +142,7 @@ echo "Downloading java arch version $JAVA_DOWNLOAD_ARCH"
 # this version is probabaly broken as the "latest" isn't available anymore
 #JAVA_LOCATION="https://download.oracle.com/java/$JAVA_VERSION_FOR_BUILD/latest/jdk-""$JAVA_VERSION_FOR_BUILD""_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
 # for now it's more hard coded
-JAVA_LOCATION="https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-""$JAVA_VERSION_FOR_BUILD""_bin.tar.gz"
+JAVA_LOCATION="https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-""$JAVA_DOWNLOAD_ARCH""_bin.tar.gz"
 
 
 DEV_REL_GITHUB=https://github.com/oracle-devrel
