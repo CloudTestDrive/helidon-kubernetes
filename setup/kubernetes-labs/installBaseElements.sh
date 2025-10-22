@@ -90,7 +90,7 @@ echo >> $INFO_FILE
 echo "export EXTERNAL_IP=$EXTERNAL_IP" >>$INFO_FILE
 echo >> $INFO_FILE
 echo "installing dashboard using helm"
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard  --kube-context $CLUSTER_CONTEXT_NAME --namespace kube-system --set app.ingress.enabled=true --set app.ingress.ingressClassName=nginx --set app.ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --set kong.admin.tls.enabled=false --set kong.image.repository=docker.io/library/kong --version $dashboardHelmChartVersion
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard  --kube-context $CLUSTER_CONTEXT_NAME --namespace kube-system --set app.ingress.enabled=true --set app.ingress.ingressClassName=nginx --set app.ingress.hosts="{dashboard.kube-system.$EXTERNAL_IP.nip.io}" --set kong.image.repository=docker.io/library/kong --version $dashboardHelmChartVersion
 echo "Helm for dashboard completed - it may take a while for the dashboard to be running"
 
 echo Dashboard URL >> $INFO_FILE
