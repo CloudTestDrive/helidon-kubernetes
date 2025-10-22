@@ -100,8 +100,15 @@ if [ -z $DB_OCID ]
   then
   # No existing DB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo "Checking for database $DBNAME in compartment $COMPARTMENT_NAME"
-  DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE --lifecycle-state STOPPED | jq -j '.data[0].id'`
-
+  DB_OCID_STOPPED=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state STOPPED | jq -j '.data[0].id'`
+  if [ -z "$DB_OCID_STOPPED" ]
+  then
+      echo "There is already a database with the name $DBNAME but it's in stopped state, you need to start it and then re-run this script to use it or change the name of the database so it doesn't conflict"
+      exit 30
+  else 
+      echo "No stopped database named $DBNAME located, continuing"
+  fi
+  DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
   if [ -z "$DB_OCID" ]
   then
      echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
