@@ -55,7 +55,7 @@ FOUND=false
 for i in `seq 1 10`
 do
   echo "Propogate test $i for secret key $KEY_NAME"
-  STATE=`oci iam customer-secret-key list --user-id $USER_OCID | jq -r ".data[] | select (.id=\"$KEY_ID\") | .\"lifecycle-state\""`
+  STATE=`oci iam customer-secret-key list --user-id $USER_OCID | jq -r ".data[] | select (.id==\"$KEY_ID\") | .\"lifecycle-state\""`
   if [ -z "$STATE" ]
   then
     STATE=NOT_FOUND
