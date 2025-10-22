@@ -88,6 +88,7 @@ else
 	then
 	    echo "DB_LICENSE_MODEL pre set to LICENSE_INCLUDED"
 	elif [ "$DB_LICENSE_MODEL" = BRING_YOUR_OWN_LICENSE ]
+	then
 	    echo "DB_LICENSE_MODEL pre set to BRING_YOUR_OWN_LICENSE"
 	else
 		echo "DB_LICENSE_MODEL is set to an unknown value, can't proceed"
