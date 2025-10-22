@@ -79,7 +79,7 @@ else
   echo "OK, going to use $DBNAME as the database name"
 fi
 
-if [ -z "$DB_LICENSE_MODEL"]
+if [ -z "$DB_LICENSE_MODEL" ]
 then
 	DB_LICENSE_MODEL=LICENSE_INCLUDED
 	echo "No DB_LICENSE_MODEL set, defaulting to $LICENSE_MODEL"
@@ -100,7 +100,7 @@ if [ -z $DB_OCID ]
   then
   # No existing DB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo "Checking for database $DBNAME in compartment $COMPARTMENT_NAME"
-  DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
+  DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE --lifecycle-state STOPPED | jq -j '.data[0].id'`
 
   if [ -z "$DB_OCID" ]
   then
