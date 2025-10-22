@@ -79,18 +79,41 @@ else
   echo "OK, going to use $DBNAME as the database name"
 fi
 
+if [ -z "$DB_LICENSE_MODEL" ]
+then
+	DB_LICENSE_MODEL=LICENSE_INCLUDED
+	echo "No DB_LICENSE_MODEL set, defaulting to $LICENSE_MODEL"
+else
+	if [ "$DB_LICENSE_MODEL" = LICENSE_INCLUDED ]
+	then
+	    echo "DB_LICENSE_MODEL pre set to LICENSE_INCLUDED"
+	elif [ "$DB_LICENSE_MODEL" = BRING_YOUR_OWN_LICENSE ]
+	then
+	    echo "DB_LICENSE_MODEL pre set to BRING_YOUR_OWN_LICENSE"
+	else
+		echo "DB_LICENSE_MODEL is set to an unknown value, can't proceed"
+		exit 20
+	fi
+fi
 #allow for re-using an existing database
 if [ -z $DB_OCID ]
   then
   # No existing DB_OCID so need to potentially create it, even if it exists will assume we need to get the wallet and setup the labs user
   echo "Checking for database $DBNAME in compartment $COMPARTMENT_NAME"
+  DB_OCID_STOPPED=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state STOPPED | jq -j '.data[0].id'`
+  if [ -z "$DB_OCID_STOPPED" ]
+  then
+      echo "No stopped database named $DBNAME located, continuing"
+  else 
+      echo "There is already a database with the name $DBNAME but it's in stopped state, you need to start it and then re-run this script to use it or change the name of the database so it doesn't conflict"
+      exit 30
+  fi
   DB_OCID=`oci db autonomous-database list --compartment-id $COMPARTMENT_OCID --display-name $DBNAME --lifecycle-state AVAILABLE | jq -j '.data[0].id'`
-
   if [ -z "$DB_OCID" ]
   then
      echo "Database named $DBNAME doesn't exist, creating it, there may be a few minutes delay"
      DB_ADMIN_PW=`date | cksum | awk -e '{print $1}'`_SeCrEt
-     DB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload $DB_TYPE --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model BRING_YOUR_OWN_LICENSE --cpu-core-count 1 --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
+     DB_OCID=`oci db autonomous-database create --db-name $DBNAME --display-name $DBNAME --db-workload $DB_TYPE --compute-model ECPU --compute-count 1 --admin-password $DB_ADMIN_PW --compartment-id $COMPARTMENT_OCID --license-model $DB_LICENSE_MODEL --data-storage-size-in-tbs  1  --wait-for-state AVAILABLE --wait-interval-seconds 10 | jq -j '.data.id'`
      echo "DB_OCID=$DB_OCID" >> $SETTINGS
      echo "DATABASE_REUSED=false" >> $SETTINGS
      if [ "$AUTO_CONFIRM" = true ]

@@ -25,7 +25,7 @@ if [ -f $SETTINGS ]
     exit 10
 fi
 
-if [ -z "$SMALLSTEP_DIR"]
+if [ -z "$SMALLSTEP_DIR" ]
 then 
     echo "Small step setup was not done my these scripts, cannot locate the step command, exiting"
     exit 0

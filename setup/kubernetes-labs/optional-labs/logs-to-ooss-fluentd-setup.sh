@@ -60,10 +60,15 @@ echo "Checking for existing bucket in the wrong compartment"
 
 BUCKET_NAME=`echo "LOGGING_FLUENTD_""$USER_INITIALS""_""$CLUSTER_CONTEXT_NAME" | tr [:lower:] [:upper:]`
 
+
+echo "Locating home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
 echo "Getting Object storage namespace"
 OOSS_NAMESPACE=`oci os  ns get | jq -r ".data"`
 
-S3_COMPAT_OCID=`oci os  ns get-metadata  --namespace-name $OOSS_NAMESPACE | jq -r '.data."default-s3-compartment-id"'`
+S3_COMPAT_OCID=`oci os  ns get-metadata  --namespace-name $OOSS_NAMESPACE --region $OCI_HOME_REGION | jq -r '.data."default-s3-compartment-id"'`
 S3_COMPARTMENT_NAME=`oci iam compartment get --compartment-id $S3_COMPAT_OCID | jq -r ".data.name"`
 
 SAVED_DIR=`pwd`

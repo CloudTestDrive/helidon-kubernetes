@@ -24,7 +24,11 @@ fi
 
 OOSS_NAMESPACE=`oci os  ns get | jq -r ".data"`
 echo "Bucket $BUCKET_NAME found, getting Object storage S3 compat compartment to compare"
-S3_COMPAT_OCID=`oci os  ns get-metadata  --namespace-name $OOSS_NAMESPACE | jq -r '.data."default-s3-compartment-id"'`
+echo "Locating home region"
+OCI_HOME_REGION_KEY=`oci iam tenancy get --tenancy-id $OCI_TENANCY | jq -j '.data."home-region-key"'`
+OCI_HOME_REGION=`oci iam region list | jq -e  ".data[]| select (.key == \"$OCI_HOME_REGION_KEY\")" | jq -j '.name'`
+
+S3_COMPAT_OCID=`oci os  ns get-metadata  --namespace-name $OOSS_NAMESPACE --region $OCI_HOME_REGION | jq -r '.data."default-s3-compartment-id"'`
 S3_COMPARTMENT_NAME=`oci iam compartment get --compartment-id $S3_COMPAT_OCID | jq -r ".data.name"`
 
 BUCKET_COMPARTMENT_OCID=`echo "$BUCKET_JSON" | jq -r '.data."compartment-id"'`
